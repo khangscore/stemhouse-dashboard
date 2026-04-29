@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AO Dashboard</title>
-
   <style>
     * {
       margin: 0;
@@ -14,32 +13,14 @@
     }
 
     body {
-      background: #1e1b4b;
+      background: #2e1065;
       color: #1f2937;
       padding: 40px;
-    }
-
-    /* Ảnh PNG trang trí nền (giữ nền tím phía sau) */
-    body::before {
-      content: "";
-      position: fixed;
-      top: 50%;
-      right: 40px;
-      transform: translateY(-50%);
-      width: 420px;
-      height: 420px;
-      background: url("bg-character.png") no-repeat center;
-      background-size: contain;
-      opacity: 0.18;
-      pointer-events: none;
-      z-index: 0;
     }
 
     .container {
       max-width: 1200px;
       margin: auto;
-      position: relative;
-      z-index: 1;
     }
 
     .header {
@@ -55,7 +36,7 @@
 
     .header p {
       font-size: 16px;
-      color: #cbd5e1;
+      color: #64748b;
     }
 
     .grid {
@@ -74,7 +55,7 @@
 
     .card:hover {
       transform: translateY(-12px);
-      box-shadow: 0 18px 40px rgba(0,0,0,0.18);
+      box-shadow: 0 14px 35px rgba(0,0,0,0.12);
     }
 
     .icon {
@@ -162,14 +143,14 @@
       const gainNode = audioCtx.createGain();
 
       oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(1000, audioCtx.currentTime);
-      gainNode.gain.setValueAtTime(0.04, audioCtx.currentTime);
+      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // cao, sáng
+      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime); // âm lượng nhỏ
 
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);
 
       oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.04);
+      oscillator.stop(audioCtx.currentTime + 0.04); // cực ngắn, kiểu tick
     }
 
     document.querySelectorAll(".card, .btn").forEach(el => {

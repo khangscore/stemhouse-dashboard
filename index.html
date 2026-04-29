@@ -129,5 +129,33 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // ===== UI Hover Sound (No MP3 Needed) =====
+    let audioCtx;
+
+    function playHoverSound() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const oscillator = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+
+      oscillator.type = "sine";
+      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // cao, sáng
+      gainNode.gain.setValueAtTime(0.015, audioCtx.currentTime); // âm lượng nhỏ
+
+      oscillator.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      oscillator.start();
+      oscillator.stop(audioCtx.currentTime + 0.04); // cực ngắn, kiểu tick
+    }
+
+    document.querySelectorAll(".card, .btn").forEach(el => {
+      el.addEventListener("mouseenter", playHoverSound);
+    });
+  </script>
 </body>
 </html>

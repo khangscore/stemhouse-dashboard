@@ -144,7 +144,7 @@
 
       oscillator.type = "sine";
       oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // cao, sáng
-      gainNode.gain.setValueAtTime(0.015, audioCtx.currentTime); // âm lượng nhỏ
+      gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // âm lượng nhỏ
 
       oscillator.connect(gainNode);
       gainNode.connect(audioCtx.destination);

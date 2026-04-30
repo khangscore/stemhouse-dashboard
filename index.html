@@ -10,12 +10,31 @@
 
   <style>
     :root {
+      /* === Biến màu chế độ tối (Mặc định) === */
       --bg-color: #2e1065; 
       --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: #ffffff; 
       --text-main: #ffffff;
       --text-muted: #cbd5e1;
       --accent: #22c55e;
+      --accent-hover: #1bb350;
+      --search-bg: rgba(255, 255, 255, 0.1);
+      --particle-color: rgba(255, 255, 255, 0.4);
+      --toggle-bg: rgba(0, 0, 0, 0.3);
+    }
+
+    /* === Ghi đè biến màu cho chế độ sáng === */
+    body.light-mode {
+      --bg-color: #f1f5f9; 
+      --card-bg: rgba(255, 255, 255, 0.6);
+      --card-border: #000000; /* Viền đen cho chế độ sáng */
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --accent: #16a34a;
+      --accent-hover: #15803d;
+      --search-bg: rgba(0, 0, 0, 0.05);
+      --particle-color: rgba(46, 16, 101, 0.2);
+      --toggle-bg: rgba(255, 255, 255, 0.8);
     }
 
     * {
@@ -23,39 +42,112 @@
       padding: 0;
       box-sizing: border-box;
       font-family: "Segoe UI", system-ui, sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
     body {
       background-color: var(--bg-color);
+      /* Nền gradient sâu */
       background-image: 
         radial-gradient(at 15% 15%, rgba(255, 255, 255, 0.05) 0px, transparent 40%),
-        radial-gradient(at 85% 85%, rgba(124, 58, 237, 0.2) 0px, transparent 50%);
+        radial-gradient(at 85% 85%, rgba(124, 58, 237, 0.1) 0px, transparent 50%);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
-      padding: 60px 20px;
+      padding: 40px 20px 80px; /* Thêm padding dưới */
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* === 6. Hiệu ứng hạt (Particles) === */
+    #particles-js {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      z-index: -1; /* Nằm dưới cùng */
     }
 
     .container {
       max-width: 1350px;
       margin: auto;
+      position: relative;
+      z-index: 1; /* Nằm trên hạt */
+    }
+
+    /* === 5. Nút chuyển đổi giao diện (Dark/Light) === */
+    .theme-toggle {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: var(--toggle-bg);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-radius: 50%;
+      border: 2px solid var(--card-border);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      z-index: 1000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    }
+    .theme-toggle:hover {
+      transform: scale(1.1);
     }
 
     .header {
       text-align: center;
-      margin-bottom: 50px;
+      margin-bottom: 30px;
     }
 
     .header h1 {
       font-size: 42px;
       font-weight: 700;
       margin-bottom: 10px;
-      text-shadow: 0 4px 15px rgba(0,0,0,0.4);
+      text-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
 
+    /* === 3. Lời chào thông minh === */
     .header p {
       color: var(--text-muted);
       font-size: 1.1rem;
+      min-height: 1.6em; /* Tránh giật trang khi JS tải */
+    }
+
+    /* === 4. Thanh tìm kiếm nhanh === */
+    .search-container {
+      max-width: 500px;
+      margin: 0 auto 50px;
+      position: relative;
+    }
+    .search-input {
+      width: 100%;
+      padding: 15px 20px 15px 50px;
+      background: var(--search-bg);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      border: 2px solid var(--card-border);
+      border-radius: 30px;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+    }
+    .search-input::placeholder {
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+    .search-icon {
+      position: absolute;
+      left: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.2rem;
     }
 
     .grid {
@@ -74,24 +166,29 @@
       border: 2.5px solid var(--card-border); 
       border-radius: 28px;
       padding: 40px 25px;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease, background-color 0.3s ease, opacity 0.3s ease;
       display: flex;
       flex-direction: column;
       align-items: center;
       text-align: center;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     }
 
     .card:hover {
       transform: translateY(-10px);
       background: rgba(255, 255, 255, 0.15);
-      box-shadow: 0 15px 50px rgba(255, 255, 255, 0.1);
+      box-shadow: 0 15px 50px rgba(255, 255, 255, 0.05);
+    }
+    
+    /* Style cho card khi bị ẩn bởi tìm kiếm */
+    .card.hidden {
+      display: none;
     }
 
     .icon {
       font-size: 55px;
       margin-bottom: 20px;
-      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.2));
+      filter: drop-shadow(0 5px 10px rgba(0,0,0,0.1));
     }
 
     .card h3 {
@@ -108,6 +205,7 @@
       flex-grow: 1;
     }
 
+    /* === Nút "Mở file" gốc === */
     .btn {
       width: 100%;
       padding: 14px;
@@ -117,13 +215,19 @@
       border-radius: 16px;
       font-weight: 800;
       font-size: 1rem;
-      border: 3px solid #000000;
+      border: 3px solid #000000; /* Viền đen dày */
       transition: all 0.2s ease;
-      box-shadow: 0 5px 0px #000000;
+      box-shadow: 0 5px 0px #000000; /* Đổ bóng khối */
+      position: relative;
+      overflow: hidden; /* Cho hiệu ứng ánh sáng */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
     }
 
     .btn:hover {
-      background: #1bb350;
+      background: var(--accent-hover);
       transform: translateY(-2px);
       box-shadow: 0 7px 0px #000000;
     }
@@ -132,47 +236,126 @@
       transform: translateY(3px);
       box-shadow: 0 0px 0px #000000;
     }
+
+    /* === 1. Hiệu ứng ánh sáng quét qua (Shine) === */
+    .btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      transition: 0.5s;
+    }
+    .btn:hover::after {
+      left: 100%;
+    }
+
+    /* === 2. Trạng thái Đang tải (Fake Loading) === */
+    .btn.loading {
+      background: #64748b !important; /* Màu xám khi load */
+      pointer-events: none; /* Khóa nút */
+      opacity: 0.8;
+    }
+    
+    .spinner {
+      display: none;
+      width: 20px;
+      height: 20px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: #fff;
+      animation: spin 1s ease-in-out infinite;
+      margin-right: 10px;
+    }
+    
+    .btn.loading .spinner {
+      display: block;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
   </style>
 </head>
 <body>
+  <!-- Thao trường hiệu ứng hạt -->
+  <div id="particles-js"></div>
+
   <div class="container">
     <div class="header">
       <h1>AO Dashboard Q10</h1>
-      <p>Hệ thống truy cập nhanh các file quản lý nội bộ</p>
+      <!-- p này sẽ được JS điền lời chào vào -->
+      <p>Đang tải hệ thống...</p>
     </div>
 
-    <div class="grid">
+    <!-- Thanh tìm kiếm nhanh -->
+    <div class="search-container">
+      <span class="search-icon">🔍</span>
+      <input type="search" class="search-input" id="quickSearch" placeholder="Tìm kiếm file nhanh...">
+    </div>
+
+    <div class="grid" id="cardGrid">
       <div class="card">
         <div class="icon">📘</div>
         <h3>Học Cụ & In Ấn</h3>
         <p>Quản lý vật tư giảng dạy và điều phối in ấn tại Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">
+          <div class="spinner"></div>
+          <span class="btn-text">Mở file</span>
+        </a>
       </div>
 
       <div class="card">
         <div class="icon">🧾</div>
         <h3>Hóa Đơn VAT</h3>
         <p>Theo dõi luồng hóa đơn và đối soát dữ liệu tài chính tại Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">
+          <div class="spinner"></div>
+          <span class="btn-text">Mở file</span>
+        </a>
       </div>
 
       <div class="card">
         <div class="icon">📚</div>
         <h3>Kho Sách</h3>
         <p>Kiểm kê tồn kho sách giáo khoa và tài liệu giảng dạy tại Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">
+          <div class="spinner"></div>
+          <span class="btn-text">Mở file</span>
+        </a>
       </div>
 
       <div class="card">
         <div class="icon">🎁</div>
         <h3>Quà Tặng HS</h3>
         <p>Danh sách quà tặng và phân bổ học sinh tại Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">
+          <div class="spinner"></div>
+          <span class="btn-text">Mở file</span>
+        </a>
       </div>
     </div>
   </div>
 
+  <!-- Nút chuyển đổi giao diện hình mặt lầy -->
+  <button class="theme-toggle" id="themeToggle" title="Chuyển đổi giao diện Sáng/Tối">🤪</button>
+
+  <!-- Thư viện Particles.js (nhẹ, dùng CDN để không cần file lẻ) -->
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+
   <script>
+    // ===== Lấy các phần tử DOM cần thiết =====
+    const body = document.body;
+    const headerGreeting = document.querySelector('.header p');
+    const searchInput = document.getElementById('quickSearch');
+    const cards = document.querySelectorAll('.card');
+    const themeToggle = document.getElementById('themeToggle');
+    const openFileBtns = document.querySelectorAll('.btn');
+
+    // ===== 0. Âm thanh Hover Gốc =====
     let audioCtx;
     function playHoverSound() {
       try {
@@ -181,16 +364,164 @@
         const gain = audioCtx.createGain();
         osc.type = "sine";
         osc.frequency.setValueAtTime(950, audioCtx.currentTime);
-        gain.gain.setValueAtTime(0.04, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.02, audioCtx.currentTime); /* giảm âm lượng tí cho đỡ chói */
         osc.connect(gain);
         gain.connect(audioCtx.destination);
         osc.start();
         osc.stop(audioCtx.currentTime + 0.05);
       } catch (e) {}
     }
-    document.querySelectorAll(".card, .btn").forEach(el => {
+    
+    // Gán âm thanh cho card và nút (theme toggle cũng có âm thanh)
+    document.querySelectorAll(".card, .btn, .theme-toggle").forEach(el => {
       el.addEventListener("mouseenter", playHoverSound);
     });
+
+
+    // ===== 3. Lời chào thông minh (Smart Greeting) =====
+    function updateGreeting() {
+      const hour = new Date().getHours();
+      let greeting = "";
+      
+      if (hour >= 5 && hour < 12) {
+        greeting = "Chào buổi sáng! Chúc đồng chí một ngày làm việc năng suất ☀️";
+      } else if (hour >= 12 && hour < 14) {
+        greeting = "Đến giờ nghỉ trưa rồi! Nhớ sạc lại năng lượng nhé 🍱";
+      } else if (hour >= 14 && hour < 18) {
+        greeting = "Chiều rồi, cố gắng hoàn thành công việc để về sớm nào 🚀";
+      } else {
+        greeting = "Tăng ca à? Về nghỉ ngơi đi thôi, mai làm tiếp! 🌙";
+      }
+      
+      headerGreeting.innerText = greeting;
+    }
+
+
+    // ===== 4. Thanh tìm kiếm nhanh (Quick Search) =====
+    searchInput.addEventListener('input', function(e) {
+      const searchTerm = e.target.value.toLowerCase().trim();
+      
+      cards.forEach(card => {
+        const title = card.querySelector('h3').innerText.toLowerCase();
+        const desc = card.querySelector('p').innerText.toLowerCase();
+        
+        // Nếu tiêu đề hoặc mô tả chứa từ khóa
+        if (title.includes(searchTerm) || desc.includes(searchTerm)) {
+          card.classList.remove('hidden');
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+    });
+
+
+    // ===== 5. Chế độ Sáng/Tối (Dark/Light Mode) & LocalStorage =====
+    function initTheme() {
+      // Kiểm tra cài đặt cũ trong trình duyệt
+      const savedTheme = localStorage.getItem('ao-theme');
+      if (savedTheme === 'light') {
+        body.classList.add('light-mode');
+        themeToggle.innerText = "😎"; /* Đeo kính râm khi trời sáng */
+      } else {
+        themeToggle.innerText = "🤪"; /* Mặt lầy mặc định */
+      }
+    }
+
+    themeToggle.addEventListener('click', () => {
+      // playHoverSound(); /* Click cũng có tiếng */
+      body.classList.toggle('light-mode');
+      
+      if (body.classList.contains('light-mode')) {
+        localStorage.setItem('ao-theme', 'light');
+        themeToggle.innerText = "😎";
+      } else {
+        localStorage.setItem('ao-theme', 'dark');
+        themeToggle.innerText = "🤪";
+      }
+      
+      // Cập nhật lại màu hạt khi đổi chế độ
+      updateParticleColor();
+    });
+
+
+    // ===== 2. Trạng thái Đang tải (Fake Loading) =====
+    openFileBtns.forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        // e.preventDefault(); /* Chặn mở link ngay lập tức */
+        
+        const btnText = this.querySelector('.btn-text');
+        this.classList.add('loading');
+        btnText.innerText = "Đang mở file...";
+        
+        // Giả lập thời gian load 1.2 giây
+        setTimeout(() => {
+          // Sau khi load xong, cho phép mở link bình thường
+          // window.open(this.href, '_blank'); 
+          
+          // Trả lại trạng thái cũ nếu người dùng quay lại tab này
+          this.classList.remove('loading');
+          btnText.innerText = "Mở file";
+        }, 1200);
+      });
+    });
+
+
+    // ===== 6. Hiệu ứng hạt (Particles Background) =====
+    function getParticleColor() {
+      // Lấy giá trị màu hạt từ biến CSS `--particle-color`
+      return getComputedStyle(document.documentElement).getPropertyValue('--particle-color').trim();
+    }
+
+    function initParticles() {
+      particlesJS('particles-js', {
+        particles: {
+          number: { value: 60, density: { enable: true, value_area: 800 } },
+          color: { value: getParticleColor() }, /* Dùng màu động */
+          shape: { type: 'circle' },
+          opacity: { value: 0.5, random: true },
+          size: { value: 3, random: true },
+          line_linked: { enable: false }, /* Không nối dây cho tối giản */
+          move: {
+            enable: true,
+            speed: 1, /* Bay chậm, nhẹ nhàng */
+            direction: 'none',
+            random: true,
+            straight: false,
+            out_mode: 'out'
+          }
+        },
+        interactivity: {
+          detect_on: 'canvas',
+          events: {
+            onhover: { enable: true, mode: 'bubble' }, /* Phồng to khi di chuột */
+            onclick: { enable: true, mode: 'push' }    /* Thêm hạt khi click */
+          },
+          modes: {
+            bubble: { distance: 200, size: 6, duration: 2, opacity: 0.8, speed: 3 },
+            push: { particles_nb: 4 }
+          }
+        },
+        retina_detect: true
+      });
+    }
+
+    function updateParticleColor() {
+      // Phải destroy và init lại vì Particles.js không hỗ trợ update động dễ dàng
+      if (window.pJSDom && window.pJSDom.length > 0) {
+        window.pJSDom[0].pJS.fn.vendors.destroypJS();
+        window.pJSDom = [];
+      }
+      initParticles();
+    }
+
+
+    // ===== Khởi chạy khi trang tải xong =====
+    document.addEventListener('DOMContentLoaded', () => {
+      updateGreeting();
+      initTheme();
+      initParticles(); /* Khởi tạo hạt */
+    });
+
   </script>
 </body>
 </html>

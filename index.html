@@ -3,92 +3,141 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard</title>
+  <title>AO Dashboard | Stemhouse Q10</title>
   <style>
+    :root {
+      --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+      --bg-color: #0f172a;
+      --card-bg: rgba(255, 255, 255, 0.05);
+      --card-border: rgba(255, 255, 255, 0.1);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #22c55e;
+    }
+
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: "Segoe UI", sans-serif;
+      font-family: "Inter", "Segoe UI", system-ui, sans-serif;
     }
 
     body {
-      background: #2e1065;
-      color: #1f2937;
-      padding: 40px;
+      background-color: var(--bg-color);
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(79, 70, 229, 0.15) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(124, 58, 237, 0.15) 0px, transparent 50%);
+      color: var(--text-main);
+      min-height: 100vh;
+      padding: 60px 20px;
     }
 
     .container {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: auto;
     }
 
     .header {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 60px;
     }
 
     .header h1 {
-      font-size: 36px;
-      color: #f8fafc;
-      margin-bottom: 10px;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 800;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 15px;
+      letter-spacing: -1px;
     }
 
     .header p {
-      font-size: 16px;
-      color: #64748b;
+      color: var(--text-muted);
+      font-size: 1.1rem;
     }
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
     }
 
     .card {
-      background: white;
-      border-radius: 20px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-      transition: all 0.25s ease;
+      background: var(--card-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 32px;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
     }
 
     .card:hover {
-      transform: translateY(-12px);
-      box-shadow: 0 14px 35px rgba(0,0,0,0.12);
+      transform: translateY(-8px);
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .icon {
-      font-size: 42px;
-      margin-bottom: 16px;
+      font-size: 48px;
+      margin-bottom: 20px;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
     }
 
     .card h3 {
-      font-size: 20px;
-      margin-bottom: 10px;
-      color: #0f172a;
+      font-size: 1.4rem;
+      margin-bottom: 12px;
+      font-weight: 600;
     }
 
     .card p {
-      font-size: 14px;
-      color: #64748b;
-      margin-bottom: 20px;
-      line-height: 1.5;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 25px;
+      flex-grow: 1;
     }
 
     .btn {
-      display: inline-block;
-      padding: 12px 18px;
-      background: #16a34a;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 14px 24px;
+      background: var(--accent);
       color: white;
       text-decoration: none;
-      border-radius: 12px;
+      border-radius: 14px;
       font-weight: 600;
-      transition: 0.2s;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+      gap: 8px;
     }
 
     .btn:hover {
-      background: #15803d;
+      filter: brightness(1.1);
+      transform: scale(1.02);
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    /* Badge cho năm học mới */
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      background: rgba(34, 197, 94, 0.1);
+      color: var(--accent);
+      border-radius: 20px;
+      font-size: 0.75rem;
+      margin-bottom: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
     }
   </style>
 </head>
@@ -96,61 +145,73 @@
   <div class="container">
     <div class="header">
       <h1>AO Dashboard</h1>
-      <p>Hệ thống truy cập nhanh các file quản lý nội bộ</p>
+      <p>Hệ thống quản trị nội bộ chi nhánh Quận 10</p>
     </div>
 
     <div class="grid">
+      <!-- Thẻ 1 -->
       <div class="card">
         <div class="icon">📘</div>
-        <h3>Học Cụ và In Ấn</h3>
-        <p>Quản lý học cụ, vật tư giảng dạy và In ấn tại chi nhánh Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
+        <h3>Học Cụ & In Ấn</h3>
+        <p>Quản lý vật tư giảng dạy, văn phòng phẩm và điều phối in ấn tài liệu.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Truy cập File</a>
       </div>
 
+      <!-- Thẻ 2 -->
       <div class="card">
         <div class="icon">🧾</div>
-        <h3>Hoá đơn VAT</h3>
-        <p>Theo dõi và quản lý hoá đơn VAT tại chi nhánh Quận 10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
+        <h3>Hóa Đơn VAT</h3>
+        <p>Theo dõi luồng hóa đơn, chứng từ tài chính và đối soát dữ liệu thuế.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Truy cập File</a>
       </div>
 
+      <!-- Thẻ 3 -->
       <div class="card">
+        <div class="badge">Năm 2026</div>
         <div class="icon">📚</div>
         <h3>Kho Sách</h3>
-        <p>Quản lý tồn kho sách tại chi nhánh Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
+        <p>Kiểm kê tồn kho sách giáo khoa, giáo trình và tài liệu tham khảo.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Truy cập File</a>
       </div>
 
+      <!-- Thẻ 4 -->
       <div class="card">
+        <div class="badge">2025 - 2026</div>
         <div class="icon">🎁</div>
-        <h3>Quà Tặng Học Sinh</h3>
-        <p>Theo dõi quà tặng và phân bổ học sinh năm học 2025–2026 tại chi nhánh Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
+        <h3>Quà Tặng HS</h3>
+        <p>Danh sách phân bổ quà tặng khuyến học và phần thưởng cuối kỳ.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Truy cập File</a>
       </div>
     </div>
   </div>
 
   <script>
-    // ===== UI Hover Sound (No MP3 Needed) =====
     let audioCtx;
 
     function playHoverSound() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      try {
+        if (!audioCtx) {
+          audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        
+        // Khởi tạo âm thanh tick nhẹ
+        const oscillator = audioCtx.createOscillator();
+        const gainNode = audioCtx.createGain();
+
+        oscillator.type = "sine";
+        oscillator.frequency.setValueAtTime(1200, audioCtx.currentTime); 
+        
+        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+
+        oscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+
+        oscillator.start();
+        oscillator.stop(audioCtx.currentTime + 0.05);
+      } catch (e) {
+        console.log("Audio play blocked");
       }
-
-      const oscillator = audioCtx.createOscillator();
-      const gainNode = audioCtx.createGain();
-
-      oscillator.type = "sine";
-      oscillator.frequency.setValueAtTime(880, audioCtx.currentTime); // cao, sáng
-      gainNode.gain.setValueAtTime(0.3, audioCtx.currentTime); // âm lượng nhỏ
-
-      oscillator.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
-
-      oscillator.start();
-      oscillator.stop(audioCtx.currentTime + 0.04); // cực ngắn, kiểu tick
     }
 
     document.querySelectorAll(".card, .btn").forEach(el => {

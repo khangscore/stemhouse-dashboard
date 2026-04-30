@@ -148,6 +148,8 @@
       transform: translateY(-50%);
       color: var(--text-muted);
       font-size: 1.2rem;
+      z-index: 10; /* Lôi icon lên trên lớp kính mờ */
+      pointer-events: none; /* Tránh bị vướng khi click chuột vào chữ */
     }
 
     .grid {

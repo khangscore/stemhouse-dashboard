@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Gamer Station v3</title>
+  <title>AO Dashboard Q10 | Gamer Station Final</title>
   
-  <!-- KHÔI PHỤC ICON CỦA CẬU ĐÂY -->
+  <!-- KHÔI PHỤC ICON WEB BAN ĐẦU -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
   <style>
@@ -31,25 +31,26 @@
       overflow-x: hidden;
     }
 
-    /* === Sidebar === */
+    /* Sidebar */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
-      border-radius: 24px; z-index: 2000;
+      border-radius: 24px;
+      z-index: 2000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column;
     }
     .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
 
     .toggle-sidebar {
-      background: var(--accent); border: 2px solid #000; color: #000;
+      background: var(--accent); border: 2px solid #000; color: white;
       width: 30px; height: 30px; border-radius: 8px;
       cursor: pointer; position: absolute; right: -15px; top: 40px; 
       transition: 0.3s; z-index: 2001;
-      display: flex; align-items: center; justify-content: center; font-weight: bold;
+      display: flex; align-items: center; justify-content: center;
     }
     .sidebar.expanded .toggle-sidebar { transform: rotate(180deg); }
 
@@ -65,7 +66,7 @@
     .nav-text { opacity: 0; transition: 0.3s; margin-left: 10px; }
     .sidebar.expanded .nav-text { opacity: 1; }
 
-    /* === Overlay === */
+    /* Overlay */
     .overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.6);
       backdrop-filter: blur(8px); z-index: 1500;
@@ -73,10 +74,11 @@
     }
     .sidebar.expanded ~ .overlay { opacity: 1; pointer-events: auto; }
 
-    /* === Main Container === */
+    /* Content */
     .container {
-      max-width: 1000px; margin: 0 auto;
+      max-width: 1100px; margin: 0 auto;
       padding: 60px 20px 100px 100px;
+      transition: filter 0.4s;
     }
 
     .header { text-align: center; margin-bottom: 40px; }
@@ -97,7 +99,7 @@
       text-decoration: none; border-radius: 12px; font-weight: bold;
       border: none; cursor: pointer; transition: 0.2s; display: inline-block;
     }
-    .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
+    .btn:hover { filter: brightness(1.2); }
 
     .settings-section { display: none; animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -107,7 +109,10 @@
       border: 4px solid var(--accent); background: #fff; margin-bottom: 15px;
     }
 
-    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
+    .color-dot {
+      width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+      border: 2px solid #fff; transition: 0.2s;
+    }
   </style>
 </head>
 <body>
@@ -117,45 +122,53 @@
     <button class="toggle-sidebar" id="toggleBtn">❯</button>
     <div style="padding: 30px 25px; font-weight: 900; color: var(--accent); height: 80px;">SH10</div>
     <nav>
-      <div class="nav-item active s-hover" id="nav-dashboard"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></div>
-      <div class="nav-item s-hover" id="nav-settings"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+      <div class="nav-item active" id="nav-dashboard">
+        <span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span>
+      </div>
+      <div class="nav-item" id="nav-settings">
+        <span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span>
+      </div>
     </nav>
   </aside>
 
   <div class="overlay" id="overlay"></div>
 
-  <div class="container">
+  <div class="container" id="mainContainer">
     <!-- TRANG DASHBOARD -->
     <div id="page-dashboard">
       <div class="header">
         <h1>AO Dashboard Q10</h1>
-        <p id="greeting" style="color: var(--text-muted);">Sẵn sàng tác chiến chưa, Commander? 🚀</p>
+        <p id="greeting" style="color: var(--text-muted);">Chào mừng trở lại!</p>
       </div>
 
       <div class="grid">
+        <!-- Mục 1 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">📘</div>
           <h3 style="margin: 15px 0;">Học Cụ & In Ấn</h3>
-          <p style="margin-bottom: 20px;">Quản lý vật tư điều phối.</p>
-          <a class="btn s-hover" href="#">Mở file</a>
+          <p style="margin-bottom: 20px; font-size: 0.9rem;">Quản lý vật tư điều phối in ấn tại Q10.</p>
+          <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
         </div>
+        <!-- Mục 2 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">🧾</div>
           <h3 style="margin: 15px 0;">Hóa Đơn VAT</h3>
-          <p style="margin-bottom: 20px;">Theo dõi tài chính.</p>
-          <a class="btn s-hover" href="#">Mở file</a>
+          <p style="margin-bottom: 20px; font-size: 0.9rem;">Theo dõi hóa đơn và đối soát tài chính.</p>
+          <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
         </div>
+        <!-- Mục 3 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">📚</div>
           <h3 style="margin: 15px 0;">Kho Sách</h3>
-          <p style="margin-bottom: 20px;">Kiểm kê tồn kho.</p>
-          <a class="btn s-hover" href="#">Mở file</a>
+          <p style="margin-bottom: 20px; font-size: 0.9rem;">Kiểm kê tồn kho sách và giáo trình.</p>
+          <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
         </div>
+        <!-- Mục 4 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">🎁</div>
           <h3 style="margin: 15px 0;">Quà Tặng HS</h3>
-          <p style="margin-bottom: 20px;">Phân bổ quà tặng.</p>
-          <a class="btn s-hover" href="#">Mở file</a>
+          <p style="margin-bottom: 20px; font-size: 0.9rem;">Danh sách quà tặng và phân bổ học sinh.</p>
+          <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
         </div>
       </div>
     </div>
@@ -189,7 +202,6 @@
   </div>
 
   <script>
-    // Elements
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleBtn');
     const overlay = document.getElementById('overlay');
@@ -201,7 +213,7 @@
     let audioCtx, ambientOsc, ambientGain;
     let isAmbientPlaying = false;
 
-    // --- Audio Logic ---
+    // --- Audio System (MAX VOLUME) ---
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -228,7 +240,7 @@
         ambientOsc.type = 'triangle';
         ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime);
         ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        ambientGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2); // Âm lượng cực rõ
+        ambientGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2); // Âm lượng nền to rõ
         ambientOsc.connect(ambientGain);
         ambientGain.connect(audioCtx.destination);
         ambientOsc.start();
@@ -245,7 +257,7 @@
     // --- Sidebar & Navigation ---
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('expanded');
-      playUI(600, 0.2);
+      playUI(600, 0.15);
     });
 
     overlay.addEventListener('click', () => {
@@ -265,46 +277,46 @@
         navSettings.classList.add('active');
       }
       sidebar.classList.remove('expanded');
-      playUI(1000, 0.3);
+      playUI(1000, 0.2);
     }
 
     navDashboard.onclick = () => switchPage('dashboard');
     navSettings.onclick = () => switchPage('settings');
 
-    // --- Settings Events ---
+    // --- Settings Functions ---
     document.getElementById('btn-male').onclick = () => {
       document.getElementById('userAvatar').src = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
-      playUI(1200, 0.3);
+      playUI(1200, 0.2);
     };
     document.getElementById('btn-female').onclick = () => {
       document.getElementById('userAvatar').src = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
-      playUI(1200, 0.3);
+      playUI(1200, 0.2);
     };
 
     const colors = { green: '#22c55e', blue: '#3b82f6', red: '#ef4444', purple: '#a855f7' };
     Object.keys(colors).forEach(c => {
-      const el = document.getElementById(`color-${c}`);
-      if(el) el.onclick = () => {
+      document.getElementById(`color-${c}`).onclick = () => {
         document.documentElement.style.setProperty('--accent', colors[c]);
-        playUI(800, 0.3);
+        playUI(800, 0.2);
       };
     });
 
     document.getElementById('bgSoundBtn').onclick = toggleAmbient;
 
-    // --- Hover Sounds ---
+    // --- Hover Logic ---
     function applyHover() {
-      const items = document.querySelectorAll('.s-hover, .nav-item, .btn, .color-dot, .toggle-sidebar');
-      items.forEach(el => {
-        el.onmouseenter = () => playUI(900, 0.08, 0.05);
+      const selectors = '.s-hover, .nav-item, .btn, .color-dot, .toggle-sidebar';
+      document.querySelectorAll(selectors).forEach(el => {
+        el.onmouseenter = () => playUI(850, 0.05, 0.05);
       });
     }
 
     window.onload = () => {
       applyHover();
-      // Chào hỏi Commander
       const h = new Date().getHours();
-      document.getElementById('greeting').innerText = h < 12 ? "Chào buổi sáng, Commander! ☀️" : "Sẵn sàng làm việc chưa, Gamer? 🚀";
+      let msg = h < 12 ? "Good Morning, Commander! ☀️" : "Sẵn sàng làm việc, Gamer? 🚀";
+      if (h >= 18) msg = "Làm việc muộn rồi, nghỉ ngơi tí chứ? 🌙";
+      document.getElementById('greeting').innerText = msg;
     };
   </script>
 </body>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Gamer Station Ultimate</title>
+  <title>AO Dashboard Q10 | Persistent Edition</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
@@ -16,14 +16,13 @@
       --text-muted: #cbd5e1;
       --accent: #22c55e;
       --sidebar-width: 280px;
-      --sidebar-collapsed-width: 85px;
+      --sidebar-collapsed-width: 75px; /* Thu hẹp lại cho gọn */
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
 
     body {
       background: var(--bg-color);
-      /* LÀM MÀU TÍM SÁNG HƠN VÀ XUẤT HIỆN NHIỀU HƠN */
       background-image: radial-gradient(circle at 50% -20%, #4c1d95, #1e1045, #0f0720);
       background-attachment: fixed;
       color: var(--text-main);
@@ -31,7 +30,7 @@
       overflow-x: hidden;
     }
 
-    /* Sidebar */
+    /* Sidebar Fix lỗi tràn viền */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
@@ -41,81 +40,94 @@
       border-radius: 24px;
       z-index: 2000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; flex-direction: column; align-items: center;
+      display: flex; flex-direction: column; overflow: hidden; /* Không cho tràn ra ngoài */
     }
-    .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); align-items: stretch; }
+    .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
 
     .sidebar-header {
-      padding: 30px 0;
-      display: flex; justify-content: center; width: 100%;
+      padding: 20px 0;
+      display: flex; flex-direction: column; align-items: center; width: 100%;
+      min-height: 120px;
     }
     .sidebar-avatar {
       width: 45px; height: 45px; border-radius: 50%;
       border: 2px solid var(--accent); background: #fff;
       transition: 0.3s; object-fit: cover;
     }
-    .sidebar.expanded .sidebar-avatar { width: 70px; height: 70px; }
+    .sidebar.expanded .sidebar-avatar { width: 80px; height: 80px; }
+    
+    /* Hiện tên dưới Avatar */
+    .sidebar-username {
+      margin-top: 10px; font-weight: bold; font-size: 0.9rem;
+      color: var(--accent); opacity: 0; transition: 0.3s;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 80%;
+    }
+    .sidebar.expanded .sidebar-username { opacity: 1; }
 
     .toggle-sidebar {
       background: var(--accent); border: 2px solid #000; color: white;
-      width: 30px; height: 30px; border-radius: 8px;
-      cursor: pointer; position: absolute; right: -15px; top: 40px; 
+      width: 26px; height: 26px; border-radius: 6px;
+      cursor: pointer; position: absolute; right: 10px; top: 15px; 
       transition: 0.3s; z-index: 2001;
       display: flex; align-items: center; justify-content: center;
     }
-    .sidebar.expanded .toggle-sidebar { transform: rotate(180deg); }
+    .sidebar.expanded .toggle-sidebar { transform: rotate(180deg); right: 15px; }
 
     .nav-item {
-      display: flex; align-items: center; padding: 15px 25px; margin: 10px;
-      text-decoration: none; color: var(--text-main); border-radius: 15px;
-      transition: 0.3s; overflow: hidden; white-space: nowrap; cursor: pointer;
+      display: flex; align-items: center; padding: 12px; margin: 8px;
+      text-decoration: none; color: var(--text-main); border-radius: 12px;
+      transition: 0.3s; cursor: pointer;
     }
     .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
     .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
     
-    .nav-icon { font-size: 1.4rem; min-width: 35px; text-align: center; }
-    .nav-text { opacity: 0; transition: 0.3s; margin-left: 15px; }
+    .nav-icon { font-size: 1.2rem; min-width: calc(var(--sidebar-collapsed-width) - 32px); text-align: center; }
+    .nav-text { opacity: 0; transition: 0.3s; margin-left: 10px; }
     .sidebar.expanded .nav-text { opacity: 1; }
 
-    /* Content Area */
     .container {
       max-width: 1100px; margin: 0 auto;
       padding: 60px 20px 100px 110px;
     }
 
-    .header { text-align: center; margin-bottom: 40px; }
-    .header h1 { font-size: 3.5rem; letter-spacing: -2px; text-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
+    .header h1 { font-size: 3rem; letter-spacing: -2px; text-align: center; margin-bottom: 40px; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
 
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 24px; padding: 30px 20px;
+      border-radius: 24px; padding: 25px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
       transition: 0.3s; backdrop-filter: blur(10px);
     }
-    .card:hover { transform: translateY(-8px); border-color: var(--accent); background: rgba(255, 255, 255, 0.12); }
+    .card:hover { transform: translateY(-5px); border-color: var(--accent); }
 
     .btn {
       width: 100%; padding: 12px; background: var(--accent); color: #000;
       text-decoration: none; border-radius: 12px; font-weight: bold;
-      border: none; cursor: pointer; transition: 0.2s; display: inline-block;
+      border: none; cursor: pointer; transition: 0.2s;
     }
-    .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
+    .btn:hover { filter: brightness(1.2); }
 
-    .gender-btn { opacity: 0.3; transition: 0.4s; flex: 1; }
-    .gender-btn.active { opacity: 1; transform: scale(1.05); border: 2px solid #fff; }
+    /* Nút Lưu */
+    .save-container { display: flex; justify-content: flex-end; margin-bottom: 20px; }
+    .btn-save { 
+      width: auto; padding: 10px 25px; background: #3b82f6; color: white; 
+      border-radius: 50px; font-size: 0.9rem; box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    .gender-btn { opacity: 0.3; flex: 1; font-size: 0.8rem; }
+    .gender-btn.active { opacity: 1; border: 2px solid #fff; }
 
     input[type="text"] {
       width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--card-border);
-      background: rgba(0,0,0,0.3); color: white; margin-bottom: 15px; outline: none;
+      background: rgba(0,0,0,0.3); color: white; margin-bottom: 15px;
     }
-    input[type="text"]:focus { border-color: var(--accent); }
 
     .settings-section { display: none; animation: fadeIn 0.4s ease-out; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
+    .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
   </style>
 </head>
 <body>
@@ -125,50 +137,49 @@
     <button class="toggle-sidebar" id="toggleBtn">❯</button>
     <div class="sidebar-header">
       <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+      <span id="sidebarUsernameDisplay" class="sidebar-username">Gamer</span>
     </div>
     <nav>
-      <div class="nav-item active" id="nav-dashboard">
+      <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')">
         <span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span>
       </div>
-      <div class="nav-item" id="nav-settings">
+      <div class="nav-item" id="nav-settings" onclick="switchPage('settings')">
         <span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span>
       </div>
     </nav>
   </aside>
 
-  <div class="overlay" id="overlay"></div>
-
   <div class="container">
     <!-- TRANG DASHBOARD -->
     <div id="page-dashboard">
-      <div class="header">
+      <div style="text-align: center; margin-bottom: 40px;">
         <h1>AO Dashboard Q10</h1>
-        <p id="greeting" style="color: var(--text-muted); font-size: 1.2rem;">Chào mừng trở lại!</p>
+        <p id="greeting" style="color: var(--text-muted); font-size: 1.1rem;">Chào mừng trở lại!</p>
       </div>
 
       <div class="grid">
         <div class="card s-hover">
-          <div style="font-size: 50px;">📘</div>
+          <div style="font-size: 40px;">📘</div>
           <h3>Học Cụ & In Ấn</h3>
-          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Quản lý vật tư điều phối.</p>
+          <p style="margin: 10px 0; font-size: 0.8rem; color: var(--text-muted);">Quản lý in ấn NCT.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
         </div>
         <div class="card s-hover">
-          <div style="font-size: 50px;">🧾</div>
+          <div style="font-size: 40px;">🧾</div>
           <h3>Hóa Đơn VAT</h3>
-          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Theo dõi tài chính.</p>
+          <p style="margin: 10px 0; font-size: 0.8rem; color: var(--text-muted);">Tài chính & đối soát.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
         </div>
         <div class="card s-hover">
-          <div style="font-size: 50px;">📚</div>
+          <div style="font-size: 40px;">📚</div>
           <h3>Kho Sách</h3>
-          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Kiểm kê tồn kho.</p>
+          <p style="margin: 10px 0; font-size: 0.8rem; color: var(--text-muted);">Tồn kho sách 2026.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
         </div>
         <div class="card s-hover">
-          <div style="font-size: 50px;">🎁</div>
+          <div style="font-size: 40px;">🎁</div>
           <h3>Quà Tặng HS</h3>
-          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Phân bổ quà tặng.</p>
+          <p style="margin: 10px 0; font-size: 0.8rem; color: var(--text-muted);">Danh sách quà tặng.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
         </div>
       </div>
@@ -176,33 +187,33 @@
 
     <!-- TRANG CÀI ĐẶT -->
     <div id="page-settings" class="settings-section">
-      <h1 style="margin-bottom: 40px;">Cấu Hình Nhân Vật</h1>
+      <div class="save-container">
+        <button class="btn btn-save s-hover" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
+      </div>
+      
       <div class="grid">
-        <!-- Đổi Tên & Giới Tính -->
         <div class="card" style="grid-column: span 2;">
-          <h3 style="margin-bottom: 15px;">Thông tin Gamer</h3>
-          <input type="text" id="usernameInput" placeholder="Nhập tên nhân vật của cậu..." oninput="updateName()">
-          
+          <h3 style="margin-bottom: 15px;">Hồ Sơ Nhân Vật</h3>
+          <input type="text" id="usernameInput" placeholder="Nhập tên của cậu...">
           <div style="display: flex; gap: 10px; width: 100%;">
             <button class="btn gender-btn active" id="g-male" onclick="setGender('male')">Nam</button>
             <button class="btn gender-btn" id="g-female" onclick="setGender('female')" style="background: #ec4899;">Nữ</button>
             <button class="btn gender-btn" id="g-dog" onclick="setGender('dog')" style="background: #f59e0b;">@kạ4u2fh%&!*</button>
           </div>
-          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Chọn giới tính để thay đổi hình đại diện.</p>
         </div>
 
-        <!-- Màu sắc & Âm thanh -->
         <div class="card">
           <h3>Màu Năng Lượng</h3>
           <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <div class="color-dot s-hover" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
-            <div class="color-dot s-hover" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
-            <div class="color-dot s-hover" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
-            <div class="color-dot s-hover" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
+            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
           </div>
         </div>
+
         <div class="card">
-          <h3>Âm Thanh Nền</h3>
+          <h3>Âm Thanh</h3>
           <button class="btn s-hover" id="bgSoundBtn" onclick="toggleAmbient()">BẬT AMBIENT</button>
         </div>
       </div>
@@ -210,30 +221,71 @@
   </div>
 
   <script>
+    // --- KHAI BÁO BIẾN ---
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleBtn');
-    const navDashboard = document.getElementById('nav-dashboard');
-    const navSettings = document.getElementById('nav-settings');
-    const pageDashboard = document.getElementById('page-dashboard');
-    const pageSettings = document.getElementById('page-settings');
     const sidebarAvatar = document.getElementById('sidebarAvatar');
+    const sidebarUserDisplay = document.getElementById('sidebarUsernameDisplay');
     const usernameInput = document.getElementById('usernameInput');
+    const greeting = document.getElementById('greeting');
+    
+    // Đối tượng lưu trữ trạng thái (State)
+    let appConfig = {
+      name: "Gamer",
+      gender: "male",
+      accent: "#22c55e",
+      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
+      isAmbient: false
+    };
 
     let audioCtx, ambientOsc, ambientGain;
-    let isAmbientPlaying = false;
-    let currentUserName = "Gamer";
 
-    // --- Audio Logic ---
+    // --- HỆ THỐNG LƯU TRỮ (LOCALSTORAGE) ---
+    function saveAllSettings() {
+      appConfig.name = usernameInput.value || "Gamer";
+      localStorage.setItem('ao_dashboard_config', JSON.stringify(appConfig));
+      
+      // Cập nhật UI ngay lập tức
+      applyConfig();
+      playUI(1500, 0.3, 0.2);
+      alert("Đã lưu tùy chọn thành công! Cậu cứ yên tâm tắt máy nhé.");
+    }
+
+    function loadSettings() {
+      const saved = localStorage.getItem('ao_dashboard_config');
+      if (saved) {
+        appConfig = JSON.parse(saved);
+        applyConfig();
+      }
+    }
+
+    function applyConfig() {
+      // Áp dụng tên
+      sidebarUserDisplay.innerText = appConfig.name;
+      usernameInput.value = appConfig.name;
+      
+      const h = new Date().getHours();
+      let msg = h < 12 ? "Chào buổi sáng" : "Làm việc thôi";
+      greeting.innerText = `${msg}, ${appConfig.name}! 🚀`;
+
+      // Áp dụng Avatar & Giới tính
+      sidebarAvatar.src = appConfig.avatar;
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('g-' + appConfig.gender).classList.add('active');
+
+      // Áp dụng màu sắc
+      document.documentElement.style.setProperty('--accent', appConfig.accent);
+    }
+
+    // --- AUDIO ---
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    function playUI(freq, vol = 0.25, dur = 0.1) {
+    function playUI(freq, vol = 0.2, dur = 0.1) {
       initAudio();
       const osc = audioCtx.createOscillator();
       const g = audioCtx.createGain();
-      osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
       g.gain.setValueAtTime(vol, audioCtx.currentTime);
       g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + dur);
@@ -244,85 +296,67 @@
     function toggleAmbient() {
       initAudio();
       const btn = document.getElementById('bgSoundBtn');
-      if (!isAmbientPlaying) {
+      if (!appConfig.isAmbient) {
         ambientOsc = audioCtx.createOscillator();
         ambientGain = audioCtx.createGain();
         ambientOsc.type = 'triangle';
         ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime);
         ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        ambientGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2);
+        ambientGain.gain.linearRampToValueAtTime(0.1, audioCtx.currentTime + 2);
         ambientOsc.connect(ambientGain);
         ambientGain.connect(audioCtx.destination);
         ambientOsc.start();
         btn.innerText = "TẮT AMBIENT";
-        isAmbientPlaying = true;
+        appConfig.isAmbient = true;
       } else {
-        ambientGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+        if(ambientGain) ambientGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
         setTimeout(() => { if(ambientOsc) ambientOsc.stop(); }, 1000);
         btn.innerText = "BẬT AMBIENT";
-        isAmbientPlaying = false;
+        appConfig.isAmbient = false;
       }
     }
 
-    // --- Navigation ---
-    toggleBtn.onclick = () => { sidebar.classList.toggle('expanded'); playUI(600); };
+    // --- NAVIGATION & UI ---
+    document.getElementById('toggleBtn').onclick = () => {
+      sidebar.classList.toggle('expanded');
+      playUI(600);
+    };
 
     function switchPage(page) {
-      if(page === 'dashboard') {
-        pageDashboard.style.display = 'block';
-        pageSettings.style.display = 'none';
-        navDashboard.classList.add('active');
-        navSettings.classList.remove('active');
-      } else {
-        pageDashboard.style.display = 'none';
-        pageSettings.style.display = 'block';
-        navDashboard.classList.remove('active');
-        navSettings.classList.add('active');
-      }
+      document.getElementById('page-dashboard').style.display = page === 'dashboard' ? 'block' : 'none';
+      document.getElementById('page-settings').style.display = page === 'settings' ? 'block' : 'none';
+      document.getElementById('nav-dashboard').classList.toggle('active', page === 'dashboard');
+      document.getElementById('nav-settings').classList.toggle('active', page === 'settings');
       sidebar.classList.remove('expanded');
-      playUI(1000, 0.2);
+      playUI(1000);
     }
 
-    navDashboard.onclick = () => switchPage('dashboard');
-    navSettings.onclick = () => switchPage('settings');
-
-    // --- Avatar & Name Logic ---
     function setGender(type) {
-      playUI(1200, 0.2);
-      // Reset mờ các nút
-      document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+      appConfig.gender = type;
+      if(type === 'male') appConfig.avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
+      else if(type === 'female') appConfig.avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
+      else appConfig.avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=Dog&baseColor=f59e0b";
+      
+      // Update preview ngay lập tức
+      sidebarAvatar.src = appConfig.avatar;
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('g-' + type).classList.add('active');
-
-      let avatarUrl = "";
-      if(type === 'male') avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
-      else if(type === 'female') avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
-      else avatarUrl = "https://api.dicebear.com/7.x/bottts/svg?seed=Dog&baseColor=f59e0b"; // Hình robot/chó cách điệu
-
-      sidebarAvatar.src = avatarUrl;
-    }
-
-    function updateName() {
-      currentUserName = usernameInput.value || "Gamer";
-      const h = new Date().getHours();
-      let greetPrefix = h < 12 ? "Chào buổi sáng" : "Làm việc thôi";
-      document.getElementById('greeting').innerText = `${greetPrefix}, ${currentUserName}! 🚀`;
+      playUI(1200);
     }
 
     function setAccent(color) {
+      appConfig.accent = color;
       document.documentElement.style.setProperty('--accent', color);
       playUI(800);
     }
 
-    // --- Hover ---
-    function applyHover() {
+    // --- KHỞI TẠO ---
+    window.onload = () => {
+      loadSettings();
+      // Hiệu ứng hover
       document.querySelectorAll('.s-hover, .nav-item, .btn, .color-dot, .toggle-sidebar').forEach(el => {
         el.onmouseenter = () => playUI(850, 0.05, 0.05);
       });
-    }
-
-    window.onload = () => {
-      applyHover();
-      updateName();
     };
   </script>
 </body>

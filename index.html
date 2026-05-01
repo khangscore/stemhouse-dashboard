@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Gamer Edition</title>
+  <title>AO Dashboard Q10 | Gamer Station</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
@@ -14,7 +14,7 @@
       --card-border: rgba(255, 255, 255, 0.2); 
       --text-main: #ffffff;
       --text-muted: #94a3b8;
-      --accent: #22c55e; /* Màu mặc định */
+      --accent: #22c55e;
       --sidebar-width: 280px;
       --sidebar-collapsed-width: 85px;
     }
@@ -76,10 +76,9 @@
     /* === Main Content === */
     .container {
       max-width: 1000px; margin: 0 auto;
-      padding: 60px 20px 100px 100px; /* Cố định padding để ko bị nhảy chữ */
+      padding: 60px 20px 100px 100px;
       transition: filter 0.4s;
     }
-    .sidebar.expanded ~ .container { filter: blur(2px); }
 
     .header { text-align: center; margin-bottom: 40px; }
     .header h1 { font-size: 3rem; letter-spacing: -1px; margin-bottom: 10px; }
@@ -97,11 +96,10 @@
     .btn {
       width: 100%; padding: 12px; background: var(--accent); color: #000;
       text-decoration: none; border-radius: 12px; font-weight: bold;
-      border: none; cursor: pointer; transition: 0.2s;
+      border: none; cursor: pointer; transition: 0.2s; display: inline-block;
     }
     .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
 
-    /* Settings Page Specific */
     .settings-section { display: none; animation: fadeIn 0.5s; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -124,7 +122,6 @@
     <div style="padding: 30px 25px; font-weight: 900; color: var(--accent); height: 80px;">SH10</div>
     <nav>
       <a href="#" class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">📅</span><span class="nav-text">Lịch dạy</span></a>
       <a href="#" class="nav-item" onclick="showPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></a>
     </nav>
   </aside>
@@ -132,168 +129,150 @@
   <div class="overlay" id="overlay"></div>
 
   <div class="container">
-    <!-- TRANG DASHBOARD -->
     <div id="dashboardPage">
       <div class="header">
-        <h1 id="mainTitle">AO Dashboard Q10</h1>
-        <p id="greeting" style="color: var(--text-muted);">Hệ thống đang khởi động...</p>
+        <h1>AO Dashboard Q10</h1>
+        <p id="greeting" style="color: var(--text-muted);">Chào mừng trở lại, Gamer!</p>
       </div>
 
       <div class="grid">
-        <div class="card">
+        <div class="card s-hover">
           <div style="font-size: 50px;">📘</div>
           <h3 style="margin: 15px 0;">Học Cụ & In Ấn</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Quản lý vật tư và điều phối in ấn.</p>
-          <a class="btn" href="#">Mở file</a>
+          <p style="margin-bottom: 20px;">Quản lý vật tư điều phối.</p>
+          <a class="btn s-hover" href="#">Mở file</a>
         </div>
-        <div class="card">
+        <div class="card s-hover">
           <div style="font-size: 50px;">🧾</div>
           <h3 style="margin: 15px 0;">Hóa Đơn VAT</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Theo dõi hóa đơn và tài chính.</p>
-          <a class="btn" href="#">Mở file</a>
+          <p style="margin-bottom: 20px;">Theo dõi tài chính.</p>
+          <a class="btn s-hover" href="#">Mở file</a>
         </div>
-        <div class="card">
+        <div class="card s-hover">
           <div style="font-size: 50px;">📚</div>
           <h3 style="margin: 15px 0;">Kho Sách</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Kiểm kê tồn kho sách giáo khoa.</p>
-          <a class="btn" href="#">Mở file</a>
+          <p style="margin-bottom: 20px;">Kiểm kê tồn kho.</p>
+          <a class="btn s-hover" href="#">Mở file</a>
         </div>
-        <div class="card">
+        <div class="card s-hover">
           <div style="font-size: 50px;">🎁</div>
           <h3 style="margin: 15px 0;">Quà Tặng HS</h3>
-          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Phân bổ quà tặng cho học sinh.</p>
-          <a class="btn" href="#">Mở file</a>
+          <p style="margin-bottom: 20px;">Phân bổ quà tặng.</p>
+          <a class="btn s-hover" href="#">Mở file</a>
         </div>
       </div>
     </div>
 
-    <!-- TRANG CÀI ĐẶT -->
     <div id="settingsPage" class="settings-section">
-      <h1 style="margin-bottom: 40px;">Hệ Thống Cài Đặt</h1>
+      <h1 style="margin-bottom: 40px;">Cài Đặt Hệ Thống</h1>
       <div class="grid">
         <div class="card">
           <img id="userAvatar" class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar">
-          <h3>Thiết lập Avatar</h3>
-          <div style="display: flex; gap: 10px; margin-top: 20px; width: 100%;">
-            <button class="btn" onclick="setAvatar('male')">Nam</button>
-            <button class="btn" onclick="setAvatar('female')" style="background: #ec4899;">Nữ</button>
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn s-hover" onclick="setAvatar('male')">Nam</button>
+            <button class="btn s-hover" onclick="setAvatar('female')" style="background: #ec4899;">Nữ</button>
           </div>
         </div>
-
         <div class="card">
-          <h3 style="margin-bottom: 20px;">Chế độ RGB</h3>
-          <div style="display: flex; gap: 15px;">
-            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
-            <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
-            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
-            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
+          <h3>Màu Năng Lượng</h3>
+          <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <div class="color-dot s-hover" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot s-hover" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot s-hover" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
           </div>
-          <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">Thay đổi màu năng lượng hệ thống.</p>
         </div>
-
         <div class="card">
-          <h3 style="margin-bottom: 15px;">Âm thanh nền</h3>
-          <button class="btn" id="bgSoundBtn" onclick="toggleAmbient()">Bật Âm Thanh Không Gian</button>
-          <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">Âm thanh hỗ trợ tập trung (Ambient Drone).</p>
+          <h3>Âm Thanh Nền</h3>
+          <button class="btn s-hover" id="bgSoundBtn" onclick="toggleAmbient()">BẬT AMBIENT</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('overlay');
-    const toggleBtn = document.getElementById('toggleBtn');
-    
-    // --- Sidebar Logic ---
-    function toggleSidebar() {
-      sidebar.classList.toggle('expanded');
-    }
-    toggleBtn.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar);
-
-    // --- Page Routing ---
-    function showPage(page) {
-      document.getElementById('dashboardPage').style.display = (page === 'dashboard') ? 'block' : 'none';
-      document.getElementById('settingsPage').style.display = (page === 'settings') ? 'block' : 'none';
-      
-      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
-      event.currentTarget.classList.add('active');
-      playUIFeedback(800, 0.05); // Âm thanh click menu
-    }
-
-    // --- Avatar & Theme Logic ---
-    function setAvatar(gender) {
-      const seed = (gender === 'male') ? 'Felix' : 'Aneka';
-      document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
-      playUIFeedback(1200, 0.1);
-    }
-
-    function setAccent(color) {
-      document.documentElement.style.setProperty('--accent', color);
-      playUIFeedback(600, 0.1);
-    }
-
-    // --- WEB AUDIO API (Âm thanh ko cần file) ---
     let audioCtx;
-    let ambientOsc;
-    let ambientGain;
+    let ambientOsc, ambientGain;
     let isAmbientPlaying = false;
 
     function initAudio() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // Tiếng "bíp" nhẹ khi click
-    function playUIFeedback(freq, duration) {
+    // --- TĂNG ÂM LƯỢNG UI (Tiếng bíp khi click/rê chuột) ---
+    function playUIFeedback(freq, vol = 0.1, duration = 0.1) {
       initAudio();
       const osc = audioCtx.createOscillator();
       const g = audioCtx.createGain();
       osc.type = 'sine';
       osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-      g.gain.setValueAtTime(0.02, audioCtx.currentTime);
+      g.gain.setValueAtTime(vol, audioCtx.currentTime); // Tăng vol lên
       g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
       osc.connect(g); g.connect(audioCtx.destination);
       osc.start(); osc.stop(audioCtx.currentTime + duration);
     }
 
-    // Tiếng Ambient nền (Drone)
+    // --- TĂNG ÂM LƯỢNG NỀN (Ambient) ---
     function toggleAmbient() {
       initAudio();
       const btn = document.getElementById('bgSoundBtn');
-
       if (!isAmbientPlaying) {
         ambientOsc = audioCtx.createOscillator();
         ambientGain = audioCtx.createGain();
-        
-        ambientOsc.type = 'triangle'; // Tiếng trầm ấm
-        ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime); // Nốt La trầm (A1)
-        
-        // Tạo hiệu ứng lơ lửng bằng cách thay đổi âm lượng chậm
+        ambientOsc.type = 'triangle';
+        ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime);
         ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        ambientGain.gain.linearRampToValueAtTime(0.015, audioCtx.currentTime + 2); 
-        
+        // Tăng từ 0.015 lên 0.08 (Nghe rõ hơn nhiều)
+        ambientGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 2); 
         ambientOsc.connect(ambientGain);
         ambientGain.connect(audioCtx.destination);
-        
         ambientOsc.start();
-        btn.innerText = "Tắt Âm Thanh";
+        btn.innerText = "TẮT AMBIENT";
         isAmbientPlaying = true;
       } else {
         ambientGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
-        setTimeout(() => ambientOsc.stop(), 1000);
-        btn.innerText = "Bật Âm Thanh Không Gian";
+        setTimeout(() => { if(ambientOsc) ambientOsc.stop(); }, 1000);
+        btn.innerText = "BẬT AMBIENT";
         isAmbientPlaying = false;
       }
     }
 
-    // --- Lời chào ---
-    const hour = new Date().getHours();
-    const greeting = document.getElementById('greeting');
-    if(hour < 12) greeting.innerText = "Chào buổi sáng, Commander! Chúc ngày mới năng suất. ☀️";
-    else if(hour < 18) greeting.innerText = "Chào buổi chiều! Cố gắng hoàn thành nhiệm vụ nhé. 🚀";
-    else greeting.innerText = "Đã về đêm, nhớ nghỉ ngơi để hồi phục năng lượng. 🌙";
+    // --- GÁN TIẾNG RE CHUỘT (Hover Sound) ---
+    function attachHoverSounds() {
+      document.querySelectorAll('.s-hover, .nav-item, .btn, .toggle-sidebar, .color-dot').forEach(el => {
+        el.onmouseenter = () => playUIFeedback(800, 0.03, 0.05); // Tiếng tick nhẹ khi hover
+        el.onclick = () => playUIFeedback(1200, 0.15, 0.15); // Tiếng bíp to khi click
+      });
+    }
 
+    // Sidebar & Routing
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleBtn');
+    toggleBtn.onclick = () => { sidebar.classList.toggle('expanded'); playUIFeedback(600, 0.1); };
+    
+    function showPage(page) {
+      document.getElementById('dashboardPage').style.display = (page === 'dashboard') ? 'block' : 'none';
+      document.getElementById('settingsPage').style.display = (page === 'settings') ? 'block' : 'none';
+      attachHoverSounds(); // Re-attach for new elements
+    }
+
+    function setAvatar(gender) {
+      document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${gender === 'male' ? 'Felix' : 'Aneka'}`;
+    }
+
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+    }
+
+    // Khởi tạo lần đầu
+    window.onload = () => {
+      attachHoverSounds();
+      // Tự động chào hỏi
+      const h = new Date().getHours();
+      document.getElementById('greeting').innerText = h < 12 ? "Chào buổi sáng, Commander! ☀️" : "Sẵn sàng làm việc chưa, Gamer? 🚀";
+    };
   </script>
 </body>
 </html>

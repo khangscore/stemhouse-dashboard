@@ -3,282 +3,297 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Stemhouse Q10</title>
+  <title>AO Dashboard Q10 | Gamer Edition</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
   <style>
     :root {
-      --bg-color: #2e1065; 
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: #ffffff; 
+      --bg-color: #0f0720; 
+      --card-bg: rgba(255, 255, 255, 0.06);
+      --card-border: rgba(255, 255, 255, 0.2); 
       --text-main: #ffffff;
-      --text-muted: #cbd5e1;
-      --accent: #22c55e;
+      --text-muted: #94a3b8;
+      --accent: #22c55e; /* Màu mặc định */
       --sidebar-width: 280px;
       --sidebar-collapsed-width: 85px;
     }
 
-    body.light-mode {
-      --bg-color: #f1f5f9; 
-      --card-bg: rgba(255, 255, 255, 0.6);
-      --card-border: #000000;
-      --text-main: #0f172a;
-      --text-muted: #475569;
-      --accent: #16a34a;
-    }
-
-    * {
-      margin: 0; padding: 0; box-sizing: border-box;
-      font-family: "Segoe UI", system-ui, sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
 
     body {
-      background-color: var(--bg-color);
-      background-image: linear-gradient(135deg, var(--bg-color) 0%, #1e0b45 100%);
+      background: var(--bg-color);
+      background-image: radial-gradient(circle at top right, #1e0b45, #0f0720);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background-color 0.3s ease;
     }
 
     /* === Sidebar === */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
-      width: var(--sidebar-collapsed-width); /* Mặc định thu nhỏ */
-      background: var(--card-bg);
-      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
-      border: 2.5px solid var(--card-border);
-      border-radius: 28px;
+      width: var(--sidebar-collapsed-width);
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
       z-index: 2000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column;
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
     }
-
-    .sidebar.expanded { width: var(--sidebar-width); }
-
-    .sidebar-header { padding: 30px 20px; overflow: hidden; }
-    .logo { 
-        font-weight: 800; font-size: 1.1rem; white-space: nowrap; 
-        opacity: 0; transition: 0.3s ease; 
-    }
-    .sidebar.expanded .logo { opacity: 1; }
+    .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
 
     .toggle-sidebar {
-      background: var(--accent); border: 2.5px solid #000; color: white;
-      width: 32px; height: 32px; border-radius: 10px;
-      cursor: pointer; box-shadow: 3px 3px 0px #000;
-      position: absolute; right: -15px; top: 40px; 
+      background: var(--accent); border: 2px solid #000; color: white;
+      width: 30px; height: 30px; border-radius: 8px;
+      cursor: pointer; position: absolute; right: -15px; top: 40px; 
       transition: 0.3s; z-index: 2001;
       display: flex; align-items: center; justify-content: center;
     }
     .sidebar.expanded .toggle-sidebar { transform: rotate(180deg); }
 
-    .sidebar-nav { flex-grow: 1; padding: 10px; margin-top: 20px; }
     .nav-item {
-      display: flex; align-items: center; padding: 15px; margin-bottom: 10px;
-      text-decoration: none; color: var(--text-main); border-radius: 18px;
-      transition: 0.3s; overflow: hidden;
+      display: flex; align-items: center; padding: 15px 25px; margin: 10px;
+      text-decoration: none; color: var(--text-main); border-radius: 15px;
+      transition: 0.3s; overflow: hidden; white-space: nowrap;
     }
-    .nav-item:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
-    .nav-item.active { background: var(--accent); color: white; border: 2px solid #000; box-shadow: 4px 4px 0px #000; }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
+    .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
     
-    .nav-icon { font-size: 1.4rem; min-width: 35px; text-align: center; margin-right: 15px; }
-    .nav-text { white-space: nowrap; opacity: 0; transition: opacity 0.3s ease; font-weight: 600; }
+    .nav-icon { font-size: 1.4rem; min-width: 35px; }
+    .nav-text { opacity: 0; transition: 0.3s; margin-left: 10px; }
     .sidebar.expanded .nav-text { opacity: 1; }
 
-    /* === Hiệu ứng làm mờ nội dung (Overlay) === */
+    /* === Overlay === */
     .overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      z-index: 1500;
-      opacity: 0; pointer-events: none;
-      transition: opacity 0.4s ease;
+      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(5px); z-index: 1500;
+      opacity: 0; pointer-events: none; transition: 0.4s;
     }
     .sidebar.expanded ~ .overlay { opacity: 1; pointer-events: auto; }
 
-    /* === Main Content (Giữ kích thước cố định) === */
+    /* === Main Content === */
     .container {
-      max-width: 1100px;
-      margin: 0 auto;
-      padding: 60px 20px 100px 120px; /* Padding trái cố định để né sidebar thu nhỏ */
-      position: relative;
-      z-index: 10;
+      max-width: 1000px; margin: 0 auto;
+      padding: 60px 20px 100px 100px; /* Cố định padding để ko bị nhảy chữ */
+      transition: filter 0.4s;
     }
+    .sidebar.expanded ~ .container { filter: blur(2px); }
 
     .header { text-align: center; margin-bottom: 40px; }
-    .header h1 { font-size: 42px; font-weight: 700; margin-bottom: 10px; text-shadow: 0 4px 10px rgba(0,0,0,0.2); }
-    .header p { color: var(--text-muted); font-size: 1.1rem; min-height: 1.5em; }
+    .header h1 { font-size: 3rem; letter-spacing: -1px; margin-bottom: 10px; }
 
-    .search-container { max-width: 500px; margin: 0 auto 50px; position: relative; }
-    .search-input {
-      width: 100%; padding: 15px 20px 15px 50px;
-      background: var(--search-bg); backdrop-filter: blur(5px);
-      border: 2px solid var(--card-border); border-radius: 30px;
-      color: var(--text-main); outline: none;
-    }
-    .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
-
-    .grid { 
-        display: grid; 
-        grid-template-columns: repeat(2, 1fr); /* Giữ lưới ổn định */
-        gap: 30px; 
-        max-width: 900px;
-        margin: 0 auto;
-    }
-    @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
 
     .card {
-      background: var(--card-bg); backdrop-filter: blur(15px);
-      border: 2.5px solid var(--card-border); border-radius: 28px;
-      padding: 40px 25px; transition: transform 0.3s ease, background 0.3s ease;
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 24px; padding: 35px 25px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
+      transition: 0.3s;
     }
-    .card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.12); }
+    .card:hover { transform: translateY(-8px); border-color: var(--accent); background: rgba(255, 255, 255, 0.1); }
 
     .btn {
-      width: 100%; padding: 14px; background: var(--accent); color: white;
-      text-decoration: none; border-radius: 16px; font-weight: 800;
-      border: 3px solid #000; box-shadow: 0 5px 0px #000;
-      display: flex; align-items: center; justify-content: center; position: relative; transition: 0.2s;
+      width: 100%; padding: 12px; background: var(--accent); color: #000;
+      text-decoration: none; border-radius: 12px; font-weight: bold;
+      border: none; cursor: pointer; transition: 0.2s;
     }
-    .btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0px #000; }
-    .btn:active { transform: translateY(3px); box-shadow: 0 0px 0px #000; }
+    .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
 
-    .theme-toggle {
-      position: fixed; bottom: 25px; right: 25px; width: 55px; height: 55px;
-      background: var(--toggle-bg); backdrop-filter: blur(10px);
-      border-radius: 50%; border: 2.5px solid var(--card-border);
-      cursor: pointer; font-size: 26px; z-index: 2000; transition: 0.3s;
+    /* Settings Page Specific */
+    .settings-section { display: none; animation: fadeIn 0.5s; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .avatar-circle {
+      width: 100px; height: 100px; border-radius: 50%;
+      border: 4px solid var(--accent); background: #fff; margin-bottom: 15px;
     }
-    .theme-toggle:hover { transform: scale(1.1); }
+
+    .color-dot {
+      width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
+      border: 2px solid #fff; transition: 0.2s;
+    }
+    .color-dot:hover { transform: scale(1.2); }
   </style>
 </head>
 <body>
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
-    <button class="toggle-sidebar" id="toggleSidebarBtn">❯</button>
-    <div class="sidebar-header">
-      <div class="logo">STEMHOUSE Q10</div>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></a>
+    <button class="toggle-sidebar" id="toggleBtn">❯</button>
+    <div style="padding: 30px 25px; font-weight: 900; color: var(--accent); height: 80px;">SH10</div>
+    <nav>
+      <a href="#" class="nav-item active" onclick="showPage('dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></a>
       <a href="#" class="nav-item"><span class="nav-icon">📅</span><span class="nav-text">Lịch dạy</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">📊</span><span class="nav-text">Báo cáo</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></a>
+      <a href="#" class="nav-item" onclick="showPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></a>
     </nav>
   </aside>
 
-  <!-- Lớp phủ mờ khi mở Sidebar -->
   <div class="overlay" id="overlay"></div>
 
   <div class="container">
-    <div class="header">
-      <h1>AO Dashboard Q10</h1>
-      <p id="greeting">Đang tải lời chào...</p>
+    <!-- TRANG DASHBOARD -->
+    <div id="dashboardPage">
+      <div class="header">
+        <h1 id="mainTitle">AO Dashboard Q10</h1>
+        <p id="greeting" style="color: var(--text-muted);">Hệ thống đang khởi động...</p>
+      </div>
+
+      <div class="grid">
+        <div class="card">
+          <div style="font-size: 50px;">📘</div>
+          <h3 style="margin: 15px 0;">Học Cụ & In Ấn</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Quản lý vật tư và điều phối in ấn.</p>
+          <a class="btn" href="#">Mở file</a>
+        </div>
+        <div class="card">
+          <div style="font-size: 50px;">🧾</div>
+          <h3 style="margin: 15px 0;">Hóa Đơn VAT</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Theo dõi hóa đơn và tài chính.</p>
+          <a class="btn" href="#">Mở file</a>
+        </div>
+        <div class="card">
+          <div style="font-size: 50px;">📚</div>
+          <h3 style="margin: 15px 0;">Kho Sách</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Kiểm kê tồn kho sách giáo khoa.</p>
+          <a class="btn" href="#">Mở file</a>
+        </div>
+        <div class="card">
+          <div style="font-size: 50px;">🎁</div>
+          <h3 style="margin: 15px 0;">Quà Tặng HS</h3>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Phân bổ quà tặng cho học sinh.</p>
+          <a class="btn" href="#">Mở file</a>
+        </div>
+      </div>
     </div>
 
-    <div class="search-container">
-      <span class="search-icon">🔍</span>
-      <input type="search" class="search-input" id="quickSearch" placeholder="Tìm kiếm file nhanh...">
-    </div>
+    <!-- TRANG CÀI ĐẶT -->
+    <div id="settingsPage" class="settings-section">
+      <h1 style="margin-bottom: 40px;">Hệ Thống Cài Đặt</h1>
+      <div class="grid">
+        <div class="card">
+          <img id="userAvatar" class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar">
+          <h3>Thiết lập Avatar</h3>
+          <div style="display: flex; gap: 10px; margin-top: 20px; width: 100%;">
+            <button class="btn" onclick="setAvatar('male')">Nam</button>
+            <button class="btn" onclick="setAvatar('female')" style="background: #ec4899;">Nữ</button>
+          </div>
+        </div>
 
-    <div class="grid" id="cardGrid">
-      <!-- 1. Học cụ -->
-      <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">📘</div>
-        <h3>Học Cụ & In Ấn</h3>
-        <p style="margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">Quản lý vật tư giảng dạy và điều phối in ấn tại Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
-      </div>
-      
-      <!-- 2. Hóa đơn -->
-      <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">🧾</div>
-        <h3>Hóa Đơn VAT</h3>
-        <p style="margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">Theo dõi luồng hóa đơn và đối soát dữ liệu tài chính.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
-      </div>
+        <div class="card">
+          <h3 style="margin-bottom: 20px;">Chế độ RGB</h3>
+          <div style="display: flex; gap: 15px;">
+            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
+          </div>
+          <p style="margin-top: 20px; font-size: 0.8rem; color: var(--text-muted);">Thay đổi màu năng lượng hệ thống.</p>
+        </div>
 
-      <!-- 3. Kho sách -->
-      <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">📚</div>
-        <h3>Kho Sách</h3>
-        <p style="margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">Kiểm kê tồn kho sách giáo khoa và tài liệu giảng dạy.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
-      </div>
-
-      <!-- 4. Quà tặng (ĐÃ KHÔI PHỤC) -->
-      <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">🎁</div>
-        <h3>Quà Tặng HS</h3>
-        <p style="margin-bottom: 30px; color: var(--text-muted); font-size: 0.95rem;">Danh sách quà tặng và phân bổ học sinh tại Q10.</p>
-        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
+        <div class="card">
+          <h3 style="margin-bottom: 15px;">Âm thanh nền</h3>
+          <button class="btn" id="bgSoundBtn" onclick="toggleAmbient()">Bật Âm Thanh Không Gian</button>
+          <p style="margin-top: 15px; font-size: 0.8rem; color: var(--text-muted);">Âm thanh hỗ trợ tập trung (Ambient Drone).</p>
+        </div>
       </div>
     </div>
   </div>
 
-  <button class="theme-toggle" id="themeToggle">🤪</button>
-
   <script>
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleSidebarBtn');
     const overlay = document.getElementById('overlay');
-    const themeToggle = document.getElementById('themeToggle');
-
-    // Mở/Đóng Sidebar bằng class "expanded"
+    const toggleBtn = document.getElementById('toggleBtn');
+    
+    // --- Sidebar Logic ---
     function toggleSidebar() {
       sidebar.classList.toggle('expanded');
     }
-
     toggleBtn.addEventListener('click', toggleSidebar);
-    overlay.addEventListener('click', toggleSidebar); // Click ra ngoài mờ cũng đóng sidebar
+    overlay.addEventListener('click', toggleSidebar);
 
-    // Âm thanh tick
+    // --- Page Routing ---
+    function showPage(page) {
+      document.getElementById('dashboardPage').style.display = (page === 'dashboard') ? 'block' : 'none';
+      document.getElementById('settingsPage').style.display = (page === 'settings') ? 'block' : 'none';
+      
+      document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+      playUIFeedback(800, 0.05); // Âm thanh click menu
+    }
+
+    // --- Avatar & Theme Logic ---
+    function setAvatar(gender) {
+      const seed = (gender === 'male') ? 'Felix' : 'Aneka';
+      document.getElementById('userAvatar').src = `https://api.dicebear.com/7.x/avataaars/svg?seed=${seed}`;
+      playUIFeedback(1200, 0.1);
+    }
+
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+      playUIFeedback(600, 0.1);
+    }
+
+    // --- WEB AUDIO API (Âm thanh ko cần file) ---
     let audioCtx;
-    function playTick() {
-      try {
-        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const g = audioCtx.createGain();
-        osc.type = "sine"; osc.frequency.setValueAtTime(950, audioCtx.currentTime);
-        g.gain.setValueAtTime(0.02, audioCtx.currentTime);
-        osc.connect(g); g.connect(audioCtx.destination);
-        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
-      } catch(e){}
-    }
-    document.querySelectorAll(".nav-item, .btn, .theme-toggle, .toggle-sidebar").forEach(el => {
-      el.addEventListener("mouseenter", playTick);
-    });
+    let ambientOsc;
+    let ambientGain;
+    let isAmbientPlaying = false;
 
-    // Lời chào
-    function setGreeting() {
-      const h = new Date().getHours();
-      const el = document.getElementById('greeting');
-      if(h<12) el.innerText = "Chào buổi sáng! Chúc đồng chí một ngày năng suất ☀️";
-      else if(h<18) el.innerText = "Chiều rồi, cố gắng hoàn thành công việc nào 🚀";
-      else el.innerText = "Làm việc muộn rồi, nhớ nghỉ ngơi nhé đồng chí! 🌙";
+    function initAudio() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     }
 
-    // Theme
-    themeToggle.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      themeToggle.innerText = document.body.classList.contains('light-mode') ? "😎" : "🤪";
-    });
+    // Tiếng "bíp" nhẹ khi click
+    function playUIFeedback(freq, duration) {
+      initAudio();
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      g.gain.setValueAtTime(0.02, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(g); g.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + duration);
+    }
 
-    // Tìm kiếm
-    document.getElementById('quickSearch').addEventListener('input', (e) => {
-      const val = e.target.value.toLowerCase();
-      document.querySelectorAll('.card').forEach(c => {
-        c.style.display = c.innerText.toLowerCase().includes(val) ? "flex" : "none";
-      });
-    });
+    // Tiếng Ambient nền (Drone)
+    function toggleAmbient() {
+      initAudio();
+      const btn = document.getElementById('bgSoundBtn');
 
-    setGreeting();
+      if (!isAmbientPlaying) {
+        ambientOsc = audioCtx.createOscillator();
+        ambientGain = audioCtx.createGain();
+        
+        ambientOsc.type = 'triangle'; // Tiếng trầm ấm
+        ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime); // Nốt La trầm (A1)
+        
+        // Tạo hiệu ứng lơ lửng bằng cách thay đổi âm lượng chậm
+        ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
+        ambientGain.gain.linearRampToValueAtTime(0.015, audioCtx.currentTime + 2); 
+        
+        ambientOsc.connect(ambientGain);
+        ambientGain.connect(audioCtx.destination);
+        
+        ambientOsc.start();
+        btn.innerText = "Tắt Âm Thanh";
+        isAmbientPlaying = true;
+      } else {
+        ambientGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 1);
+        setTimeout(() => ambientOsc.stop(), 1000);
+        btn.innerText = "Bật Âm Thanh Không Gian";
+        isAmbientPlaying = false;
+      }
+    }
+
+    // --- Lời chào ---
+    const hour = new Date().getHours();
+    const greeting = document.getElementById('greeting');
+    if(hour < 12) greeting.innerText = "Chào buổi sáng, Commander! Chúc ngày mới năng suất. ☀️";
+    else if(hour < 18) greeting.innerText = "Chào buổi chiều! Cố gắng hoàn thành nhiệm vụ nhé. 🚀";
+    else greeting.innerText = "Đã về đêm, nhớ nghỉ ngơi để hồi phục năng lượng. 🌙";
+
   </script>
 </body>
 </html>

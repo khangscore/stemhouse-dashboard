@@ -3,18 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Gamer Station Final</title>
+  <title>AO Dashboard Q10 | Gamer Station Ultimate</title>
   
-  <!-- KHÔI PHỤC ICON WEB BAN ĐẦU -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
   <style>
     :root {
       --bg-color: #0f0720; 
-      --card-bg: rgba(255, 255, 255, 0.06);
+      --card-bg: rgba(255, 255, 255, 0.08);
       --card-border: rgba(255, 255, 255, 0.2); 
       --text-main: #ffffff;
-      --text-muted: #94a3b8;
+      --text-muted: #cbd5e1;
       --accent: #22c55e;
       --sidebar-width: 280px;
       --sidebar-collapsed-width: 85px;
@@ -24,7 +23,8 @@
 
     body {
       background: var(--bg-color);
-      background-image: radial-gradient(circle at top right, #1e0b45, #0f0720);
+      /* LÀM MÀU TÍM SÁNG HƠN VÀ XUẤT HIỆN NHIỀU HƠN */
+      background-image: radial-gradient(circle at 50% -20%, #4c1d95, #1e1045, #0f0720);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
@@ -35,15 +35,26 @@
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
-      background: rgba(255, 255, 255, 0.03);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
       border: 1px solid var(--card-border);
       border-radius: 24px;
       z-index: 2000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; flex-direction: column;
+      display: flex; flex-direction: column; align-items: center;
     }
-    .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
+    .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); align-items: stretch; }
+
+    .sidebar-header {
+      padding: 30px 0;
+      display: flex; justify-content: center; width: 100%;
+    }
+    .sidebar-avatar {
+      width: 45px; height: 45px; border-radius: 50%;
+      border: 2px solid var(--accent); background: #fff;
+      transition: 0.3s; object-fit: cover;
+    }
+    .sidebar.expanded .sidebar-avatar { width: 70px; height: 70px; }
 
     .toggle-sidebar {
       background: var(--accent); border: 2px solid #000; color: white;
@@ -62,57 +73,49 @@
     .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
     .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
     
-    .nav-icon { font-size: 1.4rem; min-width: 35px; }
-    .nav-text { opacity: 0; transition: 0.3s; margin-left: 10px; }
+    .nav-icon { font-size: 1.4rem; min-width: 35px; text-align: center; }
+    .nav-text { opacity: 0; transition: 0.3s; margin-left: 15px; }
     .sidebar.expanded .nav-text { opacity: 1; }
 
-    /* Overlay */
-    .overlay {
-      position: fixed; inset: 0; background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px); z-index: 1500;
-      opacity: 0; pointer-events: none; transition: 0.4s;
-    }
-    .sidebar.expanded ~ .overlay { opacity: 1; pointer-events: auto; }
-
-    /* Content */
+    /* Content Area */
     .container {
       max-width: 1100px; margin: 0 auto;
-      padding: 60px 20px 100px 100px;
-      transition: filter 0.4s;
+      padding: 60px 20px 100px 110px;
     }
 
     .header { text-align: center; margin-bottom: 40px; }
-    .header h1 { font-size: 3rem; letter-spacing: -1px; margin-bottom: 10px; }
+    .header h1 { font-size: 3.5rem; letter-spacing: -2px; text-shadow: 0 0 20px rgba(168, 85, 247, 0.4); }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; }
 
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
-      border-radius: 24px; padding: 35px 25px;
+      border-radius: 24px; padding: 30px 20px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
-      transition: 0.3s;
+      transition: 0.3s; backdrop-filter: blur(10px);
     }
-    .card:hover { transform: translateY(-8px); border-color: var(--accent); background: rgba(255, 255, 255, 0.1); }
+    .card:hover { transform: translateY(-8px); border-color: var(--accent); background: rgba(255, 255, 255, 0.12); }
 
     .btn {
       width: 100%; padding: 12px; background: var(--accent); color: #000;
       text-decoration: none; border-radius: 12px; font-weight: bold;
       border: none; cursor: pointer; transition: 0.2s; display: inline-block;
     }
-    .btn:hover { filter: brightness(1.2); }
+    .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
+
+    .gender-btn { opacity: 0.3; transition: 0.4s; flex: 1; }
+    .gender-btn.active { opacity: 1; transform: scale(1.05); border: 2px solid #fff; }
+
+    input[type="text"] {
+      width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--card-border);
+      background: rgba(0,0,0,0.3); color: white; margin-bottom: 15px; outline: none;
+    }
+    input[type="text"]:focus { border-color: var(--accent); }
 
     .settings-section { display: none; animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    .avatar-circle {
-      width: 100px; height: 100px; border-radius: 50%;
-      border: 4px solid var(--accent); background: #fff; margin-bottom: 15px;
-    }
-
-    .color-dot {
-      width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
-      border: 2px solid #fff; transition: 0.2s;
-    }
+    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
   </style>
 </head>
 <body>
@@ -120,7 +123,9 @@
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <button class="toggle-sidebar" id="toggleBtn">❯</button>
-    <div style="padding: 30px 25px; font-weight: 900; color: var(--accent); height: 80px;">SH10</div>
+    <div class="sidebar-header">
+      <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+    </div>
     <nav>
       <div class="nav-item active" id="nav-dashboard">
         <span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span>
@@ -133,41 +138,37 @@
 
   <div class="overlay" id="overlay"></div>
 
-  <div class="container" id="mainContainer">
+  <div class="container">
     <!-- TRANG DASHBOARD -->
     <div id="page-dashboard">
       <div class="header">
         <h1>AO Dashboard Q10</h1>
-        <p id="greeting" style="color: var(--text-muted);">Chào mừng trở lại!</p>
+        <p id="greeting" style="color: var(--text-muted); font-size: 1.2rem;">Chào mừng trở lại!</p>
       </div>
 
       <div class="grid">
-        <!-- Mục 1 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">📘</div>
-          <h3 style="margin: 15px 0;">Học Cụ & In Ấn</h3>
-          <p style="margin-bottom: 20px; font-size: 0.9rem;">Quản lý vật tư điều phối in ấn tại Q10.</p>
+          <h3>Học Cụ & In Ấn</h3>
+          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Quản lý vật tư điều phối.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
         </div>
-        <!-- Mục 2 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">🧾</div>
-          <h3 style="margin: 15px 0;">Hóa Đơn VAT</h3>
-          <p style="margin-bottom: 20px; font-size: 0.9rem;">Theo dõi hóa đơn và đối soát tài chính.</p>
+          <h3>Hóa Đơn VAT</h3>
+          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Theo dõi tài chính.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a>
         </div>
-        <!-- Mục 3 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">📚</div>
-          <h3 style="margin: 15px 0;">Kho Sách</h3>
-          <p style="margin-bottom: 20px; font-size: 0.9rem;">Kiểm kê tồn kho sách và giáo trình.</p>
+          <h3>Kho Sách</h3>
+          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Kiểm kê tồn kho.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
         </div>
-        <!-- Mục 4 -->
         <div class="card s-hover">
           <div style="font-size: 50px;">🎁</div>
-          <h3 style="margin: 15px 0;">Quà Tặng HS</h3>
-          <p style="margin-bottom: 20px; font-size: 0.9rem;">Danh sách quà tặng và phân bổ học sinh.</p>
+          <h3>Quà Tặng HS</h3>
+          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Phân bổ quà tặng.</p>
           <a class="btn s-hover" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a>
         </div>
       </div>
@@ -175,27 +176,34 @@
 
     <!-- TRANG CÀI ĐẶT -->
     <div id="page-settings" class="settings-section">
-      <h1 style="margin-bottom: 40px;">Cài Đặt Hệ Thống</h1>
+      <h1 style="margin-bottom: 40px;">Cấu Hình Nhân Vật</h1>
       <div class="grid">
-        <div class="card">
-          <img id="userAvatar" class="avatar-circle" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="Avatar">
+        <!-- Đổi Tên & Giới Tính -->
+        <div class="card" style="grid-column: span 2;">
+          <h3 style="margin-bottom: 15px;">Thông tin Gamer</h3>
+          <input type="text" id="usernameInput" placeholder="Nhập tên nhân vật của cậu..." oninput="updateName()">
+          
           <div style="display: flex; gap: 10px; width: 100%;">
-            <button class="btn s-hover" id="btn-male">Nam</button>
-            <button class="btn s-hover" id="btn-female" style="background: #ec4899;">Nữ</button>
+            <button class="btn gender-btn active" id="g-male" onclick="setGender('male')">Nam</button>
+            <button class="btn gender-btn" id="g-female" onclick="setGender('female')" style="background: #ec4899;">Nữ</button>
+            <button class="btn gender-btn" id="g-dog" onclick="setGender('dog')" style="background: #f59e0b;">@kạ4u2fh%&!*</button>
           </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;">Chọn giới tính để thay đổi hình đại diện.</p>
         </div>
+
+        <!-- Màu sắc & Âm thanh -->
         <div class="card">
           <h3>Màu Năng Lượng</h3>
           <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <div class="color-dot s-hover" style="background: #22c55e;" id="color-green"></div>
-            <div class="color-dot s-hover" style="background: #3b82f6;" id="color-blue"></div>
-            <div class="color-dot s-hover" style="background: #ef4444;" id="color-red"></div>
-            <div class="color-dot s-hover" style="background: #a855f7;" id="color-purple"></div>
+            <div class="color-dot s-hover" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot s-hover" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot s-hover" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot s-hover" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
           </div>
         </div>
         <div class="card">
           <h3>Âm Thanh Nền</h3>
-          <button class="btn s-hover" id="bgSoundBtn">BẬT AMBIENT</button>
+          <button class="btn s-hover" id="bgSoundBtn" onclick="toggleAmbient()">BẬT AMBIENT</button>
         </div>
       </div>
     </div>
@@ -204,16 +212,18 @@
   <script>
     const sidebar = document.getElementById('sidebar');
     const toggleBtn = document.getElementById('toggleBtn');
-    const overlay = document.getElementById('overlay');
     const navDashboard = document.getElementById('nav-dashboard');
     const navSettings = document.getElementById('nav-settings');
     const pageDashboard = document.getElementById('page-dashboard');
     const pageSettings = document.getElementById('page-settings');
-    
+    const sidebarAvatar = document.getElementById('sidebarAvatar');
+    const usernameInput = document.getElementById('usernameInput');
+
     let audioCtx, ambientOsc, ambientGain;
     let isAmbientPlaying = false;
+    let currentUserName = "Gamer";
 
-    // --- Audio System (MAX VOLUME) ---
+    // --- Audio Logic ---
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -240,7 +250,7 @@
         ambientOsc.type = 'triangle';
         ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime);
         ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        ambientGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2); // Âm lượng nền to rõ
+        ambientGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2);
         ambientOsc.connect(ambientGain);
         ambientGain.connect(audioCtx.destination);
         ambientOsc.start();
@@ -254,15 +264,8 @@
       }
     }
 
-    // --- Sidebar & Navigation ---
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('expanded');
-      playUI(600, 0.15);
-    });
-
-    overlay.addEventListener('click', () => {
-      sidebar.classList.remove('expanded');
-    });
+    // --- Navigation ---
+    toggleBtn.onclick = () => { sidebar.classList.toggle('expanded'); playUI(600); };
 
     function switchPage(page) {
       if(page === 'dashboard') {
@@ -283,40 +286,43 @@
     navDashboard.onclick = () => switchPage('dashboard');
     navSettings.onclick = () => switchPage('settings');
 
-    // --- Settings Functions ---
-    document.getElementById('btn-male').onclick = () => {
-      document.getElementById('userAvatar').src = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
+    // --- Avatar & Name Logic ---
+    function setGender(type) {
       playUI(1200, 0.2);
-    };
-    document.getElementById('btn-female').onclick = () => {
-      document.getElementById('userAvatar').src = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
-      playUI(1200, 0.2);
-    };
+      // Reset mờ các nút
+      document.querySelectorAll('.gender-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById('g-' + type).classList.add('active');
 
-    const colors = { green: '#22c55e', blue: '#3b82f6', red: '#ef4444', purple: '#a855f7' };
-    Object.keys(colors).forEach(c => {
-      document.getElementById(`color-${c}`).onclick = () => {
-        document.documentElement.style.setProperty('--accent', colors[c]);
-        playUI(800, 0.2);
-      };
-    });
+      let avatarUrl = "";
+      if(type === 'male') avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
+      else if(type === 'female') avatarUrl = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
+      else avatarUrl = "https://api.dicebear.com/7.x/bottts/svg?seed=Dog&baseColor=f59e0b"; // Hình robot/chó cách điệu
 
-    document.getElementById('bgSoundBtn').onclick = toggleAmbient;
+      sidebarAvatar.src = avatarUrl;
+    }
 
-    // --- Hover Logic ---
+    function updateName() {
+      currentUserName = usernameInput.value || "Gamer";
+      const h = new Date().getHours();
+      let greetPrefix = h < 12 ? "Chào buổi sáng" : "Làm việc thôi";
+      document.getElementById('greeting').innerText = `${greetPrefix}, ${currentUserName}! 🚀`;
+    }
+
+    function setAccent(color) {
+      document.documentElement.style.setProperty('--accent', color);
+      playUI(800);
+    }
+
+    // --- Hover ---
     function applyHover() {
-      const selectors = '.s-hover, .nav-item, .btn, .color-dot, .toggle-sidebar';
-      document.querySelectorAll(selectors).forEach(el => {
+      document.querySelectorAll('.s-hover, .nav-item, .btn, .color-dot, .toggle-sidebar').forEach(el => {
         el.onmouseenter = () => playUI(850, 0.05, 0.05);
       });
     }
 
     window.onload = () => {
       applyHover();
-      const h = new Date().getHours();
-      let msg = h < 12 ? "Good Morning, Cupcake ☀️" : "Sẵn sàng làm việc chưa cha nậu? 🚀";
-      if (h >= 18) msg = "Làm gì giờ này nữa ní, nghỉ giùm cái! 🌙";
-      document.getElementById('greeting').innerText = msg;
+      updateName();
     };
   </script>
 </body>

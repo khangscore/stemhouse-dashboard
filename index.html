@@ -3,8 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Gamer Station Fix</title>
+  <title>AO Dashboard Q10 | Gamer Station v3</title>
   
+  <!-- KHÔI PHỤC ICON CỦA CẬU ĐÂY -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
+
   <style>
     :root {
       --bg-color: #0f0720; 
@@ -28,26 +31,25 @@
       overflow-x: hidden;
     }
 
-    /* Sidebar */
+    /* === Sidebar === */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
       background: rgba(255, 255, 255, 0.03);
       backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 1px solid var(--card-border);
-      border-radius: 24px;
-      z-index: 2000;
+      border-radius: 24px; z-index: 2000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column;
     }
     .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
 
     .toggle-sidebar {
-      background: var(--accent); border: 2px solid #000; color: white;
+      background: var(--accent); border: 2px solid #000; color: #000;
       width: 30px; height: 30px; border-radius: 8px;
       cursor: pointer; position: absolute; right: -15px; top: 40px; 
       transition: 0.3s; z-index: 2001;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: center; font-weight: bold;
     }
     .sidebar.expanded .toggle-sidebar { transform: rotate(180deg); }
 
@@ -63,7 +65,7 @@
     .nav-text { opacity: 0; transition: 0.3s; margin-left: 10px; }
     .sidebar.expanded .nav-text { opacity: 1; }
 
-    /* Overlay */
+    /* === Overlay === */
     .overlay {
       position: fixed; inset: 0; background: rgba(0,0,0,0.6);
       backdrop-filter: blur(8px); z-index: 1500;
@@ -71,7 +73,7 @@
     }
     .sidebar.expanded ~ .overlay { opacity: 1; pointer-events: auto; }
 
-    /* Content */
+    /* === Main Container === */
     .container {
       max-width: 1000px; margin: 0 auto;
       padding: 60px 20px 100px 100px;
@@ -95,7 +97,7 @@
       text-decoration: none; border-radius: 12px; font-weight: bold;
       border: none; cursor: pointer; transition: 0.2s; display: inline-block;
     }
-    .btn:hover { filter: brightness(1.2); }
+    .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
 
     .settings-section { display: none; animation: fadeIn 0.4s ease-out; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -105,10 +107,7 @@
       border: 4px solid var(--accent); background: #fff; margin-bottom: 15px;
     }
 
-    .color-dot {
-      width: 35px; height: 35px; border-radius: 50%; cursor: pointer;
-      border: 2px solid #fff; transition: 0.2s;
-    }
+    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
   </style>
 </head>
 <body>
@@ -118,12 +117,8 @@
     <button class="toggle-sidebar" id="toggleBtn">❯</button>
     <div style="padding: 30px 25px; font-weight: 900; color: var(--accent); height: 80px;">SH10</div>
     <nav>
-      <div class="nav-item active" id="nav-dashboard">
-        <span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span>
-      </div>
-      <div class="nav-item" id="nav-settings">
-        <span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span>
-      </div>
+      <div class="nav-item active s-hover" id="nav-dashboard"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></div>
+      <div class="nav-item s-hover" id="nav-settings"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
     </nav>
   </aside>
 
@@ -134,7 +129,7 @@
     <div id="page-dashboard">
       <div class="header">
         <h1>AO Dashboard Q10</h1>
-        <p id="greeting" style="color: var(--text-muted);">Chào mừng trở lại!</p>
+        <p id="greeting" style="color: var(--text-muted);">Sẵn sàng tác chiến chưa, Commander? 🚀</p>
       </div>
 
       <div class="grid">
@@ -203,17 +198,16 @@
     const pageDashboard = document.getElementById('page-dashboard');
     const pageSettings = document.getElementById('page-settings');
     
-    // Audio Variables
     let audioCtx, ambientOsc, ambientGain;
     let isAmbientPlaying = false;
 
-    // --- Audio System ---
+    // --- Audio Logic ---
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    function playUI(freq, vol = 0.2, dur = 0.1) {
+    function playUI(freq, vol = 0.25, dur = 0.1) {
       initAudio();
       const osc = audioCtx.createOscillator();
       const g = audioCtx.createGain();
@@ -234,7 +228,7 @@
         ambientOsc.type = 'triangle';
         ambientOsc.frequency.setValueAtTime(55, audioCtx.currentTime);
         ambientGain.gain.setValueAtTime(0, audioCtx.currentTime);
-        ambientGain.gain.linearRampToValueAtTime(0.12, audioCtx.currentTime + 2); // Đã tăng âm lượng nền
+        ambientGain.gain.linearRampToValueAtTime(0.15, audioCtx.currentTime + 2); // Âm lượng cực rõ
         ambientOsc.connect(ambientGain);
         ambientGain.connect(audioCtx.destination);
         ambientOsc.start();
@@ -248,10 +242,10 @@
       }
     }
 
-    // --- Sidebar & Navigation Logic ---
+    // --- Sidebar & Navigation ---
     toggleBtn.addEventListener('click', () => {
       sidebar.classList.toggle('expanded');
-      playUI(600, 0.15);
+      playUI(600, 0.2);
     });
 
     overlay.addEventListener('click', () => {
@@ -270,46 +264,47 @@
         navDashboard.classList.remove('active');
         navSettings.classList.add('active');
       }
-      sidebar.classList.remove('expanded'); // Đóng sidebar khi chọn xong
-      playUI(1000, 0.2);
+      sidebar.classList.remove('expanded');
+      playUI(1000, 0.3);
     }
 
-    navDashboard.addEventListener('click', () => switchPage('dashboard'));
-    navSettings.addEventListener('click', () => switchPage('settings'));
+    navDashboard.onclick = () => switchPage('dashboard');
+    navSettings.onclick = () => switchPage('settings');
 
-    // --- Settings Functions ---
+    // --- Settings Events ---
     document.getElementById('btn-male').onclick = () => {
       document.getElementById('userAvatar').src = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
-      playUI(1200, 0.2);
+      playUI(1200, 0.3);
     };
     document.getElementById('btn-female').onclick = () => {
       document.getElementById('userAvatar').src = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
-      playUI(1200, 0.2);
+      playUI(1200, 0.3);
     };
 
     const colors = { green: '#22c55e', blue: '#3b82f6', red: '#ef4444', purple: '#a855f7' };
     Object.keys(colors).forEach(c => {
-      document.getElementById(`color-${c}`).onclick = () => {
+      const el = document.getElementById(`color-${c}`);
+      if(el) el.onclick = () => {
         document.documentElement.style.setProperty('--accent', colors[c]);
-        playUI(800, 0.2);
+        playUI(800, 0.3);
       };
     });
 
     document.getElementById('bgSoundBtn').onclick = toggleAmbient;
 
-    // --- Hover Effects ---
+    // --- Hover Sounds ---
     function applyHover() {
       const items = document.querySelectorAll('.s-hover, .nav-item, .btn, .color-dot, .toggle-sidebar');
       items.forEach(el => {
-        el.onmouseenter = () => playUI(850, 0.05, 0.05); // Tiếng rê chuột (Hover)
+        el.onmouseenter = () => playUI(900, 0.08, 0.05);
       });
     }
 
-    // Initialize
     window.onload = () => {
       applyHover();
+      // Chào hỏi Commander
       const h = new Date().getHours();
-      document.getElementById('greeting').innerText = h < 12 ? "Good Morning, Commander! ☀️" : "Sẵn sàng làm việc, Gamer? 🚀";
+      document.getElementById('greeting').innerText = h < 12 ? "Chào buổi sáng, Commander! ☀️" : "Sẵn sàng làm việc chưa, Gamer? 🚀";
     };
   </script>
 </body>

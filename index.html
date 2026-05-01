@@ -10,34 +10,38 @@
   <style>
     :root {
       --bg-color: #2e1065; 
-      --card-bg: rgba(255, 255, 255, 0.1);
-      --card-border: rgba(255, 255, 255, 0.8); 
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: #ffffff; 
       --text-main: #ffffff;
       --text-muted: #cbd5e1;
       --accent: #22c55e;
-      --sidebar-width: 240px;
+      --sidebar-width: 260px;
       --sidebar-collapsed-width: 85px;
     }
 
     body.light-mode {
       --bg-color: #f1f5f9; 
-      --card-bg: rgba(255, 255, 255, 0.4);
+      --card-bg: rgba(255, 255, 255, 0.6);
       --card-border: #000000;
       --text-main: #0f172a;
       --text-muted: #475569;
+      --accent: #16a34a;
     }
 
     * {
       margin: 0; padding: 0; box-sizing: border-box;
       font-family: "Segoe UI", system-ui, sans-serif;
+      transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
 
     body {
       background-color: var(--bg-color);
+      /* Chỉ giữ nền màu tím gradient đơn giản */
+      background-image: linear-gradient(135deg, var(--bg-color) 0%, #1e0b45 100%);
+      background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
-      transition: background 0.3s ease;
     }
 
     /* === Sidebar Styles === */
@@ -45,114 +49,150 @@
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-width);
       background: var(--card-bg);
-      backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
       border: 2.5px solid var(--card-border);
       border-radius: 28px;
       z-index: 1000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex; flex-direction: column;
-      overflow: hidden; /* Cực kỳ quan trọng để giấu chữ */
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
     }
 
     .sidebar.collapsed { width: var(--sidebar-collapsed-width); }
+
+    .sidebar-header {
+      padding: 30px 20px;
+      display: flex; align-items: center; overflow: hidden;
+    }
+
+    .logo { 
+      font-weight: 800; font-size: 1.2rem; white-space: nowrap; 
+      transition: opacity 0.3s ease;
+    }
+    /* Ẩn chữ logo khi thu nhỏ */
+    .sidebar.collapsed .logo { opacity: 0; pointer-events: none; }
 
     .toggle-sidebar {
       background: var(--accent); border: 2.5px solid #000; color: white;
       width: 32px; height: 32px; border-radius: 10px;
       cursor: pointer; box-shadow: 3px 3px 0px #000;
       display: flex; align-items: center; justify-content: center;
-      position: absolute; right: 15px; top: 25px; z-index: 10;
-      transition: transform 0.4s ease;
+      position: absolute; right: -15px; top: 40px; transition: 0.3s;
+      z-index: 1001;
     }
-    .sidebar.collapsed .toggle-sidebar { transform: rotate(180deg); right: 26px; }
+    .sidebar.collapsed .toggle-sidebar { transform: rotate(180deg); }
 
-    .sidebar-nav { flex-grow: 1; padding: 80px 10px 10px; }
-
+    .sidebar-nav { flex-grow: 1; padding: 10px; margin-top: 20px; }
+    
     .nav-item {
       display: flex; align-items: center; padding: 15px; margin-bottom: 10px;
       text-decoration: none; color: var(--text-main); border-radius: 18px;
-      transition: background 0.3s, transform 0.2s;
-      white-space: nowrap;
+      transition: 0.3s; overflow: hidden; /* Quan trọng để ẩn chữ */
     }
-    .nav-item:hover { background: rgba(255, 255, 255, 0.15); }
+    .nav-item:hover { background: rgba(255, 255, 255, 0.1); transform: translateX(5px); }
     
-    .nav-icon { font-size: 1.6rem; min-width: 60px; display: flex; justify-content: center; }
-
-    .nav-text {
-      font-weight: 600;
-      opacity: 1;
-      transition: opacity 0.3s ease;
+    .nav-item.active { 
+      background: var(--accent); color: white; 
+      border: 2px solid #000; box-shadow: 4px 4px 0px #000; 
     }
-    /* Ẩn chữ khi sidebar thu nhỏ */
-    .sidebar.collapsed .nav-text { opacity: 0; pointer-events: none; }
+
+    .nav-icon { font-size: 1.4rem; min-width: 35px; text-align: center; margin-right: 15px; }
+
+    /* Xử lý ẩn văn bản trong Nav Item khi thu nhỏ */
+    .nav-text {
+      white-space: nowrap;
+      transition: opacity 0.3s ease;
+      font-weight: 600;
+    }
+    .sidebar.collapsed .nav-text {
+      opacity: 0;
+      pointer-events: none;
+    }
 
     /* === Main Content === */
     .container {
-      margin-left: calc(var(--sidebar-width) + 40px);
-      padding: 40px;
+      max-width: 1200px;
+      margin-left: calc(var(--sidebar-width) + 60px);
+      padding: 40px 40px 80px 0;
       transition: margin-left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .sidebar.collapsed + .container { margin-left: calc(var(--sidebar-collapsed-width) + 40px); }
+    .sidebar.collapsed + .container { margin-left: calc(var(--sidebar-collapsed-width) + 60px); }
 
-    .header { text-align: center; margin-bottom: 40px; }
-    .header h1 { font-size: 42px; margin-bottom: 10px; }
+    .header { text-align: center; margin-bottom: 30px; }
+    .header h1 { font-size: 42px; font-weight: 700; margin-bottom: 10px; }
+    .header p { color: var(--text-muted); font-size: 1.1rem; }
 
     .search-container { max-width: 500px; margin: 0 auto 50px; position: relative; }
     .search-input {
-      width: 100%; padding: 15px 50px;
-      background: var(--card-bg); backdrop-filter: blur(5px);
+      width: 100%; padding: 15px 20px 15px 50px;
+      background: var(--search-bg); backdrop-filter: blur(5px);
       border: 2px solid var(--card-border); border-radius: 30px;
       color: var(--text-main); outline: none;
     }
-    .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); opacity: 0.7; }
+    .search-icon { position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: var(--text-muted); pointer-events: none; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
 
     .card {
       background: var(--card-bg); backdrop-filter: blur(15px);
       border: 2.5px solid var(--card-border); border-radius: 28px;
-      padding: 40px 25px; transition: transform 0.3s;
+      padding: 40px 25px; transition: all 0.3s ease;
       display: flex; flex-direction: column; align-items: center; text-align: center;
     }
-    .card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.2); }
+    .card:hover { transform: translateY(-10px); background: rgba(255, 255, 255, 0.15); }
 
     .btn {
       width: 100%; padding: 14px; background: var(--accent); color: white;
       text-decoration: none; border-radius: 16px; font-weight: 800;
       border: 3px solid #000; box-shadow: 0 5px 0px #000;
-      display: flex; align-items: center; justify-content: center;
+      display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
     }
-    .btn:active { transform: translateY(3px); box-shadow: 0 0px 0px #000; }
+    .btn:hover { transform: translateY(-2px); box-shadow: 0 7px 0px #000; }
 
     .theme-toggle {
       position: fixed; bottom: 20px; right: 20px; width: 50px; height: 50px;
-      background: var(--card-bg); backdrop-filter: blur(10px);
-      border-radius: 50%; border: 2.5px solid var(--card-border);
-      cursor: pointer; font-size: 24px;
+      background: var(--toggle-bg); backdrop-filter: blur(10px);
+      border-radius: 50%; border: 2px solid var(--card-border);
+      cursor: pointer; font-size: 24px; z-index: 1000;
     }
 
-    @media (max-width: 768px) {
-        .sidebar { left: -300px; }
-        .container { margin-left: 0 !important; }
+    @media (max-width: 1024px) {
+        .container { margin-left: 100px !important; padding-right: 20px; }
     }
   </style>
 </head>
 <body>
 
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <button class="toggle-sidebar" id="toggleSidebarBtn">❮</button>
+    <div class="sidebar-header">
+      <div class="logo">STEMHOUSE Q10</div>
+    </div>
     <nav class="sidebar-nav">
-      <a href="#" class="nav-item"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">📅</span><span class="nav-text">Lịch dạy</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">📊</span><span class="nav-text">Báo cáo</span></a>
-      <a href="#" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></a>
+      <a href="#" class="nav-item active">
+        <span class="nav-icon">🏠</span>
+        <span class="nav-text">Dashboard</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">📅</span>
+        <span class="nav-text">Lịch dạy</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">📊</span>
+        <span class="nav-text">Báo cáo</span>
+      </a>
+      <a href="#" class="nav-item">
+        <span class="nav-icon">⚙️</span>
+        <span class="nav-text">Cài đặt</span>
+      </a>
     </nav>
   </aside>
 
   <div class="container">
     <div class="header">
       <h1>AO Dashboard Q10</h1>
-      <p id="greeting">Đang tải...</p>
+      <p id="greeting">Chào mừng bạn trở lại!</p>
     </div>
 
     <div class="search-container">
@@ -160,24 +200,24 @@
       <input type="search" class="search-input" id="quickSearch" placeholder="Tìm kiếm file nhanh...">
     </div>
 
-    <div class="grid">
+    <div class="grid" id="cardGrid">
       <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">📘</div>
+        <div class="icon" style="font-size: 55px; margin-bottom: 20px;">📘</div>
         <h3>Học Cụ & In Ấn</h3>
-        <p style="margin-bottom: 30px; opacity: 0.8;">Quản lý vật tư giảng dạy và in ấn.</p>
-        <a class="btn" href="#">Mở file</a>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">Quản lý vật tư giảng dạy và điều phối in ấn tại Q10.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank"><span class="btn-text">Mở file</span></a>
       </div>
       <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">🧾</div>
+        <div class="icon" style="font-size: 55px; margin-bottom: 20px;">🧾</div>
         <h3>Hóa Đơn VAT</h3>
-        <p style="margin-bottom: 30px; opacity: 0.8;">Theo dõi luồng hóa đơn tài chính.</p>
-        <a class="btn" href="#">Mở file</a>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">Theo dõi luồng hóa đơn và đối soát dữ liệu tài chính.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank"><span class="btn-text">Mở file</span></a>
       </div>
       <div class="card">
-        <div style="font-size: 55px; margin-bottom: 20px;">📚</div>
+        <div class="icon" style="font-size: 55px; margin-bottom: 20px;">📚</div>
         <h3>Kho Sách</h3>
-        <p style="margin-bottom: 30px; opacity: 0.8;">Kiểm kê tồn kho sách giáo khoa.</p>
-        <a class="btn" href="#">Mở file</a>
+        <p style="margin-bottom: 30px; color: var(--text-muted);">Kiểm kê tồn kho sách giáo khoa và tài liệu giảng dạy.</p>
+        <a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank"><span class="btn-text">Mở file</span></a>
       </div>
     </div>
   </div>
@@ -185,36 +225,58 @@
   <button class="theme-toggle" id="themeToggle">🤪</button>
 
   <script>
+    const body = document.body;
     const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleSidebarBtn');
-    const themeBtn = document.getElementById('themeToggle');
+    const toggleSidebarBtn = document.getElementById('toggleSidebarBtn');
+    const themeToggle = document.getElementById('themeToggle');
+    const greetingEl = document.getElementById('greeting');
 
-    // Sidebar Toggle
-    toggleBtn.addEventListener('click', () => {
+    // 1. Sidebar Toggle - Đã sửa lỗi chữ tràn
+    toggleSidebarBtn.addEventListener('click', () => {
       sidebar.classList.toggle('collapsed');
     });
 
-    // Theme Toggle
-    themeBtn.addEventListener('click', () => {
-      document.body.classList.toggle('light-mode');
-      themeBtn.innerText = document.body.classList.contains('light-mode') ? "😎" : "🤪";
+    // 2. Âm thanh Hover
+    let audioCtx;
+    function playHoverSound() {
+      try {
+        if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(950, audioCtx.currentTime);
+        gain.gain.setValueAtTime(0.02, audioCtx.currentTime);
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        osc.start(); osc.stop(audioCtx.currentTime + 0.05);
+      } catch (e) {}
+    }
+    document.querySelectorAll(".card, .btn, .nav-item, .toggle-sidebar, .theme-toggle").forEach(el => {
+      el.addEventListener("mouseenter", playHoverSound);
     });
 
-    // Lời chào
+    // 3. Lời chào thông minh
     function updateGreeting() {
       const hour = new Date().getHours();
-      let text = "Chúc bạn một ngày làm việc vui vẻ! ✨";
-      if (hour < 12) text = "Chào buổi sáng! Chúc bạn ngày mới năng suất ☀️";
-      else if (hour < 18) text = "Chào buổi chiều! Cố gắng hoàn thành sớm để về nhé 🚀";
-      document.getElementById('greeting').innerText = text;
+      let msg = "Chào mừng bạn!";
+      if (hour < 12) msg = "Chào buổi sáng! Chúc đồng chí một ngày năng suất ☀️";
+      else if (hour < 18) msg = "Chiều rồi, cố gắng hoàn thành công việc nào 🚀";
+      else msg = "Làm việc muộn rồi, nhớ nghỉ ngơi nhé đồng chí! 🌙";
+      greetingEl.innerText = msg;
     }
 
-    // Tìm kiếm nhanh
+    // 4. Tìm kiếm nhanh
     document.getElementById('quickSearch').addEventListener('input', function(e) {
       const term = e.target.value.toLowerCase();
       document.querySelectorAll('.card').forEach(card => {
-        card.style.display = card.innerText.toLowerCase().includes(term) ? "flex" : "none";
+        const text = card.innerText.toLowerCase();
+        card.style.display = text.includes(term) ? "flex" : "none";
       });
+    });
+
+    // 5. Theme toggle
+    themeToggle.addEventListener('click', () => {
+      body.classList.toggle('light-mode');
+      themeToggle.innerText = body.classList.contains('light-mode') ? "😎" : "🤪";
     });
 
     updateGreeting();

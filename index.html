@@ -525,6 +525,148 @@
       .home-clock { font-size: 3.4rem; }
       .header-group h1 { font-size: 2.8rem; }
     }
+    
+    /* =========================
+   EXCEL MINI
+========================= */
+.excel-wrap{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.excel-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:22px;
+  padding:14px 16px;
+  backdrop-filter:blur(10px);
+}
+
+.excel-toolbar-left{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.excel-btn{
+  width:auto;
+  margin-top:0;
+  padding:10px 16px;
+  border-radius:12px;
+}
+
+.excel-toolbar-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.excel-badge{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--card-border);
+  font-size:0.85rem;
+  font-weight:700;
+}
+
+.excel-shell{
+  width:100%;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:28px;
+  padding:18px;
+  backdrop-filter:blur(12px);
+  overflow:hidden;
+}
+
+.excel-table-wrap{
+  width:100%;
+  overflow:auto;
+  border-radius:18px;
+  border:1px solid var(--card-border);
+}
+
+.excel-table{
+  width:100%;
+  min-width:900px;
+  border-collapse:collapse;
+  table-layout:fixed;
+  background:rgba(0,0,0,0.08);
+}
+
+.excel-table th,
+.excel-table td{
+  border:1px solid var(--card-border);
+  min-width:110px;
+  height:44px;
+  padding:0;
+  text-align:center;
+  vertical-align:middle;
+}
+
+.excel-table th{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:rgba(255,255,255,0.08);
+  font-size:0.9rem;
+  font-weight:800;
+}
+
+.excel-table th.row-head{
+  position:sticky;
+  left:0;
+  z-index:6;
+  min-width:56px;
+  width:56px;
+}
+
+.excel-table td.row-index{
+  position:sticky;
+  left:0;
+  z-index:4;
+  background:rgba(255,255,255,0.04);
+  font-weight:700;
+  min-width:56px;
+  width:56px;
+}
+
+.excel-table td input{
+  width:100%;
+  height:100%;
+  border:none;
+  outline:none;
+  padding:10px;
+  background:transparent;
+  color:var(--text-main);
+  font-size:0.95rem;
+}
+
+.excel-table td input:focus{
+  background:rgba(255,255,255,0.06);
+  box-shadow:inset 0 0 0 2px var(--accent);
+}
+
+body.light-mode .excel-table{
+  background:rgba(255,255,255,0.65);
+}
+
+body.light-mode .excel-table th{
+  background:rgba(255,255,255,0.85);
+}
+
+body.light-mode .excel-table td.row-index{
+  background:rgba(255,255,255,0.7);
+}
+    
   </style>
 </head>
 <body id="body">
@@ -571,15 +713,35 @@
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
-    <div id="page-excel" class="page-content">
-      <div class="header-group">
-        <h1>EXCEL Trắng</h1>
-        <p>Phase 3 sẽ nâng cấp phần này thành bảng tính mini.</p>
+    <!-- PAGE: EXCEL TRẮNG -->
+<div id="page-excel" class="page-content">
+  <div class="header-group">
+    <h1>EXCEL Trắng</h1>
+    <p style="opacity:0.75;">Trang tính mini ngay trong dashboard ✨</p>
+  </div>
+
+  <div class="excel-wrap">
+    <div class="excel-toolbar">
+      <div class="excel-toolbar-left">
+        <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
+        <label class="btn excel-btn" style="margin-top:0;">
+          📥 Import CSV
+          <input type="file" id="csvImport" accept=".csv" style="display:none;">
+        </label>
+        <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
       </div>
-      <div class="card" style="min-height:300px;">
-        <h2>📗 Khu vực EXCEL đang chờ nâng cấp ở Phase 3</h2>
+      <div class="excel-toolbar-right">
+        <span class="excel-badge">Auto Save</span>
       </div>
     </div>
+
+    <div class="excel-shell">
+      <div class="excel-table-wrap">
+        <table class="excel-table" id="excelTable"></table>
+      </div>
+    </div>
+  </div>
+</div>
 
     <div id="page-settings" class="page-content">
       <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
@@ -1095,5 +1257,158 @@
       addHoverEvents();
     };
   </script>
+<script>
+  /* =========================
+     EXCEL MINI LOGIC
+  ========================= */
+
+  let excelData = JSON.parse(localStorage.getItem('ao_excel_v1')) || {};
+  const excelCols = ['A','B','C','D','E','F','G','H'];
+  const excelRows = 20;
+
+  function renderExcelSheet() {
+    const table = document.getElementById('excelTable');
+    if (!table) return;
+
+    let html = '<thead><tr><th class="row-head">#</th>';
+    excelCols.forEach(col => {
+      html += `<th>${col}</th>`;
+    });
+    html += '</tr></thead><tbody>';
+
+    for (let row = 1; row <= excelRows; row++) {
+      html += `<tr>`;
+      html += `<td class="row-index">${row}</td>`;
+
+      excelCols.forEach(col => {
+        const key = `${col}${row}`;
+        const value = excelData[key] || '';
+        html += `
+          <td>
+            <input
+              type="text"
+              value="${value.replace(/"/g, '&quot;')}"
+              data-cell="${key}"
+              oninput="updateCell(this)"
+            >
+          </td>
+        `;
+      });
+
+      html += `</tr>`;
+    }
+
+    html += '</tbody>';
+    table.innerHTML = html;
+  }
+
+  function updateCell(input) {
+    const key = input.dataset.cell;
+    excelData[key] = input.value;
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  }
+
+  function clearSheet() {
+    const sure = confirm('Xoá toàn bộ dữ liệu sheet này nha ní?');
+    if (!sure) return;
+
+    excelData = {};
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+    renderExcelSheet();
+  }
+
+  function exportCSV() {
+    let csv = [];
+    csv.push(['', ...excelCols].join(','));
+
+    for (let row = 1; row <= excelRows; row++) {
+      let line = [row];
+
+      excelCols.forEach(col => {
+        const key = `${col}${row}`;
+        let value = excelData[key] || '';
+        value = `"${String(value).replace(/"/g, '""')}"`;
+        line.push(value);
+      });
+
+      csv.push(line.join(','));
+    }
+
+    const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ao-excel-sheet.csv';
+    a.click();
+  }
+
+  function importCSVFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const text = e.target.result;
+      const rows = text.split(/\r?\n/).filter(Boolean);
+
+      if (!rows.length) return;
+
+      let newData = {};
+
+      rows.slice(1).forEach((line, rowIndex) => {
+        const values = parseCSVLine(line);
+
+        excelCols.forEach((col, colIndex) => {
+          const key = `${col}${rowIndex + 1}`;
+          newData[key] = values[colIndex + 1] || '';
+        });
+      });
+
+      excelData = newData;
+      localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+      renderExcelSheet();
+      alert('Import CSV thành công nha ní!');
+    };
+
+    reader.readAsText(file);
+  }
+
+  function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      const next = line[i + 1];
+
+      if (char === '"' && insideQuotes && next === '"') {
+        current += '"';
+        i++;
+      } else if (char === '"') {
+        insideQuotes = !insideQuotes;
+      } else if (char === ',' && !insideQuotes) {
+        result.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+
+    result.push(current);
+    return result;
+  }
+
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'csvImport') {
+      const file = e.target.files[0];
+      if (file) importCSVFile(file);
+    }
+  });
+
+  const oldWindowOnload = window.onload;
+  window.onload = () => {
+    if (oldWindowOnload) oldWindowOnload();
+    renderExcelSheet();
+  };
+</script>
+
 </body>
 </html>

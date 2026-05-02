@@ -3,93 +3,109 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Ultimate Edition</title>
+  <title>AO Dashboard Q10 | Final Edition</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
   <style>
     :root {
-      --bg-color: #0f0720; 
-      --card-bg: rgba(255, 255, 255, 0.08);
-      --card-border: rgba(255, 255, 255, 0.2); 
-      --text-main: #ffffff;
-      --accent: #22c55e;
-      --sidebar-collapsed-width: 80px;
-      --sidebar-width: 260px;
+      --bg-color: #0f0720; --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.2); --text-main: #ffffff;
+      --accent: #22c55e; --sidebar-width: 260px; --sidebar-collapsed-width: 80px;
     }
 
     body.light-mode {
-      --bg-color: #f8fafc;
-      --card-bg: rgba(0, 0, 0, 0.05);
-      --card-border: rgba(0, 0, 0, 0.1);
-      --text-main: #1e293b;
+      --bg-color: #f8fafc; --card-bg: rgba(0, 0, 0, 0.05);
+      --card-border: rgba(0, 0, 0, 0.1); --text-main: #1e293b;
     }
 
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; transition: background 0.3s, color 0.3s; }
-    body { background: var(--bg-color); background-image: radial-gradient(circle at 50% -20%, #4c1d95, #1e1045, #0f0720); background-attachment: fixed; color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+    body {
+      background: var(--bg-color);
+      background-image: radial-gradient(circle at 50% -20%, #4c1d95, #1e1045, #0f0720);
+      background-attachment: fixed; color: var(--text-main); min-height: 100vh; overflow-x: hidden;
+    }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
-    /* 1. Mũi tên Sidebar Căn Giữa */
-    .sidebar { position: fixed; top: 20px; left: 20px; bottom: 20px; width: var(--sidebar-collapsed-width); background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(25px); border: 1px solid var(--card-border); border-radius: 24px; z-index: 2000; transition: 0.4s; display: flex; flex-direction: column; }
-    .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
-    .toggle-sidebar { position: absolute; top: 15px; left: 50%; transform: translateX(-50%); background: var(--accent); border: 2px solid #000; color: #000; width: 50px; height: 22px; border-radius: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    /* 1. Sidebar Arrow Căn giữa */
+    .sidebar {
+      position: fixed; top: 20px; left: 20px; bottom: 20px;
+      width: var(--sidebar-collapsed-width); background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(25px); border: 1px solid var(--card-border);
+      border-radius: 24px; z-index: 2000; transition: width 0.4s; display: flex; flex-direction: column;
+    }
+    .sidebar.expanded { width: var(--sidebar-width); }
+
+    .toggle-sidebar {
+      position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
+      background: var(--accent); border: 2px solid #000; color: #000;
+      width: 50px; height: 22px; border-radius: 12px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-weight: bold;
+    }
     .toggle-sidebar span { transition: 0.4s; font-size: 14px; line-height: 1; }
     .sidebar.expanded .toggle-sidebar span { transform: rotate(180deg); }
 
     .sidebar-header { padding: 60px 0 10px 0; display: flex; flex-direction: column; align-items: center; }
-    .sidebar-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; transition: 0.3s; object-fit: cover; }
+    .sidebar-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; object-fit: cover; }
     .sidebar.expanded .sidebar-avatar { width: 90px; height: 90px; }
-    .sidebar-username { margin-top: 12px; font-weight: bold; opacity: 0; transition: 0.3s; color: var(--accent); }
+    .sidebar-username { margin-top: 12px; font-weight: bold; font-size: 0.9rem; color: var(--accent); opacity: 0; white-space: nowrap; transition: 0.3s; }
     .sidebar.expanded .sidebar-username { opacity: 1; }
 
     .nav-content { flex-grow: 1; margin-top: 20px; width: 100%; }
     .nav-item { display: flex; align-items: center; justify-content: center; padding: 15px 0; margin: 8px 10px; border-radius: 16px; cursor: pointer; transition: 0.3s; }
     .sidebar.expanded .nav-item { justify-content: flex-start; padding-left: 20px; }
     .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
-    .nav-icon { font-size: 1.4rem; min-width: 40px; text-align: center; }
-    .nav-text { width: 0; opacity: 0; transition: 0.2s; white-space: nowrap; overflow: hidden; }
-    .sidebar.expanded .nav-text { width: auto; opacity: 1; margin-left: 10px; }
+    .nav-text { width: 0; opacity: 0; visibility: hidden; transition: 0.2s; margin-left: 10px; }
+    .sidebar.expanded .nav-text { width: auto; opacity: 1; visibility: visible; }
 
-    /* Layout & Title */
-    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px 100px 120px; text-align: center; }
-    .header-group h1 { font-size: 4rem; letter-spacing: -3px; margin-bottom: 10px; }
-    #greeting { opacity: 0.8; margin-bottom: 50px; }
+    /* Layout */
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px 100px 120px; }
+    .header-group { text-align: center; margin-bottom: 50px; }
+    .header-group h1 { font-size: 4rem; letter-spacing: -3px; }
 
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
 
-    /* Card & Delete Button */
-    .card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 28px; padding: 30px; display: flex; flex-direction: column; align-items: center; justify-content: center; transition: 0.3s; backdrop-filter: blur(10px); position: relative; }
+    /* 3. Card Căn giữa */
+    .card {
+      background: var(--card-bg); border: 1px solid var(--card-border);
+      border-radius: 28px; padding: 30px;
+      display: flex; flex-direction: column; align-items: center; text-align: center;
+      transition: 0.3s; backdrop-filter: blur(10px); position: relative;
+    }
     .card:hover { transform: translateY(-8px); border-color: var(--accent); }
-    .delete-btn { position: absolute; top: 15px; right: 15px; cursor: pointer; font-size: 18px; opacity: 0; transition: 0.3s; color: #ff4747; }
-    .card:hover .delete-btn { opacity: 0.6; }
-    .delete-btn:hover { opacity: 1 !important; transform: scale(1.2); }
-    
     .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; }
-    .add-card { cursor: pointer; border: 2px dashed var(--card-border); background: transparent; min-height: 220px; }
+    
+    .btn-delete { position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; background: rgba(255,0,0,0.2); color: #ff4747; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; border: none; }
+    .card:hover .btn-delete { opacity: 1; }
 
-    /* Modal & Confirm Dialog */
+    .add-card { cursor: pointer; border: 2px dashed var(--card-border); background: transparent; min-height: 200px; justify-content: center; }
+
+    /* Modal Thêm Lối Tắt với Emoji Picker */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999; }
-    .modal { background: #202124; width: 450px; border-radius: 12px; padding: 24px; color: #e8eaed; text-align: left; }
-    .modal label { font-size: 12px; color: #9aa0a6; display: block; margin-bottom: 5px; }
-    .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 12px; color: #fff; margin-bottom: 20px; outline: none; }
-    .modal-btns { display: flex; justify-content: flex-end; gap: 12px; }
-    .modal-btn { padding: 10px 24px; border-radius: 20px; cursor: pointer; border: 1px solid #5f6368; background: transparent; color: var(--accent); font-weight: 500; }
-    .modal-btn.primary { background: #303134; border: none; color: #5f6368; }
-    .modal-btn.primary.active { background: var(--accent); color: #000; }
+    .modal { background: #202124; width: 450px; border-radius: 12px; padding: 24px; color: #e8eaed; }
+    .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; }
+    .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 10px; color: #fff; margin-bottom: 20px; outline: none; }
+    
+    .emoji-picker { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; max-height: 120px; overflow-y: auto; background: #303134; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+    .emoji-item { cursor: pointer; font-size: 20px; text-align: center; padding: 5px; border-radius: 5px; transition: 0.2s; }
+    .emoji-item:hover, .emoji-item.selected { background: var(--accent); }
 
-    .confirm-box { text-align: center; }
-    .confirm-box h2 { margin-bottom: 25px; color: #fff; }
-    .confirm-btns { display: flex; gap: 15px; justify-content: center; }
-    .btn-yes { background: #ff4747; color: white; border: none; padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; }
-    .btn-no { background: #5f6368; color: white; border: none; padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; }
+    .modal-btns { display: flex; justify-content: flex-end; gap: 12px; }
+    .modal-btn { padding: 8px 24px; border-radius: 20px; cursor: pointer; border: 1px solid #5f6368; background: transparent; color: var(--accent); }
+    .modal-btn.primary { background: var(--accent); color: #000; border: none; }
+
+    /* 2. Custom Alert Box */
+    .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; }
+    .alert-box { background: #1e1e1e; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid #ff4747; }
+    .alert-box h2 { color: #ff4747; margin-bottom: 20px; }
+    .alert-btn-group { display: flex; gap: 15px; justify-content: center; }
+    .alert-btn { padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; border: none; }
 
     /* Settings section */
-    .settings-section { display: none; text-align: left; animation: fadeIn 0.3s; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .btn-save { padding: 12px 30px; background: #3b82f6; color: white; border-radius: 50px; border: none; cursor: pointer; float: right; }
-    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
-
-    .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 55px; height: 55px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.5rem; }
+    .settings-section { display: none; }
+    .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; font-size: 1.5rem; }
   </style>
 </head>
 <body id="body">
@@ -115,56 +131,43 @@
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
+    <!-- Trang Cài Đặt -->
     <div id="page-settings" class="settings-section">
-      <button class="btn-save" onclick="saveAllSettings()">💾 LƯU NÒ</button>
-      <div style="clear: both; padding-top: 20px;"></div>
+      <div class="header-group"><h1>Cài đặt</h1></div>
       <div class="grid">
         <div class="card" style="grid-column: span 2;">
-          <h3>Thông Tin Của Ní</h3>
-          <input type="text" id="usernameInput" style="width:100%; padding:12px; margin:15px 0; border-radius:10px; border:1px solid #ccc; background:rgba(0,0,0,0.1); color:inherit;">
-          <div style="display: flex; gap: 10px; width: 100%;">
-            <button class="btn" onclick="setGender('male')">Liam</button>
-            <button class="btn" onclick="setGender('female')" style="background: #ec4899;">Adrian</button>
-            <button class="btn" onclick="setGender('dog')" style="background: #f59e0b;">Luis</button>
-          </div>
-        </div>
-        <div class="card">
-          <h3>Màu Chủ Đạo</h3>
-          <div style="display: flex; gap: 15px; margin-top: 20px;">
-            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
-            <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
-            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
-            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
-          </div>
+          <h3>Đổi Tên</h3>
+          <input type="text" id="usernameInput" style="width:100%; padding:10px; margin-top:15px; border-radius:10px; background:rgba(0,0,0,0.1); color:#fff;" placeholder="Tên mới...">
+          <button class="btn" onclick="saveAllSettings()">Lưu Tên</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal Thêm Lối Tắt (Căn giữa nội dung) -->
+  <!-- Modal Thêm lối tắt -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <h2>Thêm lối tắt</h2>
-      <label>Icon (Dán Emoji từ Piliapp)</label>
-      <input type="text" id="shortcutIcon" placeholder="Ví dụ: ⭐">
+      <label>Chọn Icon</label>
+      <div class="emoji-picker" id="emojiPicker"></div>
       <label>Tên</label>
-      <input type="text" id="shortcutName" placeholder="Nhập tên...">
+      <input type="text" id="shortcutName" placeholder="Tên hiển thị...">
       <label>URL</label>
-      <input type="text" id="shortcutUrl" placeholder="https://..." oninput="validateModal()">
+      <input type="text" id="shortcutUrl" placeholder="https://...">
       <div class="modal-btns">
         <button class="modal-btn" onclick="closeModal()">Huỷ</button>
-        <button class="modal-btn primary" id="btnDone" onclick="addShortcut()">Xong</button>
+        <button class="modal-btn primary" onclick="addShortcut()">Xong</button>
       </div>
     </div>
   </div>
 
-  <!-- Thông báo xác nhận xóa -->
-  <div class="modal-overlay" id="confirmOverlay">
-    <div class="modal confirm-box">
-      <h2>Mày chắc chưaaa?</h2>
-      <div class="confirm-btns">
-        <button class="btn-yes" id="confirmDeleteBtn">CHẮC</button>
-        <button class="btn-no" onclick="closeConfirm()">CHẮC chớt liền</button>
+  <!-- Custom Confirm Alert -->
+  <div class="alert-overlay" id="alertOverlay">
+    <div class="alert-box">
+      <h2 id="alertMsg">Mày chắc chưaaa?</h2>
+      <div class="alert-btn-group">
+        <button class="alert-btn" style="background: #ff4747; color: #fff;" id="confirmYes">CHẮC</button>
+        <button class="alert-btn" style="background: #333; color: #fff;" onclick="closeAlert()">CHẮC chớt liền</button>
       </div>
     </div>
   </div>
@@ -172,81 +175,68 @@
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
-    let appConfig = JSON.parse(localStorage.getItem('ao_dashboard_v2')) || {
-      name: "Ní Hào Ma", gender: "male", accent: "#22c55e", avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=Liam", isLightMode: false
-    };
-
-    // Danh sách 5 mục mặc định có thể xóa
-    let defaultItems = JSON.parse(localStorage.getItem('default_items')) || [
-      {name: "Course Key AE", url: "https://learn.eltngl.com/", icon: "🔑"},
-      {name: "Học Cụ & In Ấn", url: "https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx", icon: "📘"},
-      {name: "Hóa Đơn VAT", url: "https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx", icon: "🧾"},
-      {name: "Kho Sách", url: "https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx", icon: "📚"},
-      {name: "Quà Tặng HS", url: "https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx", icon: "🎁"}
+    // 5 mục mặc định
+    const defaultLinks = [
+      {id: 'd1', name: 'Course Key AE', url: 'https://learn.eltngl.com/', icon: '🔑'},
+      {id: 'd2', name: 'Học Cụ & In Ấn', url: 'https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx', icon: '📘'},
+      {id: 'd3', name: 'Hóa Đơn VAT', url: 'https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx', icon: '🧾'},
+      {id: 'd4', name: 'Kho Sách', url: 'https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx', icon: '📚'},
+      {id: 'd5', name: 'Quà Tặng HS', url: 'https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx', icon: '🎁'}
     ];
 
-    let customShortcuts = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
-    let pendingDelete = { type: '', index: -1 };
+    const emojis = ['🔑','📘','🧾','📚','🎁','🔗','🔴','🔵','🟢','📂','📝','📊','🎓','⭐','🔥','💡','🚀','🎯','🏢','💻'];
+    let selectedEmoji = '🔗';
+    let appConfig = JSON.parse(localStorage.getItem('ao_config_v3')) || { name: "Ní Hào Ma", isLightMode: false };
+    let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v3')) || defaultLinks;
+    let deleteId = null;
 
-    function renderAll() {
+    function renderShortcuts() {
       const grid = document.getElementById('shortcutGrid');
-      grid.innerHTML = '';
-
-      // Render cả mục mặc định và mục tự thêm (đều căn giữa)
-      [...defaultItems.map((item, i) => ({...item, type: 'default', idx: i})), 
-       ...customShortcuts.map((item, i) => ({...item, type: 'custom', idx: i}))]
-      .forEach(s => {
-        const card = document.createElement('div');
-        card.className = 'card';
-        card.innerHTML = `
-          <span class="delete-btn" onclick="askDelete('${s.type}', ${s.idx})">✕</span>
-          <div style="font-size: 50px; margin-bottom: 10px;">${s.icon || '🔗'}</div>
-          <h3 style="font-size: 1.1rem;">${s.name}</h3>
+      grid.innerHTML = userShortcuts.map((s, idx) => `
+        <div class="card">
+          <button class="btn-delete" onclick="askDelete('${s.id}')">✕</button>
+          <div style="font-size: 50px; margin-bottom: 10px;">${s.icon}</div>
+          <h3>${s.name}</h3>
           <a class="btn" href="${s.url}" target="_blank">Mở</a>
-        `;
-        grid.appendChild(card);
-      });
-
-      grid.innerHTML += `<div class="card add-card" onclick="openModal()"><div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p></div>`;
-      applyConfig();
+        </div>
+      `).join('') + `
+        <div class="card add-card" onclick="openModal()">
+          <div style="font-size: 60px; color: var(--accent);">+</div>
+          <p>Thêm lối tắt</p>
+        </div>`;
     }
 
-    function askDelete(type, index) {
-      pendingDelete = { type, index };
-      document.getElementById('confirmOverlay').style.display = 'flex';
+    function initEmojis() {
+      const picker = document.getElementById('emojiPicker');
+      picker.innerHTML = emojis.map(e => `<span class="emoji-item" onclick="selectEmoji(this, '${e}')">${e}</span>`).join('');
     }
 
-    function closeConfirm() { document.getElementById('confirmOverlay').style.display = 'none'; }
+    function selectEmoji(el, e) {
+      document.querySelectorAll('.emoji-item').forEach(i => i.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedEmoji = e;
+    }
 
-    document.getElementById('confirmDeleteBtn').onclick = () => {
-      if(pendingDelete.type === 'default') {
-        defaultItems.splice(pendingDelete.index, 1);
-        localStorage.setItem('default_items', JSON.stringify(defaultItems));
-      } else {
-        customShortcuts.splice(pendingDelete.index, 1);
-        localStorage.setItem('user_shortcuts', JSON.stringify(customShortcuts));
-      }
-      renderAll();
-      closeConfirm();
+    function askDelete(id) { deleteId = id; document.getElementById('alertOverlay').style.display = 'flex'; }
+    function closeAlert() { document.getElementById('alertOverlay').style.display = 'none'; }
+    
+    document.getElementById('confirmYes').onclick = () => {
+      userShortcuts = userShortcuts.filter(s => s.id !== deleteId);
+      localStorage.setItem('user_shortcuts_v3', JSON.stringify(userShortcuts));
+      renderShortcuts();
+      closeAlert();
     };
 
     function openModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
     function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
-    
-    function validateModal() {
-      const btn = document.getElementById('btnDone');
-      const hasUrl = document.getElementById('shortcutUrl').value.length > 5;
-      btn.classList.toggle('active', hasUrl);
-      btn.disabled = !hasUrl;
-    }
 
     function addShortcut() {
-      const name = document.getElementById('shortcutName').value || "Lối tắt";
+      const name = document.getElementById('shortcutName').value || "Lối tắt mới";
       const url = document.getElementById('shortcutUrl').value;
-      const icon = document.getElementById('shortcutIcon').value || "🔗";
-      customShortcuts.push({name, url, icon});
-      localStorage.setItem('user_shortcuts', JSON.stringify(customShortcuts));
-      renderAll(); closeModal();
+      if(!url) return alert("Dán cái link vào ní ơi!");
+      userShortcuts.push({ id: Date.now().toString(), name, url, icon: selectedEmoji });
+      localStorage.setItem('user_shortcuts_v3', JSON.stringify(userShortcuts));
+      renderShortcuts(); closeModal();
     }
 
     function switchPage(page) {
@@ -256,29 +246,33 @@
       document.getElementById('nav-settings').classList.toggle('active', page === 'settings');
     }
 
-    function applyConfig() {
-      document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
-      document.getElementById('usernameInput').value = appConfig.name;
-      document.getElementById('sidebarAvatar').src = appConfig.avatar;
-      document.documentElement.style.setProperty('--accent', appConfig.accent);
-      document.body.classList.toggle('light-mode', appConfig.isLightMode);
-      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? "☀️" : "🌙";
-      const h = new Date().getHours();
-      document.getElementById('greeting').innerText = `${h < 12 ? "OẮT SẤP BRO ĐỜ" : "GÒI MÀY LÀM CHƯA"}, ${appConfig.name}! 🚀`;
+    function toggleTheme() {
+      appConfig.isLightMode = !appConfig.isLightMode;
+      localStorage.setItem('ao_config_v3', JSON.stringify(appConfig));
+      applyConfig();
     }
 
-    function toggleTheme() { appConfig.isLightMode = !appConfig.isLightMode; saveConfig(); }
-    function setAccent(c) { appConfig.accent = c; saveConfig(); }
-    function setGender(g) { 
-      appConfig.gender = g; 
-      appConfig.avatar = `https://api.dicebear.com/7.x/miniavs/svg?seed=${g === 'male' ? 'Liam' : g === 'female' ? 'Adrian' : 'Luis'}`;
-      saveConfig(); 
+    function applyConfig() {
+      document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
+      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? "☀️" : "🌙";
+      document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
+      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
     }
-    function saveAllSettings() { appConfig.name = document.getElementById('usernameInput').value; saveConfig(); alert("Đã lưu!"); }
-    function saveConfig() { localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig)); applyConfig(); }
+
+    function saveAllSettings() {
+      appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
+      localStorage.setItem('ao_config_v3', JSON.stringify(appConfig));
+      applyConfig();
+      alert("Đã lưu!");
+    }
 
     document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');
-    window.onload = renderAll;
+    
+    window.onload = () => {
+      renderShortcuts();
+      initEmojis();
+      applyConfig();
+    };
   </script>
 </body>
 </html>

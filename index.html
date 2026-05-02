@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Final Edition</title>
+  <title>AO Dashboard Q10 | Ultimate Edition</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
@@ -28,7 +28,7 @@
     }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
-    /* 1. Sidebar Arrow Căn giữa */
+    /* Sidebar Arrow Căn giữa */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width); background: rgba(255, 255, 255, 0.05);
@@ -44,7 +44,7 @@
       cursor: pointer; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-weight: bold;
     }
-    .toggle-sidebar span { transition: 0.4s; font-size: 14px; line-height: 1; }
+    .toggle-sidebar span { transition: 0.4s; font-size: 14px; line-height: 1; display: inline-block; }
     .sidebar.expanded .toggle-sidebar span { transform: rotate(180deg); }
 
     .sidebar-header { padding: 60px 0 10px 0; display: flex; flex-direction: column; align-items: center; }
@@ -67,7 +67,7 @@
 
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
 
-    /* 3. Card Căn giữa */
+    /* Card Căn giữa */
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 28px; padding: 30px;
@@ -75,36 +75,43 @@
       transition: 0.3s; backdrop-filter: blur(10px); position: relative;
     }
     .card:hover { transform: translateY(-8px); border-color: var(--accent); }
-    .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; }
+    .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; border: none; cursor: pointer; }
     
     .btn-delete { position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; background: rgba(255,0,0,0.2); color: #ff4747; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; border: none; }
     .card:hover .btn-delete { opacity: 1; }
 
     .add-card { cursor: pointer; border: 2px dashed var(--card-border); background: transparent; min-height: 200px; justify-content: center; }
 
-    /* Modal Thêm Lối Tắt với Emoji Picker */
+    /* Modal Thêm Lối Tắt */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999; }
     .modal { background: #202124; width: 450px; border-radius: 12px; padding: 24px; color: #e8eaed; }
-    .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; }
+    .modal h2 { font-size: 16px; font-weight: 500; margin-bottom: 20px; }
+    .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; text-align: left; }
     .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 10px; color: #fff; margin-bottom: 20px; outline: none; }
     
-    .emoji-picker { display: grid; grid-template-columns: repeat(8, 1fr); gap: 5px; max-height: 120px; overflow-y: auto; background: #303134; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
-    .emoji-item { cursor: pointer; font-size: 20px; text-align: center; padding: 5px; border-radius: 5px; transition: 0.2s; }
+    .emoji-picker { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-height: 150px; overflow-y: auto; background: #303134; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+    .emoji-item { cursor: pointer; font-size: 22px; text-align: center; padding: 5px; border-radius: 5px; transition: 0.2s; }
     .emoji-item:hover, .emoji-item.selected { background: var(--accent); }
 
     .modal-btns { display: flex; justify-content: flex-end; gap: 12px; }
     .modal-btn { padding: 8px 24px; border-radius: 20px; cursor: pointer; border: 1px solid #5f6368; background: transparent; color: var(--accent); }
     .modal-btn.primary { background: var(--accent); color: #000; border: none; }
 
-    /* 2. Custom Alert Box */
+    /* Custom Confirm Alert */
     .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; }
-    .alert-box { background: #1e1e1e; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid #ff4747; }
-    .alert-box h2 { color: #ff4747; margin-bottom: 20px; }
+    .alert-box { background: #1e1e1e; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid #ff4747; width: 320px; }
+    .alert-box h2 { color: #ff4747; margin-bottom: 20px; font-size: 1.2rem; }
     .alert-btn-group { display: flex; gap: 15px; justify-content: center; }
-    .alert-btn { padding: 10px 25px; border-radius: 10px; cursor: pointer; font-weight: bold; border: none; }
+    .alert-btn { padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: bold; border: none; }
 
     /* Settings section */
-    .settings-section { display: none; }
+    .settings-section { display: none; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .gender-btn { opacity: 0.3; flex: 1; margin-top: 10px; color: #000; }
+    .gender-btn.active { opacity: 1; border: 2px solid #fff; }
+    .color-dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; transition: 0.2s; }
+    .color-dot:hover { transform: scale(1.1); }
+
     .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; font-size: 1.5rem; }
   </style>
 </head>
@@ -131,14 +138,28 @@
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
-    <!-- Trang Cài Đặt -->
+    <!-- 1. Trả lại đoạn code phần Cài đặt đầy đủ -->
     <div id="page-settings" class="settings-section">
       <div class="header-group"><h1>Cài đặt</h1></div>
       <div class="grid">
         <div class="card" style="grid-column: span 2;">
-          <h3>Đổi Tên</h3>
-          <input type="text" id="usernameInput" style="width:100%; padding:10px; margin-top:15px; border-radius:10px; background:rgba(0,0,0,0.1); color:#fff;" placeholder="Tên mới...">
-          <button class="btn" onclick="saveAllSettings()">Lưu Tên</button>
+          <h3>Thông Tin Của Ní</h3>
+          <input type="text" id="usernameInput" style="width:100%; padding:12px; margin:15px 0; border-radius:10px; border:none; background:rgba(0,0,0,0.1); color:inherit;" placeholder="Tên của ní làaaa?">
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn gender-btn active" id="g-male" onclick="setGender('male')">Liam</button>
+            <button class="btn gender-btn" id="g-female" onclick="setGender('female')" style="background: #ec4899;">Adrian</button>
+            <button class="btn gender-btn" id="g-dog" onclick="setGender('dog')" style="background: #f59e0b;">Luis</button>
+          </div>
+          <button class="btn" onclick="saveAllSettings()" style="background:#3b82f6; color:#fff; margin-top:20px;">💾 LƯU NÒ</button>
+        </div>
+        <div class="card">
+          <h3>Màu Chủ Đạo</h3>
+          <div style="display: flex; gap: 15px; margin-top: 20px; justify-content: center; width: 100%;">
+            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -175,7 +196,18 @@
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
-    // 5 mục mặc định
+    // 2. Bổ sung kho Emoji cực lớn từ các link ní gửi
+    const emojis = [
+      // Smileys & People
+      '😀','😂','🤣','😍','🤔','😎','🤫','🤯','👻','🤖','👽','👦','👧','👨','👩','🧑‍💻',
+      // Animals & Nature
+      '🐶','🐱','🐭','🐹','🐰','🦊','🐻','🐼','🦁','🐯','🐵','🐧','🐦','🌳','🍀','🌈',
+      // Travel & Places
+      '🚗','🚕','🚲','🚀','✈️','🚢','🏠','🏢','🏥','🗼','🗽','🏯','🌋','🌍','🏖️','⛺',
+      // Objects
+      '🔑','📘','🧾','📚','🎁','🔗','💻','📱','⌚','📷','📺','💡','📂','📊','🎓','🎯'
+    ];
+
     const defaultLinks = [
       {id: 'd1', name: 'Course Key AE', url: 'https://learn.eltngl.com/', icon: '🔑'},
       {id: 'd2', name: 'Học Cụ & In Ấn', url: 'https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx', icon: '📘'},
@@ -184,10 +216,11 @@
       {id: 'd5', name: 'Quà Tặng HS', url: 'https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx', icon: '🎁'}
     ];
 
-    const emojis = ['🔑','📘','🧾','📚','🎁','🔗','🔴','🔵','🟢','📂','📝','📊','🎓','⭐','🔥','💡','🚀','🎯','🏢','💻'];
     let selectedEmoji = '🔗';
-    let appConfig = JSON.parse(localStorage.getItem('ao_config_v3')) || { name: "Ní Hào Ma", isLightMode: false };
-    let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v3')) || defaultLinks;
+    let appConfig = JSON.parse(localStorage.getItem('ao_config_v4')) || { 
+      name: "Ní Hào Ma", gender: "male", accent: "#22c55e", avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=Liam", isLightMode: false 
+    };
+    let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v4')) || defaultLinks;
     let deleteId = null;
 
     function renderShortcuts() {
@@ -222,7 +255,7 @@
     
     document.getElementById('confirmYes').onclick = () => {
       userShortcuts = userShortcuts.filter(s => s.id !== deleteId);
-      localStorage.setItem('user_shortcuts_v3', JSON.stringify(userShortcuts));
+      localStorage.setItem('user_shortcuts_v4', JSON.stringify(userShortcuts));
       renderShortcuts();
       closeAlert();
     };
@@ -235,7 +268,7 @@
       const url = document.getElementById('shortcutUrl').value;
       if(!url) return alert("Dán cái link vào ní ơi!");
       userShortcuts.push({ id: Date.now().toString(), name, url, icon: selectedEmoji });
-      localStorage.setItem('user_shortcuts_v3', JSON.stringify(userShortcuts));
+      localStorage.setItem('user_shortcuts_v4', JSON.stringify(userShortcuts));
       renderShortcuts(); closeModal();
     }
 
@@ -246,9 +279,17 @@
       document.getElementById('nav-settings').classList.toggle('active', page === 'settings');
     }
 
-    function toggleTheme() {
-      appConfig.isLightMode = !appConfig.isLightMode;
-      localStorage.setItem('ao_config_v3', JSON.stringify(appConfig));
+    function toggleTheme() { appConfig.isLightMode = !appConfig.isLightMode; saveConfig(); }
+    function setAccent(c) { appConfig.accent = c; saveConfig(); }
+    function setGender(g) { 
+      appConfig.gender = g; 
+      appConfig.avatar = `https://api.dicebear.com/7.x/miniavs/svg?seed=${g === 'male' ? 'Liam' : g === 'female' ? 'Adrian' : 'Luis'}`;
+      saveConfig(); 
+    }
+    function saveAllSettings() { appConfig.name = document.getElementById('usernameInput').value || appConfig.name; saveConfig(); alert("Đã lưu!"); }
+
+    function saveConfig() {
+      localStorage.setItem('ao_config_v4', JSON.stringify(appConfig));
       applyConfig();
     }
 
@@ -256,14 +297,15 @@
       document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
       document.getElementById('themeBtn').innerText = appConfig.isLightMode ? "☀️" : "🌙";
       document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
-      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
-    }
+      document.getElementById('sidebarAvatar').src = appConfig.avatar;
+      document.documentElement.style.setProperty('--accent', appConfig.accent);
+      document.getElementById('usernameInput').value = appConfig.name;
+      
+      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById(`g-${appConfig.gender}`).classList.add('active');
 
-    function saveAllSettings() {
-      appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
-      localStorage.setItem('ao_config_v3', JSON.stringify(appConfig));
-      applyConfig();
-      alert("Đã lưu!");
+      const h = new Date().getHours();
+      document.getElementById('greeting').innerText = `${h < 12 ? "OẮT SẤP BRO ĐỜ" : "GÒI MÀY LÀM CHƯA"}, ${appConfig.name}! 🚀`;
     }
 
     document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');

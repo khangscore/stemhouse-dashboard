@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Final Polished</title>
+  <title>AO Dashboard Q10 | Miniavs Edition</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
@@ -19,7 +19,6 @@
       --sidebar-collapsed-width: 80px;
     }
 
-    /* Light Mode Variables */
     body.light-mode {
       --bg-color: #f8fafc;
       --card-bg: rgba(0, 0, 0, 0.05);
@@ -40,7 +39,6 @@
     }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
-    /* Sidebar - Fix vướng nút */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
@@ -72,7 +70,6 @@
     }
     .sidebar.expanded .sidebar-username { opacity: 1; }
 
-    /* Nút mũi tên dời xuống dưới */
     .toggle-sidebar {
       background: var(--accent); border: 2px solid #000; color: white;
       width: 35px; height: 35px; border-radius: 50%;
@@ -120,7 +117,6 @@
     }
     .btn:hover { filter: brightness(1.2); transform: scale(1.02); }
 
-    /* Theme Switch Button */
     .theme-switch {
       position: fixed; bottom: 30px; right: 30px;
       width: 50px; height: 50px; border-radius: 50%;
@@ -152,10 +148,9 @@
 </head>
 <body id="body">
 
-  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" alt="User">
+      <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="User">
       <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
     </div>
     
@@ -171,7 +166,6 @@
     <button class="toggle-sidebar" id="toggleBtn">❯</button>
   </aside>
 
-  <!-- Theme Toggle -->
   <div class="theme-switch s-hover" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <div class="container">
@@ -209,7 +203,6 @@
       </div>
     </div>
 
-    <!-- SETTINGS -->
     <div id="page-settings" class="settings-section">
       <button class="btn btn-save s-hover" onclick="saveAllSettings()">💾 LƯU NÒ</button>
       <div style="clear: both;"></div>
@@ -219,9 +212,9 @@
           <h3 style="margin-bottom: 20px;">Thông Tin Của Ní á Ní</h3>
           <input type="text" id="usernameInput" placeholder="Tên của ní làaaa?">
           <div style="display: flex; gap: 10px; width: 100%;">
-            <button class="btn gender-btn active" id="g-male" onclick="setGender('male')">Nam</button>
-            <button class="btn gender-btn" id="g-female" onclick="setGender('female')" style="background: #ec4899;">Nữ</button>
-            <button class="btn gender-btn" id="g-dog" onclick="setGender('dog')" style="background: #f59e0b;">@kạ4u2fh%&!*</button>
+            <button class="btn gender-btn active" id="g-male" onclick="setGender('male')">Liam</button>
+            <button class="btn gender-btn" id="g-female" onclick="setGender('female')" style="background: #ec4899;">Adrian</button>
+            <button class="btn gender-btn" id="g-dog" onclick="setGender('dog')" style="background: #f59e0b;">Luis</button>
           </div>
         </div>
 
@@ -245,23 +238,22 @@
 
   <script>
     let appConfig = {
-      name: "Gamer",
+      name: "Ní Hào Ma",
       gender: "male",
       accent: "#22c55e",
-      avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix",
+      avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=Liam",
       isAmbient: false,
       isLightMode: false
     };
 
     let audioCtx, ambientOsc, ambientGain;
 
-    // --- Persistence ---
     function saveAllSettings() {
       appConfig.name = document.getElementById('usernameInput').value || "Gamer";
       localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig));
       applyConfig();
       playUI(1500, 0.3);
-      alert("Đã lưu mọi thứ! Trình duyệt sẽ nhớ cậu.");
+      alert("Đã lưu rồi nè cha! Cook giùm cái đeeee!");
     }
 
     function loadSettings() {
@@ -286,7 +278,6 @@
 
       document.documentElement.style.setProperty('--accent', appConfig.accent);
       
-      // Apply theme
       if(appConfig.isLightMode) {
         document.getElementById('body').classList.add('light-mode');
         document.getElementById('themeBtn').innerText = "☀️";
@@ -296,9 +287,9 @@
       }
     }
 
-    // --- UI Logic ---
     function toggleTheme() {
       appConfig.isLightMode = !appConfig.isLightMode;
+      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig)); // Tự động lưu theme
       applyConfig();
       playUI(900);
     }
@@ -319,23 +310,27 @@
 
     function setGender(type) {
       appConfig.gender = type;
-      if(type === 'male') appConfig.avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Felix";
-      else if(type === 'female') appConfig.avatar = "https://api.dicebear.com/7.x/avataaars/svg?seed=Aneka";
-      else appConfig.avatar = "https://api.dicebear.com/7.x/bottts/svg?seed=Dog&baseColor=f59e0b";
+      // Tích hợp Miniavs với seed đúng tên yêu cầu
+      if(type === 'male') appConfig.avatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=Liam";
+      else if(type === 'female') appConfig.avatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=Adrian";
+      else appConfig.avatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=Luis";
       
+      // Cập nhật UI & Tự động lưu vào não trình duyệt luôn
       document.getElementById('sidebarAvatar').src = appConfig.avatar;
       document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('g-' + type).classList.add('active');
+      
+      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig));
       playUI(1200);
     }
 
     function setAccent(color) {
       appConfig.accent = color;
+      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig)); // Tự động lưu màu
       document.documentElement.style.setProperty('--accent', color);
       playUI(800);
     }
 
-    // --- Sound ---
     function initAudio() {
       if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       if (audioCtx.state === 'suspended') audioCtx.resume();

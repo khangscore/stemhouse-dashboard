@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Super Edition</title>
+  <title>AO Dashboard Q10 | Noto Edition</title>
   
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
@@ -19,7 +19,7 @@
       --card-border: rgba(0, 0, 0, 0.1); --text-main: #1e293b;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; transition: background 0.3s, color 0.3s; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "Noto Color Emoji", sans-serif; transition: background 0.3s, color 0.3s; }
 
     body {
       background: var(--bg-color);
@@ -28,7 +28,7 @@
     }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
-    /* Sidebar Arrow Căn giữa */
+    /* Sidebar */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width); background: rgba(255, 255, 255, 0.05);
@@ -67,13 +67,12 @@
 
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
 
-    /* Card & Cài đặt - Tự động giãn khung */
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 28px; padding: 30px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
       transition: 0.3s; backdrop-filter: blur(10px); position: relative;
-      height: auto; min-height: 200px;
+      height: auto;
     }
     .card:hover { transform: translateY(-8px); border-color: var(--accent); }
     .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; border: none; cursor: pointer; }
@@ -81,31 +80,29 @@
     .btn-delete { position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; background: rgba(255,0,0,0.2); color: #ff4747; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; border: none; }
     .card:hover .btn-delete { opacity: 1; }
 
-    /* Modal Thêm Lối Tắt */
+    /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 9999; }
     .modal { background: #202124; width: 450px; border-radius: 12px; padding: 24px; color: #e8eaed; }
     .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; text-align: left; }
     .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 10px; color: #fff; margin-bottom: 20px; outline: none; }
     
-    .emoji-picker { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-height: 150px; overflow-y: auto; background: #303134; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
-    .emoji-item { cursor: pointer; font-size: 22px; text-align: center; padding: 5px; border-radius: 5px; }
+    .emoji-picker { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-height: 180px; overflow-y: auto; background: #303134; padding: 10px; border-radius: 8px; margin-bottom: 20px; }
+    .emoji-item { cursor: pointer; font-size: 24px; text-align: center; padding: 5px; border-radius: 5px; }
     .emoji-item:hover, .emoji-item.selected { background: var(--accent); }
 
     /* Settings section */
     .settings-section { display: none; }
     .avatar-preview-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 15px; background: #fff; object-fit: cover; }
-    .gender-group { display: flex; gap: 8px; width: 100%; flex-wrap: wrap; }
-    .gender-btn { flex: 1; min-width: 80px; opacity: 0.5; }
-    .gender-btn.active { opacity: 1; border: 2px solid white; }
     
-    .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
-    .color-dot { width: 40px; height: 40px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
+    /* Chỉnh tiêu đề nhích lên */
+    .settings-title { margin-top: -10px; margin-bottom: 20px; display: block; }
+    
+    /* Khung màu chủ đạo khít */
+    .color-card { padding: 20px !important; width: fit-content; min-width: 220px; margin: 0 auto; }
+    .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
     .color-dot.active { border-color: white; transform: scale(1.1); }
 
-    /* Custom Alert Box */
-    .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: none; align-items: center; justify-content: center; z-index: 10000; }
-    .alert-box { background: #1e1e1e; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid #ff4747; }
-    
     .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; font-size: 1.5rem; }
   </style>
 </head>
@@ -132,26 +129,26 @@
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
-    <!-- 1 & 3. TRANG CÀI ĐẶT CẢI TIẾN -->
+    <!-- TRANG CÀI ĐẶT -->
     <div id="page-settings" class="settings-section">
       <div class="header-group"><h1>Cài đặt</h1></div>
-      <div class="grid">
-        <div class="card" style="grid-column: span 2;">
-          <h3>Thông Tin Của Ní</h3>
-          <!-- Preview Avatar -->
+      <div class="grid" style="justify-items: center;">
+        <div class="card" style="grid-column: span 2; width: 100%; max-width: 500px;">
+          <h3 class="settings-title">Thông Tin Của Ní</h3>
           <img id="previewAvatar" class="avatar-preview-box" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
           <input type="text" id="usernameInput" style="width:100%; padding:12px; border-radius:10px; background:rgba(0,0,0,0.1); color:#fff; border:1px solid var(--card-border);" placeholder="Tên của ní...">
           
-          <div class="gender-group" style="margin-top: 15px;">
-            <button class="btn gender-btn active" id="btn-male" onclick="updatePreview('male')">Liam</button>
-            <button class="btn gender-btn" id="btn-female" onclick="updatePreview('female')" style="background: #ec4899;">Adrian</button>
-            <button class="btn gender-btn" id="btn-dog" onclick="updatePreview('dog')" style="background: #f59e0b;">Luis</button>
+          <div style="display: flex; gap: 8px; width: 100%; margin-top: 15px;">
+            <button class="btn" style="flex:1; opacity:0.6;" id="btn-male" onclick="updatePreview('male')">Liam</button>
+            <button class="btn" style="flex:1; opacity:0.6; background:#ec4899;" id="btn-female" onclick="updatePreview('female')">Adrian</button>
+            <button class="btn" style="flex:1; opacity:0.6; background:#f59e0b;" id="btn-dog" onclick="updatePreview('dog')">Luis</button>
           </div>
           <button class="btn" style="background: #3b82f6; color: #fff;" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
         </div>
 
-        <div class="card">
-          <h3>Màu Chủ Đạo (8 Màu)</h3>
+        <!-- Khung màu nhỏ gọn -->
+        <div class="card color-card">
+          <h3 style="margin-bottom: 15px;">Màu Chủ Đạo</h3>
           <div class="color-grid">
             <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
             <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
@@ -171,20 +168,19 @@
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <h2>Thêm lối tắt</h2>
-      <label>Chọn Icon (Kho Objects)</label>
+      <label>Chọn Icon (Google Noto)</label>
       <div class="emoji-picker" id="emojiPicker"></div>
       <label>Tên</label>
       <input type="text" id="shortcutName" placeholder="Tên hiển thị...">
       <label>URL</label>
       <input type="text" id="shortcutUrl" placeholder="https://...">
       <div class="modal-btns">
-        <button class="modal-btn" onclick="closeModal()">Huỷ</button>
-        <button class="modal-btn primary" onclick="addShortcut()">Xong</button>
+        <button class="modal-btn" style="padding: 8px 24px; cursor:pointer; border-radius:20px; border:1px solid #5f6368; background:transparent; color:var(--accent);" onclick="closeModal()">Huỷ</button>
+        <button class="modal-btn" style="padding: 8px 24px; cursor:pointer; border-radius:20px; border:none; background:var(--accent); color:#000;" onclick="addShortcut()">Xong</button>
       </div>
     </div>
   </div>
 
-  <!-- Alert Xoá -->
   <div class="alert-overlay" id="alertOverlay">
     <div class="alert-box">
       <h2 style="color: #ff4747; margin-bottom: 20px;">Mày chắc chưaaa?</h2>
@@ -198,9 +194,9 @@
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
-    // 2. Bổ sung bộ Icon Objects từ piliapp
-    const objectEmojis = [
-      '🔑','📘','🧾','📚','🎁','💡','💻','📱','⌚','📁','📂','📅','📦','✉️','📧','📢','🔔','🎵','🎨','🎬','🎮','📷','🎤','🎧','📣','🔦','🔨','🛠️','🔧','🔩','⚙️','⚖️','🔗','⛓️','💊','🚬','⚗️','🔭','🔬','🔋','🔌','💻','🖥️','🖨️','⌨️','🖱️','💽','💾','💿','📀'
+    // Bộ Emoji Noto Color Style (Google)
+    const notoEmojis = [
+      '😀','🚀','🔥','✨','🎉','💡','❤️','🎯','💻','📱','🔑','📘','🧾','📚','🎁','🛠️','🔧','⚖️','📂','📅','📦','✉️','🎵','🎨','🎬','🎮','🎧','📣','🔋','🔌','🖥️','⌨️','🖱️','💽','📁','📊','📝','🎓','🏢','🔗','🟢','🔵','🟡','🔴','🏠','🌟','⚡'
     ];
 
     const defaultLinks = [
@@ -212,10 +208,10 @@
     ];
 
     let selectedEmoji = '🔗';
-    let appConfig = JSON.parse(localStorage.getItem('ao_v4_config')) || { 
+    let appConfig = JSON.parse(localStorage.getItem('ao_v5_config')) || { 
       name: "Ní Hào Ma", gender: "male", accent: "#22c55e", isLightMode: false 
     };
-    let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v4')) || defaultLinks;
+    let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v5')) || defaultLinks;
     let deleteId = null;
 
     function renderShortcuts() {
@@ -227,32 +223,28 @@
           <h3>${s.name}</h3>
           <a class="btn" href="${s.url}" target="_blank">Mở</a>
         </div>`).join('') + `
-        <div class="card add-card" onclick="openModal()">
-          <div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p>
-        </div>`;
+        <div class="card add-card" onclick="openModal()"><div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p></div>`;
     }
 
-    // Preview Avatar realtime
     function updatePreview(g) {
       appConfig.tempGender = g;
       const seeds = { male: 'Liam', female: 'Adrian', dog: 'Luis' };
       document.getElementById('previewAvatar').src = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[g]}`;
-      document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById(`btn-${g}`).classList.add('active');
+      document.querySelectorAll('.gender-btn').forEach(b => b.style.opacity = '0.6');
+      document.getElementById(`btn-${g}`).style.opacity = '1';
     }
 
     function saveAllSettings() {
       appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
       if(appConfig.tempGender) appConfig.gender = appConfig.tempGender;
-      localStorage.setItem('ao_v4_config', JSON.stringify(appConfig));
-      applyConfig();
-      alert("Đã lưu thành công!");
+      localStorage.setItem('ao_v5_config', JSON.stringify(appConfig));
+      applyConfig(); alert("Xong gòi đó ní!");
     }
 
     function setAccent(c) {
       appConfig.accent = c;
       document.documentElement.style.setProperty('--accent', c);
-      localStorage.setItem('ao_v4_config', JSON.stringify(appConfig));
+      localStorage.setItem('ao_v5_config', JSON.stringify(appConfig));
     }
 
     function applyConfig() {
@@ -270,12 +262,11 @@
 
     function initEmojiPicker() {
       const picker = document.getElementById('emojiPicker');
-      picker.innerHTML = objectEmojis.map(e => `<span class="emoji-item" onclick="selectEmoji(this, '${e}')">${e}</span>`).join('');
+      picker.innerHTML = notoEmojis.map(e => `<span class="emoji-item" onclick="selectEmoji(this, '${e}')">${e}</span>`).join('');
     }
     function selectEmoji(el, e) {
       document.querySelectorAll('.emoji-item').forEach(i => i.classList.remove('selected'));
-      el.classList.add('selected');
-      selectedEmoji = e;
+      el.classList.add('selected'); selectedEmoji = e;
     }
 
     function switchPage(page) {
@@ -292,19 +283,19 @@
     
     document.getElementById('confirmYes').onclick = () => {
       userShortcuts = userShortcuts.filter(s => s.id !== deleteId);
-      localStorage.setItem('user_shortcuts_v4', JSON.stringify(userShortcuts));
+      localStorage.setItem('user_shortcuts_v5', JSON.stringify(userShortcuts));
       renderShortcuts(); closeAlert();
     };
 
     function addShortcut() {
       const url = document.getElementById('shortcutUrl').value;
-      if(!url) return alert("Thiếu link kìa ní!");
+      if(!url) return alert("Dán link vô ní ơi!");
       userShortcuts.push({ id: Date.now().toString(), name: document.getElementById('shortcutName').value || "Lối tắt", url, icon: selectedEmoji });
-      localStorage.setItem('user_shortcuts_v4', JSON.stringify(userShortcuts));
+      localStorage.setItem('user_shortcuts_v5', JSON.stringify(userShortcuts));
       renderShortcuts(); closeModal();
     }
 
-    function toggleTheme() { appConfig.isLightMode = !appConfig.isLightMode; localStorage.setItem('ao_v4_config', JSON.stringify(appConfig)); applyConfig(); }
+    function toggleTheme() { appConfig.isLightMode = !appConfig.isLightMode; localStorage.setItem('ao_v5_config', JSON.stringify(appConfig)); applyConfig(); }
     document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');
 
     window.onload = () => { renderShortcuts(); initEmojiPicker(); applyConfig(); };

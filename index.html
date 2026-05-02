@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Fix Edition</title>
+  <title>AO Dashboard Q10 | Full Edition</title>
   
+  <!-- Favicon của ní đây -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%21.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
 
   <style>
@@ -80,7 +81,7 @@
     .btn-delete { position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; background: rgba(255,0,0,0.2); color: #ff4747; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; border: none; z-index: 10; }
     .card:hover .btn-delete { opacity: 1; }
 
-    /* Modal - Đảm bảo z-index cao */
+    /* Modal */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 10001; }
     .modal { background: #202124; width: 450px; border-radius: 12px; padding: 24px; color: #e8eaed; }
     .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; text-align: left; }
@@ -93,17 +94,15 @@
     /* Settings section */
     .settings-section { display: none; }
     .avatar-preview-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; background: #fff; object-fit: cover; }
-    
-    /* Chỉnh tiêu đề nhích lên */
     .settings-title { margin-top: -15px; margin-bottom: 15px; font-size: 1.2rem; }
     
-    /* Khung màu chủ đạo khít */
+    /* Khung màu chủ đạo */
     .color-card { padding: 15px !important; width: fit-content !important; min-width: auto !important; height: fit-content !important; }
     .color-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
     .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
     .color-dot.active { border-color: white; transform: scale(1.1); }
 
-    /* Fix Alert Overlay luôn ở trên cùng */
+    /* Fix Alert Overlay */
     .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 10002; }
     .alert-box { background: #1e1e1e; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid #ff4747; box-shadow: 0 0 20px rgba(255,71,71,0.3); }
 
@@ -133,7 +132,6 @@
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
-    <!-- TRANG CÀI ĐẶT -->
     <div id="page-settings" class="settings-section">
       <div class="header-group"><h1>Cài đặt</h1></div>
       <div class="grid" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
@@ -150,7 +148,6 @@
           <button class="btn" style="background: #3b82f6; color: #fff;" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
         </div>
 
-        <!-- Khung màu nhỏ gọn khít -->
         <div class="card color-card">
           <h3 style="margin-bottom: 10px; font-size: 1rem;">Màu Chủ Đạo</h3>
           <div class="color-grid">
@@ -168,7 +165,6 @@
     </div>
   </div>
 
-  <!-- Modal Thêm lối tắt -->
   <div class="modal-overlay" id="modalOverlay">
     <div class="modal">
       <h2>Thêm lối tắt</h2>
@@ -185,7 +181,6 @@
     </div>
   </div>
 
-  <!-- Fix Alert Xóa -->
   <div class="alert-overlay" id="alertOverlay">
     <div class="alert-box">
       <h2 style="color: #ff4747; margin-bottom: 20px;">Mày chắc chưaaa?</h2>
@@ -199,7 +194,27 @@
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
-    // Bộ Emoji Noto Color Style
+    // --- PHẦN ÂM THANH RÊ CHUỘT ---
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playHoverSound() {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(600, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
+      osc.connect(gain); gain.connect(audioCtx.destination);
+      osc.start(); osc.stop(audioCtx.currentTime + 0.1);
+    }
+
+    function addHoverEvents() {
+      document.querySelectorAll('.card, .nav-item, .btn, .color-dot, .toggle-sidebar').forEach(el => {
+        el.onmouseenter = playHoverSound;
+      });
+    }
+
     const notoEmojis = ['😀','🚀','🔥','✨','🎉','💡','❤️','🎯','💻','📱','🔑','📘','🧾','📚','🎁','🛠️','🔧','⚖️','📂','📅','📦','✉️','🎵','🎨','🎬','🎮','🎧','📣','🔋','🔌','🖥️','⌨️','🖱️','📊','📝','🎓','🏢','🔗','🟢','🔵','🔴','🏠','🌟','⚡'];
 
     const defaultLinks = [
@@ -225,6 +240,7 @@
           <a class="btn" href="${s.url}" target="_blank">Mở</a>
         </div>`).join('') + `
         <div class="card add-card" onclick="openModal()"><div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p></div>`;
+      addHoverEvents(); // Gán lại âm thanh cho các card mới tạo
     }
 
     function askDelete(e, id) {
@@ -273,6 +289,7 @@
       document.getElementById('previewAvatar').src = avatarUrl;
       document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
       document.getElementById('themeBtn').innerText = appConfig.isLightMode ? "☀️" : "🌙";
+      addHoverEvents();
     }
 
     function initEmojiPicker() {

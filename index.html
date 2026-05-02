@@ -1410,5 +1410,179 @@ body.light-mode .excel-table td.row-index{
   };
 </script>
 
+<!--
+UPGRADED VERSION
+- Added search shortcut
+- Pin shortcut
+- Improved modal animation
+- Excel formulas basic
+- Event delegation optimization
+- Mobile improvements
+NOTE: Original structure preserved as much as possible
+-->
+
+<!-- ONLY SHOWING PATCH STYLE ADDITIONS FOR SAFETY -->
+
+<!-- =========================
+SEARCH BAR (ADD inside dashboard header-group)
+========================= -->
+<input id="searchShortcut" placeholder="🔍 Tìm shortcut..." style="
+  margin-top:15px;
+  padding:10px 14px;
+  border-radius:12px;
+  border:1px solid var(--card-border);
+  background:var(--card-bg);
+  color:var(--text-main);
+  width:100%;
+  max-width:320px;
+">
+
+<script>
+// =========================
+// SEARCH SHORTCUT
+// =========================
+document.addEventListener('input', (e)=>{
+  if(e.target.id==='searchShortcut'){
+    const val = e.target.value.toLowerCase();
+    document.querySelectorAll('.shortcut-card').forEach(card=>{
+      const text = card.innerText.toLowerCase();
+      card.style.display = text.includes(val)?'flex':'none';
+    });
+  }
+});
+</script>
+
+<!-- =========================
+PIN SHORTCUT FEATURE
+========================= -->
+<script>
+userShortcuts = userShortcuts.map(s=>({...s, pinned:s.pinned||false}));
+
+function togglePin(id){
+  const item = userShortcuts.find(s=>s.id===id);
+  if(!item) return;
+  item.pinned = !item.pinned;
+  userShortcuts.sort((a,b)=>b.pinned - a.pinned);
+  saveData();
+  renderShortcuts();
+}
+
+// PATCH renderShortcuts (inject pin button)
+const oldRender = renderShortcuts;
+renderShortcuts = function(){
+  oldRender();
+  document.querySelectorAll('.shortcut-card').forEach(card=>{
+    const id = card.dataset.id;
+    const btn = document.createElement('button');
+    btn.innerText = '⭐';
+    btn.className='btn-delete';
+    btn.style.left='15px';
+    btn.style.right='auto';
+    btn.onclick = ()=>togglePin(id);
+    card.appendChild(btn);
+  });
+}
+</script>
+
+<!-- =========================
+MODAL ANIMATION
+========================= -->
+<style>
+.modal-overlay{
+  opacity:0;
+  transition:0.25s ease;
+}
+.modal-overlay.active{
+  display:flex !important;
+  opacity:1;
+}
+.modal-box{
+  transform:scale(0.85);
+  transition:0.25s ease;
+}
+.modal-overlay.active .modal-box{
+  transform:scale(1);
+}
+</style>
+
+<script>
+function openModal(){
+  const m = document.getElementById('addShortcutModal');
+  m.style.display='flex';
+  setTimeout(()=>m.classList.add('active'),10);
+}
+function closeModal(){
+  const m = document.getElementById('addShortcutModal');
+  m.classList.remove('active');
+  setTimeout(()=>m.style.display='none',200);
+}
+</script>
+
+<!-- =========================
+EXCEL FORMULA SUPPORT
+========================= -->
+<script>
+function evaluateFormula(val){
+  if(!val.startsWith('=')) return val;
+  try{
+    let expr = val.slice(1);
+    expr = expr.replace(/[A-H][0-9]+/g, ref=>{
+      return parseFloat(excelData[ref])||0;
+    });
+    return eval(expr);
+  }catch{
+    return 'ERR';
+  }
+}
+
+const oldUpdateCell = updateCell;
+updateCell = function(input){
+  const key = input.dataset.cell;
+  excelData[key] = input.value;
+
+  const result = evaluateFormula(input.value);
+  if(input.value.startsWith('=')){
+    input.style.color = '#22c55e';
+    input.title = result;
+  }else{
+    input.style.color = '';
+  }
+
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+}
+</script>
+
+<!-- =========================
+RESPONSIVE BOOST
+========================= -->
+<style>
+@media(max-width:600px){
+  .sidebar{display:none;}
+  .container{padding-left:20px;}
+  .grid{grid-template-columns:1fr;}
+}
+</style>
+
+<!-- =========================
+CLICK SOUND IMPROVE
+========================= -->
+<script>
+document.addEventListener('click', ()=>{
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.frequency.value = 180;
+  gain.gain.value = 0.01;
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime+0.05);
+});
+</script>
+
+<!-- =========================
+END PATCH
+========================= -->  
+  
 </body>
 </html>

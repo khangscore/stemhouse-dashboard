@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AO Dashboard Q10 | Custom Edition</title>
+  <title>AO Dashboard Q10 | Final Custom</title>
   
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='black'/%3E%3Ccircle cx='50' cy='50' r='43' fill='%23FFD133'/%3E%3Ccircle cx='32' cy='38' r='14' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='32' cy='38' r='5' fill='black'/%3E%3Ccircle cx='68' cy='30' r='10' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='68' cy='30' r='4' fill='black'/%3E%3Cpath d='M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M 40 55 Q 50 85 70 70 L 60 55 Z' fill='%23FF4747' stroke='black' stroke-width='1.5'/%3E%3Crect x='27' y='55' width='46' height='6' fill='white'/%3E%3C/svg%3E">
 
@@ -19,7 +19,7 @@
       --card-border: rgba(0, 0, 0, 0.1); --text-main: #1e293b;
     }
 
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "Noto Color Emoji", sans-serif; transition: background 0.3s, color 0.3s; }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", sans-serif; transition: background 0.3s, color 0.3s; }
 
     body {
       background: var(--bg-color);
@@ -41,220 +41,177 @@
       position: absolute; top: 15px; left: 50%; transform: translateX(-50%);
       background: var(--accent); border: 2px solid #000; color: #000;
       width: 50px; height: 22px; border-radius: 12px;
-      cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3); font-weight: bold;
+      cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: bold;
     }
-    .sidebar.expanded .toggle-sidebar span { transform: rotate(180deg); }
 
     .sidebar-header { padding: 60px 0 10px 0; display: flex; flex-direction: column; align-items: center; }
     .sidebar-avatar { width: 45px; height: 45px; border-radius: 50%; border: 2px solid var(--accent); background: #fff; object-fit: cover; }
-    /* Fix cho Liam luôn là viền xanh biển */
     .sidebar-avatar.avatar-male { border-color: var(--liam-blue) !important; }
-    
     .sidebar.expanded .sidebar-avatar { width: 90px; height: 90px; }
-    .sidebar-username { margin-top: 12px; font-weight: bold; font-size: 0.9rem; color: var(--accent); opacity: 0; white-space: nowrap; transition: 0.3s; }
-    .sidebar.expanded .sidebar-username { opacity: 1; }
 
     .nav-content { flex-grow: 1; margin-top: 20px; width: 100%; }
-    .nav-item { display: flex; align-items: center; justify-content: center; padding: 15px 0; margin: 8px 10px; border-radius: 16px; cursor: pointer; transition: 0.3s; }
-    .sidebar.expanded .nav-item { justify-content: flex-start; padding-left: 20px; }
+    .nav-item { display: flex; align-items: center; justify-content: center; padding: 15px 0; margin: 8px 10px; border-radius: 16px; cursor: pointer; }
     .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
-    .nav-text { width: 0; opacity: 0; visibility: hidden; transition: 0.2s; margin-left: 10px; }
-    .sidebar.expanded .nav-text { width: auto; opacity: 1; visibility: visible; }
+    .nav-text { display: none; margin-left: 10px; }
+    .sidebar.expanded .nav-text { display: inline; }
 
-    /* Layout */
+    /* Main Content */
     .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px 100px 120px; position: relative; }
     .header-group { text-align: center; margin-bottom: 50px; }
-    .header-group h1 { font-size: 4rem; letter-spacing: -3px; }
-
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
 
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 28px; padding: 30px;
       display: flex; flex-direction: column; align-items: center; text-align: center;
-      transition: 0.3s; backdrop-filter: blur(10px); position: relative;
+      transition: 0.3s; backdrop-filter: blur(10px); position: relative; min-height: 240px; justify-content: center;
     }
     .card:hover { transform: translateY(-8px); border-color: var(--accent); }
-    .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; border: none; cursor: pointer; }
-    
-    .btn-delete { position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; background: rgba(255,0,0,0.2); color: #ff4747; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; border: none; z-index: 10; }
-    .card:hover .btn-delete { opacity: 1; }
 
-    /* Trang Cài đặt & Nút Lưu đặc biệt */
+    /* Custom Add Card */
+    .add-card { border: 2px dashed var(--accent); cursor: pointer; }
+    .add-card .plus-icon { font-size: 70px; color: #22c55e; line-height: 1; font-weight: bold; }
+    .add-card p { margin-top: 10px; font-weight: bold; color: var(--text-main); opacity: 0.8; }
+
+    .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; border: none; cursor: pointer; display: block; }
+
+    /* Settings UI */
     .settings-section { display: none; position: relative; }
     .btn-save-fixed {
       position: absolute; top: -10px; right: 0;
-      width: auto; padding: 10px 25px; background: #22c55e !important; color: #fff !important;
+      padding: 10px 25px; background: #22c55e !important; color: #fff !important;
       border-radius: 12px; font-weight: bold; border: none; cursor: pointer;
       box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3); z-index: 100;
     }
-    .btn-save-fixed:hover { transform: scale(1.05); background: #1da850 !important; }
 
-    .avatar-preview-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; background: #fff; object-fit: cover; }
+    .avatar-preview-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; background: #fff; }
     .avatar-preview-box.avatar-male { border-color: var(--liam-blue) !important; }
-    
-    .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-    .color-dot:hover { transform: scale(1.1); }
 
-    /* Modal & Alerts */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: none; align-items: center; justify-content: center; z-index: 10001; }
-    .modal { background: #202124; width: 450px; border-radius: 12px; padding: 24px; color: #e8eaed; }
-    .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 10px; color: #fff; margin-bottom: 20px; outline: none; }
-    
-    .alert-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; z-index: 10002; }
-    .alert-box { background: #1e1e1e; padding: 30px; border-radius: 20px; text-align: center; border: 2px solid #ff4747; }
-
-    .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; font-size: 1.5rem; }
+    .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
   </style>
 </head>
 <body id="body">
 
   <aside class="sidebar" id="sidebar">
-    <button class="toggle-sidebar" id="toggleBtn"><span>❯</span></button>
+    <button class="toggle-sidebar" id="toggleBtn">❯</button>
     <div class="sidebar-header">
       <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="User">
-      <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
+      <span id="sidebarUsernameDisplay" style="margin-top:10px; font-weight:bold;">Ní Hào Ma</span>
     </div>
     <div class="nav-content">
-      <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></div>
-      <div class="nav-item" id="nav-settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+      <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')"><span>🏠</span><span class="nav-text">Dashboard</span></div>
+      <div class="nav-item" id="nav-settings" onclick="switchPage('settings')"><span>⚙️</span><span class="nav-text">Cài đặt</span></div>
     </div>
   </aside>
 
   <div class="container">
     <div id="page-dashboard">
       <div class="header-group">
-        <h1 id="mainTitle">AO Dashboard Q10</h1>
-        <p id="greeting">Haku-Na-Matata!</p>
+        <h1 style="font-size: 4rem;">AO Dashboard Q10</h1>
+        <p id="greeting">Haku_Na_Matata!</p>
       </div>
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
     <div id="page-settings" class="settings-section">
-      <button class="btn-save-fixed" onclick="saveAllSettings()">LƯU NÈ NÍ</button>
+      <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
       <div class="header-group"><h1>Cài đặt</h1></div>
-      
       <div class="grid" style="display: flex; flex-direction: column; align-items: center; gap: 20px;">
         <div class="card" style="width: 100%; max-width: 450px;">
-          <h3 style="margin-bottom: 15px;">Thông Tin Của Ní</h3>
-          <img id="previewAvatar" class="avatar-preview-box" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
-          <input type="text" id="usernameInput" style="width:100%; padding:10px; border-radius:10px; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--card-border);" placeholder="Tên của ní...">
-          
-          <div style="display: flex; gap: 8px; width: 100%; margin-top: 15px;">
-            <button class="btn" style="flex:1; padding: 8px; opacity:0.6; background: #3b82f6; color: #fff;" id="btn-male" onclick="updatePreview('male')">Liam</button>
-            <button class="btn" style="flex:1; padding: 8px; opacity:0.6; background:#ec4899; color: #fff;" id="btn-female" onclick="updatePreview('female')">Adrian</button>
-            <button class="btn" style="flex:1; padding: 8px; opacity:0.6; background:#f59e0b; color: #fff;" id="btn-dog" onclick="updatePreview('dog')">Luis</button>
-          </div>
-        </div>
-
-        <div class="card" style="padding: 20px;">
-          <h3 style="margin-bottom: 10px; font-size: 1rem;">Màu Chủ Đạo</h3>
-          <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
-            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
-            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
-            <div class="color-dot" style="background: #f59e0b;" onclick="setAccent('#f59e0b')"></div>
+          <img id="previewAvatar" class="avatar-preview-box" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam">
+          <input type="text" id="usernameInput" style="width:100%; padding:10px; margin-bottom:10px;" placeholder="Tên của ní...">
+          <div style="display: flex; gap: 8px; width: 100%;">
+            <button class="btn" style="background:#3b82f6; color:#fff;" onclick="updatePreview('male')">Liam</button>
+            <button class="btn" style="background:#ec4899; color:#fff;" onclick="updatePreview('female')">Adrian</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Các thành phần ẩn khác -->
-  <div class="modal-overlay" id="modalOverlay">...</div>
-  <div class="alert-overlay" id="alertOverlay">...</div>
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
-    // Audio Context cho âm thanh Pop
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playHoverSound() {
+    function playPop() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
       const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
+      const g = audioCtx.createGain();
       osc.frequency.setValueAtTime(600, audioCtx.currentTime);
       osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.1);
-      gain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-      osc.connect(gain); gain.connect(audioCtx.destination);
+      g.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      g.connect(audioCtx.destination); osc.connect(g);
       osc.start(); osc.stop(audioCtx.currentTime + 0.1);
     }
 
-    function addHoverEvents() {
-      document.querySelectorAll('.card, .nav-item, .btn, .btn-save-fixed, .color-dot').forEach(el => {
-        el.onmouseenter = playHoverSound;
-      });
-    }
-
-    let appConfig = JSON.parse(localStorage.getItem('ao_v6_config')) || { name: "Ní Hào Ma", gender: "male", accent: "#22c55e", isLightMode: false };
-    let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v6')) || [];
+    let appConfig = JSON.parse(localStorage.getItem('ao_v7')) || { name: "Ní Hào Ma", gender: "male", accent: "#22c55e", isLightMode: false };
+    
+    // Danh sách link mặc định của ní
+    const defaultLinks = [
+      {name: 'Course Key AE', icon: '🔑', url: 'https://learn.eltngl.com/'},
+      {name: 'Học Cụ & In Ấn', icon: '📘', url: 'https://stemhouseeducation-my.sharepoint.com/...'},
+      {name: 'Hóa Đơn VAT', icon: '🧾', url: 'https://stemhouseeducation-my.sharepoint.com/...'}
+    ];
 
     function renderShortcuts() {
       const grid = document.getElementById('shortcutGrid');
-      grid.innerHTML = userShortcuts.map(s => `
-        <div class="card">
-          <button class="btn-delete">✕</button>
+      grid.innerHTML = defaultLinks.map(s => `
+        <div class="card" onmouseenter="playPop()">
           <div style="font-size: 50px;">${s.icon}</div>
           <h3>${s.name}</h3>
           <a class="btn" href="${s.url}" target="_blank">Mở</a>
-        </div>`).join('') + `<div class="card" onclick="alert('Tính năng thêm đang bảo trì!')"><h1>+</h1></div>`;
-      addHoverEvents();
+        </div>`).join('') + `
+        <div class="card add-card" onclick="alert('Tính năng đang code nha ní!')" onmouseenter="playPop()">
+          <div class="plus-icon">+</div>
+          <p>Thêm link</p>
+        </div>`;
+    }
+
+    function toggleTheme() {
+      appConfig.isLightMode = !appConfig.isLightMode;
+      save();
+      apply();
     }
 
     function updatePreview(g) {
       appConfig.tempGender = g;
-      const seeds = { male: 'Liam', female: 'Adrian', dog: 'Luis' };
+      const avatarUrl = `https://api.dicebear.com/7.x/miniavs/svg?seed=${g === 'male' ? 'Liam' : 'Adrian'}`;
       const img = document.getElementById('previewAvatar');
-      img.src = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[g]}`;
-      
-      // Nếu là Liam thì ép màu xanh biển, ngược lại theo màu chủ đạo
+      img.src = avatarUrl;
       if (g === 'male') img.classList.add('avatar-male');
       else img.classList.remove('avatar-male');
-      
-      document.querySelectorAll('#page-settings .btn').forEach(b => b.style.opacity = '0.6');
-      document.getElementById(`btn-${g}`).style.opacity = '1';
-    }
-
-    function setAccent(c) {
-      appConfig.accent = c;
-      document.documentElement.style.setProperty('--accent', c);
-      localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
     }
 
     function saveAllSettings() {
       appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
       if(appConfig.tempGender) appConfig.gender = appConfig.tempGender;
-      localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
-      applyConfig(); alert("Đã lưu thành công!");
+      save(); apply(); alert("Đã lưu gòi nè!");
     }
 
-    function applyConfig() {
-      document.documentElement.style.setProperty('--accent', appConfig.accent);
+    function save() { localStorage.setItem('ao_v7', JSON.stringify(appConfig)); }
+
+    function apply() {
+      document.body.classList.toggle('light-mode', appConfig.isLightMode);
+      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? "☀️" : "🌙";
       document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
-      const seeds = { male: 'Liam', female: 'Adrian', dog: 'Luis' };
-      const avatarUrl = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender]}`;
+      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
+      
+      const avatarUrl = `https://api.dicebear.com/7.x/miniavs/svg?seed=${appConfig.gender === 'male' ? 'Liam' : 'Adrian'}`;
       const sideAv = document.getElementById('sidebarAvatar');
       sideAv.src = avatarUrl;
-      
-      // Logic màu cho Liam
       if (appConfig.gender === 'male') sideAv.classList.add('avatar-male');
       else sideAv.classList.remove('avatar-male');
-      
-      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
-      addHoverEvents();
     }
 
-    function switchPage(page) {
-      document.getElementById('page-dashboard').style.display = (page === 'dashboard' ? 'block' : 'none');
-      document.getElementById('page-settings').style.display = (page === 'settings' ? 'block' : 'none');
-      document.getElementById('nav-dashboard').classList.toggle('active', page === 'dashboard');
-      document.getElementById('nav-settings').classList.toggle('active', page === 'settings');
+    function switchPage(p) {
+      document.getElementById('page-dashboard').style.display = (p === 'dashboard' ? 'block' : 'none');
+      document.getElementById('page-settings').style.display = (p === 'settings' ? 'block' : 'none');
+      document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+      document.getElementById(`nav-${p}`).classList.add('active');
     }
 
     document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');
-    window.onload = () => { renderShortcuts(); applyConfig(); updatePreview(appConfig.gender); };
+    window.onload = () => { renderShortcuts(); apply(); updatePreview(appConfig.gender); };
   </script>
 </body>
 </html>

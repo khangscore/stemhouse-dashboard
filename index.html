@@ -222,6 +222,11 @@
       justify-content: center;
     }
 
+    .shortcut-card.dragging {
+      opacity: 0.5;
+      transform: scale(0.98);
+    }
+
     .add-card {
       cursor: pointer;
       border-style: dashed;
@@ -274,13 +279,8 @@
       opacity: 1;
     }
 
-    .page-content {
-      display: none;
-    }
-
-    .page-content.active-page {
-      display: block;
-    }
+    .page-content { display: none; }
+    .page-content.active-page { display: block; }
 
     .btn-save-fixed {
       position: absolute;
@@ -423,10 +423,7 @@
       border: 2px solid transparent;
     }
 
-    .emoji-item:hover {
-      background: rgba(255,255,255,0.05);
-    }
-
+    .emoji-item:hover { background: rgba(255,255,255,0.05); }
     .emoji-item.selected {
       border-color: var(--accent);
       background: rgba(255,255,255,0.06);
@@ -447,15 +444,8 @@
       border: none;
     }
 
-    .btn-confirm {
-      background: #ff4747;
-      color: #fff;
-    }
-
-    .btn-cancel {
-      background: #3c4043;
-      color: #fff;
-    }
+    .btn-confirm { background: #ff4747; color: #fff; }
+    .btn-cancel { background: #3c4043; color: #fff; }
 
     .home-clock {
       font-size: 5rem;
@@ -525,6 +515,11 @@
       font-size: 0.95rem;
     }
 
+    #avatarDropZone.dragover {
+      border-color: var(--accent) !important;
+      box-shadow: var(--shadow-accent);
+    }
+
     @media(max-width: 900px){
       .notes-grid { grid-template-columns: 1fr; }
       .home-clock { font-size: 3.4rem; }
@@ -540,6 +535,7 @@
       <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="User">
       <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
     </div>
+
     <div class="nav-content">
       <div class="nav-item active" data-page="home" onclick="switchPage('home')"><span>🏡</span><span class="nav-text">Home</span></div>
       <div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span>🧩</span><span class="nav-text">Dashboard</span></div>
@@ -549,7 +545,6 @@
   </aside>
 
   <div class="container">
-
     <div id="page-home" class="page-content active-page">
       <div class="header-group">
         <div class="home-clock" id="liveClock">00:00:00</div>
@@ -579,10 +574,10 @@
     <div id="page-excel" class="page-content">
       <div class="header-group">
         <h1>EXCEL Trắng</h1>
-        <p>Phase 2 sẽ nâng cấp phần này thành bảng tính mini.</p>
+        <p>Phase 3 sẽ nâng cấp phần này thành bảng tính mini.</p>
       </div>
       <div class="card" style="min-height:300px;">
-        <h2>📗 Khu vực EXCEL đang chờ nâng cấp ở Phase 2</h2>
+        <h2>📗 Khu vực EXCEL đang chờ nâng cấp ở Phase 3</h2>
       </div>
     </div>
 
@@ -603,27 +598,64 @@
           </div>
         </div>
 
+        <div class="card" style="width:100%; max-width:450px;">
+          <h3 style="margin-bottom:15px;">Avatar Riêng Của Ní</h3>
+                    <label id="avatarDropZone" style="
+            width:100%;
+            min-height:180px;
+            border:2px dashed var(--card-border);
+            border-radius:20px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            cursor:pointer;
+            padding:20px;
+            text-align:center;
+          ">
+            <div style="font-size:2rem;">🖼️</div>
+            <div style="font-weight:bold;">Kéo ảnh vào đây hoặc bấm để chọn</div>
+            <div style="font-size:0.85rem; opacity:0.7;">PNG / JPG / WEBP</div>
+            <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+          </label>
+
+          <button class="btn" style="margin-top:15px;" onclick="removeCustomAvatar()">Xoá Avatar Riêng</button>
+        </div>
+
         <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 style="margin-bottom:12px; font-size:1rem;">Màu Chủ Đạo</h3>
+          <h3 style="margin-bottom:10px; font-size:1rem;">Màu Chủ Đạo</h3>
           <div class="color-palette">
-            <div class="color-dot" style="background:#22c55e; --dot-color:#22c55e" onclick="setAccent('#22c55e')"></div>
-            <div class="color-dot" style="background:#ef4444; --dot-color:#ef4444" onclick="setAccent('#ef4444')"></div>
-            <div class="color-dot" style="background:#a855f7; --dot-color:#a855f7" onclick="setAccent('#a855f7')"></div>
-            <div class="color-dot" style="background:#f59e0b; --dot-color:#f59e0b" onclick="setAccent('#f59e0b')"></div>
-            <div class="color-dot" style="background:#06b6d4; --dot-color:#06b6d4" onclick="setAccent('#06b6d4')"></div>
-            <div class="color-dot" style="background:#e11d48; --dot-color:#e11d48" onclick="setAccent('#e11d48')"></div>
-            <div class="color-dot" style="background:#84cc16; --dot-color:#84cc16" onclick="setAccent('#84cc16')"></div>
-            <div class="color-dot" style="background:#6366f1; --dot-color:#6366f1" onclick="setAccent('#6366f1')"></div>
-            <div class="color-dot" style="background:#14b8a6; --dot-color:#14b8a6" onclick="setAccent('#14b8a6')"></div>
-            <div class="color-dot" style="background:#f43f5e; --dot-color:#f43f5e" onclick="setAccent('#f43f5e')"></div>
-            <div class="color-dot" style="background:#eab308; --dot-color:#eab308" onclick="setAccent('#eab308')"></div>
-            <div class="color-dot" style="background:#8b5cf6; --dot-color:#8b5cf6" onclick="setAccent('#8b5cf6')"></div>
+            <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="--dot-color:#a855f7; background:#a855f7;" onclick="setAccent('#a855f7')"></div>
+            <div class="color-dot" style="--dot-color:#f59e0b; background:#f59e0b;" onclick="setAccent('#f59e0b')"></div>
+            <div class="color-dot" style="--dot-color:#06b6d4; background:#06b6d4;" onclick="setAccent('#06b6d4')"></div>
+            <div class="color-dot" style="--dot-color:#84cc16; background:#84cc16;" onclick="setAccent('#84cc16')"></div>
+            <div class="color-dot" style="--dot-color:#f43f5e; background:#f43f5e;" onclick="setAccent('#f43f5e')"></div>
+            <div class="color-dot" style="--dot-color:#8b5cf6; background:#8b5cf6;" onclick="setAccent('#8b5cf6')"></div>
+            <div class="color-dot" style="--dot-color:#14b8a6; background:#14b8a6;" onclick="setAccent('#14b8a6')"></div>
+            <div class="color-dot" style="--dot-color:#eab308; background:#eab308;" onclick="setAccent('#eab308')"></div>
+            <div class="color-dot" style="--dot-color:#3b82f6; background:#3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="--dot-color:#ec4899; background:#ec4899;" onclick="setAccent('#ec4899')"></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:20px; width:100%; max-width:340px;">
+          <h3 style="margin-bottom:12px; font-size:1rem;">Dữ Liệu</h3>
+          <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+            <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
+            <label class="btn" style="margin-top:0; text-align:center;">
+              📥 Import dữ liệu
+              <input type="file" id="importFile" accept=".json" style="display:none;">
+            </label>
           </div>
         </div>
       </div>
     </div>
   </div>
 
+  <!-- MODALS -->
   <div class="modal-overlay" id="addShortcutModal">
     <div class="modal-box">
       <div class="modal-title">Thêm lối tắt</div>
@@ -637,11 +669,24 @@
     </div>
   </div>
 
+  <div class="modal-overlay" id="editShortcutModal">
+    <div class="modal-box">
+      <div class="modal-title">Chỉnh sửa lối tắt</div>
+      <div class="input-group"><label>Tên</label><input type="text" id="editLinkName"></div>
+      <div class="input-group"><label>URL</label><input type="text" id="editLinkUrl"></div>
+      <div class="emoji-grid" id="editEmojiGrid"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeEditModal()">Huỷ</button>
+        <button class="btn" style="width:auto; margin-top:0;" onclick="saveEditedLink()">Lưu</button>
+      </div>
+    </div>
+  </div>
+
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
       <div style="font-size:3rem; margin-bottom:10px;">🤨</div>
       <h2>MÀY CHẮC CHƯAAA???</h2>
-      <div class="modal-actions" style="justify-content:center;">
+      <div class="modal-actions">
         <button class="btn-confirm" id="btnFinalSure">CHẮC</button>
         <button class="btn-cancel" onclick="closeConfirm()">CHẮC chớt liền</button>
       </div>
@@ -655,15 +700,25 @@
 
     function playHoverSound() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
+
       const osc = audioCtx.createOscillator();
       const gain = audioCtx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(280, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(180, audioCtx.currentTime + 0.12);
-      gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(420, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(260, audioCtx.currentTime + 0.08);
+
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(900, audioCtx.currentTime);
+
+      gain.gain.setValueAtTime(0.018, audioCtx.currentTime);
       gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
-      osc.connect(gain);
+
+      osc.connect(filter);
+      filter.connect(gain);
       gain.connect(audioCtx.destination);
+
       osc.start();
       osc.stop(audioCtx.currentTime + 0.12);
     }
@@ -682,39 +737,59 @@
     };
 
     let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v6')) || [
-      {id:'1', name:'Course Key AE', url:'https://learn.eltngl.com/', icon:'🔑'},
-      {id:'2', name:'Kho Sách', url:'#', icon:'📚'}
+      { id:'1', name:'Course Key AE', url:'https://learn.eltngl.com/', icon:'🔑' },
+      { id:'2', name:'Kho Sách', url:'#', icon:'📚' }
     ];
 
-    let notesData = JSON.parse(localStorage.getItem('ao_notes_v1')) || { note1:'', note2:'', note3:'' };
+    let notesData = JSON.parse(localStorage.getItem('ao_notes_v1')) || {
+      note1: '', note2: '', note3: ''
+    };
 
     const availableEmojis = ['🔗','🔑','📘','📄','📚','🎁','💻','📊','📝','🎨','🎵','⚙️','🚀','💡','🌟','📁','🔥','🌈','🍔','🍕','🎮','🎧','📸','🛠️','🧪','🛰️','👾','👻','🐼','🦊'];
     let selectedEmoji = '🔗';
+    let selectedEditEmoji = '🔗';
     let pendingDeleteId = null;
+    let editingShortcutId = null;
+
+    function saveData() {
+      localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
+      localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
+      localStorage.setItem('ao_notes_v1', JSON.stringify(notesData));
+    }
 
     function switchPage(pageId) {
       document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active-page'));
-      document.getElementById(`page-${pageId}`).classList.add('active-page');
+      document.getElementById(`page-${pageId}`)?.classList.add('active-page');
+
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
-        if(item.dataset.page === pageId) item.classList.add('active');
+        if (item.dataset.page === pageId) item.classList.add('active');
       });
     }
 
     function renderShortcuts() {
       const grid = document.getElementById('shortcutGrid');
-      grid.innerHTML = userShortcuts.map(s => `
-        <div class="card">
+
+      grid.innerHTML = userShortcuts.map((s, index) => `
+        <div class="card shortcut-card" draggable="true" data-id="${s.id}" data-index="${index}">
+          <div style="position:absolute; top:12px; left:12px; display:flex; gap:8px; z-index:11;">
+            <button class="btn-delete" style="position:static; opacity:1;" onclick="openEditModal('${s.id}')">✎</button>
+          </div>
+
           <button class="btn-delete" onclick="askDelete('${s.id}')">✕</button>
           <div style="font-size:50px;">${s.icon}</div>
           <h3>${s.name}</h3>
           <a class="btn" href="${s.url}" target="_blank">Mở</a>
-        </div>`).join('') + `
+        </div>
+      `).join('') + `
         <div class="card add-card" onclick="openModal()">
           <div class="plus-icon">+</div>
           <div class="add-text">Thêm link</div>
-        </div>`;
+        </div>
+      `;
+
       addHoverEvents();
+      initDragAndDrop();
     }
 
     function renderEmojis() {
@@ -724,37 +799,124 @@
       addHoverEvents();
     }
 
-    function selectEmoji(e){ selectedEmoji=e; renderEmojis(); }
-    function openModal(){ document.getElementById('addShortcutModal').style.display='flex'; renderEmojis(); }
-    function closeModal(){ document.getElementById('addShortcutModal').style.display='none'; }
-    function askDelete(id){ pendingDeleteId=id; document.getElementById('confirmModal').style.display='flex'; }
-    function closeConfirm(){ document.getElementById('confirmModal').style.display='none'; }
+    function renderEditEmojis() {
+      document.getElementById('editEmojiGrid').innerHTML = availableEmojis.map(e =>
+        `<div class="emoji-item ${e===selectedEditEmoji?'selected':''}" onclick="selectEditEmoji('${e}')">${e}</div>`
+      ).join('');
+      addHoverEvents();
+    }
 
-    document.getElementById('btnFinalSure').onclick = () => {
-      userShortcuts = userShortcuts.filter(s => s.id !== pendingDeleteId);
-      localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
-      renderShortcuts();
-      closeConfirm();
-    };
+    function selectEmoji(e){ selectedEmoji = e; renderEmojis(); }
+    function selectEditEmoji(e){ selectedEditEmoji = e; renderEditEmojis(); }
+
+    function openModal() {
+      document.getElementById('newLinkName').value = '';
+      document.getElementById('newLinkUrl').value = '';
+      selectedEmoji = '🔗';
+      renderEmojis();
+      document.getElementById('addShortcutModal').style.display = 'flex';
+    }
+
+    function closeModal(){ document.getElementById('addShortcutModal').style.display = 'none'; }
 
     function saveNewLink() {
       const name = document.getElementById('newLinkName').value.trim();
       const url = document.getElementById('newLinkUrl').value.trim() || '#';
-      if(!name) return;
-      userShortcuts.push({ id: Date.now().toString(), name, url, icon: selectedEmoji });
-      localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
+      if (!name) return;
+
+      userShortcuts.push({
+        id: Date.now().toString(),
+        name,
+        url,
+        icon: selectedEmoji
+      });
+
+      saveData();
       renderShortcuts();
       closeModal();
-      document.getElementById('newLinkName').value = '';
-      document.getElementById('newLinkUrl').value = '';
+    }
+
+    function openEditModal(id) {
+      const item = userShortcuts.find(s => s.id === id);
+      if (!item) return;
+
+      editingShortcutId = id;
+      selectedEditEmoji = item.icon;
+      document.getElementById('editLinkName').value = item.name;
+      document.getElementById('editLinkUrl').value = item.url;
+      renderEditEmojis();
+      document.getElementById('editShortcutModal').style.display = 'flex';
+    }
+
+    function closeEditModal(){ document.getElementById('editShortcutModal').style.display = 'none'; }
+
+    function saveEditedLink() {
+      const item = userShortcuts.find(s => s.id === editingShortcutId);
+      if (!item) return;
+
+      item.name = document.getElementById('editLinkName').value.trim() || item.name;
+      item.url = document.getElementById('editLinkUrl').value.trim() || item.url;
+      item.icon = selectedEditEmoji;
+
+      saveData();
+      renderShortcuts();
+      closeEditModal();
+    }
+
+    function askDelete(id) {
+      pendingDeleteId = id;
+      document.getElementById('confirmModal').style.display = 'flex';
+    }
+
+    function closeConfirm() {
+      document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    document.getElementById('btnFinalSure').onclick = () => {
+      userShortcuts = userShortcuts.filter(s => s.id !== pendingDeleteId);
+      saveData();
+      renderShortcuts();
+      closeConfirm();
+    };
+
+    function initDragAndDrop() {
+      const cards = document.querySelectorAll('.shortcut-card');
+      let dragged = null;
+
+      cards.forEach(card => {
+        card.addEventListener('dragstart', () => {
+          dragged = card;
+          card.classList.add('dragging');
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          dragged = null;
+          saveData();
+        });
+
+        card.addEventListener('dragover', e => e.preventDefault());
+
+        card.addEventListener('drop', e => {
+          e.preventDefault();
+          if (!dragged || dragged === card) return;
+
+          const from = +dragged.dataset.index;
+          const to = +card.dataset.index;
+          const moved = userShortcuts.splice(from, 1)[0];
+          userShortcuts.splice(to, 0, moved);
+
+          renderShortcuts();
+        });
+      });
     }
 
     function updatePreview(g) {
       appConfig.tempGender = g;
       const seeds = { male:'Liam', female:'Adrian', dog:'Luis' };
       document.getElementById('previewAvatar').src = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[g]}`;
-      document.querySelectorAll('#page-settings .btn').forEach(b => b.style.opacity='0.6');
-      document.getElementById(`btn-${g}`).style.opacity='1';
+      document.querySelectorAll('#page-settings #btn-male, #page-settings #btn-female, #page-settings #btn-dog').forEach(b => b.style.opacity = '0.6');
+      document.getElementById(`btn-${g}`).style.opacity = '1';
     }
 
     function setAccent(c) {
@@ -765,67 +927,161 @@
 
     function saveAllSettings() {
       appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
-      if(appConfig.tempGender) appConfig.gender = appConfig.tempGender;
-      localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
+      if (appConfig.tempGender) appConfig.gender = appConfig.tempGender;
+      saveData();
       applyConfig();
-      alert("Đã lưu rồi ní ơi!");
+      alert('Đã lưu rồi ní ơi!');
     }
 
     function applyConfig() {
       document.documentElement.style.setProperty('--accent', appConfig.accent);
       document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appConfig.accent}55`);
+
       document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
+      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? '😎' : '🤪';
+
       document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
       document.getElementById('usernameInput').value = appConfig.name;
-      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? '😎' : '🤪';
+
       const seeds = { male:'Liam', female:'Adrian', dog:'Luis' };
-      document.getElementById('sidebarAvatar').src = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender]}`;
+      const avatar = appConfig.customAvatar || `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender]}`;
+
+      document.getElementById('sidebarAvatar').src = avatar;
+      document.getElementById('previewAvatar').src = avatar;
       document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
     }
 
     function toggleTheme() {
       appConfig.isLightMode = !appConfig.isLightMode;
       applyConfig();
+      saveData();
     }
+
+    function setupAvatarUpload() {
+      const input = document.getElementById('avatarUpload');
+      const zone = document.getElementById('avatarDropZone');
+
+      zone.addEventListener('click', () => input.click());
+
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('dragover');
+      });
+
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) handleAvatarFile(file);
+      });
+
+      input.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) handleAvatarFile(file);
+      });
+    }
+
+    function handleAvatarFile(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        appConfig.customAvatar = e.target.result;
+        saveData();
+        applyConfig();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeCustomAvatar() {
+      delete appConfig.customAvatar;
+      saveData();
+      applyConfig();
+    }
+
+    function exportData() {
+      const payload = { config: appConfig, shortcuts: userShortcuts, notes: notesData };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ao-dashboard-backup.json';
+      a.click();
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.id === 'importFile') {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = evt => {
+          try {
+            const data = JSON.parse(evt.target.result);
+            if (data.config) appConfig = data.config;
+            if (data.shortcuts) userShortcuts = data.shortcuts;
+            if (data.notes) notesData = data.notes;
+
+            saveData();
+            applyConfig();
+            renderShortcuts();
+            initNotes();
+            alert('Import thành công nha ní!');
+          } catch {
+            alert('File không hợp lệ rồi ní ơi!');
+          }
+        };
+        reader.readAsText(file);
+      }
+    });
 
     function updateClock() {
       const now = new Date();
+      const days = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
+
       document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN');
-      document.getElementById('liveDate').innerText = now.toLocaleDateString('vi-VN', {
-        weekday:'long', year:'numeric', month:'long', day:'numeric'
-      });
+      document.getElementById('liveDate').innerText =
+        `${days[now.getDay()]}, ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
     }
 
     function renderCalendar() {
       const now = new Date();
-      const y = now.getFullYear();
-      const m = now.getMonth();
+      const year = now.getFullYear();
+      const month = now.getMonth();
       const today = now.getDate();
-      const first = new Date(y, m, 1).getDay();
-      const days = new Date(y, m + 1, 0).getDate();
 
-      document.getElementById('calendarTitle').innerText = `Tháng ${m+1} / ${y}`;
-      const week = ['CN','T2','T3','T4','T5','T6','T7'];
-      let html = week.map(d => `<div class="calendar-cell" style="font-weight:bold;">${d}</div>`).join('');
-      for(let i=0;i<first;i++) html += `<div></div>`;
-      for(let d=1; d<=days; d++) {
+      document.getElementById('calendarTitle').innerText = `Tháng ${month + 1} / ${year}`;
+
+      const grid = document.getElementById('calendarGrid');
+      const days = ['CN','T2','T3','T4','T5','T6','T7'];
+
+      let html = days.map(d => `<div class="calendar-cell" style="font-weight:bold;">${d}</div>`).join('');
+
+      const firstDay = new Date(year, month, 1).getDay();
+      const totalDays = new Date(year, month + 1, 0).getDate();
+
+      for (let i = 0; i < firstDay; i++) html += `<div></div>`;
+
+      for (let d = 1; d <= totalDays; d++) {
         html += `<div class="calendar-cell ${d===today?'today':''}">${d}</div>`;
       }
-      document.getElementById('calendarGrid').innerHTML = html;
+
+      grid.innerHTML = html;
     }
 
     function initNotes() {
       ['note1','note2','note3'].forEach(id => {
         const el = document.getElementById(id);
         el.value = notesData[id] || '';
-        el.addEventListener('input', () => {
+        el.oninput = () => {
           notesData[id] = el.value;
-          localStorage.setItem('ao_notes_v1', JSON.stringify(notesData));
-        });
+          saveData();
+        };
       });
     }
 
-    document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');
+    document.getElementById('toggleBtn').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('expanded');
+    };
 
     window.onload = () => {
       renderShortcuts();
@@ -834,6 +1090,7 @@
       updateClock();
       renderCalendar();
       initNotes();
+      setupAvatarUpload();
       setInterval(updateClock, 1000);
       addHoverEvents();
     };

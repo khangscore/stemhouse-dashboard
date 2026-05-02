@@ -39,6 +39,7 @@
     }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
+    /* Sidebar cải tiến */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
@@ -48,59 +49,78 @@
       border-radius: 24px;
       z-index: 2000;
       transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-      display: flex; flex-direction: column; overflow: hidden;
+      display: flex; flex-direction: column; overflow: visible; /* Để nút lòi ra ngoài chút */
     }
     .sidebar.expanded { width: var(--sidebar-width); border-color: var(--accent); }
 
+    /* Nút Toggle hình chữ nhật dài nằm trên cùng */
+    .toggle-sidebar {
+      position: absolute;
+      top: 15px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--accent);
+      border: 1.5px solid #000;
+      color: white;
+      width: 40px; height: 12px; /* Hình chữ nhật dài */
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      transition: 0.3s;
+      z-index: 2001;
+    }
+    .toggle-sidebar::after {
+      content: '▼'; font-size: 8px; color: #000; transition: 0.3s;
+    }
+    .sidebar.expanded .toggle-sidebar::after { transform: rotate(180deg); }
+
     .sidebar-header {
-      padding: 30px 0 10px 0;
+      padding: 45px 0 10px 0; /* Tăng padding để né nút toggle */
       display: flex; flex-direction: column; align-items: center; width: 100%;
     }
     .sidebar-avatar {
-      width: 50px; height: 50px; border-radius: 50%;
+      width: 45px; height: 45px; border-radius: 50%;
       border: 2px solid var(--accent); background: #fff;
       transition: 0.3s; object-fit: cover;
     }
     .sidebar.expanded .sidebar-avatar { width: 90px; height: 90px; }
     
     .sidebar-username {
-      margin-top: 12px; font-weight: bold; font-size: 1rem;
+      margin-top: 12px; font-weight: bold; font-size: 0.9rem;
       color: var(--accent); opacity: 0; transition: 0.3s;
       white-space: nowrap;
     }
     .sidebar.expanded .sidebar-username { opacity: 1; }
 
-    .toggle-sidebar {
-      background: var(--accent); border: 2px solid #000; color: white;
-      width: 35px; height: 35px; border-radius: 50%;
-      cursor: pointer; align-self: center; margin-top: auto; margin-bottom: 20px;
-      transition: 0.3s; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    }
-    .sidebar.expanded .toggle-sidebar { transform: rotate(180deg); }
-
-    .nav-content { flex-grow: 1; margin-top: 20px; }
+    .nav-content { flex-grow: 1; margin-top: 20px; width: 100%; }
 
     .nav-item {
-      display: flex; align-items: center; padding: 15px; margin: 8px 12px;
+      display: flex; align-items: center; justify-content: center; /* Căn giữa icon khi thu nhỏ */
+      padding: 15px 0; margin: 8px 10px;
       text-decoration: none; color: var(--text-main); border-radius: 16px;
       transition: 0.3s; cursor: pointer;
     }
+    .sidebar.expanded .nav-item { justify-content: flex-start; padding-left: 20px; }
     .nav-item:hover { background: rgba(255, 255, 255, 0.1); }
     .nav-item.active { background: var(--accent); color: #000; font-weight: bold; }
     
     .nav-icon { font-size: 1.4rem; min-width: 40px; text-align: center; }
-    .nav-text { opacity: 0; transition: 0.3s; margin-left: 10px; font-weight: 500; }
-    .sidebar.expanded .nav-text { opacity: 1; }
+    .nav-text { 
+      width: 0; opacity: 0; visibility: hidden;
+      transition: 0.2s; margin-left: 0; font-weight: 500; 
+    }
+    .sidebar.expanded .nav-text { width: auto; opacity: 1; visibility: visible; margin-left: 10px; }
 
     .container {
-      max-width: 1100px; margin: 0 auto;
+      max-width: 1200px; margin: 0 auto;
       padding: 60px 20px 100px 120px;
     }
 
-    .header h1 { font-size: 3.5rem; letter-spacing: -2px; text-align: center; margin-bottom: 40px; }
+    /* Chỉnh kích thước Title và Greeting */
+    .header h1 { font-size: 4rem; letter-spacing: -3px; text-align: center; margin-bottom: 10px; }
+    #greeting { font-size: 1rem !important; margin-bottom: 50px; text-align: center; }
 
-    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 25px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
 
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
@@ -148,7 +168,10 @@
 </head>
 <body id="body">
 
+  <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
+    <button class="toggle-sidebar" id="toggleBtn"></button>
+    
     <div class="sidebar-header">
       <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="User">
       <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
@@ -162,20 +185,27 @@
         <span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span>
       </div>
     </div>
-
-    <button class="toggle-sidebar" id="toggleBtn">❯</button>
   </aside>
 
+  <!-- Theme Toggle -->
   <div class="theme-switch s-hover" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <div class="container">
     <div id="page-dashboard">
-      <div style="text-align: center; margin-bottom: 50px;">
+      <div style="text-align: center;">
         <h1 id="mainTitle">AO Dashboard Q10</h1>
-        <p id="greeting" style="color: var(--text-muted); font-size: 1.2rem;">Haku_Na_Matata!</p>
+        <p id="greeting" style="color: var(--text-muted);">Haku_Na_Matata!</p>
       </div>
 
       <div class="grid">
+        <!-- New Item: Course Key AE -->
+        <div class="card s-hover">
+          <div style="font-size: 50px;">🔑</div>
+          <h3>Course Key AE</h3>
+          <p style="margin: 15px 0; font-size: 0.85rem; color: var(--text-muted);">Hệ thống ELT Learning.</p>
+          <a class="btn s-hover" href="https://learn.eltngl.com/" target="_blank">Truy cập</a>
+        </div>
+
         <div class="card s-hover">
           <div style="font-size: 50px;">📘</div>
           <h3>Học Cụ & In Ấn</h3>
@@ -203,6 +233,7 @@
       </div>
     </div>
 
+    <!-- SETTINGS -->
     <div id="page-settings" class="settings-section">
       <button class="btn btn-save s-hover" onclick="saveAllSettings()">💾 LƯU NÒ</button>
       <div style="clear: both;"></div>
@@ -289,7 +320,7 @@
 
     function toggleTheme() {
       appConfig.isLightMode = !appConfig.isLightMode;
-      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig)); // Tự động lưu theme
+      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig));
       applyConfig();
       playUI(900);
     }
@@ -310,12 +341,10 @@
 
     function setGender(type) {
       appConfig.gender = type;
-      // Tích hợp Miniavs với seed đúng tên yêu cầu
       if(type === 'male') appConfig.avatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=Liam";
       else if(type === 'female') appConfig.avatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=Adrian";
       else appConfig.avatar = "https://api.dicebear.com/7.x/miniavs/svg?seed=Luis";
       
-      // Cập nhật UI & Tự động lưu vào não trình duyệt luôn
       document.getElementById('sidebarAvatar').src = appConfig.avatar;
       document.querySelectorAll('.gender-btn').forEach(b => b.classList.remove('active'));
       document.getElementById('g-' + type).classList.add('active');
@@ -326,7 +355,7 @@
 
     function setAccent(color) {
       appConfig.accent = color;
-      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig)); // Tự động lưu màu
+      localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig));
       document.documentElement.style.setProperty('--accent', color);
       playUI(800);
     }

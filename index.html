@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AO Dashboard Q10 | Ultimate Edition</title>
   
+  <!-- 1. Trả lại Icon Web xịn sò -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2248%22 fill=%22black%22/><circle cx=%2250%22 cy=%2250%22 r=%2243%22 fill=%22%23FFD133%22/><circle cx=%2232%22 cy=%2238%22 r=%2214%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2232%22 cy=%2238%22 r=%225%22 fill=%22black%22/><circle cx=%2268%22 cy=%2230%22 r=%2210%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><circle cx=%2268%22 cy=%2230%22 r=%224%22 fill=%22black%22/><path d=%22M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z%22 fill=%22white%22 stroke=%22black%22 stroke-width=%222%22/><path d=%22M 40 55 Q 50 85 70 70 L 60 55 Z%22 fill=%22%23FF4747%22 stroke=%22black%22 stroke-width=%221.5%22/><rect x=%2227%22 y=%2255%22 width=%2246%22 height=%226%22 fill=%22white%22/></svg>">
+
   <style>
     :root {
       --bg-color: #0f0720; 
@@ -37,7 +40,7 @@
     }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
-    /* Sidebar & Button Dynamic */
+    /* Sidebar Dynamic Button */
     .sidebar {
       position: fixed; top: 20px; left: 20px; bottom: 20px;
       width: var(--sidebar-collapsed-width);
@@ -75,14 +78,14 @@
     .nav-text { width: 0; opacity: 0; visibility: hidden; transition: 0.2s; font-weight: 500; }
     .sidebar.expanded .nav-text { width: auto; opacity: 1; visibility: visible; margin-left: 10px; }
 
-    /* Container & Layout */
+    /* 4. Căn giữa Title & Header */
     .container { max-width: 1200px; margin: 0 auto; padding: 60px 20px 100px 120px; }
-    .header h1 { font-size: 4rem; letter-spacing: -3px; text-align: center; margin-bottom: 10px; }
-    #greeting { font-size: 1rem !important; margin-bottom: 50px; text-align: center; opacity: 0.8; }
+    .header-group { text-align: center; margin-bottom: 50px; width: 100%; }
+    .header-group h1 { font-size: 4rem; letter-spacing: -3px; display: block; margin-bottom: 10px; }
+    #greeting { font-size: 1rem !important; opacity: 0.8; }
 
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 25px; }
 
-    /* Card Style */
     .card {
       background: var(--card-bg); border: 1px solid var(--card-border);
       border-radius: 28px; padding: 30px;
@@ -90,24 +93,31 @@
       transition: 0.3s; backdrop-filter: blur(10px); position: relative;
     }
     .card:hover { transform: translateY(-8px); border-color: var(--accent); box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-    .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; margin-top: auto; }
-
-    /* Add Button Card */
+    .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; margin-top: 15px; }
+    
     .add-card { cursor: pointer; border: 2px dashed var(--card-border); background: transparent; justify-content: center; min-height: 200px; }
-    .add-card:hover { border-color: var(--accent); background: rgba(255,255,255,0.03); }
 
-    /* Modal Style (Giao diện y hệt hình gửi) */
+    /* Modal - Style image_03617f.png */
     .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); display: none; align-items: center; justify-content: center; z-index: 9999; }
-    .modal { background: #202124; width: 450px; border-radius: 8px; padding: 24px; color: #e8eaed; box-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+    .modal { background: #202124; width: 450px; border-radius: 8px; padding: 24px; color: #e8eaed; }
     .modal h2 { font-size: 16px; font-weight: 500; margin-bottom: 20px; }
-    .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; }
-    .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 10px; color: #fff; margin-bottom: 20px; outline: none; border-radius: 4px 4px 0 0; }
-    .modal-btns { display: flex; justify-content: flex-end; gap: 12px; margin-top: 10px; }
-    .modal-btn { padding: 8px 24px; border-radius: 20px; cursor: pointer; font-size: 14px; font-weight: 500; border: 1px solid #5f6368; background: transparent; color: var(--accent); }
-    .modal-btn.primary { background: #303134; border: none; color: #5f6368; cursor: not-allowed; }
-    .modal-btn.primary.active { background: var(--accent); color: #000; cursor: pointer; }
+    .modal label { display: block; font-size: 12px; margin-bottom: 8px; color: #9aa0a6; text-align: left; width: 100%; }
+    .modal input { width: 100%; background: #303134; border: none; border-bottom: 2px solid var(--accent); padding: 10px; color: #fff; margin-bottom: 20px; outline: none; }
+    .modal-btns { display: flex; justify-content: flex-end; gap: 12px; }
+    .modal-btn { padding: 8px 24px; border-radius: 20px; cursor: pointer; font-size: 14px; border: 1px solid #5f6368; background: transparent; color: var(--accent); }
+    .modal-btn.primary { background: #303134; border: none; color: #5f6368; }
+    .modal-btn.primary.active { background: var(--accent); color: #000; }
 
-    .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; }
+    /* Settings section */
+    .settings-section { display: none; animation: fadeIn 0.4s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    .btn-save { width: auto; padding: 12px 30px; background: #3b82f6; color: white; border-radius: 50px; float: right; margin-bottom: 20px; }
+    .gender-btn { opacity: 0.3; flex: 1; margin-top: 10px; }
+    .gender-btn.active { opacity: 1; border: 2px solid #fff; }
+    .color-dot { width: 35px; height: 35px; border-radius: 50%; cursor: pointer; border: 2px solid #fff; }
+
+    /* 5. Trả lại nút ngày đêm */
+    .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.5rem; }
   </style>
 </head>
 <body id="body">
@@ -119,22 +129,53 @@
       <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
     </div>
     <div class="nav-content">
-      <div class="nav-item active" onclick="switchPage('dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></div>
-      <div class="nav-item" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+      <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></div>
+      <!-- 3. Sửa lỗi không bấm vào Cài đặt được -->
+      <div class="nav-item" id="nav-settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
     </div>
   </aside>
 
   <div class="container">
+    <!-- TRANG DASHBOARD -->
     <div id="page-dashboard">
-      <h1 id="mainTitle">AO Dashboard Q10</h1>
-      <p id="greeting">Haku_Na_Matata!</p>
+      <div class="header-group">
+        <h1 id="mainTitle">AO Dashboard Q10</h1>
+        <p id="greeting">Haku_Na_Matata!</p>
+      </div>
       
       <div class="grid" id="shortcutGrid">
-        <!-- Các card mặc định -->
+        <!-- 2. Trả lại đủ 5 mục mặc định -->
         <div class="card"><div style="font-size: 50px;">🔑</div><h3>Course Key AE</h3><a class="btn" href="https://learn.eltngl.com/" target="_blank">Mở</a></div>
-        <div class="card"><div style="font-size: 50px;">📘</div><h3>Học Cụ</h3><a class="btn" href="#" target="_blank">Mở</a></div>
-        <!-- Ô dấu cộng -->
-        <div class="card add-card" onclick="openModal()"><div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p></div>
+        <div class="card"><div style="font-size: 50px;">📘</div><h3>Học Cụ & In Ấn</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a></div>
+        <div class="card"><div style="font-size: 50px;">🧾</div><h3>Hóa Đơn VAT</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a></div>
+        <div class="card"><div style="font-size: 50px;">📚</div><h3>Kho Sách</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a></div>
+        <div class="card"><div style="font-size: 50px;">🎁</div><h3>Quà Tặng HS</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a></div>
+      </div>
+    </div>
+
+    <!-- 3. TRANG CÀI ĐẶT (Đã sửa lại để hoạt động) -->
+    <div id="page-settings" class="settings-section">
+      <button class="btn btn-save" onclick="saveAllSettings()">💾 LƯU NÒ</button>
+      <div style="clear: both;"></div>
+      <div class="grid">
+        <div class="card" style="grid-column: span 2;">
+          <h3>Thông Tin Của Ní</h3>
+          <input type="text" id="usernameInput" style="width:100%; padding:10px; margin:15px 0; border-radius:10px; border:1px solid #ccc; background:rgba(0,0,0,0.1); color:inherit;" placeholder="Tên của ní làaaa?">
+          <div style="display: flex; gap: 10px; width: 100%;">
+            <button class="btn gender-btn active" id="g-male" onclick="setGender('male')">Liam</button>
+            <button class="btn gender-btn" id="g-female" onclick="setGender('female')" style="background: #ec4899;">Adrian</button>
+            <button class="btn gender-btn" id="g-dog" onclick="setGender('dog')" style="background: #f59e0b;">Luis</button>
+          </div>
+        </div>
+        <div class="card">
+          <h3>Màu Chủ Đạo</h3>
+          <div style="display: flex; gap: 15px; margin-top: 20px;">
+            <div class="color-dot" style="background: #22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="background: #3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="background: #ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="background: #a855f7;" onclick="setAccent('#a855f7')"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -154,85 +195,84 @@
     </div>
   </div>
 
+  <!-- 5. Nút theme -->
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
-    let shortcuts = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
-    
-    // Gợi ý icon thông minh dựa trên URL
+    let appConfig = JSON.parse(localStorage.getItem('ao_dashboard_v2')) || {
+      name: "Ní Hào Ma", gender: "male", accent: "#22c55e", avatar: "https://api.dicebear.com/7.x/miniavs/svg?seed=Liam", isLightMode: false
+    };
+    let customShortcuts = JSON.parse(localStorage.getItem('user_shortcuts') || '[]');
+
     function getIcon(url) {
       const u = url.toLowerCase();
-      if(u.includes('facebook')) return '🔵';
-      if(u.includes('youtube')) return '🔴';
-      if(u.includes('drive')) return '📂';
-      if(u.includes('mail')) return '✉️';
-      if(u.includes('sheet')) return '📊';
-      if(u.includes('word')) return '📝';
-      if(u.includes('learn')) return '🎓';
+      if(u.includes('facebook')) return '🔵'; if(u.includes('youtube')) return '🔴';
+      if(u.includes('drive')) return '📂'; if(u.includes('learn')) return '🎓';
       return '🔗';
     }
 
-    function renderShortcuts() {
+    function renderAll() {
       const grid = document.getElementById('shortcutGrid');
-      // Xóa các card cũ trừ các card mặc định và nút cộng
       const defaults = `
         <div class="card"><div style="font-size: 50px;">🔑</div><h3>Course Key AE</h3><a class="btn" href="https://learn.eltngl.com/" target="_blank">Mở</a></div>
-        <div class="card"><div style="font-size: 50px;">📘</div><h3>Học Cụ & In Ấn</h3><a class="btn" href="#" target="_blank">Mở</a></div>
-        <div class="card"><div style="font-size: 50px;">🧾</div><h3>Hóa Đơn VAT</h3><a class="btn" href="#" target="_blank">Mở</a></div>
+        <div class="card"><div style="font-size: 50px;">📘</div><h3>Học Cụ & In Ấn</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7BD651B68A-99FC-4B10-82CD-A6F475821593%7D&file=H%25u1eccC%20C%25u1ee4%20-%20NCT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a></div>
+        <div class="card"><div style="font-size: 50px;">🧾</div><h3>Hóa Đơn VAT</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B0EF1083E-E86B-5708-397A-15B22C51A364%7D&file=Q10_HO%C3%81%20%C4%90%C6%A0N%20VAT.xlsx&action=default&mobileredirect=true" target="_blank">Mở file</a></div>
+        <div class="card"><div style="font-size: 50px;">📚</div><h3>Kho Sách</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B2E6C9D9F-3E1B-5A31-B9D1-530F93955649%7D&file=2026-KHO-SACH-NGUYEN-CHI-THANH.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a></div>
+        <div class="card"><div style="font-size: 50px;">🎁</div><h3>Quà Tặng HS</h3><a class="btn" href="https://stemhouseeducation-my.sharepoint.com/:x:/r/personal/khangnguyen_stemhouse_edu_vn/_layouts/15/Doc.aspx?sourcedoc=%7B361EB4A0-4B6F-44F9-9AA2-0A0D08AD4B72%7D&file=2025-2026_QU%C3%80%20T%E1%BA%B6NG%20HS.xlsx&action=default&mobileredirect=true&DefaultItemOpen=1" target="_blank">Mở file</a></div>
       `;
-      let customHtml = shortcuts.map((s, index) => `
+      let customHtml = customShortcuts.map((s, idx) => `
         <div class="card">
-          <div style="font-size: 50px;">${getIcon(s.url)}</div>
-          <h3>${s.name}</h3>
-          <a class="btn" href="${s.url}" target="_blank">Mở</a>
-          <span style="position:absolute; top:10px; right:15px; cursor:pointer; opacity:0.5;" onclick="deleteShortcut(${index})">✕</span>
-        </div>
-      `).join('');
-      
-      const addBtn = `<div class="card add-card" onclick="openModal()"><div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p></div>`;
-      grid.innerHTML = defaults + customHtml + addBtn;
+          <div style="font-size: 50px;">${getIcon(s.url)}</div><h3>${s.name}</h3><a class="btn" href="${s.url}" target="_blank">Mở</a>
+          <span style="position:absolute; top:10px; right:15px; cursor:pointer; opacity:0.3;" onclick="deleteShortcut(${idx})">✕</span>
+        </div>`).join('');
+      grid.innerHTML = defaults + customHtml + `<div class="card add-card" onclick="openModal()"><div style="font-size: 60px; color: var(--accent);">+</div><p>Thêm lối tắt</p></div>`;
+      applyConfig();
     }
+
+    function applyConfig() {
+      document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
+      document.getElementById('usernameInput').value = appConfig.name;
+      document.getElementById('sidebarAvatar').src = appConfig.avatar;
+      document.documentElement.style.setProperty('--accent', appConfig.accent);
+      document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
+      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? "☀️" : "🌙";
+      const h = new Date().getHours();
+      document.getElementById('greeting').innerText = `${h < 12 ? "OẮT SẤP BRO ĐỜ" : "GÒI MÀY LÀM CHƯA"}, ${appConfig.name}! 🚀`;
+    }
+
+    function switchPage(page) {
+      document.getElementById('page-dashboard').style.display = (page === 'dashboard' ? 'block' : 'none');
+      document.getElementById('page-settings').style.display = (page === 'settings' ? 'block' : 'none');
+      document.getElementById('nav-dashboard').classList.toggle('active', page === 'dashboard');
+      document.getElementById('nav-settings').classList.toggle('active', page === 'settings');
+    }
+
+    function toggleTheme() { appConfig.isLightMode = !appConfig.isLightMode; saveConfig(); }
+    function setAccent(c) { appConfig.accent = c; saveConfig(); }
+    function setGender(g) { 
+      appConfig.gender = g; 
+      appConfig.avatar = `https://api.dicebear.com/7.x/miniavs/svg?seed=${g === 'male' ? 'Liam' : g === 'female' ? 'Adrian' : 'Luis'}`;
+      saveConfig(); 
+    }
+    function saveAllSettings() { appConfig.name = document.getElementById('usernameInput').value || "Ní"; saveConfig(); alert("Đã lưu!"); }
+    function saveConfig() { localStorage.setItem('ao_dashboard_v2', JSON.stringify(appConfig)); applyConfig(); }
 
     function openModal() { document.getElementById('modalOverlay').style.display = 'flex'; }
-    function closeModal() { 
-      document.getElementById('modalOverlay').style.display = 'none';
-      document.getElementById('shortcutName').value = '';
-      document.getElementById('shortcutUrl').value = '';
-    }
-
-    function validateModal() {
-      const url = document.getElementById('shortcutUrl').value;
+    function closeModal() { document.getElementById('modalOverlay').style.display = 'none'; }
+    function validateModal() { 
       const btn = document.getElementById('btnDone');
-      if(url.length > 5) {
-        btn.classList.add('active');
-        btn.disabled = false;
-      } else {
-        btn.classList.remove('active');
-        btn.disabled = true;
-      }
+      if(document.getElementById('shortcutUrl').value.length > 5) { btn.classList.add('active'); btn.disabled = false; }
+      else { btn.classList.remove('active'); btn.disabled = true; }
     }
-
     function addShortcut() {
-      const name = document.getElementById('shortcutName').value || "Lối tắt mới";
-      const url = document.getElementById('shortcutUrl').value;
-      if(!url) return;
-      shortcuts.push({name, url});
-      localStorage.setItem('user_shortcuts', JSON.stringify(shortcuts));
-      renderShortcuts();
-      closeModal();
+      customShortcuts.push({name: document.getElementById('shortcutName').value || "Lối tắt", url: document.getElementById('shortcutUrl').value});
+      localStorage.setItem('user_shortcuts', JSON.stringify(customShortcuts));
+      renderAll(); closeModal();
     }
+    function deleteShortcut(i) { customShortcuts.splice(i, 1); localStorage.setItem('user_shortcuts', JSON.stringify(customShortcuts)); renderAll(); }
 
-    function deleteShortcut(index) {
-      shortcuts.splice(index, 1);
-      localStorage.setItem('user_shortcuts', JSON.stringify(shortcuts));
-      renderShortcuts();
-    }
-
-    document.getElementById('toggleBtn').onclick = () => {
-      document.getElementById('sidebar').classList.toggle('expanded');
-    };
-
-    window.onload = renderShortcuts;
+    document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');
+    window.onload = renderAll;
   </script>
 </body>
 </html>

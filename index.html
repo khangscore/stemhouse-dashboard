@@ -22,7 +22,6 @@
       --card-border: rgba(0, 0, 0, 0.1); --text-main: #1e293b;
     }
 
-    /* Đảm bảo render font Noto Color Emoji cho các biểu tượng */
     * { margin: 0; padding: 0; box-sizing: border-box; font-family: "Segoe UI", "Noto Color Emoji", sans-serif; transition: background 0.3s, color 0.3s, box-shadow 0.3s, transform 0.3s; }
 
     body {
@@ -32,10 +31,9 @@
     }
     body.light-mode { background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc); }
 
-    /* ====== HIỆU ỨNG SÁNG NHẸ (GLOW) ĐÃ GIẢM CƯỜNG ĐỘ ====== */
     .card:hover, .btn:hover, .btn-save-fixed:hover, .theme-switch:hover, .color-dot:hover, .nav-item:not(.active):hover {
       box-shadow: 0 0 12px var(--accent) !important;
-      background: rgba(255, 255, 255, 0.12); /* Sáng nhẹ nền để rõ mục bên trong */
+      background: rgba(255, 255, 255, 0.12);
     }
     .card:hover { transform: translateY(-5px); border-color: var(--accent); }
 
@@ -66,9 +64,14 @@
     .sidebar.expanded .sidebar-username { opacity: 1; }
 
     .nav-content { flex-grow: 1; margin-top: 20px; width: 100%; }
-    .nav-item { display: flex; align-items: center; justify-content: center; padding: 15px 0; margin: 8px 10px; border-radius: 16px; cursor: pointer; transition: 0.3s; }
+    
+    /* Nav Item Glow */
+    .nav-item { display: flex; align-items: center; justify-content: center; padding: 15px 0; margin: 8px 10px; border-radius: 16px; cursor: pointer; transition: 0.3s; color: inherit; }
     .sidebar.expanded .nav-item { justify-content: flex-start; padding-left: 20px; }
+    
+    /* Đây là class quan trọng nè ní */
     .nav-item.active { background: var(--accent); color: #000; font-weight: bold; box-shadow: 0 0 15px var(--accent); }
+    
     .nav-text { width: 0; opacity: 0; visibility: hidden; transition: 0.2s; margin-left: 10px; }
     .sidebar.expanded .nav-text { width: auto; opacity: 1; visibility: visible; }
 
@@ -89,16 +92,16 @@
     
     .add-card { cursor: pointer; border-style: dashed; border-width: 2px; }
     .add-card .plus-icon { font-size: 80px; color: var(--accent); line-height: 1; font-weight: 300; }
-    .add-card .add-text { margin-top: 10px; font-weight: bold; color: var(--text-main); opacity: 0.8; }
 
     .btn { width: 100%; padding: 12px; background: var(--accent); color: #000; text-decoration: none; border-radius: 14px; font-weight: bold; margin-top: 15px; border: none; cursor: pointer; }
     
     .btn-delete { position: absolute; top: 15px; right: 15px; width: 25px; height: 25px; background: rgba(255,0,0,0.2); color: #ff4747; border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; opacity: 0; transition: 0.3s; font-weight: bold; border: none; z-index: 10; }
     .card:hover .btn-delete { opacity: 1; }
-    .btn-delete:hover { background: #ff4747; color: #fff; box-shadow: 0 0 10px #ff4747 !important; }
 
     /* Trang Cài đặt */
-    .settings-section { display: none; position: relative; }
+    .page-content { display: none; } /* Chỉnh lại để dùng chung class cho các trang */
+    .page-content.active-page { display: block; }
+
     .btn-save-fixed {
       position: absolute; top: -10px; right: 0;
       width: auto; padding: 10px 25px; background: #22c55e !important; color: #fff !important;
@@ -107,51 +110,22 @@
     }
 
     .avatar-preview-box { width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--accent); margin-bottom: 10px; background: #fff; object-fit: cover; }
-    .avatar-preview-box.avatar-male { border-color: var(--liam-blue) !important; }
-    
     .color-dot { width: 30px; height: 30px; border-radius: 50%; cursor: pointer; border: 2px solid transparent; }
-
     .theme-switch { position: fixed; bottom: 30px; right: 30px; width: 50px; height: 50px; border-radius: 50%; background: var(--accent); color: #000; display: flex; align-items: center; justify-content: center; cursor: pointer; z-index: 3000; font-size: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.3); }
 
-    /* ====== MODAL THÔNG BÁO / THÊM LINK ====== */
-    .modal-overlay { 
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-      background: rgba(0,0,0,0.8); backdrop-filter: blur(8px);
-      display: none; align-items: center; justify-content: center; z-index: 10002; 
-    }
-    .modal-box {
-      background: #202124; width: 100%; max-width: 450px; border-radius: 16px; 
-      padding: 24px; color: #e8eaed; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
-      border: 1px solid rgba(255,255,255,0.1); text-align: center;
-    }
-    .modal-box h2 { font-size: 1.2rem; font-weight: 500; margin-bottom: 20px; color: #fff; }
-    
+    /* MODAL */
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); display: none; align-items: center; justify-content: center; z-index: 10002; }
+    .modal-box { background: #202124; width: 100%; max-width: 450px; border-radius: 16px; padding: 24px; color: #e8eaed; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
     .input-group { margin-bottom: 15px; text-align: left; }
     .input-group label { display: block; font-size: 0.8rem; color: #9aa0a6; margin-bottom: 5px; }
-    .input-group input { 
-      width: 100%; background: #303134; border: none; padding: 10px 14px; 
-      color: #e8eaed; border-radius: 8px; outline: none; border-bottom: 2px solid transparent;
-    }
-    .input-group input:focus { border-bottom-color: var(--accent); }
-
-    /* Lưới chọn Icon Mở rộng */
-    .emoji-grid {
-      display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px;
-      background: #303134; padding: 12px; border-radius: 10px; margin-bottom: 20px;
-      max-height: 200px; overflow-y: auto;
-    }
-    .emoji-item {
-      font-size: 1.8rem; cursor: pointer; padding: 8px; border-radius: 10px; border: 2px solid transparent;
-    }
+    .input-group input { width: 100%; background: #303134; border: none; padding: 10px 14px; color: #e8eaed; border-radius: 8px; outline: none; }
+    .emoji-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; background: #303134; padding: 12px; border-radius: 10px; margin-bottom: 20px; max-height: 200px; overflow-y: auto; }
+    .emoji-item { font-size: 1.8rem; cursor: pointer; padding: 8px; border-radius: 10px; border: 2px solid transparent; }
     .emoji-item.selected { border-color: var(--accent); background: rgba(255,255,255,0.05); }
-
     .modal-actions { display: flex; justify-content: center; gap: 15px; margin-top: 10px; }
-    .modal-actions button {
-      padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; border: none;
-    }
+    .modal-actions button { padding: 10px 25px; border-radius: 25px; font-weight: bold; cursor: pointer; border: none; }
     .btn-confirm { background: #ff4747; color: #fff; }
     .btn-cancel { background: #3c4043; color: #fff; }
-    .btn-cancel:hover { background: #5f6368; }
 
   </style>
 </head>
@@ -164,13 +138,19 @@
       <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
     </div>
     <div class="nav-content">
-      <div class="nav-item active" id="nav-dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span></div>
-      <div class="nav-item" id="nav-settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+      <!-- Thêm data-page để code tự động tìm -->
+      <div class="nav-item active" data-page="dashboard" onclick="switchPage('dashboard')">
+        <span class="nav-icon">🏠</span><span class="nav-text">Dashboard</span>
+      </div>
+      <div class="nav-item" data-page="settings" onclick="switchPage('settings')">
+        <span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span>
+      </div>
     </div>
   </aside>
 
   <div class="container">
-    <div id="page-dashboard">
+    <!-- Thêm class page-content và id thống nhất -->
+    <div id="page-dashboard" class="page-content active-page">
       <div class="header-group">
         <h1 id="mainTitle">AO Dashboard Q10</h1>
         <p id="greeting">Haku_Na_Matata!</p>
@@ -178,7 +158,7 @@
       <div class="grid" id="shortcutGrid"></div>
     </div>
 
-    <div id="page-settings" class="settings-section">
+    <div id="page-settings" class="page-content">
       <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
       <div class="header-group"><h1>Cài đặt</h1></div>
       
@@ -208,7 +188,7 @@
     </div>
   </div>
 
-  <!-- MODAL THÊM LỐI TẮT -->
+  <!-- MODALS -->
   <div class="modal-overlay" id="addShortcutModal">
     <div class="modal-box">
       <h2 style="text-align: left;">Thêm lối tắt</h2>
@@ -222,7 +202,6 @@
     </div>
   </div>
 
-  <!-- MODAL CẢNH BÁO "MÀY CHẮC CHƯA" -->
   <div class="modal-overlay" id="confirmModal">
     <div class="modal-box">
       <div style="font-size: 3rem; margin-bottom: 10px;">🤨</div>
@@ -237,6 +216,7 @@
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🌙</div>
 
   <script>
+    // Audio Context & Hover Sounds
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playHoverSound() {
       if (audioCtx.state === 'suspended') audioCtx.resume();
@@ -257,16 +237,35 @@
       });
     }
 
+    // Cấu hình linh hoạt
     let appConfig = JSON.parse(localStorage.getItem('ao_v6_config')) || { name: "Ní Hào Ma", gender: "male", accent: "#22c55e", isLightMode: false };
     let userShortcuts = JSON.parse(localStorage.getItem('user_shortcuts_v6')) || [
       {id: '1', name: 'Course Key AE', url: 'https://learn.eltngl.com/', icon: '🔑'},
       {id: '2', name: 'Kho Sách', url: '#', icon: '📚'}
     ];
 
-    // Bộ Icon Mở Rộng
     const availableEmojis = ['🔗','🔑','📘','📄','📚','🎁','💻','📊','📝','🎨','🎵','⚙️','🚀','💡','🌟','📁','🔥','🌈','🍔','🍕','🎮','🎧','📸','🛠️','🧪','🛰️','👾','👻','🐼','🦊'];
     let selectedEmoji = '🔗';
     let pendingDeleteId = null;
+
+    // Chuyển trang thông minh - SỬA LỖI Ở ĐÂY NÈ NÍ
+    function switchPage(pageId) {
+      // 1. Quản lý nội dung trang
+      document.querySelectorAll('.page-content').forEach(page => {
+        page.classList.remove('active-page');
+      });
+      const targetPage = document.getElementById(`page-${pageId}`);
+      if(targetPage) targetPage.classList.add('active-page');
+
+      // 2. Quản lý Sidebar (Làm sáng mục tương ứng)
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        // Nếu mục này có data-page khớp với pageId đang chọn thì làm sáng nó
+        if(item.getAttribute('data-page') === pageId) {
+          item.classList.add('active');
+        }
+      });
+    }
 
     function renderShortcuts() {
       const grid = document.getElementById('shortcutGrid');
@@ -284,7 +283,7 @@
       addHoverEvents();
     }
 
-    /* ====== MODAL XỬ LÝ ====== */
+    // Modal helpers
     function renderEmojis() {
       const grid = document.getElementById('emojiGrid');
       grid.innerHTML = availableEmojis.map(e => `<div class="emoji-item ${e === selectedEmoji ? 'selected' : ''}" onclick="selectEmoji('${e}')">${e}</div>`).join('');
@@ -293,12 +292,9 @@
     function selectEmoji(e) { selectedEmoji = e; renderEmojis(); }
     function openModal() { document.getElementById('addShortcutModal').style.display = 'flex'; renderEmojis(); }
     function closeModal() { document.getElementById('addShortcutModal').style.display = 'none'; }
-
-    function askDelete(id) {
-      pendingDeleteId = id;
-      document.getElementById('confirmModal').style.display = 'flex';
-    }
+    function askDelete(id) { pendingDeleteId = id; document.getElementById('confirmModal').style.display = 'flex'; }
     function closeConfirm() { document.getElementById('confirmModal').style.display = 'none'; }
+
     document.getElementById('btnFinalSure').onclick = () => {
       userShortcuts = userShortcuts.filter(s => s.id !== pendingDeleteId);
       localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
@@ -316,7 +312,7 @@
       closeModal();
     }
 
-    /* ====== CÀI ĐẶT ====== */
+    // Settings helpers
     function updatePreview(g) {
       appConfig.tempGender = g;
       const seeds = { male: 'Liam', female: 'Adrian', dog: 'Luis' };
@@ -324,18 +320,20 @@
       document.querySelectorAll('#page-settings .btn').forEach(b => b.style.opacity = '0.6');
       document.getElementById(`btn-${g}`).style.opacity = '1';
     }
+
     function setAccent(c) {
       appConfig.accent = c;
       document.documentElement.style.setProperty('--accent', c);
-      localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
     }
+
     function saveAllSettings() {
       appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
       if(appConfig.tempGender) appConfig.gender = appConfig.tempGender;
       localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
       applyConfig(); 
-      alert("Đã lưu!");
+      alert("Đã lưu rồi ní ơi!");
     }
+
     function applyConfig() {
       document.documentElement.style.setProperty('--accent', appConfig.accent);
       document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
@@ -344,13 +342,15 @@
       document.getElementById('sidebarAvatar').src = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender]}`;
       document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
     }
+
     function toggleTheme() { appConfig.isLightMode = !appConfig.isLightMode; applyConfig(); }
-    function switchPage(p) {
-      document.getElementById('page-dashboard').style.display = (p === 'dashboard' ? 'block' : 'none');
-      document.getElementById('page-settings').style.display = (p === 'settings' ? 'block' : 'none');
-    }
     document.getElementById('toggleBtn').onclick = () => document.getElementById('sidebar').classList.toggle('expanded');
-    window.onload = () => { renderShortcuts(); applyConfig(); updatePreview(appConfig.gender); };
+    
+    window.onload = () => { 
+      renderShortcuts(); 
+      applyConfig(); 
+      updatePreview(appConfig.gender);
+    };
   </script>
 </body>
 </html>

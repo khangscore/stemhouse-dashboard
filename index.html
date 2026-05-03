@@ -1193,7 +1193,7 @@ function saveDataDebounced() {
           <button class="btn-delete" onclick="askDelete('${s.id}')">✕</button>
           <div style="font-size:50px;">${s.icon}</div>
           <h3>${escapeHTML(s.name)}</h3>
-<a class="btn" href="${escapeHTML(s.url)}" target="_blank">Mở</a>
+<a class="btn" href="${escapeHTML(s.url)}" target="_blank" rel="noopener noreferrer">Mở</a>
         </div>
       `).join('') + `
         <div class="card add-card" onclick="openModal()">
@@ -1596,7 +1596,7 @@ function renderCalendar() {
           <td>
             <input
               type="text"
-              value="${value.replace(/"/g, '&quot;')}"
+              value="${escapeHTML(value)}"
               data-cell="${key}"
               oninput="updateCell(this)"
             >

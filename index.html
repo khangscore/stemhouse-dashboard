@@ -30,12 +30,17 @@
     }
 
     * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", "Noto Color Emoji", sans-serif;
-      transition: background 0.25s ease, color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
-    }
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", "Noto Color Emoji", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  will-change: auto;
+}
 
     body {
       background: var(--bg-color);
@@ -60,25 +65,30 @@
     }
 
     .card:hover {
-      transform: translateY(-4px);
-      background: rgba(255,255,255,0.12);
+      transform: translateY(-px);
+      background: rgba(255,255,255,0.);
     }
 
     .sidebar {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      bottom: 20px;
-      width: var(--sidebar-collapsed-width);
-      background: rgba(255, 255, 255, 0.05);
-      backdrop-filter: blur(25px);
-      border: 1px solid var(--card-border);
-      border-radius: 24px;
-      z-index: 2000;
-      transition: width 0.35s ease;
-      display: flex;
-      flex-direction: column;
-    }
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  bottom: 20px;
+  width: var(--sidebar-collapsed-width);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(25px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition:
+    width 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+}
 
     .sidebar.expanded {
       width: var(--sidebar-width);
@@ -87,33 +97,35 @@
     }
 
     .toggle-sidebar {
-      position: absolute;
-      top: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--accent);
-      border: 2px solid #000;
-      color: #000;
-      width: 50px;
-      height: 22px;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--accent);
+  border: 2px solid #000;
+  color: #000;
+  width: 50px;
+  height: 22px;
+  border-radius: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  transition: transform 0.3s ease, box-shadow 0.25s ease;
+}
 
     .sidebar.expanded .toggle-sidebar span {
       transform: rotate(180deg);
     }
 
     .sidebar-header {
-      padding: 60px 0 10px 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+  padding: 58px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
 
     .sidebar-avatar {
       width: 45px;
@@ -143,25 +155,39 @@
     }
 
     .nav-content {
-      flex-grow: 1;
-      margin-top: 20px;
-      width: 100%;
-    }
+  flex: 1;
+  margin-top: 18px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 14px;
+  gap: 8px;
+}
 
     .nav-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 15px 0;
-      margin: 8px 10px;
-      border-radius: 16px;
-      cursor: pointer;
-      color: inherit;
-    }
+  min-height: 56px;
+  height: 56px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  color: inherit;
+  flex-shrink: 0;
+  gap: 12px;
+  transition:
+    background 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.25s ease,
+    transform 0.2s ease,
+    border-color 0.25s ease;
+}
 
     .sidebar.expanded .nav-item {
       justify-content: flex-start;
-      padding-left: 20px;
+      padding-left: 16px;
     }
 
     .nav-item.active {
@@ -172,17 +198,20 @@
     }
 
     .nav-text {
-      width: 0;
-      opacity: 0;
-      visibility: hidden;
-      margin-left: 10px;
-    }
+  flex: 1;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: translateX(-6px);
+  transition: opacity 0.2s ease, transform 0.25s ease;
+}
 
     .sidebar.expanded .nav-text {
-      width: auto;
-      opacity: 1;
-      visibility: visible;
-    }
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+}
 
     .container {
       max-width: 1200px;
@@ -208,19 +237,24 @@
     }
 
     .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 28px;
-      padding: 30px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      backdrop-filter: blur(10px);
-      position: relative;
-      min-height: 200px;
-      justify-content: center;
-    }
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  position: relative;
+  min-height: 200px;
+  justify-content: center;
+  transition:
+    transform 0.22s ease,
+    box-shadow 0.25s ease,
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
 
     .shortcut-card.dragging {
       opacity: 0.5;

@@ -618,9 +618,10 @@
 
 .calendar-select{
   height:46px;
+  min-width:130px;
   border:none;
   outline:none;
-  padding:0 14px;
+  padding:0 42px 0 14px;
   border-radius:14px;
   background:rgba(255,255,255,0.08);
   color:var(--text-main);
@@ -628,6 +629,39 @@
   font-size:0.95rem;
   font-weight:700;
   cursor:pointer;
+  appearance:none;
+  -webkit-appearance:none;
+  -moz-appearance:none;
+  transition:all 0.22s ease;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--accent) 50%),
+    linear-gradient(135deg, var(--accent) 50%, transparent 50%);
+  background-position:
+    calc(100% - 18px) calc(50% - 3px),
+    calc(100% - 12px) calc(50% - 3px);
+  background-size:6px 6px, 6px 6px;
+  background-repeat:no-repeat;
+}
+
+.calendar-select:hover{
+  border-color:var(--accent);
+  box-shadow:var(--shadow-accent);
+}
+
+.calendar-select:focus{
+  border-color:var(--accent);
+  box-shadow:var(--shadow-accent);
+}
+.calendar-select option{
+  background:#ffffff;
+  color:#0f172a;
+  font-weight:700;
+}
+
+.calendar-select option:hover,
+.calendar-select option:checked{
+  background:#3b82f6;
+  color:#ffffff;
 }
 
 .calendar-head{
@@ -1493,10 +1527,10 @@ if (targetPage) targetPage.classList.add('active-page');
     `<option value="${i}">Tháng ${i + 1}</option>`
   ).join('');
 
-  yearSelect.innerHTML = Array.from({ length: 11 }, (_, i) => {
-    const year = baseYear - 5 + i;
-    return `<option value="${year}">${year}</option>`;
-  }).join('');
+  yearSelect.innerHTML = Array.from({ length: 151 }, (_, i) => {
+  const year = baseYear - 50 + i;
+  return `<option value="${year}">${year}</option>`;
+}).join('');
 
   monthSelect.value = String(currentMonth);
   yearSelect.value = String(currentYear);

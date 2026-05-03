@@ -1197,29 +1197,31 @@ if (targetPage) targetPage.classList.add('active-page');
     function renderShortcuts() {
   const grid = document.getElementById('shortcutGrid');
 
-  grid.innerHTML = userShortcuts.map((s, index) => {
-    const safeName = escapeHTML(s.name);
-    const safeUrl = escapeHTML(s.url);
-    const safeIcon = escapeHTML(s.icon);
+  grid.innerHTML =
+    userShortcuts.map((s, index) => {
+      const safeName = escapeHTML(s.name);
+      const safeUrl = escapeHTML(s.url);
+      const safeIcon = escapeHTML(s.icon);
 
-    return `
-      <div class="card shortcut-card" draggable="true" data-id="${s.id}" data-index="${index}">
-        <div style="position:absolute; top:12px; left:12px; display:flex; gap:8px; z-index:11;">
-          <button class="btn-delete" style="position:static; opacity:1;" onclick="openEditModal('${s.id}')">✎</button>
+      return `
+        <div class="card shortcut-card" draggable="true" data-id="${s.id}" data-index="${index}">
+          <div style="position:absolute; top:12px; left:12px; display:flex; gap:8px; z-index:11;">
+            <button class="btn-delete" style="position:static; opacity:1;" onclick="openEditModal('${s.id}')">✎</button>
+          </div>
+
+          <button class="btn-delete" onclick="askDelete('${s.id}')">✕</button>
+          <div style="font-size:50px;">${safeIcon}</div>
+          <h3>${safeName}</h3>
+          <a class="btn" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Mở</a>
         </div>
-
-        <button class="btn-delete" onclick="askDelete('${s.id}')">✕</button>
-        <div style="font-size:50px;">${safeIcon}</div>
-        <h3>${safeName}</h3>
-        <a class="btn" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Mở</a>
+      `;
+    }).join('') +
+    `
+      <div class="card add-card" onclick="openModal()">
+        <div class="plus-icon">+</div>
+        <div class="add-text">Thêm link</div>
       </div>
     `;
-  }).join('') + `
-    <div class="card add-card" onclick="openModal()">
-      <div class="plus-icon">+</div>
-      <div class="add-text">Thêm link</div>
-    </div>
-  `;
 
   addHoverEvents();
   initDragAndDrop();

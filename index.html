@@ -1085,32 +1085,44 @@ body.light-mode .excel-table td.row-index{
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🤪</div>
 
   <script>
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    const AudioClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioClass) return null;
+    audioCtx = new AudioClass();
+  }
+  return audioCtx;
+}
 
     function playHoverSound() {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+  const ctx = getAudioCtx();
+  if (!ctx) return;
 
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
+  if (ctx.state === 'suspended') ctx.resume();
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(420, audioCtx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(260, audioCtx.currentTime + 0.08);
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
 
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(900, audioCtx.currentTime);
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(420, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.08);
 
-      gain.gain.setValueAtTime(0.018, audioCtx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.12);
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(900, ctx.currentTime);
 
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(audioCtx.destination);
+  gain.gain.setValueAtTime(0.018, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
 
-      osc.start();
-      osc.stop(audioCtx.currentTime + 0.12);
-    }
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
+}
 
     function addHoverEvents() {
       document.querySelectorAll('.card, .nav-item, .btn, .btn-save-fixed, .theme-switch, .emoji-item, .btn-confirm, .btn-cancel, .color-dot').forEach(el => {
@@ -1175,11 +1187,11 @@ if (targetPage) targetPage.classList.add('active-page');
     }
     function escapeHTML(str) {
   return String(str)
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;')
-    .replaceAll("'", '&#039;');
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
 }
     
     function renderShortcuts() {

@@ -1426,24 +1426,33 @@ body.light-mode .excel-table td.row-index{
   const monthSelect = document.getElementById('monthSelect');
   const yearSelect = document.getElementById('yearSelect');
 
+  const currentMonth = calendarDate.getMonth();
+  const currentYear = calendarDate.getFullYear();
+  const baseYear = new Date().getFullYear();
+
   monthSelect.innerHTML = Array.from({ length: 12 }, (_, i) =>
-    `<option value="${i}" ${i === calendarDate.getMonth() ? 'selected' : ''}>Tháng ${i + 1}</option>`
+    `<option value="${i}">Tháng ${i + 1}</option>`
   ).join('');
 
-  const currentYear = new Date().getFullYear();
   yearSelect.innerHTML = Array.from({ length: 11 }, (_, i) => {
-    const year = currentYear - 5 + i;
-    return `<option value="${year}" ${year === calendarDate.getFullYear() ? 'selected' : ''}>${year}</option>`;
+    const year = baseYear - 5 + i;
+    return `<option value="${year}">${year}</option>`;
   }).join('');
+
+  monthSelect.value = String(currentMonth);
+  yearSelect.value = String(currentYear);
 }
 
 function handleCalendarPickerChange() {
-  const month = +document.getElementById('monthSelect').value;
-  const year = +document.getElementById('yearSelect').value;
+  const month = parseInt(document.getElementById('monthSelect').value, 10);
+  const year = parseInt(document.getElementById('yearSelect').value, 10);
 
   calendarDate = new Date(year, month, 1);
   selectedCalendarDay = null;
-  renderCalendar();
+
+  requestAnimationFrame(() => {
+    renderCalendar();
+  });
 }
 
 function changeMonth(step) {

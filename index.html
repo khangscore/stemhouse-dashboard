@@ -16,6 +16,7 @@
       --card-border: rgba(255, 255, 255, 0.2);
       --text-main: #ffffff;
       --accent: #22c55e;
+      --accent-dark: #16a34a;
       --liam-blue: #3b82f6;
       --sidebar-width: 260px;
       --sidebar-collapsed-width: 80px;
@@ -645,7 +646,7 @@
   cursor:pointer;
   font-size:1.5rem;
   font-weight:800;
-  background:rgba(255,255,255,0.08);
+  background: var(--accent-dark);
   color:#101010;
   transition:transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
 }
@@ -748,7 +749,7 @@
   height: 46px;
   border: 2px solid #000;
   border-radius: 14px;
-  background: rgba(255,255,255,0.08);
+  background: var(--accent-dark);
   color:#101010;
   font-weight: 800;
   font-size: 0.95rem;
@@ -1447,10 +1448,27 @@ if (targetPage) targetPage.classList.add('active-page');
     }
 
     function setAccent(c) {
-      appConfig.accent = c;
-      document.documentElement.style.setProperty('--accent', c);
-      document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${c}55`);
-    }
+  appConfig.accent = c;
+
+  const darkMap = {
+    '#22c55e': '#16a34a',
+    '#ef4444': '#dc2626',
+    '#a855f7': '#9333ea',
+    '#f59e0b': '#d97706',
+    '#06b6d4': '#0891b2',
+    '#84cc16': '#65a30d',
+    '#f43f5e': '#e11d48',
+    '#8b5cf6': '#7c3aed',
+    '#14b8a6': '#0f766e',
+    '#eab308': '#ca8a04',
+    '#3b82f6': '#2563eb',
+    '#ec4899': '#db2777'
+  };
+
+  document.documentElement.style.setProperty('--accent', c);
+  document.documentElement.style.setProperty('--accent-dark', darkMap[c] || c);
+  document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${c}55`);
+}
 
     function saveAllSettings() {
       appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
@@ -1462,7 +1480,24 @@ if (targetPage) targetPage.classList.add('active-page');
 
     function applyConfig() {
       document.documentElement.style.setProperty('--accent', appConfig.accent);
-      document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appConfig.accent}55`);
+
+const darkMap = {
+  '#22c55e': '#16a34a',
+  '#ef4444': '#dc2626',
+  '#a855f7': '#9333ea',
+  '#f59e0b': '#d97706',
+  '#06b6d4': '#0891b2',
+  '#84cc16': '#65a30d',
+  '#f43f5e': '#e11d48',
+  '#8b5cf6': '#7c3aed',
+  '#14b8a6': '#0f766e',
+  '#eab308': '#ca8a04',
+  '#3b82f6': '#2563eb',
+  '#ec4899': '#db2777'
+};
+
+document.documentElement.style.setProperty('--accent-dark', darkMap[appConfig.accent] || appConfig.accent);
+document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appConfig.accent}55`);
 
       document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
       document.getElementById('themeBtn').innerText = appConfig.isLightMode ? '😎' : '🤪';

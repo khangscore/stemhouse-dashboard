@@ -1138,20 +1138,22 @@ function getAudioCtx() {
 }
     
     let appConfig = safeJSONParse('ao_v6_config', {
-      name: "Ní Hào Ma",
-      gender: "male",
-      accent: "#22c55e",
-      isLightMode: false
-    };
+  name: "Ní Hào Ma",
+  gender: "male",
+  accent: "#22c55e",
+  isLightMode: false
+});
 
-    let userShortcuts = safeJSONParse('user_shortcuts_v6', [
-      { id:'1', name:'Course Key AE', url:'https://learn.eltngl.com/', icon:'🔑' },
-      { id:'2', name:'Kho Sách', url:'#', icon:'📚' }
-    ];
+let userShortcuts = safeJSONParse('user_shortcuts_v6', [
+  { id:'1', name:'Course Key AE', url:'https://learn.eltngl.com/', icon:'🔑' },
+  { id:'2', name:'Kho Sách', url:'#', icon:'📚' }
+]);
 
-    let notesData = safeJSONParse('ao_notes_v1', {
-      note1: '', note2: '', note3: ''
-    };
+let notesData = safeJSONParse('ao_notes_v1', {
+  note1: '',
+  note2: '',
+  note3: ''
+});
 
     const availableEmojis = ['🔗','🔑','📘','📄','📚','🎁','💻','📊','📝','🎨','🎵','⚙️','🚀','💡','🌟','📁','🔥','🌈','🍔','🍕','🎮','🎧','📸','🛠️','🧪','🛰️','👾','👻','🐼','🦊'];
     let selectedEmoji = '🔗';

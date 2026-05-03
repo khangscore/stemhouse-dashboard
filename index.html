@@ -591,8 +591,9 @@
 .calendar-toolbar{
   display:flex;
   align-items:center;
+  justify-content:center;
   gap:10px;
-  margin-bottom:14px;
+  margin-bottom:18px;
   flex-wrap:wrap;
 }
 
@@ -712,17 +713,18 @@
 }
 
 .dropdown-btn{
-  min-width: 130px;
+  min-width: 140px;
   height: 46px;
   border: 1px solid var(--card-border);
   border-radius: 14px;
   background: rgba(255,255,255,0.08);
   color: var(--text-main);
-  font-weight: 700;
+  font-weight: 800;
   font-size: 0.95rem;
-  padding: 0 14px;
+  padding: 0 16px;
   cursor: pointer;
   transition: all 0.22s ease;
+  text-align: center;
 }
 
 .dropdown-btn:hover{
@@ -958,19 +960,18 @@ body.light-mode .excel-table td.row-index{
         <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
 
         <div class="custom-dropdown">
-  <button class="dropdown-btn" onclick="toggleMonthPanel()">Tháng ▼</button>
+  <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
   <div class="dropdown-panel" id="monthPanel"></div>
 </div>
 
 <div class="custom-dropdown">
-  <button class="dropdown-btn" onclick="toggleYearPanel()">Năm ▼</button>
+  <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
   <div class="dropdown-panel" id="yearPanel"></div>
 </div>
 
         <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
       </div>
 
-      <div class="calendar-head" id="calendarTitle">Tháng ...</div>
       <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
@@ -1598,8 +1599,9 @@ function renderCalendar() {
   const month = calendarDate.getMonth();
   const todayReal = new Date();
 
-  document.getElementById('calendarTitle').innerText = `Tháng ${month + 1} / ${year}`;
-
+document.getElementById('monthBtn').innerText = `Tháng ${month + 1} ▼`;
+document.getElementById('yearBtn').innerText = `${year} ▼`;
+  
   const grid = document.getElementById('calendarGrid');
   const days = ['CN','T2','T3','T4','T5','T6','T7'];
 

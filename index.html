@@ -760,7 +760,88 @@
     grid-template-columns:1fr;
     min-height:auto;
   }
+ 
+  /* =========================
+   CUSTOM DROPDOWN (CALENDAR)
+========================= */
 
+.custom-dropdown{
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-btn{
+  height:46px;
+  padding:0 14px;
+  border-radius:14px;
+
+  border:1px solid var(--card-border);
+  background:rgba(255,255,255,0.08);
+
+  color:var(--text-main);
+  font-weight:700;
+
+  cursor:pointer;
+  transition:0.2s ease;
+
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.dropdown-btn:hover{
+  border-color:var(--accent);
+  box-shadow:var(--shadow-accent);
+  transform: translateY(-2px);
+}
+
+.dropdown-panel{
+  position:absolute;
+  top:52px;
+  left:0;
+
+  width:180px;
+  max-height:260px;
+  overflow-y:auto;
+
+  background:rgba(20,20,30,0.95);
+  backdrop-filter:blur(14px);
+
+  border:1px solid var(--card-border);
+  border-radius:16px;
+
+  padding:8px;
+
+  display:none;
+  z-index:9999;
+
+  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+}
+
+.dropdown-item{
+  padding:10px 12px;
+  border-radius:10px;
+
+  cursor:pointer;
+  font-weight:600;
+
+  transition:0.15s ease;
+
+  color:var(--text-main);
+}
+
+.dropdown-item:hover{
+  background:var(--accent);
+  color:#000;
+
+  transform: translateX(4px);
+}
+
+/* item đang được chọn (highlight cố định) */
+.dropdown-item[style*="var(--accent)"]{
+  font-weight:800;
+}
+      
   .calendar-notes-stack{
     grid-template-columns:1fr;
     grid-template-rows:none;
@@ -947,8 +1028,15 @@ body.light-mode .excel-table td.row-index{
       <div class="calendar-toolbar">
         <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
 
-        <select id="monthSelect" class="calendar-select" onchange="handleCalendarPickerChange()"></select>
-        <select id="yearSelect" class="calendar-select" onchange="handleCalendarPickerChange()"></select>
+        <div class="custom-dropdown">
+  <button class="dropdown-btn" onclick="toggleMonthPanel()">Tháng ▼</button>
+  <div class="dropdown-panel" id="monthPanel"></div>
+</div>
+
+<div class="custom-dropdown">
+  <button class="dropdown-btn" onclick="toggleYearPanel()">Năm ▼</button>
+  <div class="dropdown-panel" id="yearPanel"></div>
+</div>
 
         <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
       </div>

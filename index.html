@@ -616,54 +616,6 @@
   box-shadow:var(--shadow-accent);
 }
 
-.calendar-select{
-  height:46px;
-  min-width:130px;
-  border:none;
-  outline:none;
-  padding:0 42px 0 14px;
-  border-radius:14px;
-  background:rgba(255,255,255,0.08);
-  color:var(--text-main);
-  border:1px solid var(--card-border);
-  font-size:0.95rem;
-  font-weight:700;
-  cursor:pointer;
-  appearance:none;
-  -webkit-appearance:none;
-  -moz-appearance:none;
-  transition:all 0.22s ease;
-  background-image:
-    linear-gradient(45deg, transparent 50%, var(--accent) 50%),
-    linear-gradient(135deg, var(--accent) 50%, transparent 50%);
-  background-position:
-    calc(100% - 18px) calc(50% - 3px),
-    calc(100% - 12px) calc(50% - 3px);
-  background-size:6px 6px, 6px 6px;
-  background-repeat:no-repeat;
-}
-
-.calendar-select:hover{
-  border-color:var(--accent);
-  box-shadow:var(--shadow-accent);
-}
-
-.calendar-select:focus{
-  border-color:var(--accent);
-  box-shadow:var(--shadow-accent);
-}
-.calendar-select option{
-  background:#ffffff;
-  color:#0f172a;
-  font-weight:700;
-}
-
-.calendar-select option:hover,
-.calendar-select option:checked{
-  background:var(--accent);
-  color:#ffffff;
-}
-
 .calendar-head{
   text-align:left;
   font-size:1.3rem;
@@ -751,6 +703,17 @@
   height:100%;
   resize:none;
 }
+   /* =========================
+   CUSTOM DROPDOWN (CALENDAR)
+========================= */
+
+.custom-dropdown { ... }
+.dropdown-btn { ... }
+.dropdown-btn:hover { ... }
+.dropdown-panel { ... }
+.dropdown-item { ... }
+.dropdown-item:hover { ... }
+.dropdown-item[style*="var(--accent)"] { ... }
     
     @media(max-width: 900px){
   .home-clock { font-size: 3.4rem; }
@@ -760,87 +723,6 @@
     grid-template-columns:1fr;
     min-height:auto;
   }
- 
-  /* =========================
-   CUSTOM DROPDOWN (CALENDAR)
-========================= */
-
-.custom-dropdown{
-  position: relative;
-  display: inline-block;
-}
-
-.dropdown-btn{
-  height:46px;
-  padding:0 14px;
-  border-radius:14px;
-
-  border:1px solid var(--card-border);
-  background:rgba(255,255,255,0.08);
-
-  color:var(--text-main);
-  font-weight:700;
-
-  cursor:pointer;
-  transition:0.2s ease;
-
-  display:flex;
-  align-items:center;
-  gap:6px;
-}
-
-.dropdown-btn:hover{
-  border-color:var(--accent);
-  box-shadow:var(--shadow-accent);
-  transform: translateY(-2px);
-}
-
-.dropdown-panel{
-  position:absolute;
-  top:52px;
-  left:0;
-
-  width:180px;
-  max-height:260px;
-  overflow-y:auto;
-
-  background:rgba(20,20,30,0.95);
-  backdrop-filter:blur(14px);
-
-  border:1px solid var(--card-border);
-  border-radius:16px;
-
-  padding:8px;
-
-  display:none;
-  z-index:9999;
-
-  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
-}
-
-.dropdown-item{
-  padding:10px 12px;
-  border-radius:10px;
-
-  cursor:pointer;
-  font-weight:600;
-
-  transition:0.15s ease;
-
-  color:var(--text-main);
-}
-
-.dropdown-item:hover{
-  background:var(--accent);
-  color:#000;
-
-  transform: translateX(4px);
-}
-
-/* item đang được chọn (highlight cố định) */
-.dropdown-item[style*="var(--accent)"]{
-  font-weight:800;
-}
       
   .calendar-notes-stack{
     grid-template-columns:1fr;
@@ -1682,19 +1564,36 @@ function renderCalendar() {
   for (let i = 0; i < firstDay; i++) {
     html += `<div class="calendar-cell empty"></div>`;
   }
-  
-  function toggleMonthPanel() {
+
+  for (let d = 1; d <= totalDays; d++) {
+    const isToday =
+      d === todayReal.getDate() &&
+      month === todayReal.getMonth() &&
+      year === todayReal.getFullYear();
+
+    const isSelected = selectedCalendarDay === d;
+
+    html += `
+      <div
+        class="calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
+        onclick="selectCalendarDay(${d})"
+      >
+        ${d}
+      </div>
+    `;
+  }
+
+  grid.innerHTML = html;
+  renderCalendarSelectors();
+}
+    
+    function toggleMonthPanel() {
   const m = document.getElementById('monthPanel');
   const y = document.getElementById('yearPanel');
 
   if (!m || !y) return;
 
-  if (m.style.display === 'block') {
-    m.style.display = 'none';
-  } else {
-    m.style.display = 'block';
-  }
-
+  m.style.display = (m.style.display === 'block') ? 'none' : 'block';
   y.style.display = 'none';
 }
 
@@ -1704,12 +1603,7 @@ function toggleYearPanel() {
 
   if (!m || !y) return;
 
-  if (y.style.display === 'block') {
-    y.style.display = 'none';
-  } else {
-    y.style.display = 'block';
-  }
-
+  y.style.display = (y.style.display === 'block') ? 'none' : 'block';
   m.style.display = 'none';
 }
 
@@ -1738,28 +1632,6 @@ document.addEventListener('click', function(e) {
     closeDropdowns();
   }
 });
-
-  for (let d = 1; d <= totalDays; d++) {
-    const isToday =
-      d === todayReal.getDate() &&
-      month === todayReal.getMonth() &&
-      year === todayReal.getFullYear();
-
-    const isSelected = selectedCalendarDay === d;
-
-    html += `
-      <div
-        class="calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
-        onclick="selectCalendarDay(${d})"
-      >
-        ${d}
-      </div>
-    `;
-  }
-
-  grid.innerHTML = html;
-  renderCalendarSelectors();
-}
   
     function initNotes() {
       ['note1','note2','note3'].forEach(id => {

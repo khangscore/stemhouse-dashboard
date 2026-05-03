@@ -554,11 +554,177 @@
       box-shadow: var(--shadow-accent);
     }
 
+    /* =========================
+   HOME CALENDAR UPGRADE
+========================= */
+.calendar-layout{
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: 1.45fr 0.85fr;
+  gap: 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.calendar-left,
+.calendar-right{
+  width: 100%;
+}
+
+.calendar-left{
+  display: flex;
+  flex-direction: column;
+}
+
+.calendar-toolbar{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:14px;
+  flex-wrap:wrap;
+}
+
+.calendar-nav-btn{
+  width:46px;
+  height:46px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:1.5rem;
+  font-weight:800;
+  background:rgba(255,255,255,0.08);
+  color:var(--text-main);
+  border:1px solid var(--card-border);
+  transition:transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.calendar-nav-btn:hover{
+  transform:translateY(-2px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-accent);
+}
+
+.calendar-select{
+  height:46px;
+  border:none;
+  outline:none;
+  padding:0 14px;
+  border-radius:14px;
+  background:rgba(255,255,255,0.08);
+  color:var(--text-main);
+  border:1px solid var(--card-border);
+  font-size:0.95rem;
+  font-weight:700;
+  cursor:pointer;
+}
+
+.calendar-head{
+  text-align:left;
+  font-size:1.3rem;
+  font-weight:800;
+  margin-bottom:16px;
+  padding-left:4px;
+}
+
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:10px;
+  text-align:center;
+}
+
+.calendar-cell{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  background:rgba(255,255,255,0.04);
+  font-size:0.95rem;
+  cursor:pointer;
+  transition:all 0.18s ease;
+}
+
+.calendar-cell:hover{
+  transform:translateY(-2px);
+  border:1px solid var(--accent);
+}
+
+.calendar-cell.weekday{
+  min-height:44px;
+  font-weight:800;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--card-border);
+  cursor:default;
+}
+
+.calendar-cell.empty{
+  background:transparent;
+  cursor:default;
+}
+
+.calendar-cell.empty:hover{
+  transform:none;
+  border:none;
+}
+
+.calendar-cell.today{
+  background:var(--accent);
+  color:#000;
+  font-weight:800;
+}
+
+.calendar-cell.selected{
+  border:1px solid var(--accent);
+  box-shadow:var(--shadow-accent);
+}
+
+.calendar-right{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+.calendar-notes-title{
+  font-size:1.15rem;
+  font-weight:800;
+  margin-bottom:14px;
+}
+
+.calendar-notes-stack{
+  display:grid;
+  grid-template-rows:repeat(3, 1fr);
+  gap:14px;
+  flex:1;
+}
+
+.integrated-note{
+  min-height:150px;
+  height:100%;
+  resize:none;
+}
+    
     @media(max-width: 900px){
-      .notes-grid { grid-template-columns: 1fr; }
-      .home-clock { font-size: 3.4rem; }
-      .header-group h1 { font-size: 2.8rem; }
-    }
+  .home-clock { font-size: 3.4rem; }
+  .header-group h1 { font-size: 2.8rem; }
+
+  .calendar-layout{
+    grid-template-columns:1fr;
+    min-height:auto;
+  }
+
+  .calendar-notes-stack{
+    grid-template-columns:1fr;
+    grid-template-rows:none;
+  }
+
+  .integrated-note{
+    min-height:140px;
+  }
+}
     
     /* =========================
    EXCEL MINI
@@ -722,22 +888,36 @@ body.light-mode .excel-table td.row-index{
 
   <div class="container">
     <div id="page-home" class="page-content active-page">
-      <div class="header-group">
-        <div class="home-clock" id="liveClock">00:00:00</div>
-        <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
+  <div class="header-group">
+    <div class="home-clock" id="liveClock">00:00:00</div>
+    <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
+  </div>
+
+  <div class="card calendar-box calendar-layout">
+    <div class="calendar-left">
+      <div class="calendar-toolbar">
+        <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+
+        <select id="monthSelect" class="calendar-select" onchange="handleCalendarPickerChange()"></select>
+        <select id="yearSelect" class="calendar-select" onchange="handleCalendarPickerChange()"></select>
+
+        <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
       </div>
 
-      <div class="card calendar-box">
-        <div class="calendar-head" id="calendarTitle">Tháng ...</div>
-        <div class="calendar-grid" id="calendarGrid"></div>
-      </div>
+      <div class="calendar-head" id="calendarTitle">Tháng ...</div>
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
 
-      <div class="notes-grid">
-        <textarea class="note-box" id="note1" placeholder="Ghi chú 1..."></textarea>
-        <textarea class="note-box" id="note2" placeholder="Ghi chú 2..."></textarea>
-        <textarea class="note-box" id="note3" placeholder="Ghi chú 3..."></textarea>
+    <div class="calendar-right">
+      <div class="calendar-notes-title">Ghi chú nhanh</div>
+      <div class="calendar-notes-stack">
+        <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
+        <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
+        <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
       </div>
     </div>
+  </div>
+</div>
 
     <div id="page-dashboard" class="page-content">
       <div class="header-group">
@@ -946,6 +1126,8 @@ body.light-mode .excel-table td.row-index{
     let selectedEditEmoji = '🔗';
     let pendingDeleteId = null;
     let editingShortcutId = null;
+    let calendarDate = new Date();
+    let selectedCalendarDay = null;
 
     function saveData() {
       localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
@@ -1240,29 +1422,82 @@ body.light-mode .excel-table td.row-index{
     }
 
     function renderCalendar() {
-      const now = new Date();
-      const year = now.getFullYear();
-      const month = now.getMonth();
-      const today = now.getDate();
+  function renderCalendarSelectors() {
+  const monthSelect = document.getElementById('monthSelect');
+  const yearSelect = document.getElementById('yearSelect');
 
-      document.getElementById('calendarTitle').innerText = `Tháng ${month + 1} / ${year}`;
+  monthSelect.innerHTML = Array.from({ length: 12 }, (_, i) =>
+    `<option value="${i}" ${i === calendarDate.getMonth() ? 'selected' : ''}>Tháng ${i + 1}</option>`
+  ).join('');
 
-      const grid = document.getElementById('calendarGrid');
-      const days = ['CN','T2','T3','T4','T5','T6','T7'];
+  const currentYear = new Date().getFullYear();
+  yearSelect.innerHTML = Array.from({ length: 11 }, (_, i) => {
+    const year = currentYear - 5 + i;
+    return `<option value="${year}" ${year === calendarDate.getFullYear() ? 'selected' : ''}>${year}</option>`;
+  }).join('');
+}
 
-      let html = days.map(d => `<div class="calendar-cell" style="font-weight:bold;">${d}</div>`).join('');
+function handleCalendarPickerChange() {
+  const month = +document.getElementById('monthSelect').value;
+  const year = +document.getElementById('yearSelect').value;
 
-      const firstDay = new Date(year, month, 1).getDay();
-      const totalDays = new Date(year, month + 1, 0).getDate();
+  calendarDate = new Date(year, month, 1);
+  selectedCalendarDay = null;
+  renderCalendar();
+}
 
-      for (let i = 0; i < firstDay; i++) html += `<div></div>`;
+function changeMonth(step) {
+  calendarDate.setMonth(calendarDate.getMonth() + step);
+  selectedCalendarDay = null;
+  renderCalendar();
+}
 
-      for (let d = 1; d <= totalDays; d++) {
-        html += `<div class="calendar-cell ${d===today?'today':''}">${d}</div>`;
-      }
+function selectCalendarDay(day) {
+  selectedCalendarDay = day;
+  renderCalendar();
+}
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+  const todayReal = new Date();
 
-      grid.innerHTML = html;
-    }
+  document.getElementById('calendarTitle').innerText = `Tháng ${month + 1} / ${year}`;
+
+  const grid = document.getElementById('calendarGrid');
+  const days = ['CN','T2','T3','T4','T5','T6','T7'];
+
+  let html = days.map(d => `<div class="calendar-cell weekday">${d}</div>`).join('');
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const totalDays = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="calendar-cell empty"></div>`;
+  }
+
+  for (let d = 1; d <= totalDays; d++) {
+    const isToday =
+      d === todayReal.getDate() &&
+      month === todayReal.getMonth() &&
+      year === todayReal.getFullYear();
+
+    const isSelected =
+      selectedCalendarDay === d &&
+      month === calendarDate.getMonth() &&
+      year === calendarDate.getFullYear();
+
+    html += `
+      <div
+        class="calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
+        onclick="selectCalendarDay(${d})"
+      >
+        ${d}
+      </div>
+    `;
+  }
+
+  grid.innerHTML = html;
+  renderCalendarSelectors();
+}
 
     function initNotes() {
       ['note1','note2','note3'].forEach(id => {

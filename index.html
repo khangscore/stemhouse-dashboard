@@ -1165,7 +1165,8 @@ function saveDataDebounced() {
 }
     function switchPage(pageId) {
       document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active-page'));
-      document.getElementById(`page-${pageId}`)?.classList.add('active-page');
+      const targetPage = document.getElementById(`page-${pageId}`);
+if (targetPage) targetPage.classList.add('active-page');
 
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');

@@ -1601,15 +1601,15 @@ function renderCalendar() {
         const key = `${col}${row}`;
         const value = excelData[key] || '';
         html += `
-          <td>
-            <input
-              type="text"
-              value="${escapeHTML(value)}"
-              data-cell="${key}"
-              oninput="updateCell(this)"
-            >
-          </td>
-        `;
+  <td>
+    <input
+      type="text"
+      value="${String(value).replace(/"/g, '&quot;')}"
+      data-cell="${key}"
+      oninput="updateCell(this)"
+    >
+  </td>
+`;
       });
 
       html += `</tr>`;

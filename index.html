@@ -56,18 +56,21 @@
     }
 
     .card:hover,
-    .btn:hover,
-    .btn-save-fixed:hover,
-    .theme-switch:hover,
-    .nav-item:not(.active):hover {
-      box-shadow: var(--shadow-accent) !important;
-      border-color: var(--accent) !important;
-    }
+.btn:hover,
+.btn-save-fixed:hover,
+.theme-switch:hover,
+.nav-item:not(.active):hover {
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 10px 30px rgba(0,0,0,0.18),
+    var(--shadow-accent) !important;
+  border-color: var(--accent) !important;
+}
 
     .card:hover {
-      transform: translateY(-px);
-      background: rgba(255,255,255,0.);
-    }
+  transform: translateY(-6px) scale(1.01);
+  background: rgba(255,255,255,0.11);
+}
 
     .sidebar {
   position: fixed;
@@ -256,10 +259,10 @@
   min-height: 200px;
   justify-content: center;
   transition:
-    transform 0.22s ease,
-    box-shadow 0.25s ease,
-    border-color 0.25s ease,
-    background 0.25s ease;
+  transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+  box-shadow 0.28s ease,
+  border-color 0.25s ease,
+  background 0.25s ease;
 }
 
     .shortcut-card.dragging {

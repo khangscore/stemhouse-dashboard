@@ -1683,35 +1683,57 @@ function renderCalendar() {
     html += `<div class="calendar-cell empty"></div>`;
   }
   
-  function toggleMonthPanel(){
+  function toggleMonthPanel() {
   const m = document.getElementById('monthPanel');
   const y = document.getElementById('yearPanel');
 
-  if(!m || !y) return;
+  if (!m || !y) return;
 
-  m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+  if (m.style.display === 'block') {
+    m.style.display = 'none';
+  } else {
+    m.style.display = 'block';
+  }
+
   y.style.display = 'none';
 }
 
-function toggleYearPanel(){
+function toggleYearPanel() {
   const m = document.getElementById('monthPanel');
   const y = document.getElementById('yearPanel');
 
-  if(!m || !y) return;
+  if (!m || !y) return;
 
-  y.style.display = (y.style.display === 'block') ? 'none' : 'block';
+  if (y.style.display === 'block') {
+    y.style.display = 'none';
+  } else {
+    y.style.display = 'block';
+  }
+
   m.style.display = 'none';
 }
 
-function closeDropdowns(){
+function closeDropdowns() {
   const m = document.getElementById('monthPanel');
   const y = document.getElementById('yearPanel');
 
-  if(m) m.style.display = 'none';
-  if(y) y.style.display = 'none';
+  if (m) m.style.display = 'none';
+  if (y) y.style.display = 'none';
 }
 
-document.addEventListener('click', (e) => {
+function selectMonth(m) {
+  calendarDate.setMonth(m);
+  closeDropdowns();
+  renderCalendar();
+}
+
+function selectYear(y) {
+  calendarDate.setFullYear(y);
+  closeDropdowns();
+  renderCalendar();
+}
+
+document.addEventListener('click', function(e) {
   if (!e.target.closest('.custom-dropdown')) {
     closeDropdowns();
   }

@@ -1420,9 +1420,7 @@ body.light-mode .excel-table td.row-index{
       document.getElementById('liveDate').innerText =
         `${days[now.getDay()]}, ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
     }
-
-    function renderCalendar() {
-  function renderCalendarSelectors() {
+     function renderCalendarSelectors() {
   const monthSelect = document.getElementById('monthSelect');
   const yearSelect = document.getElementById('yearSelect');
 
@@ -1449,10 +1447,7 @@ function handleCalendarPickerChange() {
 
   calendarDate = new Date(year, month, 1);
   selectedCalendarDay = null;
-
-  requestAnimationFrame(() => {
-    renderCalendar();
-  });
+  renderCalendar();
 }
 
 function changeMonth(step) {
@@ -1465,6 +1460,8 @@ function selectCalendarDay(day) {
   selectedCalendarDay = day;
   renderCalendar();
 }
+
+function renderCalendar() {
   const year = calendarDate.getFullYear();
   const month = calendarDate.getMonth();
   const todayReal = new Date();
@@ -1489,10 +1486,7 @@ function selectCalendarDay(day) {
       month === todayReal.getMonth() &&
       year === todayReal.getFullYear();
 
-    const isSelected =
-      selectedCalendarDay === d &&
-      month === calendarDate.getMonth() &&
-      year === calendarDate.getFullYear();
+    const isSelected = selectedCalendarDay === d;
 
     html += `
       <div
@@ -1507,7 +1501,9 @@ function selectCalendarDay(day) {
   grid.innerHTML = html;
   renderCalendarSelectors();
 }
-
+    
+    function renderCalendar() {
+  
     function initNotes() {
       ['note1','note2','note3'].forEach(id => {
         const el = document.getElementById(id);

@@ -188,6 +188,29 @@
   transform 0.18s ease,
   border-color 0.22s ease;
 }
+  .nav-icon{
+  width: 24px;
+  min-width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transform: translateY(1px);
+}
+
+.sidebar:not(.expanded) .nav-item{
+  justify-content: center;
+  padding: 0;
+}
+
+.sidebar:not(.expanded) .nav-icon{
+  margin: 0 auto;
+}
+   .nav-item.active{
+  text-shadow: 0 1px 1px rgba(255,255,255,0.18);
+}
 
     .sidebar.expanded .nav-item {
       justify-content: flex-start;
@@ -948,10 +971,10 @@ body.light-mode .excel-table td.row-index{
     </div>
 
     <div class="nav-content">
-      <div class="nav-item active" data-page="home" onclick="switchPage('home')"><span>🏡</span><span class="nav-text">Home</span></div>
-      <div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span>🧩</span><span class="nav-text">Dashboard</span></div>
-      <div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span>📗</span><span class="nav-text">EXCEL Trắng</span></div>
-      <div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span>⚙️</span><span class="nav-text">Cài đặt</span></div>
+<div class="nav-item active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏡</span><span class="nav-text">Home</span></div>
+<div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🧩</span><span class="nav-text">Dashboard</span></div>
+<div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
+<div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
     </div>
   </aside>
 

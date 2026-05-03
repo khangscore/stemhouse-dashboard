@@ -778,11 +778,37 @@
   display: none;
   z-index: 9999;
   box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
+}
+    .dropdown-panel::-webkit-scrollbar{
+  width:10px;
+}
+
+.dropdown-panel::-webkit-scrollbar-track{
+  background:transparent;
+  border-radius:999px;
+}
+
+.dropdown-panel::-webkit-scrollbar-thumb{
+  background:#000;
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+.dropdown-panel::-webkit-scrollbar-thumb:hover{
+  background:#111;
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
 }
 
 .dropdown-item{
   padding: 12px 14px;
   border-radius: 12px;
+  color:#fff;
   cursor: pointer;
   font-weight: 600;
   transition: all 0.18s ease;

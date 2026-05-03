@@ -754,7 +754,7 @@
   background:var(--card-bg);
   border:1px solid var(--card-border);
   border-radius:22px;
-  padding:16px px;
+  padding:16px;
   backdrop-filter:blur(10px);
 }
 
@@ -1563,6 +1563,7 @@ function renderCalendar() {
       setupAvatarUpload();
       setInterval(updateClock, 1000);
       addHoverEvents();
+      renderExcelSheet();
     };
   </script>
 <script>
@@ -1711,11 +1712,6 @@ function renderCalendar() {
     }
   });
 
-  const oldWindowOnload = window.onload;
-  window.onload = () => {
-    if (oldWindowOnload) oldWindowOnload();
-    renderExcelSheet();
-  };
 </script>
   
 </body>

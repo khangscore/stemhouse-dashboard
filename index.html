@@ -197,11 +197,16 @@
   min-width:26px;
   font-size:1.15rem;
   line-height:1;
+  filter: saturate(1.15) contrast(1.08);
   text-shadow:
-  -1px -1px 0 #000,
-   1px -1px 0 #000,
-  -1px  1px 0 #000,
-   1px  1px 0 #000;
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+    -2px  0   0 #000,
+     2px  0   0 #000,
+     0   -2px 0 #000,
+     0    2px 0 #000;
 }
   .nav-icon{
   width: 28px;
@@ -442,6 +447,16 @@
       z-index: 3000;
       font-size: 1.6rem;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+
+        text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+    -2px  0   0 #000,
+     2px  0   0 #000,
+     0   -2px 0 #000,
+     0    2px 0 #000;
     }
 
     .modal-overlay {

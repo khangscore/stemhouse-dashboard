@@ -103,21 +103,55 @@
 
     .toggle-sidebar {
   position: absolute;
-  top: 15px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--accent);
+  top: 50%;
+  right: -14px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 110px;
+  border-radius: 18px;
   border: 2px solid #000;
+  background: color-mix(in srgb, var(--accent) 82%, black 18%);
   color: #000;
-  width: 50px;
-  height: 22px;
-  border-radius: 12px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: bold;
-  transition: transform 0.3s ease, box-shadow 0.25s ease;
+  z-index: 2100;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 6px 14px rgba(0,0,0,0.22);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.2s ease;
+}
+    .toggle-sidebar span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  line-height:1;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+  transition: transform 0.28s ease;
+}
+    .toggle-sidebar:hover{
+  filter: brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 8px 18px rgba(0,0,0,0.28);
+}
+
+.toggle-sidebar:active{
+  transform: translateY(-50%) scale(0.97);
 }
 
     .sidebar.expanded .toggle-sidebar span {

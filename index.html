@@ -129,6 +129,33 @@
     box-shadow 0.25s ease,
     filter 0.2s ease;
 }
+    .toggle-sidebar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(to bottom,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.08) 35%,
+    rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+    .toggle-sidebar:hover{
+  transform: translateY(-50%) translateX(1px);
+  filter: brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 8px 18px rgba(0,0,0,0.28);
+}
+    .toggle-sidebar:active{
+  transform: translateY(-50%) translateX(1px) scale(0.97);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.14),
+    0 2px 0 rgba(0,0,0,0.22),
+    0 4px 8px rgba(0,0,0,0.16);
+}
     .toggle-sidebar span{
   display:flex;
   align-items:center;

@@ -227,7 +227,7 @@
   display: flex;
   flex-direction: column;
   padding: 0 10px 14px;
-  gap: px;
+  gap: 10px;
 }
 
     .nav-item {
@@ -1294,35 +1294,32 @@ body.light-mode .excel-table td.row-index{
     </div>
 
     <div class="nav-content">
-<div class="nav-item active" data-page="home"
-onclick="switchPage('home'); document.getElementById('pageTitle').innerText='Home'">
-  <span class="nav-icon">🏡</span>
-  <span class="nav-text">Home</span>
- </div>
-</div>      
-      
-<div class="nav-item" data-page="dashboard"
-onclick="switchPage('dashboard'); document.getElementById('pageTitle').innerText='AO Dashboard Quận 10'">
-  <span class="nav-icon">🧩</span>
-  <span class="nav-text">Dashboard</span>
- </div>
-</div>    
-      
-<div class="nav-item" data-page="excel"
-onclick="switchPage('excel'); document.getElementById('pageTitle').innerText='Excel'">
-  <span class="nav-icon">📗</span>
-  <span class="nav-text">EXCEL Trắng</span>
- </div>
+
+  <div class="nav-item active" data-page="home"
+  onclick="switchPage('home'); document.getElementById('pageTitle').innerText='Home'">
+    <span class="nav-icon">🏡</span>
+    <span class="nav-text">Home</span>
+  </div>
+
+  <div class="nav-item" data-page="dashboard"
+  onclick="switchPage('dashboard'); document.getElementById('pageTitle').innerText='AO Dashboard Quận 10'">
+    <span class="nav-icon">🧩</span>
+    <span class="nav-text">Dashboard</span>
+  </div>
+
+  <div class="nav-item" data-page="excel"
+  onclick="switchPage('excel'); document.getElementById('pageTitle').innerText='Excel'">
+    <span class="nav-icon">📗</span>
+    <span class="nav-text">EXCEL Trắng</span>
+  </div>
+
+  <div class="nav-item" data-page="settings"
+  onclick="switchPage('settings'); document.getElementById('pageTitle').innerText='Cài đặt'">
+    <span class="nav-icon">⚙️</span>
+    <span class="nav-text">Cài đặt</span>
+  </div>
+
 </div>
-    
-<div class="nav-item" data-page="settings"
-onclick="switchPage('settings'); document.getElementById('pageTitle').innerText='Cài đặt'">
-  <span class="nav-icon">⚙️</span>
-  <span class="nav-text">Cài đặt</span>
- </div>
-</div>
-    
-    </div>
   </aside>
 
   <div class="container">

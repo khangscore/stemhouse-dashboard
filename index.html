@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+  <link rel="stylesheet" href="style.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AO Dashboard Q10 | Custom Edition</title>
@@ -349,7 +350,7 @@
       gap: 25px;
     }
 
-    .card{
+    .card {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 28px;
@@ -368,11 +369,7 @@
   border-color 0.25s ease,
   background 0.25s ease;
 }
-  .settings-title{
-  color:var(--accent);
-  font-weight:800;
-  text-shadow:0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
-}
+
     .shortcut-card.dragging {
       opacity: 0.5;
       transform: scale(0.98);
@@ -1324,61 +1321,45 @@ body.light-mode .excel-table td.row-index{
       <div class="header-group"><h1>Cài đặt</h1></div>
 
       <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
-        <div class="card" style="width:100%; max-width:340px;">
-          <h3 class="settings-title" style="margin-bottom:15px;">THÔNG TIN CỦA NÍ</h3>
+        <div class="card" style="width:100%; max-width:450px;">
+          <h3 style="margin-bottom:15px;">Thông Tin Của Ní</h3>
           <img id="previewAvatar" class="avatar-preview-box" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
           <input type="text" id="usernameInput" style="width:100%; padding:10px; border-radius:10px; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--card-border);" placeholder="Tên của ní...">
 
-          <div style="
-    display:flex;
-    gap:8px;
-    justify-content:center;
-    align-items:center;
-    flex-wrap:wrap;
-    margin-top:18px;
-  ">
-    <button class="btn" style="width:auto; min-width:78px; padding:8px 12px; opacity:0.6; background:#3b82f6; color:#fff;" id="btn-male" onclick="updatePreview('male')">Liam</button>
+          <div style="display:flex; gap:8px; width:100%; margin-top:15px;">
+            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#3b82f6; color:#fff;" id="btn-male" onclick="updatePreview('male')">Liam</button>
+            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#ec4899; color:#fff;" id="btn-female" onclick="updatePreview('female')">Adrian</button>
+            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#f59e0b; color:#fff;" id="btn-dog" onclick="updatePreview('dog')">Luis</button>
+          </div>
+        </div>
 
-    <button class="btn" style="width:auto; min-width:78px; padding:8px 12px; opacity:0.6; background:#ec4899; color:#fff;" id="btn-female" onclick="updatePreview('female')">Adrian</button>
+        <div class="card" style="width:100%; max-width:450px;">
+          <h3 style="margin-bottom:15px;">Avatar Riêng Của Ní</h3>
+                    <label id="avatarDropZone" style="
+            width:100%;
+            min-height:180px;
+            border:2px dashed var(--card-border);
+            border-radius:20px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            cursor:pointer;
+            padding:20px;
+            text-align:center;
+          ">
+            <div style="font-size:2rem;">🖼️</div>
+            <div style="font-weight:bold;">Kéo ảnh vào đây hoặc bấm để chọn</div>
+            <div style="font-size:0.85rem; opacity:0.7;">PNG / JPG / WEBP</div>
+            <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+          </label>
 
-    <button class="btn" style="width:auto; min-width:78px; padding:8px 12px; opacity:0.6; background:#f59e0b; color:#fff;" id="btn-dog" onclick="updatePreview('dog')">Luis</button>
-  </div>   
-          
-         <div style="width:100%; margin-top:15px;">
-
-  <div style="font-size:0.9rem; font-weight:700; margin-top:22px; margin-bottom:10px; opacity:0.85;">
-  Avatar Riêng
-</div>
-
-    <label id="avatarDropZone" style="
-      width:100%;
-      min-height:150px;
-      border:2px dashed var(--card-border);
-      border-radius:20px;
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      cursor:pointer;
-      padding:18px;
-      text-align:center;
-    ">
-      <div style="font-size:2rem;">🖼️</div>
-      <div style="font-weight:bold;">Kéo ảnh dô hoặc bấm chọn</div>
-      <div style="font-size:0.85rem; opacity:0.7;">PNG / JPG / WEBP</div>
-      <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
-    </label>
-
-    <button class="btn" style="margin-top:12px; width:100%;" onclick="removeCustomAvatar()">
-      Xoá Avatar Riêng
-    </button>
-  </div>
-
-</div>
+          <button class="btn" style="margin-top:15px;" onclick="removeCustomAvatar()">Xoá Avatar Riêng</button>
+        </div>
 
         <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 class="settings-title" style="margin-bottom:10px; font-size:1rem;" style="margin-top:26px;">MÀU CHỦ ĐẠO</h3>
+          <h3 style="margin-bottom:10px; font-size:1rem;">Màu Chủ Đạo</h3>
           <div class="color-palette">
             <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
             <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
@@ -1396,7 +1377,7 @@ body.light-mode .excel-table td.row-index{
         </div>
 
         <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 class="settings-title" style="margin-bottom:12px; font-size:1rem;" style="margin-top:26px;">DỮ LIỆU</h3>
+          <h3 style="margin-bottom:12px; font-size:1rem;">Dữ Liệu</h3>
           <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
             <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
             <label class="btn" style="margin-top:0; text-align:center;">
@@ -2216,6 +2197,6 @@ document.addEventListener('click', function(e) {
   });
 
 </script>
-  
+<script type="module" src="main.js"></script>
 </body>
 </html>

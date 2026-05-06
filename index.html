@@ -329,7 +329,7 @@
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 60px 20px 100px 120px;
+      padding: 60px 100px 100px 120px;
       position: relative;
     }
 
@@ -1217,11 +1217,49 @@ body.light-mode .excel-table td.row-index{
     0 2px 0 rgba(0,0,0,0.22),
     0 4px 8px rgba(0,0,0,0.16);
 }
+  #pageTitle {
+  position: fixed;
+  top: 20px;
+  right: 30px;
+
+  font-size: 28px;
+  font-weight: bold;
+
+  background: linear-gradient(135deg, #00c6ff, #0072ff);
+  color: white;
+
+  padding: 10px 20px;
+  border-radius: 10px;
+
+  backdrop-filter: blur(10px);
+
+  z-index: 9999;
+}
+.side-line {
+  position: fixed;
+  top: 0;
+  width: 6px;
+  height: 100%;
+
+  background: var(--main-color, #00bcd4);
+
+  z-index: 999;
+}
+
+.side-line.left {
+  left: 0;
+}
+
+.side-line.right {
+  right: 0;
+}
     
   </style>
 </head>
 <body id="body">
-
+<div class="side-line left"></div>
+<div class="side-line right"></div>
+<div id="pageTitle">Home</div>
   <aside class="sidebar" id="sidebar">
     <button class="toggle-sidebar" id="toggleBtn"><span>❯</span></button>
     <div class="sidebar-header">
@@ -1230,10 +1268,30 @@ body.light-mode .excel-table td.row-index{
     </div>
 
     <div class="nav-content">
-<div class="nav-item active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏡</span><span class="nav-text">Home</span></div>
-<div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🧩</span><span class="nav-text">Dashboard</span></div>
-<div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
-<div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+<div class="nav-item active" data-page="home"
+onclick="switchPage('home'); document.getElementById('pageTitle').innerText='Home'">
+  <span class="nav-icon">🏡</span>
+  <span class="nav-text">Home</span>
+</div>
+      
+<div class="nav-item" data-page="dashboard"
+onclick="switchPage('dashboard'); document.getElementById('pageTitle').innerText='AO Dashboard Quận 10'">
+  <span class="nav-icon">🧩</span>
+  <span class="nav-text">Dashboard</span>
+</div>
+      
+<div class="nav-item" data-page="excel"
+onclick="switchPage('excel'); document.getElementById('pageTitle').innerText='Excel'">
+  <span class="nav-icon">📗</span>
+  <span class="nav-text">EXCEL Trắng</span>
+</div>
+   
+<div class="nav-item" data-page="settings"
+onclick="switchPage('settings'); document.getElementById('pageTitle').innerText='Cài đặt'">
+  <span class="nav-icon">⚙️</span>
+  <span class="nav-text">Cài đặt</span>
+</div>
+      
     </div>
   </aside>
 
@@ -1283,8 +1341,7 @@ body.light-mode .excel-table td.row-index{
 
     <div id="page-dashboard" class="page-content">
       <div class="header-group">
-        <h1 id="mainTitle">AO Dashboard Q10</h1>
-        <p id="greeting">Haku_Na_Matata!</p>
+        <p id="greeting">Haku-Na-Matata!</p>
       </div>
       <div class="grid" id="shortcutGrid"></div>
     </div>
@@ -1378,7 +1435,7 @@ body.light-mode .excel-table td.row-index{
 </div>
 
         <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 class="settings-title" style="margin-bottom:10px; font-size:1rem;" style="margin-top:26px;">Màu Chủ Đạo</h3>
+          <h3 class="settings-title" style="margin-bottom:10px; font-size:1rem;" style="margin-top:26px;">MÀU CHỦ ĐẠO</h3>
           <div class="color-palette">
             <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
             <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
@@ -1396,7 +1453,7 @@ body.light-mode .excel-table td.row-index{
         </div>
 
         <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 class="settings-title" style="margin-bottom:12px; font-size:1rem;" style="margin-top:26px;">Dữ Liệu</h3>
+          <h3 class="settings-title" style="margin-bottom:12px; font-size:1rem;" style="margin-top:26px;">DỮ LIỆU</h3>
           <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
             <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
             <label class="btn" style="margin-top:0; text-align:center;">

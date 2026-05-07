@@ -50,7 +50,6 @@
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
-      overflow-y:hidden;
     }
 
     body.light-mode {
@@ -1231,6 +1230,8 @@ body.light-mode .excel-table td.row-index{
   display:flex;
   flex-direction:column;
   min-height:calc(100vh - 80px);
+  height:100%;
+  overflow:hidden;
 }
 
 .page-topbar{
@@ -1255,19 +1256,14 @@ body.light-mode .excel-table td.row-index{
 .page-frame{
   position:relative;
   flex:1;
-
+  min-height:0;
   height:calc(100vh - 180px);
   min-height:620px;
-
   border-radius:28px;
-
   display:flex;
   flex-direction:column;
-
   background:rgba(255,255,255,0.02);
-
   border:1px solid color-mix(in srgb, var(--accent) 65%, transparent);
-
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
     0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
@@ -1408,9 +1404,9 @@ body.light-mode .excel-table td.row-index{
   }
 }
  .page-content{
-  height:100%;
+  height:100vh;
   overflow:hidden;
-}   
+}
   </style>
 </head>
 <body id="body">

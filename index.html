@@ -1237,6 +1237,7 @@ body.light-mode .excel-table td.row-index{
   padding:0 8px 10px;
   margin-bottom:10px;
   backdrop-filter: blur(10px);
+  overflow:hidden;
 }
 
 .page-topbar .header-group{
@@ -1251,12 +1252,24 @@ body.light-mode .excel-table td.row-index{
 .page-frame{
   position:relative;
   flex:1;
+
+  height:calc(100vh - 180px);
   min-height:620px;
+
   border-radius:28px;
-  overflow:hidden;
+
   display:flex;
   flex-direction:column;
+
   background:rgba(255,255,255,0.02);
+
+  border:1px solid color-mix(in srgb, var(--accent) 65%, transparent);
+
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
+    0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
+
+  overflow:hidden;
 }
 
 /* viền trái */
@@ -1284,9 +1297,19 @@ body.light-mode .excel-table td.row-index{
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 42%, transparent);
   z-index:2;
 }
+    .page-frame{
+  isolation:isolate;
+}
+
+.page-frame::marker{
+  display:none;
+}
 
 /* thanh ngang ngăn title / content */
 .page-divider{
+  .page-frame::selection{
+  background:transparent;
+}
   width:100%;
   height:1px;
   background:color-mix(in srgb, var(--accent) 72%, transparent);
@@ -1297,13 +1320,16 @@ body.light-mode .excel-table td.row-index{
 /* vùng cuộn nội dung */
 .page-scroll{
   flex:1;
+
   overflow-y:auto;
   overflow-x:hidden;
+
   padding:22px 14px 26px;
+
   min-height:0;
 
-  scrollbar-width: thin;
-  scrollbar-color: var(--accent) transparent;
+  scrollbar-width:thin;
+  scrollbar-color:var(--accent) transparent;
 }
 
 .page-scroll::-webkit-scrollbar{

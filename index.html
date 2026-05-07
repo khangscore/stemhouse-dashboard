@@ -43,13 +43,14 @@
   will-change: auto;
 }
 
-    body {
+    body{
       background: var(--bg-color);
       background-image: radial-gradient(circle at 50% -20%, #4c1d95, #1e1045, #0f0720);
       background-attachment: fixed;
       color: var(--text-main);
       min-height: 100vh;
       overflow-x: hidden;
+      overflow-y:hidden;
     }
 
     body.light-mode {
@@ -331,6 +332,8 @@
       margin: 0 auto;
       padding: 60px 20px 100px 120px;
       position: relative;
+      height:100vh;
+      overflow:hidden;
     }
 
     .header-group {
@@ -1404,7 +1407,10 @@ body.light-mode .excel-table td.row-index{
     padding:18px 10px 22px;
   }
 }
-    
+ .page-content{
+  height:100%;
+  overflow:hidden;
+}   
   </style>
 </head>
 <body id="body">

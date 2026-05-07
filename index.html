@@ -1217,6 +1217,167 @@ body.light-mode .excel-table td.row-index{
     0 2px 0 rgba(0,0,0,0.22),
     0 4px 8px rgba(0,0,0,0.16);
 }
+  /* =========================
+   FIXED PAGE FRAME SYSTEM
+========================= */
+
+.page-shell{
+  width:100%;
+  max-width:1180px;
+  margin:0 auto;
+  display:flex;
+  flex-direction:column;
+  min-height:calc(100vh - 80px);
+}
+
+.page-topbar{
+  position:sticky;
+  top:18px;
+  z-index:40;
+  padding:0 8px 10px;
+  margin-bottom:10px;
+  backdrop-filter: blur(10px);
+}
+
+.page-topbar .header-group{
+  margin-bottom:0;
+}
+
+.page-topbar h1,
+.page-topbar .home-clock{
+  transform: translateY(-6px);
+}
+
+.page-frame{
+  position:relative;
+  flex:1;
+  min-height:620px;
+  border-radius:28px;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  background:rgba(255,255,255,0.02);
+}
+
+/* viền trái */
+.page-frame::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  width:1px;
+  height:100%;
+  background:color-mix(in srgb, var(--accent) 72%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 42%, transparent);
+  z-index:2;
+}
+
+/* viền phải */
+.page-frame::after{
+  content:'';
+  position:absolute;
+  top:0;
+  right:0;
+  width:1px;
+  height:100%;
+  background:color-mix(in srgb, var(--accent) 72%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 42%, transparent);
+  z-index:2;
+}
+
+/* thanh ngang ngăn title / content */
+.page-divider{
+  width:100%;
+  height:1px;
+  background:color-mix(in srgb, var(--accent) 72%, transparent);
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 38%, transparent);
+  flex-shrink:0;
+}
+
+/* vùng cuộn nội dung */
+.page-scroll{
+  flex:1;
+  overflow-y:auto;
+  overflow-x:hidden;
+  padding:22px 14px 26px;
+  min-height:0;
+
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+
+.page-scroll::-webkit-scrollbar{
+  width:10px;
+}
+
+.page-scroll::-webkit-scrollbar-track{
+  background:transparent;
+}
+
+.page-scroll::-webkit-scrollbar-thumb{
+  background: color-mix(in srgb, var(--accent) 78%, black 18%);
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+.page-scroll::-webkit-scrollbar-thumb:hover{
+  background: color-mix(in srgb, var(--accent) 88%, black 12%);
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+/* reset khoảng cách cũ bên trong page */
+.page-scroll .header-group{
+  display:none;
+}
+
+.page-scroll > *:first-child{
+  margin-top:0 !important;
+}
+
+/* home */
+.page-scroll .calendar-box{
+  margin-top:0;
+}
+
+/* dashboard */
+.page-scroll #shortcutGrid{
+  margin-top:4px;
+}
+
+/* excel */
+.page-scroll .excel-wrap{
+  margin-top:2px;
+}
+
+/* settings */
+.page-scroll .grid[style*="flex-direction:column"]{
+  margin-top:4px;
+}
+
+@media(max-width: 900px){
+  .page-shell{
+    min-height:auto;
+  }
+
+  .page-topbar{
+    position:relative;
+    top:0;
+    padding-bottom:8px;
+  }
+
+  .page-frame{
+    min-height:auto;
+  }
+
+  .page-scroll{
+    max-height:none;
+    overflow:visible;
+    padding:18px 10px 22px;
+  }
+}
     
   </style>
 </head>
@@ -1239,89 +1400,175 @@ body.light-mode .excel-table td.row-index{
 
   <div class="container">
     <div id="page-home" class="page-content active-page">
-  <div class="header-group">
-    <div class="home-clock" id="liveClock">00:00:00</div>
-    <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
-  </div>
 
-  <div class="card calendar-box calendar-layout">
-    <div class="calendar-left">
+  <div class="page-shell">
 
-  <div class="calendar-top-shell">
-    <div class="calendar-toolbar">
-      <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
-
-      <div class="custom-dropdown">
-        <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
-        <div class="dropdown-panel" id="monthPanel"></div>
-      </div>
-
-      <div class="custom-dropdown">
-        <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
-        <div class="dropdown-panel" id="yearPanel"></div>
-      </div>
-
-      <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
-    </div>
-
-    <div class="calendar-weekdays" id="calendarWeekdays"></div>
-  </div>
-
-  <div class="calendar-grid" id="calendarGrid"></div>
-</div>
-
-    <div class="calendar-right">
-      <div class="calendar-notes-title">Ghi chú nhanh</div>
-      <div class="calendar-notes-stack">
-        <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
-        <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
-        <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
+    <!-- TITLE -->
+    <div class="page-topbar">
+      <div class="header-group">
+        <div class="home-clock" id="liveClock">00:00:00</div>
+        <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
       </div>
     </div>
+
+    <!-- FRAME -->
+    <div class="page-frame">
+
+      <div class="page-divider"></div>
+
+      <div class="page-scroll">
+
+        <div class="card calendar-box calendar-layout">
+
+          <div class="calendar-left">
+
+            <div class="calendar-top-shell">
+
+              <div class="calendar-toolbar">
+                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+
+                <div class="custom-dropdown">
+                  <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
+                  <div class="dropdown-panel" id="monthPanel"></div>
+                </div>
+
+                <div class="custom-dropdown">
+                  <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
+                  <div class="dropdown-panel" id="yearPanel"></div>
+                </div>
+
+                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+              </div>
+
+              <div class="calendar-weekdays" id="calendarWeekdays"></div>
+
+            </div>
+
+            <div class="calendar-grid" id="calendarGrid"></div>
+
+          </div>
+
+          <div class="calendar-right">
+
+            <div class="calendar-notes-title">Ghi chú nhanh</div>
+
+            <div class="calendar-notes-stack">
+              <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
+              <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
+              <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
   </div>
+
 </div>
 
     <div id="page-dashboard" class="page-content">
+
+  <div class="page-shell">
+
+    <div class="page-topbar">
       <div class="header-group">
         <h1 id="mainTitle">AO Dashboard Q10</h1>
         <p id="greeting">Haku_Na_Matata!</p>
       </div>
-      <div class="grid" id="shortcutGrid"></div>
     </div>
+
+    <div class="page-frame">
+
+      <div class="page-divider"></div>
+
+      <div class="page-scroll">
+
+        <div class="grid" id="shortcutGrid"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
 
     <!-- PAGE: EXCEL TRẮNG -->
 <div id="page-excel" class="page-content">
-  <div class="header-group">
-    <h1>EXCEL Trắng</h1>
-    <p style="opacity:0.75;">Trang tính mini ngay trong dashboard ✨</p>
-  </div>
 
-  <div class="excel-wrap">
-    <div class="excel-toolbar">
-      <div class="excel-toolbar-left">
-        <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
-        <label class="btn excel-btn" style="margin-top:0;">
-          📥 Import CSV
-          <input type="file" id="csvImport" accept=".csv" style="display:none;">
-        </label>
-        <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
-      </div>
-      <div class="excel-toolbar-right">
-        <span class="excel-badge">Auto Save</span>
+  <div class="page-shell">
+
+    <div class="page-topbar">
+      <div class="header-group">
+        <h1>EXCEL Trắng</h1>
+        <p style="opacity:0.75;">Trang tính mini ngay trong dashboard ✨</p>
       </div>
     </div>
 
-    <div class="excel-shell">
-      <div class="excel-table-wrap">
-        <table class="excel-table" id="excelTable"></table>
+    <div class="page-frame">
+
+      <div class="page-divider"></div>
+
+      <div class="page-scroll">
+
+        <div class="excel-wrap">
+
+          <div class="excel-toolbar">
+
+            <div class="excel-toolbar-left">
+              <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
+
+              <label class="btn excel-btn" style="margin-top:0;">
+                📥 Import CSV
+                <input type="file" id="csvImport" accept=".csv" style="display:none;">
+              </label>
+
+              <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
+            </div>
+
+            <div class="excel-toolbar-right">
+              <span class="excel-badge">Auto Save</span>
+            </div>
+
+          </div>
+
+          <div class="excel-shell">
+
+            <div class="excel-table-wrap">
+              <table class="excel-table" id="excelTable"></table>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
+
     </div>
+
   </div>
+
 </div>
 
     <div id="page-settings" class="page-content">
-      <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
-      <div class="header-group"><h1>Cài đặt</h1></div>
+        <div class="page-shell">
+          <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
+
+    <div class="page-topbar">
+      <div class="header-group">
+        <h1>Cài đặt</h1>
+      </div>
+    </div>
+
+    <div class="page-frame">
+
+      <div class="page-divider"></div>
+
+      <div class="page-scroll">
 
       <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
         <div class="card" style="width:100%; max-width:340px;">

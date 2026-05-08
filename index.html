@@ -1238,30 +1238,10 @@ body.light-mode .excel-table td.row-index{
   position:sticky;
   top:18px;
   z-index:40;
-
-  min-height:unset;
-
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-start;
-
   padding:0 8px 10px;
-
-  overflow:visible;
+  margin-bottom:10px;
+  overflow:hidden;
   background:transparent;
-
-  pointer-events:none;
-}
-
-.page-topbar p{
-  margin-top:10px;
-  margin-bottom:0;
-
-  min-height:24px;
-
-  opacity:.72;
-
-  pointer-events:auto;
 }
 
 .page-topbar .header-group{
@@ -1270,17 +1250,7 @@ body.light-mode .excel-table td.row-index{
 
 .page-topbar h1,
 .page-topbar .home-clock{
-  margin-top:-24px;
-
-  font-size:4rem;
-  font-weight:800;
-  letter-spacing:-3px;
-  line-height:1;
-
-  text-shadow:
-    0 0 18px color-mix(in srgb, var(--accent) 28%, transparent);
-
-  pointer-events:auto;
+  transform: translateY(-6px);
 }
 
 .page-frame{
@@ -1289,24 +1259,18 @@ body.light-mode .excel-table td.row-index{
   min-height:0;
   height:calc(100vh - 260px);
   min-height:620px;
-
-  margin-top:98px;
-
   border-radius:28px;
-
   display:flex;
   flex-direction:column;
-
   background:rgba(255,255,255,0.02);
-
   border:1px solid color-mix(in srgb, var(--accent) 65%, transparent);
-
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
     0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
 
-  overflow:visible;
+  overflow:hidden;
 }
+
 /* viền trái */
 .page-frame::before{
   content:'';
@@ -1332,35 +1296,35 @@ body.light-mode .excel-table td.row-index{
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 42%, transparent);
   z-index:2;
 }
+    .page-frame{
+  isolation:isolate;
+}
+
+.page-frame::marker{
+  display:none;
+}
 
 /* thanh ngang ngăn title / content */
 .page-divider{
+  .page-frame::selection{
+  background:transparent;
+}
   width:100%;
   height:1px;
-
   background:color-mix(in srgb, var(--accent) 72%, transparent);
-  box-shadow:0 0 12px color-mix(in srgb, var(--accent) 38%, transparent);
-
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 38%, transparent);
   flex-shrink:0;
-}
-.page-frame::selection{
-  background:transparent;
-}
-
-.page-frame::selection{
-  background:transparent;
-}
-
-.page-frame::selection{
-  background:transparent;
 }
 
 /* vùng cuộn nội dung */
 .page-scroll{
   flex:1;
+
   overflow-y:auto;
   overflow-x:hidden;
-  padding:26px 14px 80px;
+
+  padding:22px 14px 26px;
+
   min-height:0;
 
   scrollbar-width:thin;
@@ -1424,13 +1388,10 @@ body.light-mode .excel-table td.row-index{
   }
 
   .page-topbar{
-  position:sticky;
-  top:18px;
-  padding:22px 8px 0px;
-  margin-bottom:-6px;
-  overflow:visible;
-  background:transparent;
-}
+    position:relative;
+    top:0;
+    padding-bottom:8px;
+  }
 
   .page-frame{
     min-height:auto;
@@ -1443,8 +1404,8 @@ body.light-mode .excel-table td.row-index{
   }
 }
  .page-content{
-  min-height:100vh;
-  overflow:visible;
+  height:100vh;
+  overflow:hidden;
 }
   </style>
 </head>

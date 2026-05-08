@@ -1283,7 +1283,7 @@ p {
   margin-top: 10px !important;
 }  
   .page {
-  display: none;
+  display: block;
 }
 
 .page.active {
@@ -2168,6 +2168,7 @@ document.addEventListener('click', function(e) {
       setInterval(updateClock, 1000);
       addHoverEvents();
       renderExcelSheet();
+      switchPage('home');
     };
   </script>
 <script>

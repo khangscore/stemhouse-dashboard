@@ -1266,22 +1266,30 @@ body.light-mode .excel-table td.row-index{
 
 .page-frame{
   position:relative;
+  isolation:isolate;
+
   flex:1;
   min-height:0;
   height:calc(100vh - 260px);
   min-height:620px;
+
+  margin-top:24px;
+
   border-radius:28px;
+
   display:flex;
   flex-direction:column;
+
   background:rgba(255,255,255,0.02);
+
   border:1px solid color-mix(in srgb, var(--accent) 65%, transparent);
+
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
     0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
 
   overflow:hidden;
 }
-
 /* viền trái */
 .page-frame::before{
   content:'';
@@ -1306,13 +1314,6 @@ body.light-mode .excel-table td.row-index{
   background:color-mix(in srgb, var(--accent) 72%, transparent);
   box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 42%, transparent);
   z-index:2;
-}
-    .page-frame{
-  isolation:isolate;
-}
-
-.page-frame::marker{
-  display:none;
 }
 
 /* thanh ngang ngăn title / content */

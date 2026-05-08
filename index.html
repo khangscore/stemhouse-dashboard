@@ -1412,8 +1412,10 @@ body.light-mode .excel-table td.row-index{
 }
   #sidebarOverlay{
   position:fixed;
+  top:0;
+  right:0;
+  bottom:0; 
   inset:0;
-
   background:
     linear-gradient(
       to right,
@@ -1438,6 +1440,7 @@ body.light-mode .excel-table td.row-index{
 body.sidebar-expanded #sidebarOverlay{
   opacity:1;
   pointer-events:auto;
+  left:var(--sidebar-width, 260px);
 }
     
   </style>

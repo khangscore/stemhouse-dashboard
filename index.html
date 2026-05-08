@@ -1256,17 +1256,20 @@ body.light-mode .excel-table td.row-index{
 .page-frame{
   position:relative;
   flex:1;
-  min-height:0;
-  height:calc(100vh - 260px);
   min-height:620px;
   border-radius:28px;
   display:flex;
   flex-direction:column;
   background:rgba(255,255,255,0.02);
-  border:1px solid color-mix(in srgb, var(--accent) 65%, transparent);
+  border:1px solid
+    color-mix(in srgb, var(--accent) 65%, transparent);
+
   box-shadow:
-    0 0 0 1px color-mix(in srgb, var(--accent) 18%, transparent),
-    0 0 24px color-mix(in srgb, var(--accent) 18%, transparent);
+    0 0 0 1px
+    color-mix(in srgb, var(--accent) 18%, transparent),
+
+    0 0 24px
+    color-mix(in srgb, var(--accent) 18%, transparent);
 
   overflow:hidden;
 }
@@ -1411,16 +1414,17 @@ body.light-mode .excel-table td.row-index{
   }
 }
  .page-content{
-  min-height:100vh;
-  overflow-y:auto;
-  overflow-x:hidden;
-}
-    .page-content:not(.active-page){
+  position:absolute;
+  inset:0;
+
   display:none;
+
+  overflow:hidden;
 }
 
 .page-content.active-page{
-  display:block;
+  display:flex;
+  flex-direction:column;
 }
     /* =========================
    VIETNAM CALENDAR UPGRADE

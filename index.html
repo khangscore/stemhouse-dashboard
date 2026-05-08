@@ -1225,15 +1225,15 @@ h1, h2, h3 {
 
 /* size riêng từng loại nhưng cùng hệ */
 h1 {
-  font-size: 2.6rem !important;
+  font-size: 3.2rem !important;
 }
 
 h2 {
-  font-size: 2rem !important;
+  font-size: 2.4rem !important;
 }
 
 h3 {
-  font-size: 1.4rem !important;
+  font-size: 1.8rem !important;
 }
 
 /* 2. Đồng bộ khoảng cách giữa title và p */
@@ -1271,6 +1271,20 @@ p {
 .header-group h1 {
   margin-bottom: 0;
 } 
+  /* =========================
+   FIX HOME TITLE SPACING
+========================= */
+
+/* coi clock như title */
+.home-clock {
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+/* đồng bộ khoảng cách như h1 + p */
+.home-clock + .home-date {
+  margin-top: 10px !important;
+}  
   </style>
 </head>
 <body id="body">

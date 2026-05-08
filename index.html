@@ -1619,20 +1619,7 @@ body.light-mode .excel-table td.row-index{
       <div class="calendar-weekdays" id="calendarWeekdays"></div>
     </div>
 
-   <div class="calendar-grid" id="calendarGrid"></div>
-      <div class="calendar-event-title" id="selectedDateTitle">
-        Chọn một ngày 📅
-      </div>
-
-      <div class="calendar-event-holiday" id="selectedHoliday">
-        Không có sự kiện
-      </div>
-
-      <textarea
-        id="calendarNoteInput"
-        class="calendar-note-input"
-        placeholder="Ghi chú cho ngày này..."
-      ></textarea>
+ <div class="calendar-grid" id="calendarGrid"></div>
     </div>
 
   </div>
@@ -2286,7 +2273,7 @@ document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appCon
       a.download = 'ao-dashboard-backup.json';
       a.click();
     }
-    function saveCalendarNote(key, value){
+   function saveCalendarNote(key, value){
 
   calendarNotes[key] = value;
 
@@ -2385,46 +2372,6 @@ function changeMonth(step) {
   selectedCalendarDay = null;
   renderCalendar();
 }
-
-  selectedCalendarDay = {
-    day,
-    month: calendarDate.getMonth(),
-    year: calendarDate.getFullYear()
-  };
-
-  renderCalendar();
-
-  const key =
-    `${selectedCalendarDay.year}-${selectedCalendarDay.month+1}-${day}`;
-
-  const holiday =
-    vietnameseHolidays[
-      `${selectedCalendarDay.month+1}-${day}`
-    ] || 'Không có sự kiện';
-
-  document.getElementById('selectedDateTitle').innerText =
-    `Ngày ${day}/${selectedCalendarDay.month+1}/${selectedCalendarDay.year}`;
-
-  document.getElementById('selectedHoliday').innerText =
-    holiday;
-
-  document.getElementById('calendarNoteInput').value =
-    calendarNotes[key] || '';
-}
-  .addEventListener('input', e => {
-
-    if(!selectedCalendarDay) return;
-
-    const key =
-      `${selectedCalendarDay.year}-${selectedCalendarDay.month+1}-${selectedCalendarDay.day}`;
-
-    calendarNotes[key] = e.target.value;
-
-    localStorage.setItem(
-      'ao_calendar_notes_v1',
-      JSON.stringify(calendarNotes)
-    );
-});
 
 function renderCalendar() {
 

@@ -73,7 +73,7 @@
   background: rgba(255,255,255,0.02);
 }
 
-    .sidebar {
+    .sidebar{
   position: fixed;
   top: 20px;
   left: 10px;
@@ -1411,6 +1411,30 @@ body.light-mode .excel-table td.row-index{
   padding:0 250px;
   box-sizing:border-box;
 }
+  #sidebarOverlay{
+  position:fixed;
+  inset:0;
+
+  background:rgba(0,0,0,0.42);
+
+  backdrop-filter:blur(5px);
+
+  opacity:0;
+  pointer-events:none;
+
+  transition:
+    opacity 0.28s ease,
+    backdrop-filter 0.28s ease;
+
+  z-index:40;
+}
+
+/* khi sidebar mở */
+body.sidebar-expanded #sidebarOverlay{
+  opacity:1;
+  pointer-events:auto;
+}
+    
   </style>
 </head>
 <body id="body">
@@ -2333,6 +2357,7 @@ document.addEventListener('click', function(e) {
 
     document.getElementById('toggleBtn').onclick = () => {
       document.getElementById('sidebar').classList.toggle('expanded');
+      document.body.classList.toggle('sidebar-expanded');
     };
 
     window.onload = () => {
@@ -2495,6 +2520,6 @@ document.addEventListener('click', function(e) {
   });
 
 </script>
-  
+ <div id="sidebarOverlay"></div>
 </body>
 </html>

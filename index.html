@@ -1357,7 +1357,7 @@ body.light-mode .excel-table td.row-index{
 }
 
 /* reset khoảng cách cũ bên trong page */
-.page-scroll .header-group{
+#page-home .page-scroll .header-group{
   display:none;
 }
 
@@ -1411,8 +1411,15 @@ body.light-mode .excel-table td.row-index{
   }
 }
  .page-content{
-  height:100vh;
+  min-height:100vh;
   overflow:hidden;
+}
+    .page-content:not(.active-page){
+  display:none;
+}
+
+.page-content.active-page{
+  display:block;
 }
     /* =========================
    VIETNAM CALENDAR UPGRADE
@@ -1629,11 +1636,15 @@ body.light-mode .excel-table td.row-index{
     </div>
 
     <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+  </div>
+</div>
 
+      </div>
+    </div>
   </div>
 
 </div>
-
     <div id="page-dashboard" class="page-content">
 
   <div class="page-shell">

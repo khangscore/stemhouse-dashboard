@@ -1285,6 +1285,13 @@ p {
 .home-clock + .home-date {
   margin-top: 10px !important;
 }  
+  .page {
+  display: none;
+}
+
+.page.active {
+  display: block;
+}
   </style>
 </head>
 <body id="body">
@@ -1304,7 +1311,7 @@ p {
     </div>
   </aside>
 
- <div id="page-home" class="page active-page">
+ <div id="page-home" class="page active">
 
   <!-- HEADER -->
   <div class="page-header">
@@ -1649,15 +1656,18 @@ function saveDataDebounced() {
   }, 250);
 }
     function switchPage(pageId) {
-      document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active-page'));
-      const targetPage = document.getElementById(`page-${pageId}`);
-if (targetPage) targetPage.classList.add('active-page');
+  document.querySelectorAll('.page').forEach(page => {
+    page.classList.remove('active');
+  });
 
-      document.querySelectorAll('.nav-item').forEach(item => {
-        item.classList.remove('active');
-        if (item.dataset.page === pageId) item.classList.add('active');
-      });
-    }
+  const targetPage = document.getElementById(`page-${pageId}`);
+  if (targetPage) targetPage.classList.add('active');
+
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.classList.remove('active');
+    if (item.dataset.page === pageId) item.classList.add('active');
+  });
+}
     function escapeHTML(str) {
   return String(str)
     .replace(/&/g, '&amp;')

@@ -1300,20 +1300,22 @@ body.light-mode .excel-table td.row-index{
   isolation:isolate;
 }
 
-.page-frame::marker{
-  display:none;
+.page-frame::selection{
+  background: transparent;
 }
 
-/* thanh ngang ngăn title / content */
 .page-divider{
   width:100%;
   height:1px;
   margin-top:6px;
+
   background:
     color-mix(in srgb, var(--accent) 72%, transparent);
+
   box-shadow:
     0 0 12px
     color-mix(in srgb, var(--accent) 38%, transparent);
+
   flex-shrink:0;
 }
 
@@ -1392,7 +1394,7 @@ body.light-mode .excel-table td.row-index{
   position:sticky;
   top:18px;
   z-index:40;
-  padding:0 8px 0;
+  padding:0 8px 6px;
   margin-bottom:0;
   overflow:hidden;
   background:transparent;
@@ -1503,6 +1505,56 @@ body.light-mode .excel-table td.row-index{
     0 0 0 1px var(--accent),
     0 0 22px color-mix(in srgb, var(--accent) 40%, transparent);
 }
+  /* =========================
+   INLINE CALENDAR NOTES
+========================= */
+
+.calendar-cell{
+  min-height:110px;
+  padding:8px;
+  align-items:flex-start;
+  justify-content:flex-start;
+  gap:4px;
+}
+
+.calendar-day-number{
+  font-size:1rem;
+  font-weight:800;
+}
+
+.calendar-holiday{
+  font-size:0.68rem;
+  line-height:1.15;
+  opacity:0.78;
+}
+
+.calendar-inline-note{
+  width:100%;
+  margin-top:auto;
+}
+
+.calendar-inline-note textarea{
+  width:100%;
+  min-height:42px;
+  max-height:58px;
+  resize:none;
+  border:none;
+  outline:none;
+  border-radius:10px;
+  padding:6px 8px;
+  background:rgba(0,0,0,0.18);
+  color:var(--text-main);
+  font-size:0.72rem;
+  border:1px solid rgba(255,255,255,0.08);
+}
+
+.calendar-inline-note textarea:focus{
+  border-color:var(--accent);
+
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 12px color-mix(in srgb, var(--accent) 35%, transparent);
+}
   </style>
 </head>
 <body id="body">
@@ -1567,10 +1619,7 @@ body.light-mode .excel-table td.row-index{
       <div class="calendar-weekdays" id="calendarWeekdays"></div>
     </div>
 
-    <div class="calendar-grid" id="calendarGrid"></div>
-
-    <!-- EVENT -->
-    <div class="calendar-event-box">
+   <div class="calendar-grid" id="calendarGrid"></div>
       <div class="calendar-event-title" id="selectedDateTitle">
         Chọn một ngày 📅
       </div>
@@ -2237,6 +2286,15 @@ document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appCon
       a.download = 'ao-dashboard-backup.json';
       a.click();
     }
+    function saveCalendarNote(key, value){
+
+  calendarNotes[key] = value;
+
+  localStorage.setItem(
+    'ao_calendar_notes_v1',
+    JSON.stringify(calendarNotes)
+  );
+}
 
     document.addEventListener('change', (e) => {
       if (e.target && e.target.id === 'importFile') {
@@ -2328,8 +2386,6 @@ function changeMonth(step) {
   renderCalendar();
 }
 
-function selectCalendarDay(day){
-
   selectedCalendarDay = {
     day,
     month: calendarDate.getMonth(),
@@ -2355,9 +2411,6 @@ function selectCalendarDay(day){
   document.getElementById('calendarNoteInput').value =
     calendarNotes[key] || '';
 }
-
-document
-  .getElementById('calendarNoteInput')
   .addEventListener('input', e => {
 
     if(!selectedCalendarDay) return;
@@ -2394,39 +2447,32 @@ function renderCalendar() {
 
   grid.innerHTML = '';
 
-  for(let i = 0; i < firstDay; i++){
-    grid.innerHTML += `
-      <div class="calendar-cell empty"></div>
-    `;
+  for(let i=0;i<firstDay;i++){
+    grid.innerHTML += `<div class="calendar-cell empty"></div>`;
   }
 
   const today = new Date();
 
-  for(let day = 1; day <= totalDays; day++){
+  for(let day=1; day<=totalDays; day++){
 
-    const key = `${month + 1}-${day}`;
-    const holiday = vietnameseHolidays[key];
+    const holidayKey = `${month+1}-${day}`;
+    const holiday = vietnameseHolidays[holidayKey];
+
+    const noteKey = `${year}-${month+1}-${day}`;
+
+    const savedNote = calendarNotes[noteKey] || '';
 
     const isToday =
       day === today.getDate() &&
       month === today.getMonth() &&
       year === today.getFullYear();
 
-    const selected =
-      selectedCalendarDay &&
-      selectedCalendarDay.day === day &&
-      selectedCalendarDay.month === month &&
-      selectedCalendarDay.year === year;
-
     grid.innerHTML += `
-      <div
-        class="calendar-cell
+      <div class="
+        calendar-cell
         ${isToday ? 'today' : ''}
         ${holiday ? 'has-holiday' : ''}
-        ${selected ? 'selected' : ''}
-        "
-        onclick="selectCalendarDay(${day})"
-      >
+      ">
 
         <div class="calendar-day-number">
           ${day}
@@ -2438,17 +2484,22 @@ function renderCalendar() {
           : ''
         }
 
+        <div class="calendar-inline-note">
+          <textarea
+            placeholder="Ghi chú..."
+            oninput="saveCalendarNote('${noteKey}', this.value)"
+          >${savedNote}</textarea>
+        </div>
+
       </div>
     `;
   }
 
   document.getElementById('monthBtn').innerText =
-    `Tháng ${month + 1} ▼`;
+    `Tháng ${month+1} ▼`;
 
   document.getElementById('yearBtn').innerText =
     `${year} ▼`;
-
-  renderCalendarSelectors();
 }
     
     function toggleMonthPanel() {

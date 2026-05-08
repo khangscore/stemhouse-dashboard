@@ -1213,7 +1213,64 @@ body.light-mode .excel-table td.row-index{
     0 2px 0 rgba(0,0,0,0.22),
     0 4px 8px rgba(0,0,0,0.16);
 }
-    
+   /* =========================
+   UNIFY TITLES + SUBTEXT
+========================= */
+
+/* 1. Đồng bộ tất cả title */
+h1, h2, h3 {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* size riêng từng loại nhưng cùng hệ */
+h1 {
+  font-size: 2.6rem !important;
+}
+
+h2 {
+  font-size: 2rem !important;
+}
+
+h3 {
+  font-size: 1.4rem !important;
+}
+
+/* 2. Đồng bộ khoảng cách giữa title và p */
+h1 + p,
+h2 + p,
+h3 + p {
+  margin-top: 10px;
+}
+
+/* 3. Style chung cho tất cả dòng mô tả nhỏ */
+p {
+  font-size: 0.95rem;
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+/* 4. Fix riêng các chỗ đặc biệt trong code bạn */
+
+/* greeting (Haku_Na_Matata) */
+#greeting {
+  margin-top: 10px;
+}
+
+/* excel subtitle */
+#page-excel p {
+  margin-top: 10px !important;
+}
+
+/* ngày tháng dưới đồng hồ */
+.home-date {
+  margin-top: 10px !important;
+}
+
+/* khoảng cách header group */
+.header-group h1 {
+  margin-bottom: 0;
+} 
   </style>
 </head>
 <body id="body">

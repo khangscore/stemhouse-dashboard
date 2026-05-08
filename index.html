@@ -1413,13 +1413,16 @@ body.light-mode .excel-table td.row-index{
     padding:18px 10px 22px;
   }
 }
- .page-content{
+.page-content{
   position:absolute;
   inset:0;
 
-  display:none;
-
   overflow:hidden;
+}
+
+.page-content.active-page{
+  display:flex;
+  flex-direction:column;
 }
 
 .page-content.active-page{

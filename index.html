@@ -1238,13 +1238,21 @@ body.light-mode .excel-table td.row-index{
   position:sticky;
   top:18px;
   z-index:40;
-
-  padding:0 8px 6px;
-
-  margin-bottom:0;
-
+  min-height:120px;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-start;
+  padding:0 8px 10px;
   overflow:visible;
   background:transparent;
+}
+    .page-topbar p{
+  margin-top:10px;
+  margin-bottom:0;
+
+  min-height:24px;
+
+  opacity:.72;
 }
 
 .page-topbar .header-group{

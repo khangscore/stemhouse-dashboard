@@ -1594,33 +1594,41 @@ body.light-mode .excel-table td.row-index{
 
       <div class="page-scroll">
 
-        <div class="card calendar-box calendar-layout vietnam-calendar">
+       <div class="card calendar-box calendar-layout vietnam-calendar">
 
   <div class="calendar-left full-calendar">
 
     <div class="calendar-top-shell">
 
       <div class="calendar-toolbar">
+
         <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
 
         <div class="custom-dropdown">
-          <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
+          <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">
+            Tháng 1 ▼
+          </button>
+
           <div class="dropdown-panel" id="monthPanel"></div>
         </div>
 
         <div class="custom-dropdown">
-          <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
+          <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">
+            2026 ▼
+          </button>
+
           <div class="dropdown-panel" id="yearPanel"></div>
         </div>
 
         <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+
       </div>
 
       <div class="calendar-weekdays" id="calendarWeekdays"></div>
+
     </div>
 
- <div class="calendar-grid" id="calendarGrid"></div>
-    </div>
+    <div class="calendar-grid" id="calendarGrid"></div>
 
   </div>
 
@@ -2447,6 +2455,7 @@ function renderCalendar() {
 
   document.getElementById('yearBtn').innerText =
     `${year} ▼`;
+  renderCalendarSelectors();
 }
     
     function toggleMonthPanel() {

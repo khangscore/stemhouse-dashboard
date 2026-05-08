@@ -1306,13 +1306,14 @@ body.light-mode .excel-table td.row-index{
 
 /* thanh ngang ngăn title / content */
 .page-divider{
-  .page-frame::selection{
-  background:transparent;
-}
   width:100%;
   height:1px;
-  background:color-mix(in srgb, var(--accent) 72%, transparent);
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 38%, transparent);
+  margin-top:6px;
+  background:
+    color-mix(in srgb, var(--accent) 72%, transparent);
+  box-shadow:
+    0 0 12px
+    color-mix(in srgb, var(--accent) 38%, transparent);
   flex-shrink:0;
 }
 
@@ -1388,10 +1389,14 @@ body.light-mode .excel-table td.row-index{
   }
 
   .page-topbar{
-    position:relative;
-    top:0;
-    padding-bottom:8px;
-  }
+  position:sticky;
+  top:18px;
+  z-index:40;
+  padding:0 8px 0;
+  margin-bottom:0;
+  overflow:hidden;
+  background:transparent;
+}
 
   .page-frame{
     min-height:auto;
@@ -1406,6 +1411,97 @@ body.light-mode .excel-table td.row-index{
  .page-content{
   height:100vh;
   overflow:hidden;
+}
+    /* =========================
+   VIETNAM CALENDAR UPGRADE
+========================= */
+
+.vietnam-calendar{
+  width:100%;
+  max-width:100%;
+}
+
+.full-calendar{
+  width:100%;
+}
+
+.calendar-layout{
+  display:block !important;
+}
+
+.calendar-grid{
+  margin-top:14px;
+}
+
+.calendar-cell{
+  min-height:92px;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:flex-start;
+  padding:10px;
+  position:relative;
+}
+
+.calendar-day-number{
+  font-weight:800;
+  font-size:1rem;
+}
+
+.calendar-holiday{
+  margin-top:6px;
+  font-size:0.72rem;
+  line-height:1.2;
+  opacity:0.82;
+  text-align:left;
+}
+
+.calendar-cell.today .calendar-holiday{
+  color:#111;
+  opacity:0.8;
+}
+
+.calendar-event-box{
+  margin-top:18px;
+  border-radius:22px;
+  border:1px solid var(--card-border);
+  background:rgba(255,255,255,0.04);
+  padding:18px;
+}
+
+.calendar-event-title{
+  font-size:1.05rem;
+  font-weight:800;
+  margin-bottom:8px;
+}
+
+.calendar-event-holiday{
+  font-size:0.9rem;
+  opacity:0.75;
+  margin-bottom:14px;
+}
+
+.calendar-note-input{
+  width:100%;
+  min-height:120px;
+  resize:vertical;
+  border:none;
+  outline:none;
+  border-radius:18px;
+  padding:16px;
+  background:rgba(255,255,255,0.06);
+  color:var(--text-main);
+  border:1px solid var(--card-border);
+  font-size:0.95rem;
+}
+
+.calendar-cell.has-holiday{
+  border:1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.calendar-cell.selected{
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 0 22px color-mix(in srgb, var(--accent) 40%, transparent);
 }
   </style>
 </head>
@@ -1446,52 +1542,48 @@ body.light-mode .excel-table td.row-index{
 
       <div class="page-scroll">
 
-        <div class="card calendar-box calendar-layout">
+        <div class="card calendar-box calendar-layout vietnam-calendar">
 
-          <div class="calendar-left">
+  <div class="calendar-left full-calendar">
 
-            <div class="calendar-top-shell">
+    <div class="calendar-top-shell">
 
-              <div class="calendar-toolbar">
-                <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+      <div class="calendar-toolbar">
+        <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
 
-                <div class="custom-dropdown">
-                  <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
-                  <div class="dropdown-panel" id="monthPanel"></div>
-                </div>
-
-                <div class="custom-dropdown">
-                  <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
-                  <div class="dropdown-panel" id="yearPanel"></div>
-                </div>
-
-                <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
-              </div>
-
-              <div class="calendar-weekdays" id="calendarWeekdays"></div>
-
-            </div>
-
-            <div class="calendar-grid" id="calendarGrid"></div>
-
-          </div>
-
-          <div class="calendar-right">
-
-            <div class="calendar-notes-title">Ghi chú nhanh</div>
-
-            <div class="calendar-notes-stack">
-              <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
-              <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
-              <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
-            </div>
-
-          </div>
-
+        <div class="custom-dropdown">
+          <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
+          <div class="dropdown-panel" id="monthPanel"></div>
         </div>
 
+        <div class="custom-dropdown">
+          <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
+          <div class="dropdown-panel" id="yearPanel"></div>
+        </div>
+
+        <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
       </div>
 
+      <div class="calendar-weekdays" id="calendarWeekdays"></div>
+    </div>
+
+    <div class="calendar-grid" id="calendarGrid"></div>
+
+    <!-- EVENT -->
+    <div class="calendar-event-box">
+      <div class="calendar-event-title" id="selectedDateTitle">
+        Chọn một ngày 📅
+      </div>
+
+      <div class="calendar-event-holiday" id="selectedHoliday">
+        Không có sự kiện
+      </div>
+
+      <textarea
+        id="calendarNoteInput"
+        class="calendar-note-input"
+        placeholder="Ghi chú cho ngày này..."
+      ></textarea>
     </div>
 
   </div>
@@ -1814,6 +1906,21 @@ let notesData = safeJSONParse('ao_notes_v1', {
     let editingShortcutId = null;
     let calendarDate = new Date();
     let selectedCalendarDay = null;
+    const vietnameseHolidays = {
+  "1-1": "🎆 Tết Dương lịch",
+  "2-14": "💘 Valentine",
+  "3-8": "🌹 Quốc tế Phụ nữ",
+  "4-30": "🇻🇳 Giải phóng miền Nam",
+  "5-1": "⚒️ Quốc tế Lao động",
+  "6-1": "🧒 Quốc tế Thiếu nhi",
+  "9-2": "🎉 Quốc khánh Việt Nam",
+  "10-20": "💐 Phụ nữ Việt Nam",
+  "11-20": "🏫 Nhà giáo Việt Nam",
+  "12-24": "🎄 Giáng Sinh",
+  "12-31": "🎇 Countdown"
+};
+
+let calendarNotes = safeJSONParse('ao_calendar_notes_v1', {});
 
     function saveData() {
       localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
@@ -2221,52 +2328,126 @@ function changeMonth(step) {
   renderCalendar();
 }
 
-function selectCalendarDay(day) {
-  selectedCalendarDay = day;
+function selectCalendarDay(day){
+
+  selectedCalendarDay = {
+    day,
+    month: calendarDate.getMonth(),
+    year: calendarDate.getFullYear()
+  };
+
   renderCalendar();
+
+  const key =
+    `${selectedCalendarDay.year}-${selectedCalendarDay.month+1}-${day}`;
+
+  const holiday =
+    vietnameseHolidays[
+      `${selectedCalendarDay.month+1}-${day}`
+    ] || 'Không có sự kiện';
+
+  document.getElementById('selectedDateTitle').innerText =
+    `Ngày ${day}/${selectedCalendarDay.month+1}/${selectedCalendarDay.year}`;
+
+  document.getElementById('selectedHoliday').innerText =
+    holiday;
+
+  document.getElementById('calendarNoteInput').value =
+    calendarNotes[key] || '';
 }
 
+document
+  .getElementById('calendarNoteInput')
+  .addEventListener('input', e => {
+
+    if(!selectedCalendarDay) return;
+
+    const key =
+      `${selectedCalendarDay.year}-${selectedCalendarDay.month+1}-${selectedCalendarDay.day}`;
+
+    calendarNotes[key] = e.target.value;
+
+    localStorage.setItem(
+      'ao_calendar_notes_v1',
+      JSON.stringify(calendarNotes)
+    );
+});
+
 function renderCalendar() {
-  const year = calendarDate.getFullYear();
-  const month = calendarDate.getMonth();
-  const todayReal = new Date();
 
-document.getElementById('monthBtn').innerText = `Tháng ${month + 1} ▼`;
-document.getElementById('yearBtn').innerText = `${year} ▼`;
-  
   const grid = document.getElementById('calendarGrid');
-  const days = ['CN','T2','T3','T4','T5','T6','T7'];
+  const weekdays = document.getElementById('calendarWeekdays');
 
-  document.getElementById('calendarWeekdays').innerHTML =
-  days.map(d => `<div class="calendar-cell weekday">${d}</div>`).join('');
-  
-  let html = '';
+  const month = calendarDate.getMonth();
+  const year = calendarDate.getFullYear();
+
   const firstDay = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
 
-  for (let i = 0; i < firstDay; i++) {
-    html += `<div class="calendar-cell empty"></div>`;
+  const vietnamWeekdays = [
+    'CN','T2','T3','T4','T5','T6','T7'
+  ];
+
+  weekdays.innerHTML = vietnamWeekdays.map(day =>
+    `<div class="calendar-cell weekday">${day}</div>`
+  ).join('');
+
+  grid.innerHTML = '';
+
+  for(let i = 0; i < firstDay; i++){
+    grid.innerHTML += `
+      <div class="calendar-cell empty"></div>
+    `;
   }
 
-  for (let d = 1; d <= totalDays; d++) {
+  const today = new Date();
+
+  for(let day = 1; day <= totalDays; day++){
+
+    const key = `${month + 1}-${day}`;
+    const holiday = vietnameseHolidays[key];
+
     const isToday =
-      d === todayReal.getDate() &&
-      month === todayReal.getMonth() &&
-      year === todayReal.getFullYear();
+      day === today.getDate() &&
+      month === today.getMonth() &&
+      year === today.getFullYear();
 
-    const isSelected = selectedCalendarDay === d;
+    const selected =
+      selectedCalendarDay &&
+      selectedCalendarDay.day === day &&
+      selectedCalendarDay.month === month &&
+      selectedCalendarDay.year === year;
 
-    html += `
+    grid.innerHTML += `
       <div
-        class="calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
-        onclick="selectCalendarDay(${d})"
+        class="calendar-cell
+        ${isToday ? 'today' : ''}
+        ${holiday ? 'has-holiday' : ''}
+        ${selected ? 'selected' : ''}
+        "
+        onclick="selectCalendarDay(${day})"
       >
-        ${d}
+
+        <div class="calendar-day-number">
+          ${day}
+        </div>
+
+        ${
+          holiday
+          ? `<div class="calendar-holiday">${holiday}</div>`
+          : ''
+        }
+
       </div>
     `;
   }
 
-  grid.innerHTML = html;
+  document.getElementById('monthBtn').innerText =
+    `Tháng ${month + 1} ▼`;
+
+  document.getElementById('yearBtn').innerText =
+    `${year} ▼`;
+
   renderCalendarSelectors();
 }
     

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
+  <link rel="stylesheet" href="style.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AO Dashboard Q10 | Custom Edition</title>
@@ -335,7 +336,7 @@
 
     .header-group {
       text-align: center;
-      margin-bottom: 0px;
+      margin-bottom: 40px;
     }
 
     .header-group h1 {
@@ -439,6 +440,9 @@
     .card:hover .btn-delete {
       opacity: 1;
     }
+
+    .page-content { display: none; }
+    .page-content.active-page { display: block; }
 
     .btn-save-fixed {
       position: absolute;
@@ -640,7 +644,7 @@
     .btn-cancel { background: #3c4043; color: #fff; }
 
     .home-clock {
-      font-size: 3.2rem;
+      font-size: 5rem;
       font-weight: 800;
       text-align: center;
       letter-spacing: -2px;
@@ -648,7 +652,7 @@
 
     .home-date {
       text-align: center;
-      font-size: 1rem;
+      font-size: 1.15rem;
       opacity: 0.8;
       margin-top: 8px;
       margin-bottom: 24px;
@@ -1210,85 +1214,7 @@ body.light-mode .excel-table td.row-index{
     0 2px 0 rgba(0,0,0,0.22),
     0 4px 8px rgba(0,0,0,0.16);
 }
-   /* =========================
-   UNIFY TITLES + SUBTEXT
-========================= */
-
-/* 1. Đồng bộ tất cả title */
-h1, h2, h3 {
-  font-weight: 800;
-  line-height: 1.2;
-}
-
-/* size riêng từng loại nhưng cùng hệ */
-h1 {
-  font-size: 3.2rem !important;
-}
-
-h2 {
-  font-size: 2.4rem !important;
-}
-
-h3 {
-  font-size: 1.8rem !important;
-}
-
-/* 2. Đồng bộ khoảng cách giữa title và p */
-h1 + p,
-h2 + p,
-h3 + p {
-  margin-top: 10px;
-}
-
-/* 3. Style chung cho tất cả dòng mô tả nhỏ */
-p {
-  font-size: 1rem;
-  opacity: 0.75;
-  line-height: 1.5;
-}
-
-/* 4. Fix riêng các chỗ đặc biệt trong code bạn */
-
-/* greeting (Haku_Na_Matata) */
-#greeting {
-  margin-top: 10px;
-}
-
-/* excel subtitle */
-#page-excel p {
-  margin-top: 10px !important;
-}
-
-/* ngày tháng dưới đồng hồ */
-.home-date {
-  margin-top: 10px !important;
-}
-
-/* khoảng cách header group */
-.header-group h1 {
-  margin-bottom: 0;
-} 
-  /* =========================
-   FIX HOME TITLE SPACING
-========================= */
-
-/* coi clock như title */
-.home-clock {
-  margin-bottom: 0;
-  line-height: 1.2;
-}
-
-/* đồng bộ khoảng cách như h1 + p */
-.home-clock + .home-date {
-  margin-top: 10px !important;
-}  
-  .page {
-  display: block;
-}
-
-.page.active {
-  display: block;
-}
+    
   </style>
 </head>
 <body id="body">
@@ -1308,204 +1234,161 @@ p {
     </div>
   </aside>
 
- <div id="page-home" class="page active">
-
-  <!-- HEADER -->
-  <div class="page-header">
-    <div class="header-group">
-      <div class="home-clock" id="liveClock">00:00:00</div>
-      <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
-    </div>
+  <div class="container">
+    <div id="page-home" class="page-content active-page">
+  <div class="header-group">
+    <div class="home-clock" id="liveClock">00:00:00</div>
+    <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
   </div>
 
-  <!-- CONTENT -->
-  <div class="page">
+  <div class="card calendar-box calendar-layout">
+    <div class="calendar-left">
 
-    <div class="card calendar-box calendar-layout">
-      
-      <div class="calendar-left">
+  <div class="calendar-top-shell">
+    <div class="calendar-toolbar">
+      <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
 
-        <div class="calendar-top-shell">
-          <div class="calendar-toolbar">
-            <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
-
-            <div class="custom-dropdown">
-              <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
-              <div class="dropdown-panel" id="monthPanel"></div>
-            </div>
-
-            <div class="custom-dropdown">
-              <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
-              <div class="dropdown-panel" id="yearPanel"></div>
-            </div>
-
-            <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
-          </div>
-
-          <div class="calendar-weekdays" id="calendarWeekdays"></div>
-        </div>
-
-        <div class="calendar-grid" id="calendarGrid"></div>
+      <div class="custom-dropdown">
+        <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
+        <div class="dropdown-panel" id="monthPanel"></div>
       </div>
 
-      <div class="calendar-right">
-        <div class="calendar-notes-title">Ghi chú nhanh</div>
-        <div class="calendar-notes-stack">
-          <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
-          <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
-          <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
-        </div>
+      <div class="custom-dropdown">
+        <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
+        <div class="dropdown-panel" id="yearPanel"></div>
       </div>
 
+      <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
     </div>
 
+    <div class="calendar-weekdays" id="calendarWeekdays"></div>
   </div>
-</div>
-    <div id="page-dashboard" class="page">
 
-  <!-- HEADER -->
-  <div class="page-header">
-    <div class="header-group">
-      <h1 id="mainTitle">AO Dashboard Q10</h1>
-      <p id="greeting">Haku_Na_Matata!</p>
+  <div class="calendar-grid" id="calendarGrid"></div>
+</div>
+
+    <div class="calendar-right">
+      <div class="calendar-notes-title">Ghi chú nhanh</div>
+      <div class="calendar-notes-stack">
+        <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
+        <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
+        <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
+      </div>
     </div>
   </div>
-
-  <!-- CONTENT -->
-  <div class="page">
-    <div class="grid" id="shortcutGrid"></div>
-  </div>
-
 </div>
+
+    <div id="page-dashboard" class="page-content">
+      <div class="header-group">
+        <h1 id="mainTitle">AO Dashboard Q10</h1>
+        <p id="greeting">Haku_Na_Matata!</p>
+      </div>
+      <div class="grid" id="shortcutGrid"></div>
+    </div>
 
     <!-- PAGE: EXCEL TRẮNG -->
-<div id="page-excel" class="page">
-
-  <!-- HEADER -->
-  <div class="page-header">
-    <div class="header-group">
-      <h1>EXCEL Trắng</h1>
-      <p style="opacity:0.75;">Trang tính mini ngay trong dashboard ✨</p>
-    </div>
+<div id="page-excel" class="page-content">
+  <div class="header-group">
+    <h1>EXCEL Trắng</h1>
+    <p style="opacity:0.75;">Trang tính mini ngay trong dashboard ✨</p>
   </div>
 
-  <!-- CONTENT -->
-  <div class="page">
-
-    <div class="excel-wrap">
-
-      <div class="excel-toolbar">
-        <div class="excel-toolbar-left">
-          <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
-          
-          <label class="btn excel-btn" style="margin-top:0;">
-            📥 Import CSV
-            <input type="file" id="csvImport" accept=".csv" style="display:none;">
-          </label>
-          
-          <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
-        </div>
-
-        <div class="excel-toolbar-right">
-          <span class="excel-badge">Auto Save</span>
-        </div>
-      </div>
-
-      <div class="excel-shell">
-        <div class="excel-table-wrap">
-          <table class="excel-table" id="excelTable"></table>
-        </div>
-      </div>
-
-    </div>
-
-  </div>
-</div>
-
-    <div id="page-settings" class="page">
-
-  <!-- HEADER -->
-  <div class="page-header">
-    <div class="header-group">
-      <h1>Cài đặt</h1>
-    </div>
-  </div>
-
-  <!-- NÚT SAVE (đặt riêng, không phá layout) -->
-  <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
-
-  <!-- CONTENT -->
-  <div class="page">
-
-    <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
-
-      <div class="card" style="width:100%; max-width:450px;">
-        <h3 style="margin-bottom:15px;">Thông Tin Của Ní</h3>
-
-        <img id="previewAvatar" class="avatar-preview-box"
-          src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam">
-
-        <input type="text" id="usernameInput"
-          style="width:100%; padding:10px; border-radius:10px;
-          background:rgba(255,255,255,0.05); color:#fff;
-          border:1px solid var(--card-border);"
-          placeholder="Tên của ní...">
-
-        <div style="display:flex; gap:8px; width:100%; margin-top:15px;">
-          <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#3b82f6;" onclick="updatePreview('male')">Liam</button>
-          <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#ec4899;" onclick="updatePreview('female')">Adrian</button>
-          <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#f59e0b;" onclick="updatePreview('dog')">Luis</button>
-        </div>
-      </div>
-
-      <div class="card" style="width:100%; max-width:450px;">
-        <h3 style="margin-bottom:15px;">Avatar Riêng Của Ní</h3>
-
-        <label id="avatarDropZone" style="
-          width:100%;
-          min-height:180px;
-          border:2px dashed var(--card-border);
-          border-radius:20px;
-          display:flex;
-          flex-direction:column;
-          align-items:center;
-          justify-content:center;
-          gap:10px;
-          cursor:pointer;
-          padding:20px;
-          text-align:center;
-        ">
-          <div style="font-size:2rem;">🖼️</div>
-          <div style="font-weight:bold;">Kéo ảnh vào đây hoặc bấm để chọn</div>
-          <div style="font-size:0.85rem; opacity:0.7;">PNG / JPG / WEBP</div>
-          <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+  <div class="excel-wrap">
+    <div class="excel-toolbar">
+      <div class="excel-toolbar-left">
+        <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
+        <label class="btn excel-btn" style="margin-top:0;">
+          📥 Import CSV
+          <input type="file" id="csvImport" accept=".csv" style="display:none;">
         </label>
-
-        <button class="btn" style="margin-top:15px;" onclick="removeCustomAvatar()">Xoá Avatar Riêng</button>
+        <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
       </div>
-
-      <div class="card" style="padding:20px; width:100%; max-width:340px;">
-        <h3 style="margin-bottom:10px; font-size:1rem;">Màu Chủ Đạo</h3>
-        <div class="color-palette">
-          <!-- giữ nguyên -->
-        </div>
+      <div class="excel-toolbar-right">
+        <span class="excel-badge">Auto Save</span>
       </div>
-
-      <div class="card" style="padding:20px; width:100%; max-width:340px;">
-        <h3 style="margin-bottom:12px; font-size:1rem;">Dữ Liệu</h3>
-        <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
-          <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
-          <label class="btn" style="margin-top:0; text-align:center;">
-            📥 Import dữ liệu
-            <input type="file" id="importFile" accept=".json" style="display:none;">
-          </label>
-        </div>
-      </div>
-
     </div>
 
+    <div class="excel-shell">
+      <div class="excel-table-wrap">
+        <table class="excel-table" id="excelTable"></table>
+      </div>
+    </div>
   </div>
 </div>
+
+    <div id="page-settings" class="page-content">
+      <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
+      <div class="header-group"><h1>Cài đặt</h1></div>
+
+      <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+        <div class="card" style="width:100%; max-width:450px;">
+          <h3 style="margin-bottom:15px;">Thông Tin Của Ní</h3>
+          <img id="previewAvatar" class="avatar-preview-box" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
+          <input type="text" id="usernameInput" style="width:100%; padding:10px; border-radius:10px; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--card-border);" placeholder="Tên của ní...">
+
+          <div style="display:flex; gap:8px; width:100%; margin-top:15px;">
+            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#3b82f6; color:#fff;" id="btn-male" onclick="updatePreview('male')">Liam</button>
+            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#ec4899; color:#fff;" id="btn-female" onclick="updatePreview('female')">Adrian</button>
+            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#f59e0b; color:#fff;" id="btn-dog" onclick="updatePreview('dog')">Luis</button>
+          </div>
+        </div>
+
+        <div class="card" style="width:100%; max-width:450px;">
+          <h3 style="margin-bottom:15px;">Avatar Riêng Của Ní</h3>
+                    <label id="avatarDropZone" style="
+            width:100%;
+            min-height:180px;
+            border:2px dashed var(--card-border);
+            border-radius:20px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+            cursor:pointer;
+            padding:20px;
+            text-align:center;
+          ">
+            <div style="font-size:2rem;">🖼️</div>
+            <div style="font-weight:bold;">Kéo ảnh vào đây hoặc bấm để chọn</div>
+            <div style="font-size:0.85rem; opacity:0.7;">PNG / JPG / WEBP</div>
+            <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+          </label>
+
+          <button class="btn" style="margin-top:15px;" onclick="removeCustomAvatar()">Xoá Avatar Riêng</button>
+        </div>
+
+        <div class="card" style="padding:20px; width:100%; max-width:340px;">
+          <h3 style="margin-bottom:10px; font-size:1rem;">Màu Chủ Đạo</h3>
+          <div class="color-palette">
+            <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="--dot-color:#a855f7; background:#a855f7;" onclick="setAccent('#a855f7')"></div>
+            <div class="color-dot" style="--dot-color:#f59e0b; background:#f59e0b;" onclick="setAccent('#f59e0b')"></div>
+            <div class="color-dot" style="--dot-color:#06b6d4; background:#06b6d4;" onclick="setAccent('#06b6d4')"></div>
+            <div class="color-dot" style="--dot-color:#84cc16; background:#84cc16;" onclick="setAccent('#84cc16')"></div>
+            <div class="color-dot" style="--dot-color:#f43f5e; background:#f43f5e;" onclick="setAccent('#f43f5e')"></div>
+            <div class="color-dot" style="--dot-color:#8b5cf6; background:#8b5cf6;" onclick="setAccent('#8b5cf6')"></div>
+            <div class="color-dot" style="--dot-color:#14b8a6; background:#14b8a6;" onclick="setAccent('#14b8a6')"></div>
+            <div class="color-dot" style="--dot-color:#eab308; background:#eab308;" onclick="setAccent('#eab308')"></div>
+            <div class="color-dot" style="--dot-color:#3b82f6; background:#3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="--dot-color:#ec4899; background:#ec4899;" onclick="setAccent('#ec4899')"></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:20px; width:100%; max-width:340px;">
+          <h3 style="margin-bottom:12px; font-size:1rem;">Dữ Liệu</h3>
+          <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+            <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
+            <label class="btn" style="margin-top:0; text-align:center;">
+              📥 Import dữ liệu
+              <input type="file" id="importFile" accept=".json" style="display:none;">
+            </label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- MODALS -->
   <div class="modal-overlay" id="addShortcutModal">
@@ -1653,18 +1536,15 @@ function saveDataDebounced() {
   }, 250);
 }
     function switchPage(pageId) {
-  document.querySelectorAll('.page').forEach(page => {
-    page.classList.remove('active');
-  });
+      document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active-page'));
+      const targetPage = document.getElementById(`page-${pageId}`);
+if (targetPage) targetPage.classList.add('active-page');
 
-  const targetPage = document.getElementById(`page-${pageId}`);
-  if (targetPage) targetPage.classList.add('active');
-
-  document.querySelectorAll('.nav-item').forEach(item => {
-    item.classList.remove('active');
-    if (item.dataset.page === pageId) item.classList.add('active');
-  });
-}
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.page === pageId) item.classList.add('active');
+      });
+    }
     function escapeHTML(str) {
   return String(str)
     .replace(/&/g, '&amp;')
@@ -2168,7 +2048,6 @@ document.addEventListener('click', function(e) {
       setInterval(updateClock, 1000);
       addHoverEvents();
       renderExcelSheet();
-      switchPage('home');
     };
   </script>
 <script>
@@ -2318,6 +2197,6 @@ document.addEventListener('click', function(e) {
   });
 
 </script>
-  
+<script type="module" src="main.js"></script>
 </body>
 </html>

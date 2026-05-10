@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <link rel="stylesheet" href="style.css">
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AO Dashboard Q10 | Custom Edition</title>
@@ -644,7 +643,7 @@
     .btn-cancel { background: #3c4043; color: #fff; }
 
     .home-clock {
-      font-size: 5rem;
+      font-size: 3.2rem;
       font-weight: 800;
       text-align: center;
       letter-spacing: -2px;
@@ -652,7 +651,7 @@
 
     .home-date {
       text-align: center;
-      font-size: 1.15rem;
+      font-size: 1rem;
       opacity: 0.8;
       margin-top: 8px;
       margin-bottom: 24px;
@@ -1214,7 +1213,78 @@ body.light-mode .excel-table td.row-index{
     0 2px 0 rgba(0,0,0,0.22),
     0 4px 8px rgba(0,0,0,0.16);
 }
-    
+   /* =========================
+   UNIFY TITLES + SUBTEXT
+========================= */
+
+/* 1. Đồng bộ tất cả title */
+h1, h2, h3 {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* size riêng từng loại nhưng cùng hệ */
+h1 {
+  font-size: 3.2rem !important;
+}
+
+h2 {
+  font-size: 2.4rem !important;
+}
+
+h3 {
+  font-size: 1.8rem !important;
+}
+
+/* 2. Đồng bộ khoảng cách giữa title và p */
+h1 + p,
+h2 + p,
+h3 + p {
+  margin-top: 10px;
+}
+
+/* 3. Style chung cho tất cả dòng mô tả nhỏ */
+p {
+  font-size: 1rem;
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+/* 4. Fix riêng các chỗ đặc biệt trong code bạn */
+
+/* greeting (Haku_Na_Matata) */
+#greeting {
+  margin-top: 10px;
+}
+
+/* excel subtitle */
+#page-excel p {
+  margin-top: 10px !important;
+}
+
+/* ngày tháng dưới đồng hồ */
+.home-date {
+  margin-top: 10px !important;
+}
+
+/* khoảng cách header group */
+.header-group h1 {
+  margin-bottom: 0;
+} 
+  /* =========================
+   FIX HOME TITLE SPACING
+========================= */
+
+/* coi clock như title */
+.home-clock {
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+/* đồng bộ khoảng cách như h1 + p */
+.home-clock + .home-date {
+  margin-top: 10px !important;
+}  
   </style>
 </head>
 <body id="body">
@@ -2197,6 +2267,6 @@ document.addEventListener('click', function(e) {
   });
 
 </script>
-<script type="module" src="main.js"></script>
+  
 </body>
 </html>

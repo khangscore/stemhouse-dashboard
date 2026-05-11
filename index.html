@@ -2293,8 +2293,8 @@ function handlePasteToInputs(text, startInput) {
   // chuẩn hóa xuống dòng
   text = text.replace(/\r/g, '');
 
-  // bỏ ký tự rác (trừ chữ, số, tab, xuống dòng)
-  text = text.replace(/[^\x20-\x7E\n\t]/g, '');
+  // giữ Unicode (tiếng Việt ok)
+  text = text.replace(/[^\p{L}\p{N}\s\n\t.,-]/gu, '');
 
   // trim toàn bộ
   text = text.trim();

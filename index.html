@@ -2265,7 +2265,56 @@ document.addEventListener('click', function(e) {
       if (file) importCSVFile(file);
     }
   });
+// ===== PASTE MULTI CELL CHO INPUT =====
+document.addEventListener('paste', function (e) {
+  const active = document.activeElement;
 
+  // chỉ chạy khi đang focus vào input trong excel
+  if (!active || active.tagName !== 'INPUT' || !active.dataset.cell) return;
+
+  e.preventDefault();
+
+  const text = e.clipboardData.getData('text/plain');
+  handlePasteToInputs(text, active);
+});
+
+function handlePasteToInputs(text, startInput) {
+  const rows = text.split('\n').filter(r => r.trim() !== '');
+
+  const startKey = startInput.dataset.cell; // ví dụ A1
+  const startCol = startKey.charCodeAt(0);
+  const startRow = parseInt(startKey.slice(1));
+
+  rows.forEach((rowText, rIndex) => {
+    const cols = rowText.split('\t');
+
+    cols.forEach((value, cIndex) => {
+      const colLetter = String.fromCharCode(startCol + cIndex);
+      const rowNumber = startRow + rIndex;
+
+      // chặn vượt bảng
+      if (colLetter > 'H') return;
+      if (rowNumber > 20) return;
+
+      const key = `${colLetter}${rowNumber}`;
+
+      excelData[key] = value;
+
+      const input = document.querySelector(`[data-cell="${key}"]`);
+      if (input) {
+        input.value = value;
+
+        input.style.background = 'rgba(59,130,246,0.3)';
+        setTimeout(() => {
+          input.style.background = '';
+        }, 400);
+      }
+    });
+  });
+
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+}
+  
 </script>
   
 </body>

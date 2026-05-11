@@ -2274,14 +2274,41 @@ document.addEventListener('paste', function (e) {
 
   e.preventDefault();
 
-  const text = e.clipboardData.getData('text/plain');
+  let text = e.clipboardData.getData('text/plain');
+
+// 🚫 chặn nếu có dấu hiệu là HTML/code
+if (text.includes('<') && text.includes('>')) {
+  console.warn('⛔ Phát hiện paste code, bỏ qua!');
+  return;
+}
   handlePasteToInputs(text, active);
 });
 
 function handlePasteToInputs(text, startInput) {
+  // ===== 🧼 LỌC DỮ LIỆU =====
+
+  // bỏ HTML tag
+  text = text.replace(/<[^>]*>/g, '');
+
+  // chuẩn hóa xuống dòng
+  text = text.replace(/\r/g, '');
+
+  // bỏ ký tự rác (trừ chữ, số, tab, xuống dòng)
+  text = text.replace(/[^\x20-\x7E\n\t]/g, '');
+
+  // trim toàn bộ
+  text = text.trim();
+
+  // 🚫 nếu không có dạng bảng thì bỏ
+  if (!text.includes('\t') && !text.includes('\n')) {
+    console.warn('⛔ Không phải dữ liệu bảng');
+    return;
+  }
+
+  // ===== 📊 XỬ LÝ =====
   const rows = text.split('\n').filter(r => r.trim() !== '');
 
-  const startKey = startInput.dataset.cell; // ví dụ A1
+  const startKey = startInput.dataset.cell;
   const startCol = startKey.charCodeAt(0);
   const startRow = parseInt(startKey.slice(1));
 
@@ -2289,22 +2316,31 @@ function handlePasteToInputs(text, startInput) {
     const cols = rowText.split('\t');
 
     cols.forEach((value, cIndex) => {
+      let cleanValue = value.trim();
+
+      // bỏ khoảng trắng dư
+      cleanValue = cleanValue.replace(/\s+/g, ' ');
+
+      // chặn quá dài (anti phá)
+      if (cleanValue.length > 100) {
+        cleanValue = cleanValue.slice(0, 100);
+      }
+
       const colLetter = String.fromCharCode(startCol + cIndex);
       const rowNumber = startRow + rIndex;
 
-      // chặn vượt bảng
       if (colLetter > 'H') return;
       if (rowNumber > 20) return;
 
       const key = `${colLetter}${rowNumber}`;
 
-      excelData[key] = value;
+      excelData[key] = cleanValue;
 
       const input = document.querySelector(`[data-cell="${key}"]`);
       if (input) {
-        input.value = value;
+        input.value = cleanValue;
 
-        input.style.background = 'rgba(59,130,246,0.3)';
+        input.style.background = 'rgba(34,197,94,0.3)'; // xanh lá = sạch 😎
         setTimeout(() => {
           input.style.background = '';
         }, 400);

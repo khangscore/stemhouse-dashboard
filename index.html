@@ -1352,26 +1352,35 @@ p {
   z-index: 1;
   pointer-events: auto;
 }
+#tablePreview {
+  width: 100%;
+  margin-top: 15px;
+  text-align: left;
+  position: relative;
+  z-index: 10;
+  align-self: stretch;
+}
 #tablePreview table {
-  color: #000 !important;
+  width: 100%;
+  border-collapse: collapse;
   background: #fff;
+  color: #000;
 }
 #tablePreview td {
-  transition: 0.2s;
+  border: 1px solid #ccc;
+  padding: 8px;
   color: #000 !important;
+  text-align: left;
+  vertical-align: top;
 }
 #tablePreview a {
-  pointer-events: auto !important;
   color: #007bff !important;
   text-decoration: underline;
+  cursor: pointer;
+  pointer-events: auto !important;
 }
 #tablePreview td:hover {
   background: #f5f5f5;
-}
-#tablePreview {
-  pointer-events: auto;
-  position: relative;
-  z-index: 9999;
 } 
 #tablePreview * {
   pointer-events: auto !important;
@@ -2375,8 +2384,12 @@ pasteArea.addEventListener("paste", function (e) {
 
       if (isLink) {
         html += `<span 
-  style="color:#007bff; cursor:pointer; text-decoration:underline;"
   onclick="window.open('${clean}', '_blank')"
+  style="
+    color:#007bff;
+    cursor:pointer;
+    text-decoration:underline;
+  "
 >
   🔗 Mở link
 </span>`;

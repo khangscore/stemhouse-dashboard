@@ -1341,6 +1341,15 @@ p {
 .excel-container::-webkit-scrollbar {
   height: 10px;
 }
+
+#pasteArea {
+  color: #000 !important;
+  background: #fff;
+  caret-color: #000;
+  line-height: 1.6;
+  tab-size: 4;
+}
+    
   </style>
 </head>
 <body id="body">
@@ -1455,16 +1464,19 @@ p {
 
     <!-- VÙNG PASTE -->
     <div
-      id="pasteArea"
-      contenteditable="true"
-      style="
-        min-height:200px;
-        border:2px dashed #ccc;
-        padding:10px;
-        background:#fff;
-        overflow:auto;
-      "
-    ></div>
+  id="pasteArea"
+  contenteditable="true"
+  style="
+    width: 100%;
+    min-height: 300px;
+    border: 2px dashed #ccc;
+    padding: 12px;
+    background: #fff;
+    overflow: auto;
+    font-family: monospace;
+    white-space: pre;
+  "
+></div>
 
     <button onclick="exportMaterialList()" style="margin-top:15px;">
       🚀 Xuất ở đây nè

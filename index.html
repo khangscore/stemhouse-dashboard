@@ -1296,6 +1296,31 @@ p {
   pointer-events: none;
   z-index: 999;
 }
+    .col-header {
+  position: relative;
+}
+
+.col-resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+}
+
+.row-header {
+  position: relative;
+}
+
+.row-resizer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  cursor: row-resize;
+}
   </style>
 </head>
 <body id="body">
@@ -2150,13 +2175,23 @@ let startCell = null;
 
     let html = '<thead><tr><th class="row-head">#</th>';
     excelCols.forEach(col => {
-      html += `<th>${col}</th>`;
+      html += `
+<th class="col-header">
+  ${col}
+  <div class="col-resizer"></div>
+</th>
+`;
     });
     html += '</tr></thead><tbody>';
 
     for (let row = 1; row <= excelRows; row++) {
       html += `<tr>`;
-      html += `<td class="row-index">${row}</td>`;
+      html += `
+<td class="row-header">
+  ${row}
+  <div class="row-resizer"></div>
+</td>
+`;
 
       excelCols.forEach(col => {
         const key = `${col}${row}`;
@@ -2531,6 +2566,34 @@ function updateSelectionBox() {
     clearSelection();
     selectionBox.style.display = 'none';
   }
+});
+  let isResizingRow = false;
+let currentRow = null;
+let startY = 0;
+let startHeight = 0;
+
+document.querySelectorAll('.row-resizer').forEach(resizer => {
+  resizer.addEventListener('mousedown', function(e) {
+    isResizingRow = true;
+    currentRow = e.target.parentElement.parentElement;
+    startY = e.clientY;
+    startHeight = currentRow.offsetHeight;
+
+    document.body.style.cursor = 'row-resize';
+    e.stopPropagation();
+  });
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!isResizingRow) return;
+
+  const newHeight = startHeight + (e.clientY - startY);
+  currentRow.style.height = newHeight + 'px';
+});
+
+document.addEventListener('mouseup', function() {
+  isResizingRow = false;
+  document.body.style.cursor = 'default';
 });
 </script>
   

@@ -2769,8 +2769,6 @@ document.addEventListener("click", function (e) {
 });
 
 function handleMultiPaste(text, startCell) {
-  const rows = text.split("\n").map(r => r.split("\t"));
-
   const startKey = startCell.dataset.cell;
   const [startRow, startCol] = startKey.split("-").map(Number);
 

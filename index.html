@@ -1341,50 +1341,6 @@ p {
 .excel-container::-webkit-scrollbar {
   height: 10px;
 }
-
-#pasteArea {
-  color: #000 !important;
-  background: #fff;
-  caret-color: #000;
-  line-height: 1.6;
-  tab-size: 4;
-  position: relative;
-  z-index: 1;
-  pointer-events: auto;
-}
-#tablePreview {
-  width: 100%;
-  margin-top: 15px;
-  text-align: left;
-  position: relative;
-  z-index: 10;
-  align-self: stretch;
-}
-#tablePreview table {
-  width: 100%;
-  border-collapse: collapse;
-  background: #fff;
-  color: #000;
-}
-#tablePreview td {
-  border: 1px solid #ccc;
-  padding: 8px;
-  color: #000 !important;
-  text-align: left;
-  vertical-align: top;
-}
-#tablePreview a {
-  color: #007bff !important;
-  text-decoration: underline;
-  cursor: pointer;
-  pointer-events: auto !important;
-}
-#tablePreview td:hover {
-  background: #f5f5f5;
-} 
-#tablePreview * {
-  pointer-events: auto !important;
-}
   </style>
 </head>
 <body id="body">
@@ -1400,7 +1356,6 @@ p {
 <div class="nav-item active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏡</span><span class="nav-text">Home</span></div>
 <div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🧩</span><span class="nav-text">Dashboard</span></div>
 <div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
-<div class="nav-item" data-page="material" onclick="switchPage('material')"><span class="nav-icon">📦</span><span class="nav-text">Xuất MATERIAL LIST</span></div>
 <div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
     </div>
   </aside>
@@ -1489,39 +1444,6 @@ p {
   </div>
 </div>
 
-<div id="page-material" class="page-content">
-  <div class="header-group">
-    <h1>📦 Xuất MATERIAL LIST</h1>
-    <p>Dán bảng từ Excel vào đây 👇</p>
-  </div>
-
-  <div class="card">
-
-    <!-- VÙNG PASTE -->
-    <div
-  id="pasteArea"
-  contenteditable="true"
-  style="
-    width: 100%;
-    min-height: 300px;
-    border: 2px dashed #ccc;
-    padding: 12px;
-    background: #fff;
-    overflow: auto;
-    font-family: monospace;
-    white-space: pre;
-  "
-></div>
-
-    <button onclick="exportMaterialList()" style="margin-top:15px;">
-      🚀 Xuất ở đây nè
-    </button>
-
-    <div id="materialResult" style="margin-top:20px;"></div>
-  </div>
-</div>
-    <div id="tablePreview" style="margin-top:15px;"></div>
-    
     <div id="page-settings" class="page-content">
       <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
       <div class="header-group"><h1>Cài đặt</h1></div>
@@ -2255,159 +2177,6 @@ document.addEventListener('click', function(e) {
       addHoverEvents();
       renderExcelSheet();
     };
-
-    function isValidClass(className) {
-  const name = className.toUpperCase();
-
-  if (name.includes("TA")) return false;
-
-  const main = ["ANT", "BEE", "CAPY", "DOLPHIN", "IS6", "IS8"];
-  const extra = ["PRE", "KET", "PET", "FLCT"];
-
-  return (
-    main.some(k => name.includes(k)) ||
-    extra.some(k => name.startsWith(k))
-  );
-}
-
-function isSpecialKE(className) {
-  const name = className.toUpperCase();
-  return name.includes("KE") && !name.startsWith("KET");
-}
-
-function findTargetFile(files, className) {
-  const isKE = isSpecialKE(className);
-
-  return files.find(f => {
-    const name = f.name.toUpperCase();
-
-    if (isKE) return name.includes("LESSON PLAN");
-
-    return name.includes("MATERIAL LIST");
-  });
-}
-    async function exportMaterialList() {
-  const box = document.getElementById("materialResult");
-
-  const data = parsePastedData();
-
-  if (!data.length) {
-    box.innerHTML = "❌ Không có dữ liệu";
-    return;
-  }
-
-  let html = "";
-
-  for (const row of data) {
-    const { className, folderLink } = row;
-
-    if (!isValidClass(className)) continue;
-
-    const isKE = isSpecialKE(className);
-
-    html += `
-      <div>
-        📘 ${className} <br>
-        🔗 ${folderLink} <br>
-        🎯 ${isKE ? "Tìm LESSON PLAN" : "Tìm MATERIAL LIST"}
-      </div>
-      <hr>
-    `;
-  }
-
-  box.innerHTML = html || "❌ Không có lớp hợp lệ";
-}
-
-const pasteArea = document.getElementById("pasteArea");
-const tablePreview = document.getElementById("tablePreview");
-
-pasteArea.addEventListener("paste", function (e) {
-  e.preventDefault();
-
-  const text = (e.clipboardData || window.clipboardData).getData("text/plain");
-
-  // 👇 vẫn cho hiển thị text thô trong vùng paste
-  document.execCommand("insertText", false, text);
-
-  // 👇 render bảng ngay lập tức
-  renderTableFromText(text);
-});
-    function parsePastedData() {
-  const text = document.getElementById("pasteArea").innerText.trim();
-
-  const rows = text.split("\n");
-
-  const result = [];
-
-  for (const row of rows) {
-    const cols = row.split("\t"); // Excel copy = tab
-
-    if (cols.length < 2) continue;
-
-    const className = cols[0].trim(); // cột đầu
-    const folderLink = cols[cols.length - 1].trim(); // cột cuối
-
-    result.push({
-      className,
-      folderLink
-    });
-  }
-
-  return result;
-}
-    function renderTableFromText(text) {
-  const rows = text.trim().split("\n");
-
-  let html = `<table style="
-    border-collapse: collapse;
-    width: 100%;
-    font-size: 14px;
-  ">`;
-
-  for (const row of rows) {
-    const cols = row.split("\t");
-
-    html += "<tr>";
-
-    cols.forEach((cell, index) => {
-      const clean = cell.trim();
-
-      const isLastCol = index === cols.length - 1;
-      const isLink = isLastCol && clean.startsWith("http");
-
-      html += `<td style="
-  border: 1px solid #ccc;
-  padding: 6px;
-  background: #fff;
-  color: #000;
-">`;
-
-      if (isLink) {
-        html += `<span 
-  onclick="window.open('${clean}', '_blank')"
-  style="
-    color:#007bff;
-    cursor:pointer;
-    text-decoration:underline;
-  "
->
-  🔗 Mở link
-</span>`;
-      } else {
-        html += clean;
-      }
-
-      html += "</td>";
-    });
-
-    html += "</tr>";
-  }
-
-  html += "</table>";
-
-  tablePreview.innerHTML = html;
-}
-    
   </script>
 <script>
   // ===== EXCEL CORE STATE =====
@@ -2466,16 +2235,16 @@ const excelRows = 100; // 👉 số hàng
         const key = `${col}${row}`;
         const value = excelData[key] || '';
         html += `
-  <td 
-  contenteditable="true"
-  class="cell"
+  <td>
+    <input
+  type="text"
+  value="${String(value).replace(/"/g, '&quot;')}"
   data-cell="${key}"
   oninput="updateCell(this)"
   onmousedown="startSelect(this, event)"
   onmouseover="hoverSelect(this)"
 >
-  ${formatCellDisplay(value)}
-</td>
+  </td>
 `;
       });
 
@@ -2486,31 +2255,12 @@ const excelRows = 100; // 👉 số hàng
     table.innerHTML = html;
     initResize();
   }
-  function formatCellDisplay(value) {
-  const str = String(value || "");
 
-  const urlPattern = /(https?:\/\/[^\s]+)/g;
-
-  if (urlPattern.test(str)) {
-    return `<a href="${str}" target="_blank">${str}</a>`;
+  function updateCell(input) {
+    const key = input.dataset.cell;
+    excelData[key] = input.value;
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
   }
-
-  return str;
-}
-  
-  function updateCell(cell) {
-  const key = cell.dataset.cell;
-  const text = cell.innerText.trim();
-
-  excelData[key] = text;
-
-  // nếu là link → render lại
-  if (/https?:\/\/[^\s]+/.test(text)) {
-    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
-  }
-
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
-}
 
   function clearSheet() {
     const sure = confirm('Xoá toàn bộ dữ liệu sheet này nha ní?');
@@ -2610,20 +2360,19 @@ const excelRows = 100; // 👉 số hàng
 document.addEventListener('paste', function (e) {
   const active = document.activeElement;
 
-  // ❌ KHÔNG phải input thì thôi
-  if (!active || active.tagName !== 'INPUT') return;
+  // chỉ chạy khi đang focus vào input trong excel
+  if (!active || active.tagName !== 'INPUT' || !active.dataset.cell) return;
 
-  const text = e.clipboardData.getData('text');
+  e.preventDefault();
 
-  // ✅ chỉ chặn khi là paste nhiều ô (có xuống dòng hoặc tab)
-  if (text.includes('\n') || text.includes('\t')) {
-    e.preventDefault();
+  let text = e.clipboardData.getData('text/plain');
 
-    // xử lý paste nhiều ô ở đây
-    handleMultiPaste(text);
-  }
-
-  // ✅ nếu paste bình thường → cho chạy mặc định
+// 🚫 chặn nếu có dấu hiệu là HTML/code
+if (text.includes('<') && text.includes('>')) {
+  console.warn('⛔ Phát hiện paste code, bỏ qua!');
+  return;
+}
+  handlePasteToInputs(text, active);
 });
 
 function handlePasteToInputs(text, startInput) {
@@ -2946,79 +2695,7 @@ function initResize() {
   renderExcelSheet();
   initResize();
 }
-  function handleMultiPaste(text, startCell) {
-  const rows = text.split("\n").map(r => r.split("\t"));
-
-  const startKey = startCell.dataset.cell;
-  const [startRow, startCol] = startKey.split("-").map(Number);
-
-  rows.forEach((row, rIndex) => {
-    row.forEach((value, cIndex) => {
-      const newRow = startRow + rIndex;
-      const newCol = startCol + cIndex;
-
-      const key = `${newRow}-${newCol}`;
-      excelData[key] = value.trim();
-
-      // tìm cell trên UI
-      const targetCell = document.querySelector(`[data-cell="${key}"]`);
-      if (targetCell) {
-        targetCell.innerText = value.trim();
-      }
-    });
-  });
-
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
-}
-  document.addEventListener("click", function (e) {
-  if (e.target.tagName === "A") {
-    e.preventDefault();
-    window.open(e.target.href, "_blank");
-  }
-});
-  document.addEventListener("paste", function (e) {
-  let cell = document.activeElement;
-
-  // 🔥 FIX: nếu không phải cell thì tìm cell gần nhất
-  if (!cell || !cell.classList.contains("cell")) {
-    cell = e.target.closest(".cell");
-  }
-
-  if (!cell) return;
-
-  e.preventDefault();
-
-  const text = e.clipboardData.getData("text/plain");
-
-  // 👉 nếu là multi paste
-  if (text.includes("\n") || text.includes("\t")) {
-    handleMultiPaste(text, cell);
-    return;
-  }
-
-  // 👉 nếu là 1 ô thường
-  if (/https?:\/\/[^\s]+/.test(text)) {
-    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
-  } else {
-    cell.innerText = text;
-  }
-
-  // lưu data
-  const key = cell.dataset.cell;
-  excelData[key] = cell.innerText.trim();
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const tablePreview = document.getElementById("tablePreview");
-
-  if (tablePreview) {
-    tablePreview.addEventListener("click", function (e) {
-      e.stopPropagation();
-    });
-  }
-});
-  
 </script>
+  
 </body>
 </html>

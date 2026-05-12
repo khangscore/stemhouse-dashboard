@@ -1321,26 +1321,6 @@ p {
   width: 100%;
   cursor: row-resize;
 }
- .excel-container {
-  width: 100%;
-  overflow-x: auto; /* 🔥 tạo scroll ngang */
-  border: 1px solid #ccc;
-}
-
-.excel-table {
-  border-collapse: collapse;
-  table-layout: fixed;
-  width: max-content; /* 🔥 CHÌA KHÓA */
-}
-
-.excel-table th,
-.excel-table td {
-  min-width: 100px;
-  border: 1px solid #ddd;
-}
-.excel-container::-webkit-scrollbar {
-  height: 10px;
-}
   </style>
 </head>
 <body id="body">
@@ -1436,9 +1416,7 @@ p {
 
     <div class="excel-shell">
       <div class="excel-table-wrap">
-        <div class="excel-container">
-  <table class="excel-table" id="excelTable"></table>
-</div>
+        <table class="excel-table" id="excelTable"></table>
       </div>
     </div>
   </div>
@@ -2188,24 +2166,8 @@ let startCell = null;
   ========================= */
 
   let excelData = safeJSONParse('ao_excel_v1', {});
-  function generateCols(n) {
-  const cols = [];
-  for (let i = 0; i < n; i++) {
-    let col = '';
-    let temp = i;
-
-    do {
-      col = String.fromCharCode(65 + (temp % 26)) + col;
-      temp = Math.floor(temp / 26) - 1;
-    } while (temp >= 0);
-
-    cols.push(col);
-  }
-  return cols;
-}
-
-const excelCols = generateCols(50); // 👉 muốn bao nhiêu cột tùy bạn
-const excelRows = 100; // 👉 số hàng
+  const excelCols = ['A','B','C','D','E','F','G','H'];
+  const excelRows = 20;
 
   function renderExcelSheet() {
     const table = document.getElementById('excelTable');
@@ -2687,14 +2649,7 @@ function initResize() {
     };
   });
 }
-  function addColumn() {
-  const nextIndex = excelCols.length;
-  const newCol = generateCols(nextIndex + 1)[nextIndex];
-  excelCols.push(newCol);
-
-  renderExcelSheet();
-  initResize();
-}
+  
 </script>
   
 </body>

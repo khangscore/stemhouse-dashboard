@@ -1348,17 +1348,17 @@ p {
   caret-color: #000;
   line-height: 1.6;
   tab-size: 4;
+  position: relative;
+  z-index: 1;
 }
 #tablePreview table {
   color: #000 !important;
   background: #fff;
 }
-
 #tablePreview td {
   transition: 0.2s;
   color: #000 !important;
 }
-
 #tablePreview a {
   color: #007bff !important;
   text-decoration: underline;
@@ -1366,7 +1366,10 @@ p {
 #tablePreview td:hover {
   background: #f5f5f5;
 }
-    
+#tablePreview {
+  position: relative;
+  z-index: 2;
+}   
   </style>
 </head>
 <body id="body">
@@ -2365,7 +2368,12 @@ pasteArea.addEventListener("paste", function (e) {
 ">`;
 
       if (isLink) {
-        html += `<a href="${clean}" target="_blank" style="color:#007bff">🔗 Link</a>`;
+        html += `<a href="${clean}" target="_blank" style="
+  color:#007bff;
+  text-decoration: underline;
+  cursor: pointer;
+  pointer-events: auto;
+">🔗 Mở link</a>`;
       } else {
         html += clean;
       }
@@ -2981,7 +2989,17 @@ function initResize() {
   excelData[key] = cell.innerText.trim();
   localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
 });
-</script>
+
+document.addEventListener("DOMContentLoaded", function () {
+  const tablePreview = document.getElementById("tablePreview");
+
+  if (tablePreview) {
+    tablePreview.addEventListener("click", function (e) {
+      e.stopPropagation();
+    });
+  }
+});
   
+</script>
 </body>
 </html>

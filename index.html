@@ -2715,6 +2715,30 @@ function initResize() {
   renderExcelSheet();
   initResize();
 }
+  function handleMultiPaste(text, startCell) {
+  const rows = text.split("\n").map(r => r.split("\t"));
+
+  const startKey = startCell.dataset.cell;
+  const [startRow, startCol] = startKey.split("-").map(Number);
+
+  rows.forEach((row, rIndex) => {
+    row.forEach((value, cIndex) => {
+      const newRow = startRow + rIndex;
+      const newCol = startCol + cIndex;
+
+      const key = `${newRow}-${newCol}`;
+      excelData[key] = value.trim();
+
+      // tìm cell trên UI
+      const targetCell = document.querySelector(`[data-cell="${key}"]`);
+      if (targetCell) {
+        targetCell.innerText = value.trim();
+      }
+    });
+  });
+
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+}
   document.addEventListener("click", function (e) {
   if (e.target.tagName === "A") {
     e.preventDefault();
@@ -2726,16 +2750,11 @@ function initResize() {
 
   if (!cell || !cell.classList.contains("cell")) return;
 
-  const text = e.clipboardData.getData("text");
+  e.preventDefault(); // 🔥 chặn dính format
 
-  if (text.includes("\n") || text.includes("\t")) return;
+  const text = e.clipboardData.getData("text/plain"); // chỉ lấy text sạch
 
-  if (/https?:\/\/[^\s]+/.test(text)) {
-    e.preventDefault();
-
-    const link = `<a href="${text}" target="_blank">${text}</a>`;
-    document.execCommand("insertHTML", false, link);
-  }
+  handleMultiPaste(text, cell);
 });
 </script>
   

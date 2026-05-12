@@ -2167,19 +2167,29 @@ document.addEventListener('click', function(e) {
     };
 
     window.onload = () => {
-      renderShortcuts();
-      applyConfig();
-      updatePreview(appConfig.gender);
-      updateClock();
-      renderCalendar();
-      initNotes();
-      setupAvatarUpload();
-      setInterval(updateClock, 1000);
-      addHoverEvents();
+
+  renderShortcuts();
+  applyConfig();
+  updatePreview(appConfig.gender);
+  updateClock();
+  renderCalendar();
+  initNotes();
+  setupAvatarUpload();
+
+  setInterval(updateClock, 1000);
+
+  addHoverEvents();
+
+  // delay render excel
+  setTimeout(() => {
+
+    if (typeof renderExcelSheet === "function") {
       renderExcelSheet();
-    };
-  </script>
-<script>
+    }
+
+  }, 0);
+
+};
   // ===== EXCEL CORE STATE =====
 
 function formatCellDisplay(value) {
@@ -2402,16 +2412,40 @@ const excelRows = 100; // 👉 số hàng
   }
 
  function updateCell(cell) {
+
   const key = cell.dataset.cell;
   const text = cell.innerText.trim();
 
   excelData[key] = text;
 
+  // link
   if (/https?:\/\/[^\s]+/.test(text)) {
-    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
+    cell.innerHTML =
+      `<a href="${text}" target="_blank">${text}</a>`;
   }
 
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  // ===== AUTO WIDTH =====
+
+  const colLetter =
+    key.match(/[A-Z]+/)[0];
+
+  const textLength =
+    String(text || "").length;
+
+  const estimatedWidth =
+    Math.max(DEFAULT_COL_WIDTH, textLength * 8);
+
+  if (
+    !columnWidths[colLetter] ||
+    estimatedWidth > columnWidths[colLetter]
+  ) {
+    columnWidths[colLetter] = estimatedWidth;
+  }
+
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
 }
 
   function clearSheet() {
@@ -2934,23 +2968,6 @@ if (/https?:\/\/[^\s]+/.test(text)) {
   cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
 } else {
   cell.innerText = text;
-}
-
-// ===== AUTO WIDTH =====
-const key = cell.dataset.cell;
-const colLetter =
-  key.match(/[A-Z]+/)[0];
-const textLength =
-  String(text || "").length;
-
-const estimatedWidth =
-  Math.max(DEFAULT_COL_WIDTH, textLength * 8);
-
-if (
-  !columnWidths[colLetter] ||
-  estimatedWidth > columnWidths[colLetter]
-) {
-  columnWidths[colLetter] = estimatedWidth;
 }
 
   // lưu data

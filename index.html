@@ -1350,6 +1350,7 @@ p {
   tab-size: 4;
   position: relative;
   z-index: 1;
+  pointer-events: auto;
 }
 #tablePreview table {
   color: #000 !important;
@@ -1368,9 +1369,13 @@ p {
   background: #f5f5f5;
 }
 #tablePreview {
+  pointer-events: auto;
   position: relative;
-  z-index: 2;
-}   
+  z-index: 9999;
+} 
+#tablePreview * {
+  pointer-events: auto !important;
+}
   </style>
 </head>
 <body id="body">
@@ -2369,12 +2374,12 @@ pasteArea.addEventListener("paste", function (e) {
 ">`;
 
       if (isLink) {
-        html += `<a href="${clean}" target="_blank" style="
-  color:#007bff;
-  text-decoration: underline;
-  cursor: pointer;
-  pointer-events: auto;
-">🔗 Mở link</a>`;
+        html += `<span 
+  style="color:#007bff; cursor:pointer; text-decoration:underline;"
+  onclick="window.open('${clean}', '_blank')"
+>
+  🔗 Mở link
+</span>`;
       } else {
         html += clean;
       }

@@ -2194,7 +2194,6 @@ function formatCellDisplay(value) {
   return str;
 }
 
-let selectedCells = new Set();
 let isSelecting = false;
 let startCell = null;
   /* =========================
@@ -2510,32 +2509,31 @@ const excelRows = 100; // 👉 số hàng
     }
   });
 // ===== PASTE MULTI CELL CHO INPUT =====
+// ===== PASTE MULTI CELL =====
+
 document.addEventListener('paste', function (e) {
-  const active = document.activeElement;
 
-  // ❌ KHÔNG phải input thì thôi
-  if (!active || active.tagName !== 'INPUT') return;
+  let cell = document.activeElement;
 
-  const text = e.clipboardData.getData('text');
+  if (!cell || !cell.classList.contains('cell')) {
+    cell = e.target.closest('.cell');
+  }
 
-  // ✅ chỉ chặn khi là paste nhiều ô (có xuống dòng hoặc tab)
-  if (text.includes('\n') || text.includes('\t')) {
+  if (!cell) return;
+
+  const text =
+    e.clipboardData.getData('text/plain');
+
+  if (
+    text.includes('\n') ||
+    text.includes('\t')
+  ) {
+
     e.preventDefault();
 
-    // xử lý paste nhiều ô ở đây
-    handleMultiPaste(text);
-    function formatCellValue(value) {
-  const urlPattern = /(https?:\/\/[^\s]+)/g;
-
-  if (urlPattern.test(value)) {
-    return `<a href="${value}" target="_blank">${value}</a>`;
+    handleMultiPaste(text, cell);
   }
 
-  return value;
-}
-  }
-
-  // ✅ nếu paste bình thường → cho chạy mặc định
 });
 
 function handlePasteToInputs(text, startInput) {
@@ -2939,7 +2937,9 @@ if (/https?:\/\/[^\s]+/.test(text)) {
 }
 
 // ===== AUTO WIDTH =====
-
+const key = cell.dataset.cell;
+const colLetter =
+  key.match(/[A-Z]+/)[0];
 const textLength =
   String(text || "").length;
 

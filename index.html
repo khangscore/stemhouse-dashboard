@@ -1341,18 +1341,6 @@ p {
 .excel-container::-webkit-scrollbar {
   height: 10px;
 }
-
-function formatCellDisplay(value) {
-  const str = String(value || "");
-
-  const urlPattern = /(https?:\/\/[^\s]+)/g;
-
-  if (urlPattern.test(str)) {
-    return `<a href="${str}" target="_blank">${str}</a>`;
-  }
-
-  return str;
-}
     
   </style>
 </head>
@@ -2192,7 +2180,21 @@ document.addEventListener('click', function(e) {
     };
   </script>
 <script>
+<script>
   // ===== EXCEL CORE STATE =====
+
+function formatCellDisplay(value) {
+  const str = String(value || "");
+
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+  if (urlPattern.test(str)) {
+    return `<a href="${str}" target="_blank">${str}</a>`;
+  }
+
+  return str;
+}
+
 let selectedCells = new Set();
 let isSelecting = false;
 let startCell = null;
@@ -2200,7 +2202,139 @@ let startCell = null;
      EXCEL MINI LOGIC
   ========================= */
 
-  let excelData = safeJSONParse('ao_excel_v1', {});
+  // ===== EXCEL DATA ENGINE =====
+let excelData = safeJSONParse('ao_excel_v1', {});
+let selectedCells = new Set();
+
+let rowHeights = {};
+let columnWidths = {};
+
+let undoStack = [];
+let redoStack = [];
+
+const DEFAULT_ROW_HEIGHT = 32;
+const DEFAULT_COL_WIDTH = 120;
+
+function saveState() {
+
+  undoStack.push(JSON.stringify({
+    excelData,
+    rowHeights,
+    columnWidths
+  }));
+
+  if (undoStack.length > 50) {
+    undoStack.shift();
+  }
+
+  redoStack = [];
+
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
+}
+
+function undo() {
+
+  if (!undoStack.length) return;
+
+  redoStack.push(JSON.stringify({
+    excelData,
+    rowHeights,
+    columnWidths
+  }));
+
+  const prev =
+    JSON.parse(undoStack.pop());
+
+  excelData = prev.excelData;
+  rowHeights = prev.rowHeights;
+  columnWidths = prev.columnWidths;
+
+  renderExcelSheet();
+}
+
+function redo() {
+
+  if (!redoStack.length) return;
+
+  undoStack.push(JSON.stringify({
+    excelData,
+    rowHeights,
+    columnWidths
+  }));
+
+  const next =
+    JSON.parse(redoStack.pop());
+
+  excelData = next.excelData;
+  rowHeights = next.rowHeights;
+  columnWidths = next.columnWidths;
+
+  renderExcelSheet();
+}
+
+function setCell(cell, value) {
+
+  saveState();
+
+  excelData[cell] = {
+    raw: value,
+    value: evaluateFormula(value)
+  };
+
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
+}
+
+function getCell(cell) {
+  return excelData[cell]?.value || "";
+}
+
+function evaluateFormula(value) {
+  if (typeof value !== "string") return value;
+
+  if (!value.startsWith("=")) {
+    return value;
+  }
+
+  try {
+
+    // SUM(A1:A5)
+    const sumMatch = value.match(/=SUM\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)/i);
+
+    if (sumMatch) {
+
+      const startCol = sumMatch[1];
+      const startRow = parseInt(sumMatch[2]);
+
+      const endCol = sumMatch[3];
+      const endRow = parseInt(sumMatch[4]);
+
+      let total = 0;
+
+      for (let r = startRow; r <= endRow; r++) {
+
+        const cell = `${startCol}${r}`;
+
+        const v = parseFloat(getCell(cell)) || 0;
+
+        total += v;
+      }
+
+      return total;
+    }
+
+    return value;
+
+  } catch (err) {
+    return "#ERROR";
+  }
+}
+  
   function generateCols(n) {
   const cols = [];
   for (let i = 0; i < n; i++) {
@@ -2547,15 +2681,58 @@ function clearSelection() {
 }
   // ===== DELETE =====
 document.addEventListener('keydown', function(e) {
+
+  // ===== CTRL + Z =====
+  if (e.ctrlKey && e.key.toLowerCase() === 'z') {
+
+    e.preventDefault();
+
+    undo();
+    return;
+  }
+
+  // ===== CTRL + Y =====
+  if (e.ctrlKey && e.key.toLowerCase() === 'y') {
+
+    e.preventDefault();
+
+    redo();
+    return;
+  }
+
+  // ===== DELETE =====
   if (e.key === 'Delete') {
+
+    saveState();
+
     selectedCells.forEach(key => {
-      excelData[key] = '';
-      const input = document.querySelector(`[data-cell="${key}"]`);
-      if (input) input.value = '';
+
+      excelData[key] = {
+        raw: '',
+        value: ''
+      };
+
+      const input =
+        document.querySelector(
+          `[data-cell="${key}"]`
+        );
+
+      if (input) {
+        input.value = '';
+      }
+
     });
 
-    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+    localStorage.setItem(
+      'ao_excel_v1',
+      JSON.stringify(excelData)
+    );
+
+    requestAnimationFrame(() => {
+      renderExcelSheet();
+    });
   }
+
 });
   // ===== COPY =====
 document.addEventListener('copy', function(e) {
@@ -2755,12 +2932,27 @@ document.addEventListener("click", function (e) {
     return;
   }
 
-  // 👉 nếu là 1 ô thường
-  if (/https?:\/\/[^\s]+/.test(text)) {
-    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
-  } else {
-    cell.innerText = text;
-  }
+ // 👉 nếu là 1 ô thường
+if (/https?:\/\/[^\s]+/.test(text)) {
+  cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
+} else {
+  cell.innerText = text;
+}
+
+// ===== AUTO WIDTH =====
+
+const textLength =
+  String(text || "").length;
+
+const estimatedWidth =
+  Math.max(DEFAULT_COL_WIDTH, textLength * 8);
+
+if (
+  !columnWidths[colLetter] ||
+  estimatedWidth > columnWidths[colLetter]
+) {
+  columnWidths[colLetter] = estimatedWidth;
+}
 
   // lưu data
   const key = cell.dataset.cell;
@@ -2769,26 +2961,73 @@ document.addEventListener("click", function (e) {
 });
 
 function handleMultiPaste(text, startCell) {
-  const startKey = startCell.dataset.cell;
-  const [startRow, startCol] = startKey.split("-").map(Number);
+
+  saveState();
+
+  const rows =
+    text
+      .trim()
+      .split("\n")
+      .map(row => row.split("\t"));
+
+  const startKey =
+    startCell.dataset.cell;
+
+  const match =
+    startKey.match(/([A-Z]+)(\d+)/);
+
+  if (!match) return;
+
+  const startColLetters = match[1];
+  const startRow = parseInt(match[2]);
+
+  const startCol =
+    startColLetters.charCodeAt(0) - 65;
 
   rows.forEach((row, rIndex) => {
+
     row.forEach((value, cIndex) => {
-      const newRow = startRow + rIndex;
-      const newCol = startCol + cIndex;
 
-      const key = `${newRow}-${newCol}`;
-      excelData[key] = value.trim();
+      const colLetter =
+        String.fromCharCode(
+          65 + startCol + cIndex
+        );
 
-      // tìm cell trên UI
-      const targetCell = document.querySelector(`[data-cell="${key}"]`);
+      const rowNumber =
+        startRow + rIndex;
+
+      const key =
+        `${colLetter}${rowNumber}`;
+
+      excelData[key] = {
+        raw: value.trim(),
+        value: evaluateFormula(
+          value.trim()
+        )
+      };
+
+      const targetCell =
+        document.querySelector(
+          `[data-cell="${key}"]`
+        );
+
       if (targetCell) {
-        targetCell.innerText = value.trim();
+        targetCell.innerText =
+          excelData[key].value;
       }
+
     });
+
   });
 
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
+
+  requestAnimationFrame(() => {
+    renderExcelSheet();
+  });
 }
   
 </script>

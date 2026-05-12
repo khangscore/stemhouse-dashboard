@@ -1485,6 +1485,7 @@ p {
     <div id="materialResult" style="margin-top:20px;"></div>
   </div>
 </div>
+    <div id="tablePreview" style="margin-top:15px;"></div>
     
     <div id="page-settings" class="page-content">
       <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
@@ -2283,13 +2284,18 @@ function findTargetFile(files, className) {
 }
 
 const pasteArea = document.getElementById("pasteArea");
+const tablePreview = document.getElementById("tablePreview");
 
 pasteArea.addEventListener("paste", function (e) {
   e.preventDefault();
 
   const text = (e.clipboardData || window.clipboardData).getData("text/plain");
 
+  // 👇 vẫn cho hiển thị text thô trong vùng paste
   document.execCommand("insertText", false, text);
+
+  // 👇 render bảng ngay lập tức
+  renderTableFromText(text);
 });
     function parsePastedData() {
   const text = document.getElementById("pasteArea").innerText.trim();
@@ -2313,6 +2319,50 @@ pasteArea.addEventListener("paste", function (e) {
   }
 
   return result;
+}
+    function renderTableFromText(text) {
+  const rows = text.trim().split("\n");
+
+  let html = `<table style="
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 14px;
+  ">`;
+
+  for (const row of rows) {
+    const cols = row.split("\t");
+
+    html += "<tr>";
+
+    cols.forEach((cell, index) => {
+      const clean = cell.trim();
+
+      const isLastCol = index === cols.length - 1;
+      const isLink = isLastCol && clean.startsWith("http");
+
+      html += `<td style="
+        border: 1px solid #ccc;
+        padding: 6px;
+        background: #fff;
+        max-width: 300px;
+        word-break: break-word;
+      ">`;
+
+      if (isLink) {
+        html += `<a href="${clean}" target="_blank">🔗 Link</a>`;
+      } else {
+        html += clean;
+      }
+
+      html += "</td>";
+    });
+
+    html += "</tr>";
+  }
+
+  html += "</table>";
+
+  tablePreview.innerHTML = html;
 }
     
   </script>

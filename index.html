@@ -2215,6 +2215,7 @@ let startCell = null;
 
     html += '</tbody>';
     table.innerHTML = html;
+    initResize();
   }
 
   function updateCell(input) {
@@ -2595,6 +2596,60 @@ document.addEventListener('mouseup', function() {
   isResizingRow = false;
   document.body.style.cursor = 'default';
 });
+function initResize() {
+  // ===== COL =====
+  document.querySelectorAll('.col-resizer').forEach(resizer => {
+    resizer.onmousedown = function(e) {
+      const th = e.target.parentElement;
+      const startX = e.clientX;
+      const startWidth = th.offsetWidth;
+
+      function onMove(e) {
+        const newWidth = startWidth + (e.clientX - startX);
+        th.style.width = newWidth + 'px';
+
+        const index = th.cellIndex;
+        document.querySelectorAll(`td:nth-child(${index + 1})`)
+          .forEach(td => td.style.width = newWidth + 'px');
+      }
+
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+
+      e.stopPropagation();
+    };
+  });
+
+  // ===== ROW =====
+  document.querySelectorAll('.row-resizer').forEach(resizer => {
+    resizer.onmousedown = function(e) {
+      const tr = e.target.closest('tr');
+      const startY = e.clientY;
+      const startHeight = tr.offsetHeight;
+
+      function onMove(e) {
+        const newHeight = startHeight + (e.clientY - startY);
+        tr.style.height = newHeight + 'px';
+      }
+
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+
+      e.stopPropagation();
+    };
+  });
+}
+  
 </script>
   
 </body>

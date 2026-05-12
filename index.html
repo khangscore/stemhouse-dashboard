@@ -1356,6 +1356,7 @@ p {
 <div class="nav-item active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏡</span><span class="nav-text">Home</span></div>
 <div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🧩</span><span class="nav-text">Dashboard</span></div>
 <div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
+<div class="nav-item" data-page="material" onclick="switchPage('material')"><span class="nav-icon">📦</span><span class="nav-text">Xuất MATERIAL LIST</span></div>
 <div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
     </div>
   </aside>
@@ -1444,6 +1445,21 @@ p {
   </div>
 </div>
 
+<div id="page-material" class="page-content">
+  <div class="header-group">
+    <h1>📦 Xuất MATERIAL LIST</h1>
+    <p>Tự động lấy file từ folder lớp 😈</p>
+  </div>
+
+  <div class="card">
+    <button onclick="exportMaterialList()" style="padding:10px 20px; font-size:16px;">
+      🚀 Xuất ở đây nè
+    </button>
+
+    <div id="materialResult" style="margin-top:20px;"></div>
+  </div>
+</div>
+    
     <div id="page-settings" class="page-content">
       <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
       <div class="header-group"><h1>Cài đặt</h1></div>
@@ -2177,6 +2193,65 @@ document.addEventListener('click', function(e) {
       addHoverEvents();
       renderExcelSheet();
     };
+
+    function isValidClass(className) {
+  const name = className.toUpperCase();
+
+  if (name.includes("TA")) return false;
+
+  const main = ["ANT", "BEE", "CAPY", "DOLPHIN", "IS6", "IS8"];
+  const extra = ["PRE", "KET", "PET", "FLCT"];
+
+  return (
+    main.some(k => name.includes(k)) ||
+    extra.some(k => name.startsWith(k))
+  );
+}
+
+function isSpecialKE(className) {
+  const name = className.toUpperCase();
+  return name.includes("KE") && !name.startsWith("KET");
+}
+
+function findTargetFile(files, className) {
+  const isKE = isSpecialKE(className);
+
+  return files.find(f => {
+    const name = f.name.toUpperCase();
+
+    if (isKE) return name.includes("LESSON PLAN");
+
+    return name.includes("MATERIAL LIST");
+  });
+}
+    async function exportMaterialList() {
+  const box = document.getElementById("materialResult");
+
+  box.innerHTML = "⏳ Đang quét lớp...";
+
+  // 🔥 demo data (bạn sẽ thay bằng data thật)
+  const classList = [
+    { name: "ANT01", files: [{ name: "MATERIAL LIST 1", link: "#" }] },
+    { name: "KET02", files: [{ name: "MATERIAL LIST 2", link: "#" }] },
+    { name: "KE03", files: [{ name: "LESSON PLAN", link: "#" }] },
+    { name: "TA04", files: [{ name: "MATERIAL LIST", link: "#" }] }
+  ];
+
+  let html = "";
+
+  for (const cls of classList) {
+    if (!isValidClass(cls.name)) continue;
+
+    const file = findTargetFile(cls.files, cls.name);
+
+    if (file) {
+      html += `<div>✅ ${cls.name}: <a href="${file.link}" target="_blank">${file.name}</a></div>`;
+    }
+  }
+
+  box.innerHTML = html || "❌ Không tìm thấy file nào";
+}
+    
   </script>
 <script>
   // ===== EXCEL CORE STATE =====

@@ -2745,16 +2745,37 @@ function initResize() {
     window.open(e.target.href, "_blank");
   }
 });
-  document.addEventListener("paste", function (e) {
-  const cell = document.activeElement;
+  ddocument.addEventListener("paste", function (e) {
+  let cell = document.activeElement;
 
-  if (!cell || !cell.classList.contains("cell")) return;
+  // 🔥 FIX: nếu không phải cell thì tìm cell gần nhất
+  if (!cell || !cell.classList.contains("cell")) {
+    cell = e.target.closest(".cell");
+  }
 
-  e.preventDefault(); // 🔥 chặn dính format
+  if (!cell) return;
 
-  const text = e.clipboardData.getData("text/plain"); // chỉ lấy text sạch
+  e.preventDefault();
 
-  handleMultiPaste(text, cell);
+  const text = e.clipboardData.getData("text/plain");
+
+  // 👉 nếu là multi paste
+  if (text.includes("\n") || text.includes("\t")) {
+    handleMultiPaste(text, cell);
+    return;
+  }
+
+  // 👉 nếu là 1 ô thường
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
+  } else {
+    cell.innerText = text;
+  }
+
+  // lưu data
+  const key = cell.dataset.cell;
+  excelData[key] = cell.innerText.trim();
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
 });
 </script>
   

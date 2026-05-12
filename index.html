@@ -1285,6 +1285,10 @@ p {
 .home-clock + .home-date {
   margin-top: 10px !important;
 }  
+    .selected-cell {
+  background: rgba(59,130,246,0.3);
+  border: 1px solid #3b82f6;
+}
   </style>
 </head>
 <body id="body">
@@ -2121,6 +2125,10 @@ document.addEventListener('click', function(e) {
     };
   </script>
 <script>
+  // ===== EXCEL CORE STATE =====
+let selectedCells = new Set();
+let isSelecting = false;
+let startCell = null;
   /* =========================
      EXCEL MINI LOGIC
   ========================= */
@@ -2149,11 +2157,13 @@ document.addEventListener('click', function(e) {
         html += `
   <td>
     <input
-      type="text"
-      value="${String(value).replace(/"/g, '&quot;')}"
-      data-cell="${key}"
-      oninput="updateCell(this)"
-    >
+  type="text"
+  value="${String(value).replace(/"/g, '&quot;')}"
+  data-cell="${key}"
+  oninput="updateCell(this)"
+  onmousedown="startSelect(this, event)"
+  onmouseover="hoverSelect(this)"
+>
   </td>
 `;
       });
@@ -2285,19 +2295,15 @@ if (text.includes('<') && text.includes('>')) {
 });
 
 function handlePasteToInputs(text, startInput) {
-  // ===== 🧼 LỌC DỮ LIỆU =====
+text = text.replace(/<[^>]*>/g, '');
+text = text.replace(/\r/g, '');
+text = text.replace(/[^\p{L}\p{N}\s\n\t.,-]/gu, '');
+text = text.trim();
+  const rows = text.split('\n').filter(r => r.trim() !== '');
 
-  // bỏ HTML tag
-  text = text.replace(/<[^>]*>/g, '');
-
-  // chuẩn hóa xuống dòng
-  text = text.replace(/\r/g, '');
-
-  // giữ Unicode (tiếng Việt ok)
-  text = text.replace(/[^\p{L}\p{N}\s\n\t.,-]/gu, '');
-
-  // trim toàn bộ
-  text = text.trim();
+if (rows.length > 0) {
+  rows[0] = rows[0].replace(/^\uFEFF/, '');
+}
 
   // 🚫 nếu không có dạng bảng thì bỏ
   if (!text.includes('\t') && !text.includes('\n')) {
@@ -2350,6 +2356,114 @@ function handlePasteToInputs(text, startInput) {
 
   localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
 }
+// ===== SELECT ENGINE =====
+
+function startSelect(input, e) {
+  isSelecting = true;
+  startCell = input.dataset.cell;
+
+  if (!e.ctrlKey) {
+    clearSelection();
+  }
+
+  addToSelection(input);
+}
+
+function hoverSelect(input) {
+  if (!isSelecting) return;
+
+  const endCell = input.dataset.cell;
+  selectRange(startCell, endCell);
+}
+
+document.addEventListener('mouseup', () => {
+  isSelecting = false;
+});
+
+function selectRange(start, end) {
+  clearSelection();
+
+  const startCol = start.charCodeAt(0);
+  const startRow = parseInt(start.slice(1));
+
+  const endCol = end.charCodeAt(0);
+  const endRow = parseInt(end.slice(1));
+
+  const minCol = Math.min(startCol, endCol);
+  const maxCol = Math.max(startCol, endCol);
+
+  const minRow = Math.min(startRow, endRow);
+  const maxRow = Math.max(startRow, endRow);
+
+  for (let c = minCol; c <= maxCol; c++) {
+    for (let r = minRow; r <= maxRow; r++) {
+      const key = `${String.fromCharCode(c)}${r}`;
+      const el = document.querySelector(`[data-cell="${key}"]`);
+      if (el) addToSelection(el);
+    }
+  }
+}
+
+function addToSelection(input) {
+  const key = input.dataset.cell;
+
+  if (!selectedCells.has(key)) {
+    selectedCells.add(key);
+    input.classList.add('selected-cell');
+  }
+}
+
+function clearSelection() {
+  selectedCells.forEach(key => {
+    const el = document.querySelector(`[data-cell="${key}"]`);
+    if (el) el.classList.remove('selected-cell');
+  });
+  selectedCells.clear();
+}
+  // ===== DELETE =====
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Delete') {
+    selectedCells.forEach(key => {
+      excelData[key] = '';
+      const input = document.querySelector(`[data-cell="${key}"]`);
+      if (input) input.value = '';
+    });
+
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  }
+});
+  // ===== COPY =====
+document.addEventListener('copy', function(e) {
+  if (selectedCells.size === 0) return;
+
+  e.preventDefault();
+
+  const cells = Array.from(selectedCells).sort();
+
+  let text = '';
+
+  let currentRow = null;
+
+  cells.forEach(key => {
+    const row = key.slice(1);
+    const value = excelData[key] || '';
+
+    if (currentRow === null) {
+      currentRow = row;
+    }
+
+    if (row !== currentRow) {
+      text += '\n';
+      currentRow = row;
+    } else if (text !== '') {
+      text += '\t';
+    }
+
+    text += value;
+  });
+
+  e.clipboardData.setData('text/plain', text);
+});
   
 </script>
   

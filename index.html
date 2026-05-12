@@ -2235,16 +2235,16 @@ const excelRows = 100; // 👉 số hàng
         const key = `${col}${row}`;
         const value = excelData[key] || '';
         html += `
-  <td>
-    <input
-  type="text"
-  value="${String(value).replace(/"/g, '&quot;')}"
+  <td 
+  contenteditable="true"
+  class="cell"
   data-cell="${key}"
   oninput="updateCell(this)"
   onmousedown="startSelect(this, event)"
   onmouseover="hoverSelect(this)"
 >
-  </td>
+  ${formatCellDisplay(value)}
+</td>
 `;
       });
 
@@ -2255,12 +2255,31 @@ const excelRows = 100; // 👉 số hàng
     table.innerHTML = html;
     initResize();
   }
+  function formatCellDisplay(value) {
+  const str = String(value || "");
 
-  function updateCell(input) {
-    const key = input.dataset.cell;
-    excelData[key] = input.value;
-    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+  if (urlPattern.test(str)) {
+    return `<a href="${str}" target="_blank">${str}</a>`;
   }
+
+  return str;
+}
+  
+  function updateCell(cell) {
+  const key = cell.dataset.cell;
+  const text = cell.innerText.trim();
+
+  excelData[key] = text;
+
+  // nếu là link → render lại
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
+  }
+
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+}
 
   function clearSheet() {
     const sure = confirm('Xoá toàn bộ dữ liệu sheet này nha ní?');
@@ -2360,19 +2379,20 @@ const excelRows = 100; // 👉 số hàng
 document.addEventListener('paste', function (e) {
   const active = document.activeElement;
 
-  // chỉ chạy khi đang focus vào input trong excel
-  if (!active || active.tagName !== 'INPUT' || !active.dataset.cell) return;
+  // ❌ KHÔNG phải input thì thôi
+  if (!active || active.tagName !== 'INPUT') return;
 
-  e.preventDefault();
+  const text = e.clipboardData.getData('text');
 
-  let text = e.clipboardData.getData('text/plain');
+  // ✅ chỉ chặn khi là paste nhiều ô (có xuống dòng hoặc tab)
+  if (text.includes('\n') || text.includes('\t')) {
+    e.preventDefault();
 
-// 🚫 chặn nếu có dấu hiệu là HTML/code
-if (text.includes('<') && text.includes('>')) {
-  console.warn('⛔ Phát hiện paste code, bỏ qua!');
-  return;
-}
-  handlePasteToInputs(text, active);
+    // xử lý paste nhiều ô ở đây
+    handleMultiPaste(text);
+  }
+
+  // ✅ nếu paste bình thường → cho chạy mặc định
 });
 
 function handlePasteToInputs(text, startInput) {
@@ -2695,6 +2715,28 @@ function initResize() {
   renderExcelSheet();
   initResize();
 }
+  document.addEventListener("click", function (e) {
+  if (e.target.tagName === "A") {
+    e.preventDefault();
+    window.open(e.target.href, "_blank");
+  }
+});
+  document.addEventListener("paste", function (e) {
+  const cell = document.activeElement;
+
+  if (!cell || !cell.classList.contains("cell")) return;
+
+  const text = e.clipboardData.getData("text");
+
+  if (text.includes("\n") || text.includes("\t")) return;
+
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    e.preventDefault();
+
+    const link = `<a href="${text}" target="_blank">${text}</a>`;
+    document.execCommand("insertHTML", false, link);
+  }
+});
 </script>
   
 </body>

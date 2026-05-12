@@ -2586,6 +2586,9 @@ document.addEventListener('paste', function (e) {
   const text =
     e.clipboardData.getData('text/plain');
 
+  const htmlData =
+  e.clipboardData.getData('text/html');
+  
   if (
     text.includes('\n') ||
     text.includes('\t')
@@ -2593,7 +2596,11 @@ document.addEventListener('paste', function (e) {
 
     e.preventDefault();
 
-    handleMultiPaste(text, cell);
+    handleMultiPaste(
+  text,
+  cell,
+  htmlData
+);
   }
 
 });
@@ -2626,6 +2633,22 @@ if (rows.length > 0) {
     cols.forEach((value, cIndex) => {
       let cleanValue = value.trim();
 
+let detectedLink = null;
+
+if (htmlData) {
+
+  const temp =
+    document.createElement('div');
+
+  temp.innerHTML = htmlData;
+
+  const a = temp.querySelector('a');
+
+  if (a && a.href) {
+    detectedLink = a.href;
+  }
+}
+      
       // bỏ khoảng trắng dư
       cleanValue = cleanValue.replace(/\s+/g, ' ');
 
@@ -2662,7 +2685,20 @@ if (rows.length > 0) {
 
   } else {
 
-    input.innerText = cleanValue;
+    if (detectedLink) {
+
+  input.innerHTML =
+    `<a href="${detectedLink}"
+        target="_blank"
+        rel="noopener noreferrer">
+        ${cleanValue}
+     </a>`;
+
+} else {
+
+  input.innerText = cleanValue;
+
+}
 
   }
 
@@ -3014,7 +3050,11 @@ document.addEventListener("click", function (e) {
 
   // 👉 nếu là multi paste
   if (text.includes("\n") || text.includes("\t")) {
-    handleMultiPaste(text, cell);
+    handleMultiPaste(
+  text,
+  cell,
+  htmlData
+);
     return;
   }
 
@@ -3031,7 +3071,11 @@ if (/https?:\/\/[^\s]+/.test(text)) {
   localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
 });
 
-function handleMultiPaste(text, startCell) {
+function handleMultiPaste(
+  text,
+  startCell,
+  htmlData
+) {
 
   saveState();
 

@@ -1286,8 +1286,15 @@ p {
   margin-top: 10px !important;
 }  
     .selected-cell {
-  background: rgba(59,130,246,0.3);
-  border: 1px solid #3b82f6;
+  background: rgba(59,130,246,0.35) !important;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+    .selection-box {
+  position: absolute;
+  border: 2px solid #3b82f6;
+  pointer-events: none;
+  z-index: 999;
 }
   </style>
 </head>
@@ -2379,7 +2386,7 @@ document.addEventListener('mouseup', () => {
 });
 
 function selectRange(start, end) {
-  clearSelection();
+  const newSelection = new Set();
 
   const startCol = start.charCodeAt(0);
   const startRow = parseInt(start.slice(1));
@@ -2395,11 +2402,27 @@ function selectRange(start, end) {
 
   for (let c = minCol; c <= maxCol; c++) {
     for (let r = minRow; r <= maxRow; r++) {
-      const key = `${String.fromCharCode(c)}${r}`;
-      const el = document.querySelector(`[data-cell="${key}"]`);
-      if (el) addToSelection(el);
+      newSelection.add(`${String.fromCharCode(c)}${r}`);
     }
   }
+
+  // ✨ chỉ update khác biệt
+  selectedCells.forEach(key => {
+    if (!newSelection.has(key)) {
+      const el = document.querySelector(`[data-cell="${key}"]`);
+      if (el) el.classList.remove('selected-cell');
+    }
+  });
+
+  newSelection.forEach(key => {
+    if (!selectedCells.has(key)) {
+      const el = document.querySelector(`[data-cell="${key}"]`);
+      if (el) el.classList.add('selected-cell');
+    }
+  });
+
+  selectedCells = newSelection;
+  updateSelectionBox();
 }
 
 function addToSelection(input) {
@@ -2462,6 +2485,33 @@ document.addEventListener('copy', function(e) {
 
   e.clipboardData.setData('text/plain', text);
 });
+  let selectionBox = document.createElement('div');
+selectionBox.className = 'selection-box';
+document.body.appendChild(selectionBox);
+
+function updateSelectionBox() {
+  if (selectedCells.size === 0) {
+    selectionBox.style.display = 'none';
+    return;
+  }
+
+  const elements = Array.from(selectedCells)
+    .map(key => document.querySelector(`[data-cell="${key}"]`))
+    .filter(Boolean);
+
+  const rects = elements.map(el => el.getBoundingClientRect());
+
+  const left = Math.min(...rects.map(r => r.left));
+  const top = Math.min(...rects.map(r => r.top));
+  const right = Math.max(...rects.map(r => r.right));
+  const bottom = Math.max(...rects.map(r => r.bottom));
+
+  selectionBox.style.display = 'block';
+  selectionBox.style.left = left + 'px';
+  selectionBox.style.top = top + 'px';
+  selectionBox.style.width = (right - left) + 'px';
+  selectionBox.style.height = (bottom - top) + 'px';
+}
   
 </script>
   

@@ -1321,6 +1321,39 @@ p {
   width: 100%;
   cursor: row-resize;
 }
+ .excel-container {
+  width: 100%;
+  overflow-x: auto; /* 🔥 tạo scroll ngang */
+  border: 1px solid #ccc;
+}
+
+.excel-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: max-content; /* 🔥 CHÌA KHÓA */
+}
+
+.excel-table th,
+.excel-table td {
+  min-width: 100px;
+  border: 1px solid #ddd;
+}
+.excel-container::-webkit-scrollbar {
+  height: 10px;
+}
+
+function formatCellDisplay(value) {
+  const str = String(value || "");
+
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+  if (urlPattern.test(str)) {
+    return `<a href="${str}" target="_blank">${str}</a>`;
+  }
+
+  return str;
+}
+    
   </style>
 </head>
 <body id="body">
@@ -1416,7 +1449,9 @@ p {
 
     <div class="excel-shell">
       <div class="excel-table-wrap">
-        <table class="excel-table" id="excelTable"></table>
+        <div class="excel-container">
+  <table class="excel-table" id="excelTable"></table>
+</div>
       </div>
     </div>
   </div>
@@ -2166,8 +2201,24 @@ let startCell = null;
   ========================= */
 
   let excelData = safeJSONParse('ao_excel_v1', {});
-  const excelCols = ['A','B','C','D','E','F','G','H'];
-  const excelRows = 20;
+  function generateCols(n) {
+  const cols = [];
+  for (let i = 0; i < n; i++) {
+    let col = '';
+    let temp = i;
+
+    do {
+      col = String.fromCharCode(65 + (temp % 26)) + col;
+      temp = Math.floor(temp / 26) - 1;
+    } while (temp >= 0);
+
+    cols.push(col);
+  }
+  return cols;
+}
+
+const excelCols = generateCols(50); // 👉 muốn bao nhiêu cột tùy bạn
+const excelRows = 100; // 👉 số hàng
 
   function renderExcelSheet() {
     const table = document.getElementById('excelTable');
@@ -2197,16 +2248,16 @@ let startCell = null;
         const key = `${col}${row}`;
         const value = excelData[key] || '';
         html += `
-  <td>
-    <input
-  type="text"
-  value="${String(value).replace(/"/g, '&quot;')}"
+ <td 
+  contenteditable="true"
+  class="cell"
   data-cell="${key}"
   oninput="updateCell(this)"
   onmousedown="startSelect(this, event)"
   onmouseover="hoverSelect(this)"
 >
-  </td>
+  ${formatCellDisplay(value)}
+</td>
 `;
       });
 
@@ -2218,11 +2269,18 @@ let startCell = null;
     initResize();
   }
 
-  function updateCell(input) {
-    const key = input.dataset.cell;
-    excelData[key] = input.value;
-    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+ function updateCell(cell) {
+  const key = cell.dataset.cell;
+  const text = cell.innerText.trim();
+
+  excelData[key] = text;
+
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
   }
+
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+}
 
   function clearSheet() {
     const sure = confirm('Xoá toàn bộ dữ liệu sheet này nha ní?');
@@ -2322,19 +2380,29 @@ let startCell = null;
 document.addEventListener('paste', function (e) {
   const active = document.activeElement;
 
-  // chỉ chạy khi đang focus vào input trong excel
-  if (!active || active.tagName !== 'INPUT' || !active.dataset.cell) return;
+  // ❌ KHÔNG phải input thì thôi
+  if (!active || active.tagName !== 'INPUT') return;
 
-  e.preventDefault();
+  const text = e.clipboardData.getData('text');
 
-  let text = e.clipboardData.getData('text/plain');
+  // ✅ chỉ chặn khi là paste nhiều ô (có xuống dòng hoặc tab)
+  if (text.includes('\n') || text.includes('\t')) {
+    e.preventDefault();
 
-// 🚫 chặn nếu có dấu hiệu là HTML/code
-if (text.includes('<') && text.includes('>')) {
-  console.warn('⛔ Phát hiện paste code, bỏ qua!');
-  return;
+    // xử lý paste nhiều ô ở đây
+    handleMultiPaste(text);
+    function formatCellValue(value) {
+  const urlPattern = /(https?:\/\/[^\s]+)/g;
+
+  if (urlPattern.test(value)) {
+    return `<a href="${value}" target="_blank">${value}</a>`;
+  }
+
+  return value;
 }
-  handlePasteToInputs(text, active);
+  }
+
+  // ✅ nếu paste bình thường → cho chạy mặc định
 });
 
 function handlePasteToInputs(text, startInput) {
@@ -2648,6 +2716,81 @@ function initResize() {
       e.stopPropagation();
     };
   });
+}
+  function addColumn() {
+  const nextIndex = excelCols.length;
+  const newCol = generateCols(nextIndex + 1)[nextIndex];
+  excelCols.push(newCol);
+  renderExcelSheet();
+  initResize();
+}
+
+document.addEventListener("click", function (e) {
+  if (e.target.tagName === "A") {
+    if (e.ctrlKey) {
+      window.open(e.target.href, "_blank");
+    } else {
+      e.preventDefault(); // không mở
+    }
+  }
+});
+
+  document.addEventListener("paste", function (e) {
+  let cell = document.activeElement;
+
+  // 🔥 FIX: nếu không phải cell thì tìm cell gần nhất
+  if (!cell || !cell.classList.contains("cell")) {
+    cell = e.target.closest(".cell");
+  }
+
+  if (!cell) return;
+
+  e.preventDefault();
+
+  const text = e.clipboardData.getData("text/plain");
+
+  // 👉 nếu là multi paste
+  if (text.includes("\n") || text.includes("\t")) {
+    handleMultiPaste(text, cell);
+    return;
+  }
+
+  // 👉 nếu là 1 ô thường
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
+  } else {
+    cell.innerText = text;
+  }
+
+  // lưu data
+  const key = cell.dataset.cell;
+  excelData[key] = cell.innerText.trim();
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+});
+
+function handleMultiPaste(text, startCell) {
+  const rows = text.split("\n").map(r => r.split("\t"));
+
+  const startKey = startCell.dataset.cell;
+  const [startRow, startCol] = startKey.split("-").map(Number);
+
+  rows.forEach((row, rIndex) => {
+    row.forEach((value, cIndex) => {
+      const newRow = startRow + rIndex;
+      const newCol = startCol + cIndex;
+
+      const key = `${newRow}-${newCol}`;
+      excelData[key] = value.trim();
+
+      // tìm cell trên UI
+      const targetCell = document.querySelector(`[data-cell="${key}"]`);
+      if (targetCell) {
+        targetCell.innerText = value.trim();
+      }
+    });
+  });
+
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
 }
   
 </script>

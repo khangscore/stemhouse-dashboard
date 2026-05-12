@@ -1349,14 +1349,24 @@ p {
   line-height: 1.6;
   tab-size: 4;
 }
-    #tablePreview table tr:nth-child(even) {
-  background: #fafafa;
+#tablePreview table {
+  color: #000 !important;
+  background: #fff;
 }
 
-#tablePreview td:hover {
-  background: #f0f0f0;
+#tablePreview td {
+  transition: 0.2s;
+  color: #000 !important;
 }
-  
+
+#tablePreview a {
+  color: #007bff !important;
+  text-decoration: underline;
+}
+#tablePreview td:hover {
+  background: #f5f5f5;
+}
+    
   </style>
 </head>
 <body id="body">
@@ -2348,15 +2358,14 @@ pasteArea.addEventListener("paste", function (e) {
       const isLink = isLastCol && clean.startsWith("http");
 
       html += `<td style="
-        border: 1px solid #ccc;
-        padding: 6px;
-        background: #fff;
-        max-width: 300px;
-        word-break: break-word;
-      ">`;
+  border: 1px solid #ccc;
+  padding: 6px;
+  background: #fff;
+  color: #000;
+">`;
 
       if (isLink) {
-        html += `<a href="${clean}" target="_blank">🔗 Link</a>`;
+        html += `<a href="${clean}" target="_blank" style="color:#007bff">🔗 Link</a>`;
       } else {
         html += clean;
       }

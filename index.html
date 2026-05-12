@@ -2367,9 +2367,9 @@ function startSelect(input, e) {
   isSelecting = true;
   startCell = input.dataset.cell;
 
-  if (!e.ctrlKey) {
-    clearSelection();
-  }
+  if (!e.ctrlKey && !e.shiftKey) {
+  clearSelection();
+}
 
   addToSelection(input);
 }
@@ -2499,20 +2499,39 @@ function updateSelectionBox() {
     .map(key => document.querySelector(`[data-cell="${key}"]`))
     .filter(Boolean);
 
-  const rects = elements.map(el => el.getBoundingClientRect());
+  if (elements.length === 0) return;
 
-  const left = Math.min(...rects.map(r => r.left));
-  const top = Math.min(...rects.map(r => r.top));
-  const right = Math.max(...rects.map(r => r.right));
-  const bottom = Math.max(...rects.map(r => r.bottom));
+  const firstRect = elements[0].getBoundingClientRect();
+
+  let left = firstRect.left;
+  let top = firstRect.top;
+  let right = firstRect.right;
+  let bottom = firstRect.bottom;
+
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    left = Math.min(left, rect.left);
+    top = Math.min(top, rect.top);
+    right = Math.max(right, rect.right);
+    bottom = Math.max(bottom, rect.bottom);
+  });
+
+  // 🔥 FIX LỆCH: cộng scroll
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
 
   selectionBox.style.display = 'block';
-  selectionBox.style.left = left + 'px';
-  selectionBox.style.top = top + 'px';
+  selectionBox.style.left = left + scrollX + 'px';
+  selectionBox.style.top = top + scrollY + 'px';
   selectionBox.style.width = (right - left) + 'px';
   selectionBox.style.height = (bottom - top) + 'px';
 }
-  
+  document.addEventListener('mousedown', function(e) {
+  if (!e.target.matches('input[data-cell]')) {
+    clearSelection();
+    selectionBox.style.display = 'none';
+  }
+});
 </script>
   
 </body>

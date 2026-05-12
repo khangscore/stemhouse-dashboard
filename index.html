@@ -1448,11 +1448,25 @@ p {
 <div id="page-material" class="page-content">
   <div class="header-group">
     <h1>📦 Xuất MATERIAL LIST</h1>
-    <p>Tự động lấy file từ folder lớp 😈</p>
+    <p>Dán bảng từ Excel vào đây 👇</p>
   </div>
 
   <div class="card">
-    <button onclick="exportMaterialList()" style="padding:10px 20px; font-size:16px;">
+
+    <!-- VÙNG PASTE -->
+    <div
+      id="pasteArea"
+      contenteditable="true"
+      style="
+        min-height:200px;
+        border:2px dashed #ccc;
+        padding:10px;
+        background:#fff;
+        overflow:auto;
+      "
+    ></div>
+
+    <button onclick="exportMaterialList()" style="margin-top:15px;">
       🚀 Xuất ở đây nè
     </button>
 
@@ -2227,29 +2241,66 @@ function findTargetFile(files, className) {
     async function exportMaterialList() {
   const box = document.getElementById("materialResult");
 
-  box.innerHTML = "⏳ Đang quét lớp...";
+  const data = parsePastedData();
 
-  // 🔥 demo data (bạn sẽ thay bằng data thật)
-  const classList = [
-    { name: "ANT01", files: [{ name: "MATERIAL LIST 1", link: "#" }] },
-    { name: "KET02", files: [{ name: "MATERIAL LIST 2", link: "#" }] },
-    { name: "KE03", files: [{ name: "LESSON PLAN", link: "#" }] },
-    { name: "TA04", files: [{ name: "MATERIAL LIST", link: "#" }] }
-  ];
+  if (!data.length) {
+    box.innerHTML = "❌ Không có dữ liệu";
+    return;
+  }
 
   let html = "";
 
-  for (const cls of classList) {
-    if (!isValidClass(cls.name)) continue;
+  for (const row of data) {
+    const { className, folderLink } = row;
 
-    const file = findTargetFile(cls.files, cls.name);
+    if (!isValidClass(className)) continue;
 
-    if (file) {
-      html += `<div>✅ ${cls.name}: <a href="${file.link}" target="_blank">${file.name}</a></div>`;
-    }
+    const isKE = isSpecialKE(className);
+
+    html += `
+      <div>
+        📘 ${className} <br>
+        🔗 ${folderLink} <br>
+        🎯 ${isKE ? "Tìm LESSON PLAN" : "Tìm MATERIAL LIST"}
+      </div>
+      <hr>
+    `;
   }
 
-  box.innerHTML = html || "❌ Không tìm thấy file nào";
+  box.innerHTML = html || "❌ Không có lớp hợp lệ";
+}
+
+const pasteArea = document.getElementById("pasteArea");
+
+pasteArea.addEventListener("paste", function (e) {
+  e.preventDefault();
+
+  const text = (e.clipboardData || window.clipboardData).getData("text/plain");
+
+  document.execCommand("insertText", false, text);
+});
+    function parsePastedData() {
+  const text = document.getElementById("pasteArea").innerText.trim();
+
+  const rows = text.split("\n");
+
+  const result = [];
+
+  for (const row of rows) {
+    const cols = row.split("\t"); // Excel copy = tab
+
+    if (cols.length < 2) continue;
+
+    const className = cols[0].trim(); // cột đầu
+    const folderLink = cols[cols.length - 1].trim(); // cột cuối
+
+    result.push({
+      className,
+      folderLink
+    });
+  }
+
+  return result;
 }
     
   </script>

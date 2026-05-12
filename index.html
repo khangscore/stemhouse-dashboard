@@ -2596,10 +2596,7 @@ document.addEventListener('paste', function (e) {
 
     e.preventDefault();
 
-    handleMultiPaste(
-  text,
-  cell,
-  htmlData
+    handleMultiPaste(text,cell,htmlData
 );
   }
 
@@ -2635,6 +2632,7 @@ if (rows.length > 0) {
 
 let detectedLink = null;
 
+// lấy link thật từ HTML clipboard
 if (htmlData) {
 
   const temp =
@@ -2696,7 +2694,20 @@ if (htmlData) {
 
 } else {
 
+  if (detectedLink) {
+
+  input.innerHTML =
+    `<a href="${detectedLink}"
+        target="_blank"
+        rel="noopener noreferrer">
+        ${cleanValue}
+     </a>`;
+
+} else {
+
   input.innerText = cleanValue;
+
+}
 
 }
 

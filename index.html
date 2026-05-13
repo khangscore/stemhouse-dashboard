@@ -7,6 +7,9 @@
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
 
+  <!-- Restore favicon (emoji) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='%238b5cf6'/%3E%3Ctext x='50' y='64' font-size='44' text-anchor='middle' fill='white'%3E%F0%9F%A4%AA%3C/text%3E%3C/svg%3E">
+
   <style>
     /* ===================== THEME & ROOT ===================== */
     :root {
@@ -128,10 +131,10 @@
     /* highlight when clicked */
     .excel-cell.highlighted{ box-shadow: 0 0 0 3px var(--accent) !important; border-color:var(--accent) !important; }
 
-    /* MAIN container spacing: adjust when sidebar hover expands */
+    /* MAIN container spacing: JS-driven (robust) */
     main.container{ max-width:1200px; margin:0 auto; padding-top:60px; padding-bottom:100px; padding-left: calc(var(--sidebar-collapsed-width) + 48px); transition: padding-left .28s ease; position:relative; }
-    /* use general sibling so it still works if there are elements between aside and main */
-    .sidebar:hover ~ main.container{ padding-left: calc(var(--sidebar-width) + 56px); }
+    /* use body class toggled by JS to shift main reliably */
+    body.sidebar-open .container{ padding-left: calc(var(--sidebar-width) + 64px); }
 
     @media(max-width:900px){ .sidebar{ left:6px; } .calendar-cell{ min-height:100px; } }
   </style>
@@ -270,6 +273,29 @@
         const span = document.createElement('span'); span.textContent='🤪'; span.style.fontSize='1.4rem'; sel.insertAdjacentElement('afterend', span);
       } else { sel.textContent='🤪'; sel.style.fontSize='1.6rem'; sel.style.lineHeight='1'; sel.style.display='flex'; sel.style.alignItems='center'; sel.style.justifyContent='center'; }
     }
+  })();
+
+  // --- Make sidebar behavior robust: JS-driven class toggle (works regardless of DOM siblings) ---
+  (function sidebarOpenHandler(){
+    const sidebar = document.querySelector('.sidebar');
+    if(!sidebar) return;
+    const openClass = 'sidebar-open';
+    // mouse
+    sidebar.addEventListener('mouseenter', ()=> document.body.classList.add(openClass));
+    sidebar.addEventListener('mouseleave', ()=> document.body.classList.remove(openClass));
+    // touch / focus-friendly: toggle on click for small screens
+    sidebar.addEventListener('click', (e)=>{
+      // ignore clicks on nav items to allow navigation
+      if(e.target.closest('.nav-item')) return;
+      document.body.classList.toggle(openClass);
+    });
+    // ensure closing when clicking outside (for touch devices)
+    document.addEventListener('click', (e)=>{
+      if(!document.body.classList.contains(openClass)) return;
+      if(!e.target.closest('.sidebar')){
+        document.body.classList.remove(openClass);
+      }
+    });
   })();
 
   // --- Background image uploader (pencil button) ---

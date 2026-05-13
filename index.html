@@ -444,18 +444,34 @@
     .page-content.active-page { display: block; }
 
     .btn-save-fixed {
-      position: absolute;
-      top: 20px;
-      right: 0;
-      padding: 12px 30px;
-      background: #22c55e !important;
-      color: #fff !important;
-      border-radius: 12px;
-      font-weight: bold;
+      display: none; /* ẩn nút cũ ở góc phải */
+    }
+
+    .btn-save-bottom {
+      width: 100%;
+      max-width: 450px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #fff));
+      color: #fff;
       border: none;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(34, 197, 94, 0.35);
-      z-index: 100;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25), 0 2px 0 rgba(255,255,255,0.1) inset;
+      transition: all 0.15s;
+      position: relative;
+      top: 0;
+    }
+    .btn-save-bottom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.3);
+    }
+    .btn-save-bottom:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      top: 1px;
     }
 
     .avatar-preview-box {
@@ -470,10 +486,9 @@
 
     .color-palette {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
       width: 100%;
-      max-width: 220px;
       margin-top: 8px;
     }
 
@@ -990,9 +1005,9 @@
   border-radius:22px;
   padding:16px;
   backdrop-filter:blur(10px);
-  position: sticky;
-  top: 12px;
-  z-index: 100;
+  position:sticky;
+  top:12px;
+  z-index:100;
 }
 
 .excel-toolbar-left{
@@ -1351,9 +1366,259 @@ p {
   height: 10px;
 }
     
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0d1a;
+  overflow: hidden;
+}
+
+#login-screen .login-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(124,58,237,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(236,72,153,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(59,130,246,0.1) 0%, transparent 70%);
+  animation: bgPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes bgPulse {
+  0%   { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.05); }
+}
+
+#login-screen .login-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 30% 60%, rgba(200,180,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 90%, rgba(255,255,255,0.3) 0%, transparent 100%);
+}
+
+#login-screen .login-box {
+  position: relative;
+  width: 420px;
+  max-width: 92vw;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 28px;
+  padding: 44px 40px 40px;
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 0 60px rgba(124,58,237,0.2),
+    0 0 120px rgba(236,72,153,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: loginPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes loginPop {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+#login-screen .login-emoji {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 8px;
+  animation: wobble 2s ease-in-out infinite;
+}
+
+@keyframes wobble {
+  0%,100% { transform: rotate(-5deg) scale(1); }
+  50%      { transform: rotate(5deg) scale(1.1); }
+}
+
+#login-screen .login-title {
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #a78bfa, #f472b6, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+#login-screen .login-subtitle {
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+#login-screen .login-field {
+  margin-bottom: 18px;
+}
+
+#login-screen .login-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#login-screen .login-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  outline: none;
+}
+
+#login-screen .login-input:focus {
+  border-color: rgba(167,139,250,0.6);
+  background: rgba(167,139,250,0.08);
+  box-shadow: 0 0 0 3px rgba(167,139,250,0.12);
+}
+
+#login-screen .login-input::placeholder {
+  color: rgba(255,255,255,0.2);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+#login-screen .login-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+}
+
+#login-screen .login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124,58,237,0.5);
+}
+
+#login-screen .login-btn:active {
+  transform: translateY(0);
+}
+
+#login-screen .login-error {
+  text-align: center;
+  color: #f87171;
+  font-size: 0.8rem;
+  margin-top: 12px;
+  min-height: 20px;
+  font-weight: 600;
+}
+
+#login-screen .login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.2);
+}
+
   </style>
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // ⚠️ THAY BẰNG CONFIG FIREBASE CỦA BẠN
+    const firebaseConfig = {
+      apiKey:            "AIzaSyD5_BYdi2TriCyoQRTMAK2YtRp3IUhw_pc",
+      authDomain:        "khangscore-98bfc.firebaseapp.com",
+      databaseURL:       "https://khangscore-98bfc-default-rtdb.firebaseio.com",
+      projectId:         "khangscore-98bfc",
+      storageBucket:     "khangscore-98bfc.firebasestorage.app",
+      messagingSenderId: "871738411714",
+      appId:             "1:871738411714:web:2047751e4b96ea2126895b"
+    };
+
+    let db = null;
+    let fbReady = false;
+
+    try {
+      const app = initializeApp(firebaseConfig);
+      db = getDatabase(app);
+      fbReady = true;
+      console.log('✅ Firebase kết nối thành công!');
+    } catch (e) {
+      console.warn('⚠️ Firebase chưa cấu hình - chạy local-only:', e.message);
+    }
+
+    // Expose ra window để code dưới dùng
+    window._fb = { db, ref, onValue, set, fbReady };
+  </script>
 </head>
 <body id="body">
+
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-stars"></div>
+  <div class="login-box">
+    <div class="login-emoji">👾</div>
+    <div class="login-title">Chào mừng zô đây!</div>
+    <div class="login-subtitle">— nơi ai vào cũng được, nhưng phải có danh tính —</div>
+
+    <div class="login-field">
+      <label class="login-label">Tên của mày</label>
+      <input
+        class="login-input"
+        id="login-username"
+        type="text"
+        placeholder="SPIT THE NAME PLS"
+        maxlength="30"
+        autocomplete="off"
+      >
+    </div>
+
+    <div class="login-field">
+      <label class="login-label">Mật khẩu (không quan trọng lắm đâu)</label>
+      <input
+        class="login-input"
+        id="login-password"
+        type="password"
+        placeholder="MÚN NHẬP J NHẬP ĐI"
+        maxlength="50"
+        autocomplete="off"
+      >
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">
+      🚀 VÀO THÔI
+    </button>
+
+    <div class="login-error" id="login-error"></div>
+
+    <div class="login-footer">
+      🔒 Chỉ cần điền tên là vào được · mật khẩu tùy bạn nhập gì cũng được
+    </div>
+  </div>
+</div>
 
   <aside class="sidebar" id="sidebar">
     <button class="toggle-sidebar" id="toggleBtn"><span>❯</span></button>
@@ -1461,45 +1726,64 @@ p {
       <div class="header-group"><h1>Cài đặt</h1></div>
 
       <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
-        <div class="card" style="width:100%; max-width:450px;">
-          <h3 style="margin-bottom:15px;">Thông Tin Của Ní</h3>
-          <img id="previewAvatar" class="avatar-preview-box" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
-          <input type="text" id="usernameInput" style="width:100%; padding:10px; border-radius:10px; background:rgba(255,255,255,0.05); color:#fff; border:1px solid var(--card-border);" placeholder="Tên của ní...">
 
-          <div style="display:flex; gap:8px; width:100%; margin-top:15px;">
-            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#3b82f6; color:#fff;" id="btn-male" onclick="updatePreview('male')">Liam</button>
-            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#ec4899; color:#fff;" id="btn-female" onclick="updatePreview('female')">Adrian</button>
-            <button class="btn" style="flex:1; padding:8px; opacity:0.6; background:#f59e0b; color:#fff;" id="btn-dog" onclick="updatePreview('dog')">Luis</button>
+
+        <!-- ===== CARD GỘP: THÔNG TIN + AVATAR ===== -->
+        <div class="card" style="width:100%; max-width:450px; padding:24px;">
+          <h3 style="margin-bottom:20px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">✨ Ní nè Ní</h3>
+
+          <!-- Avatar căn giữa -->
+          <div style="display:flex; justify-content:center; margin-bottom:20px;">
+            <img id="previewAvatar" class="avatar-preview-box" style="width:120px; height:120px; margin-bottom:0;"
+              src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
           </div>
-        </div>
 
-        <div class="card" style="width:100%; max-width:450px;">
-          <h3 style="margin-bottom:15px;">Avatar Riêng Của Ní</h3>
-                    <label id="avatarDropZone" style="
+          <!-- Nút chọn nhân vật: icon trên, chữ dưới -->
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#3b82f6; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-male" onclick="updatePreview('male')">
+              <span style="font-size:1.4rem;">🐱</span>
+              <span style="font-size:0.78rem; font-weight:700;">Meo</span>
+            </button>
+            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#ec4899; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-female" onclick="updatePreview('female')">
+              <span style="font-size:1.4rem;">🐾</span>
+              <span style="font-size:0.78rem; font-weight:700;">Phi Meo</span>
+            </button>
+            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#f59e0b; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-dog" onclick="updatePreview('dog')">
+              <span style="font-size:1.4rem;">🍲</span>
+              <span style="font-size:0.78rem; font-weight:700;">Lẩu Gà</span>
+            </button>
+          </div>
+
+          <!-- Upload avatar riêng -->
+          <label id="avatarDropZone" style="
             width:100%;
-            min-height:180px;
+            min-height:90px;
             border:2px dashed var(--card-border);
-            border-radius:20px;
+            border-radius:16px;
             display:flex;
             flex-direction:column;
             align-items:center;
             justify-content:center;
-            gap:10px;
+            gap:6px;
             cursor:pointer;
-            padding:20px;
+            padding:14px;
             text-align:center;
-          ">
-            <div style="font-size:2rem;">🖼️</div>
-            <div style="font-weight:bold;">Kéo ảnh vào đây hoặc bấm để chọn</div>
-            <div style="font-size:0.85rem; opacity:0.7;">PNG / JPG / WEBP</div>
+            transition: border-color 0.2s, background 0.2s;
+            box-sizing:border-box;
+          " onmouseover="this.style.borderColor='var(--accent)'; this.style.background='rgba(255,255,255,0.04)'"
+             onmouseout="this.style.borderColor=''; this.style.background=''">
+            <div style="font-size:1.4rem;">🖼️</div>
+            <div style="font-weight:600; font-size:0.82rem;">Kéo ảnh vào hoặc bấm chọn</div>
+            <div style="font-size:0.72rem; opacity:0.5;">PNG / JPG / WEBP</div>
             <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
           </label>
 
-          <button class="btn" style="margin-top:15px;" onclick="removeCustomAvatar()">Xoá Avatar Riêng</button>
+          <button class="btn" style="margin-top:12px; padding:7px; font-size:0.8rem; opacity:0.6;" onclick="removeCustomAvatar()">🗑️ Xoá Avatar Riêng</button>
         </div>
 
-        <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 style="margin-bottom:10px; font-size:1rem;">Màu Chủ Đạo</h3>
+        <!-- ===== MÀU CHỦ ĐẠO ===== -->
+        <div class="card" style="padding:22px; width:100%; max-width:450px;">
+          <h3 style="margin-bottom:14px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">🎨 Màu Chủ Đạo</h3>
           <div class="color-palette">
             <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
             <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
@@ -1513,11 +1797,24 @@ p {
             <div class="color-dot" style="--dot-color:#eab308; background:#eab308;" onclick="setAccent('#eab308')"></div>
             <div class="color-dot" style="--dot-color:#3b82f6; background:#3b82f6;" onclick="setAccent('#3b82f6')"></div>
             <div class="color-dot" style="--dot-color:#ec4899; background:#ec4899;" onclick="setAccent('#ec4899')"></div>
+            <div class="color-dot" style="--dot-color:#fb923c; background:#fb923c;" onclick="setAccent('#fb923c')"></div>
+            <div class="color-dot" style="--dot-color:#10b981; background:#10b981;" onclick="setAccent('#10b981')"></div>
+            <div class="color-dot" style="--dot-color:#6366f1; background:#6366f1;" onclick="setAccent('#6366f1')"></div>
+            <div class="color-dot" style="--dot-color:#f97316; background:#f97316;" onclick="setAccent('#f97316')"></div>
+            <div class="color-dot" style="--dot-color:#0ea5e9; background:#0ea5e9;" onclick="setAccent('#0ea5e9')"></div>
+            <div class="color-dot" style="--dot-color:#d946ef; background:#d946ef;" onclick="setAccent('#d946ef')"></div>
+            <div class="color-dot" style="--dot-color:#65a30d; background:#65a30d;" onclick="setAccent('#65a30d')"></div>
+            <div class="color-dot" style="--dot-color:#dc2626; background:#dc2626;" onclick="setAccent('#dc2626')"></div>
+            <div class="color-dot" style="--dot-color:#7c3aed; background:#7c3aed;" onclick="setAccent('#7c3aed')"></div>
+            <div class="color-dot" style="--dot-color:#0891b2; background:#0891b2;" onclick="setAccent('#0891b2')"></div>
+            <div class="color-dot" style="--dot-color:#ff6b6b; background:#ff6b6b;" onclick="setAccent('#ff6b6b')"></div>
+            <div class="color-dot" style="--dot-color:#c084fc; background:#c084fc;" onclick="setAccent('#c084fc')"></div>
           </div>
         </div>
 
-        <div class="card" style="padding:20px; width:100%; max-width:340px;">
-          <h3 style="margin-bottom:12px; font-size:1rem;">Dữ Liệu</h3>
+        <!-- ===== DỮ LIỆU ===== -->
+        <div class="card" style="padding:22px; width:100%; max-width:450px;">
+          <h3 style="margin-bottom:14px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">💾 Dữ Liệu</h3>
           <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
             <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
             <label class="btn" style="margin-top:0; text-align:center;">
@@ -1526,6 +1823,10 @@ p {
             </label>
           </div>
         </div>
+
+        <!-- ===== NÚT LƯU ===== -->
+        <button class="btn-save-bottom" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
+
       </div>
     </div>
   </div>
@@ -1622,6 +1923,55 @@ function getAudioCtx() {
     return fallback;
   }
 }
+
+// ===== LOGIN LOGIC =====
+let currentUser = localStorage.getItem('ao_current_user') || null;
+
+function doLogin() {
+  const nameInput = document.getElementById('login-username');
+  const errorEl   = document.getElementById('login-error');
+  const name = (nameInput ? nameInput.value.trim() : currentUser) || '';
+
+  if (!name) {
+    if (errorEl) errorEl.textContent = '👆 Nhập tên đi bạn ơi... tên thôi cũng được!';
+    if (nameInput) nameInput.focus();
+    return;
+  }
+
+  currentUser = name;
+  localStorage.setItem('ao_current_user', name);
+
+  const loginScreen = document.getElementById('login-screen');
+  if (loginScreen) {
+    loginScreen.style.animation = 'loginFadeOut 0.35s ease forwards';
+    setTimeout(() => {
+      loginScreen.style.display = 'none';
+      const sidebarName = document.getElementById('sidebarUsernameDisplay');
+      if (sidebarName) sidebarName.textContent = name;
+    }, 350);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  ['login-username','login-password'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  });
+
+  // Đã login trước đó → auto vào luôn
+  if (currentUser) {
+    const usernameEl = document.getElementById('login-username');
+    if (usernameEl) usernameEl.value = currentUser;
+    doLogin();
+  }
+});
+
+const _fadeStyle = document.createElement('style');
+_fadeStyle.textContent = `@keyframes loginFadeOut {
+  from { opacity:1; transform:scale(1); }
+  to   { opacity:0; transform:scale(1.04); }
+}`;
+document.head.appendChild(_fadeStyle);
     
     let appConfig = safeJSONParse('ao_v6_config', {
   name: "Ní Hào Ma",
@@ -1666,6 +2016,40 @@ let notesData = safeJSONParse('ao_notes_v1', {
       localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
       localStorage.setItem('ao_notes_v1', JSON.stringify(notesData));
     }
+
+    // ===== FIREBASE SYNC =====
+    // Ghi excel data lên Firebase (shared cho mọi người)
+    function fbSaveExcel() {
+      const fb = window._fb;
+      if (!fb || !fb.fbReady || !fb.db) return;
+      try {
+        fb.set(fb.ref(fb.db, 'shared/excelData'), excelData);
+      } catch(e) { console.warn('Firebase write lỗi:', e); }
+    }
+
+    // Lắng nghe thay đổi từ Firebase để sync realtime
+    function fbListenExcel() {
+      const fb = window._fb;
+      if (!fb || !fb.fbReady || !fb.db) return;
+      fb.onValue(fb.ref(fb.db, 'shared/excelData'), (snapshot) => {
+        const data = snapshot.val();
+        if (!data) return;
+        // Chỉ update nếu dữ liệu thật sự khác (tránh vòng lặp)
+        if (JSON.stringify(data) !== JSON.stringify(excelData)) {
+          Object.assign(excelData, data);
+          localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+          renderExcelSheet && renderExcelSheet();
+          console.log('🔄 Excel sync từ Firebase');
+        }
+      });
+    }
+
+    // Khởi động lắng nghe sau khi DOM ready
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        fbListenExcel();
+      }, 1000);
+    });
     let saveTimeout;
 
 function saveDataDebounced() {
@@ -1878,8 +2262,12 @@ if (targetPage) targetPage.classList.add('active-page');
 }
 
     function saveAllSettings() {
-      appConfig.name = document.getElementById('usernameInput').value || appConfig.name;
+      // Tên lấy từ login (currentUser), không còn input nữa
+      if (currentUser) appConfig.name = currentUser;
       if (appConfig.tempGender) appConfig.gender = appConfig.tempGender;
+      // Lưu settings riêng theo user
+      const userKey = currentUser ? `ao_v6_config_${currentUser}` : 'ao_v6_config';
+      localStorage.setItem(userKey, JSON.stringify(appConfig));
       saveData();
       applyConfig();
       alert('Đã lưu rồi ní ơi!');
@@ -1900,7 +2288,17 @@ const darkMap = {
   '#14b8a6': '#0f766e',
   '#eab308': '#ca8a04',
   '#3b82f6': '#2563eb',
-  '#ec4899': '#db2777'
+  '#ec4899': '#db2777',
+  '#fb923c': '#ea580c',
+  '#10b981': '#059669',
+  '#6366f1': '#4f46e5',
+  '#f97316': '#ea580c',
+  '#0ea5e9': '#0284c7',
+  '#d946ef': '#c026d3',
+  '#65a30d': '#4d7c0f',
+  '#dc2626': '#b91c1c',
+  '#7c3aed': '#6d28d9',
+  '#0891b2': '#0e7490'
 };
 
 document.documentElement.style.setProperty('--accent-dark', darkMap[appConfig.accent] || appConfig.accent);
@@ -1909,15 +2307,16 @@ document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appCon
       document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
       document.getElementById('themeBtn').innerText = appConfig.isLightMode ? '😎' : '🤪';
 
-      document.getElementById('sidebarUsernameDisplay').innerText = appConfig.name;
-      document.getElementById('usernameInput').value = appConfig.name;
+      const displayName = currentUser || appConfig.name || 'Ní Hào Ma';
+      document.getElementById('sidebarUsernameDisplay').innerText = displayName;
 
-      const seeds = { male:'Liam', female:'Adrian', dog:'Luis' };
-      const avatar = appConfig.customAvatar || `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender]}`;
+      // Đổi seed avatar theo tên mới: Meo, Phi Meo, Lẩu Gà
+      const seeds = { male:'Meo', female:'PhiMeo', dog:'LauGa' };
+      const avatar = appConfig.customAvatar || `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender] || 'Meo'}`;
 
       document.getElementById('sidebarAvatar').src = avatar;
       document.getElementById('previewAvatar').src = avatar;
-      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${appConfig.name}! 🚀`;
+      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${displayName}! 🚀`;
     }
 
     function toggleTheme() {
@@ -2478,7 +2877,7 @@ let excelRows = 100; // 👉 số hàng
     if (!sure) return;
 
     excelData = {};
-    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
     renderExcelSheet();
   }
 
@@ -2542,7 +2941,7 @@ newData[key] = {
       });
 
       excelData = newData;
-      localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+      localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
       renderExcelSheet();
       alert('Import CSV thành công nha ní!');
     };
@@ -2613,7 +3012,7 @@ document.addEventListener('paste', function (e) {
     const key = cell.dataset.cell;
     excelData[key] = { raw: text, value: evaluateFormula(text) };
   }
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
 });
 
 // ===== HANDLE MULTI PASTE (fixed: giữ link từ HTML clipboard) =====
@@ -2685,7 +3084,7 @@ function handleMultiPaste(text, startCell, htmlData) {
     });
   });
 
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
   requestAnimationFrame(() => renderExcelSheet());
 }
 // ===== SELECT ENGINE =====

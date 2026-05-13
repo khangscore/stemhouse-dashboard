@@ -1,4 +1,13 @@
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='black'/%3E%3Ccircle cx='50' cy='50' r='43' fill='%23FFD133'/%3E%3Ccircle cx='32' cy='38' r='14' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='32' cy='38' r='5' fill='black'/%3E%3Ccircle cx='68' cy='30' r='10' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='68' cy='30' r='4' fill='black'/%3E%3Cpath d='M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M 40 55 Q 50 85 70 70 L 60 55 Z' fill='%23FF4747' stroke='black' stroke-width='1.5'/%3E%3Crect x='27' y='55' width='46' height='6' fill='white'/%3E%3C/svg%3E">
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AO Dashboard Q10 | Custom Edition</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='black'/%3E%3Ccircle cx='50' cy='50' r='43' fill='%23FFD133'/%3E%3Ccircle cx='32' cy='38' r='14' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='32' cy='38' r='5' fill='black'/%3E%3Ccircle cx='68' cy='30' r='10' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='68' cy='30' r='4' fill='black'/%3E%3Cpath d='M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M 40 55 Q 50 85 70 70 L 60 55 Z' fill='%23FF4747' stroke='black' stroke-width='1.5'/%3E%3Crect x='27' y='55' width='46' height='6' fill='white'/%3E%3C/svg%3E">
 
   <style>
     :root {
@@ -1047,6 +1056,12 @@
   vertical-align:middle;
 }
 
+.excel-table td a {
+  color: #1E90FF;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
 .excel-table th{
   position:sticky;
   top:0;
@@ -1332,12 +1347,9 @@ p {
 .excel-container::-webkit-scrollbar {
   height: 10px;
 }
-
-.excel-table td a {
-  color: #1E90FF;
-  text-decoration: underline;
-  font-weight: 600;
-}
+position: sticky;
+top: 12px;
+z-index: 100;
     
   </style>
 </head>
@@ -1426,6 +1438,8 @@ p {
           <input type="file" id="csvImport" accept=".csv" style="display:none;">
         </label>
         <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
+        <button class="btn excel-btn" onclick="addRow()">➕ Dòng</button>
+        <button class="btn excel-btn" onclick="addColumn()">➕ Cột</button>
       </div>
       <div class="excel-toolbar-right">
         <span class="excel-badge">Auto Save</span>
@@ -2366,7 +2380,7 @@ function evaluateFormula(value) {
 }
 
 const excelCols = generateCols(50); // 👉 muốn bao nhiêu cột tùy bạn
-const excelRows = 100; // 👉 số hàng
+let excelRows = 100; // 👉 số hàng
 
   function renderExcelSheet() {
     const table = document.getElementById('excelTable');
@@ -3004,6 +3018,15 @@ function initResize() {
   excelCols.push(newCol);
   renderExcelSheet();
   initResize();
+}
+
+function addRow() {
+  excelRows += 1;
+  renderExcelSheet();
+  initResize();
+  // Scroll xuống dòng mới
+  const table = document.getElementById('excelTable');
+  if (table) table.scrollIntoView({ block: 'end', behavior: 'smooth' });
 }
 
 // ===== MỞ LINK KHI CLICK (fixed cho contenteditable) =====

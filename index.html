@@ -2193,14 +2193,23 @@ document.addEventListener('click', function(e) {
   // ===== EXCEL CORE STATE =====
 
 function formatCellDisplay(value) {
-  const str = String(value || "");
-
-  const urlPattern = /(https?:\/\/[^\s]+)/g;
-
-  if (urlPattern.test(str)) {
-    return `<a href="${str}" target="_blank">${str}</a>`;
+  // Nếu là object (có thể có .url riêng cho hyperlink)
+  if (typeof value === 'object' && value !== null) {
+    const text = value.value || value.raw || '';
+    const url  = value.url  || '';
+    if (url) {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${text || url}</a>`;
+    }
+    if (/https?:\/\//.test(text)) {
+      return `<a href="${text}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    }
+    return text;
   }
 
+  const str = String(value || '');
+  if (/https?:\/\//.test(str)) {
+    return `<a href="${str}" target="_blank" rel="noopener noreferrer">${str}</a>`;
+  }
   return str;
 }
 
@@ -2388,17 +2397,9 @@ const excelRows = 100; // 👉 số hàng
 
       excelCols.forEach(col => {
         const key = `${col}${row}`;
-        let value = excelData[key] || '';
+        // Truyền NGUYÊN object vào formatCellDisplay để giữ url
+        const value = excelData[key] || '';
 
-if (
-  typeof value === 'object' &&
-  value !== null
-) {
-  value =
-    value.value ||
-    value.text ||
-    '';
-}
         html += `
  <td 
   contenteditable="true"
@@ -2570,160 +2571,111 @@ newData[key] = {
       if (file) importCSVFile(file);
     }
   });
-// ===== PASTE MULTI CELL CHO INPUT =====
-// ===== PASTE MULTI CELL =====
+// ===== PASTE MULTI CELL (fixed) =====
 
 document.addEventListener('paste', function (e) {
 
   let cell = document.activeElement;
-
   if (!cell || !cell.classList.contains('cell')) {
     cell = e.target.closest('.cell');
   }
-
   if (!cell) return;
 
-  const text =
-    e.clipboardData.getData('text/plain');
+  e.preventDefault();
 
-  const htmlData =
-  e.clipboardData.getData('text/html');
-  
-  if (
-    text.includes('\n') ||
-    text.includes('\t')
-  ) {
+  const text     = e.clipboardData.getData('text/plain');
+  const htmlData = e.clipboardData.getData('text/html');
 
-    e.preventDefault();
-
-    handleMultiPaste(text,cell,htmlData
-);
-  }
-
-});
-
-function handlePasteToInputs(text, startInput) {
-text = text.replace(/<[^>]*>/g, '');
-text = text.replace(/\r/g, '');
-text = text.replace(/[^\p{L}\p{N}\s\n\t.,-]/gu, '');
-text = text.trim();
-if (rows.length > 0) {
-  rows[0] = rows[0].replace(/^\uFEFF/, '');
-}
-
-  // 🚫 nếu không có dạng bảng thì bỏ
-  if (!text.includes('\t') && !text.includes('\n')) {
-    console.warn('⛔ Không phải dữ liệu bảng');
+  // Multi-cell paste (có tab hoặc newline)
+  if (text.includes('\n') || text.includes('\t')) {
+    handleMultiPaste(text, cell, htmlData);
     return;
   }
 
-  // ===== 📊 XỬ LÝ =====
-  const rows = text.split('\n').filter(r => r.trim() !== '');
-
-  const startKey = startInput.dataset.cell;
-  const startCol = startKey.charCodeAt(0);
-  const startRow = parseInt(startKey.slice(1));
-
-  rows.forEach((rowText, rIndex) => {
-    const cols = rowText.split('\t');
-
-    cols.forEach((value, cIndex) => {
-      let cleanValue = value.trim();
-
-let detectedLink = null;
-
-// lấy link thật từ HTML clipboard
-if (htmlData) {
-
-  const temp =
-    document.createElement('div');
-
-  temp.innerHTML = htmlData;
-
-  const a = temp.querySelector('a');
-
-  if (a && a.href) {
-    detectedLink = a.href;
-  }
-}
-      
-      // bỏ khoảng trắng dư
-      cleanValue = cleanValue.replace(/\s+/g, ' ');
-
-      // chặn quá dài (anti phá)
-      if (cleanValue.length > 100) {
-        cleanValue = cleanValue.slice(0, 100);
-      }
-
-      const colLetter = String.fromCharCode(startCol + cIndex);
-      const rowNumber = startRow + rIndex;
-
-      if (colLetter > 'H') return;
-      if (rowNumber > 20) return;
-
-      const key = `${colLetter}${rowNumber}`;
-
-      excelData[key] = {
-  raw: cleanValue,
-  value: evaluateFormula(cleanValue)
-};
-
-      const input = document.querySelector(`[data-cell="${key}"]`);
-      if (input) {
-
-  // link
-  if (/https?:\/\/[^\s]+/.test(cleanValue)) {
-
-    input.innerHTML =
-      `<a href="${cleanValue}"
-          target="_blank">
-          rel="noopener noreferrer"
-          ${cleanValue}
-       </a>`;
-
+  // Single-cell paste
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML = `<a href="${text}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    const key = cell.dataset.cell;
+    excelData[key] = { raw: text, value: text, url: text };
   } else {
+    cell.innerText = text;
+    const key = cell.dataset.cell;
+    excelData[key] = { raw: text, value: evaluateFormula(text) };
+  }
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+});
 
-    if (detectedLink) {
+// ===== HANDLE MULTI PASTE (fixed: giữ link từ HTML clipboard) =====
+function handleMultiPaste(text, startCell, htmlData) {
 
-  input.innerHTML =
-    `<a href="${detectedLink}"
-        target="_blank"
-        rel="noopener noreferrer">
-        ${cleanValue}
-     </a>`;
+  saveState();
 
-} else {
-
-  if (detectedLink) {
-
-  input.innerHTML =
-    `<a href="${detectedLink}"
-        target="_blank"
-        rel="noopener noreferrer">
-        ${cleanValue}
-     </a>`;
-
-} else {
-
-  input.innerText = cleanValue;
-
-}
-
-}
-
+  // --- Bước 1: Parse HTML clipboard để lấy href theo vị trí từng ô ---
+  const htmlCells = {};
+  if (htmlData) {
+    const temp = document.createElement('div');
+    temp.innerHTML = htmlData;
+    const trs = temp.querySelectorAll('tr');
+    trs.forEach((tr, rIdx) => {
+      const tds = tr.querySelectorAll('td, th');
+      tds.forEach((td, cIdx) => {
+        const a = td.querySelector('a');
+        htmlCells[`${rIdx},${cIdx}`] = {
+          href: a ? a.href : null,
+          text: td.innerText.trim()
+        };
+      });
+    });
   }
 
-  input.style.background =
-    'rgba(34,197,94,0.3)';
+  // --- Bước 2: Parse text/plain thành mảng 2D ---
+  const rows = text.trim().split('\n').map(row => row.split('\t'));
 
-  setTimeout(() => {
-    input.style.background = '';
-  }, 400);
-}
+  const startKey = startCell.dataset ? startCell.dataset.cell : startCell;
+  const match = startKey.match(/([A-Z]+)(\d+)/);
+  if (!match) return;
+
+  const startCol = match[1].charCodeAt(0) - 65;
+  const startRow = parseInt(match[2]);
+
+  rows.forEach((row, rIndex) => {
+    row.forEach((value, cIndex) => {
+      const colLetter  = String.fromCharCode(65 + startCol + cIndex);
+      const rowNumber  = startRow + rIndex;
+      const key        = `${colLetter}${rowNumber}`;
+      const cleanValue = value.trim();
+
+      // Lấy href của ô tương ứng từ HTML clipboard (nếu có)
+      const htmlCell = htmlCells[`${rIndex},${cIndex}`];
+      const href     = (htmlCell && htmlCell.href) ? htmlCell.href : null;
+
+      // Lưu dữ liệu (kèm url nếu có)
+      excelData[key] = {
+        raw:   cleanValue,
+        value: evaluateFormula(cleanValue),
+        ...(href ? { url: href } : {})
+      };
+
+      // Cập nhật cell DOM
+      const targetCell = document.querySelector(`[data-cell="${key}"]`);
+      if (targetCell) {
+        if (href) {
+          targetCell.innerHTML = `<a href="${href}" target="_blank" rel="noopener noreferrer">${cleanValue || href}</a>`;
+        } else if (/https?:\/\//.test(cleanValue)) {
+          targetCell.innerHTML = `<a href="${cleanValue}" target="_blank" rel="noopener noreferrer">${cleanValue}</a>`;
+        } else {
+          targetCell.innerText = cleanValue;
+        }
+
+        // Flash xanh nhẹ để biết ô đã được paste
+        targetCell.style.background = 'rgba(34,197,94,0.3)';
+        setTimeout(() => { targetCell.style.background = ''; }, 400);
+      }
     });
   });
 
   localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  requestAnimationFrame(() => renderExcelSheet());
 }
 // ===== SELECT ENGINE =====
 
@@ -2860,7 +2812,7 @@ document.addEventListener('keydown', function(e) {
   }
 
 });
-  // ===== COPY =====
+  // ===== COPY (fixed: giữ link khi paste vào Excel) =====
 document.addEventListener('copy', function(e) {
   if (selectedCells.size === 0) return;
 
@@ -2868,36 +2820,58 @@ document.addEventListener('copy', function(e) {
 
   const cells = Array.from(selectedCells).sort();
 
-  let text = '';
-
-  let currentRow = null;
+  let text        = '';
+  let currentRow  = null;
+  let htmlRows    = [];
+  let currentHtml = [];
 
   cells.forEach(key => {
-    const row = key.slice(1);
-    let value = excelData[key] || '';
+    const row      = key.slice(1);
+    const cellData = excelData[key] || '';
 
-if (
-  typeof value === 'object' &&
-  value !== null
-) {
-  value = value.value || '';
-}
+    let displayValue = '';
+    let urlValue     = '';
 
-if (currentRow === null) {
-  currentRow = row;
-}
+    if (typeof cellData === 'object' && cellData !== null) {
+      displayValue = cellData.value || cellData.raw || '';
+      urlValue     = cellData.url   || '';
+    } else {
+      displayValue = String(cellData);
+    }
 
-if (row !== currentRow) {
-  text += '\n';
-  currentRow = row;
-} else if (text !== '') {
-  text += '\t';
-}
+    if (currentRow === null) {
+      currentRow = row;
+    }
 
-text += value;
+    if (row !== currentRow) {
+      text += '\n';
+      htmlRows.push(currentHtml);
+      currentHtml = [];
+      currentRow  = row;
+    } else if (text !== '') {
+      text += '\t';
+    }
+
+    text += displayValue;
+
+    // Tạo cell HTML: nếu có url thì bọc <a>
+    const effectiveUrl = urlValue || (/https?:\/\//.test(displayValue) ? displayValue : '');
+    if (effectiveUrl) {
+      currentHtml.push(`<td><a href="${effectiveUrl}">${displayValue}</a></td>`);
+    } else {
+      currentHtml.push(`<td>${displayValue}</td>`);
+    }
   });
 
+  htmlRows.push(currentHtml);
+
+  const htmlTable =
+    `<table><tbody>` +
+    htmlRows.map(r => `<tr>${r.join('')}</tr>`).join('') +
+    `</tbody></table>`;
+
   e.clipboardData.setData('text/plain', text);
+  e.clipboardData.setData('text/html',  htmlTable);
 });
   let selectionBox = document.createElement('div');
 selectionBox.className = 'selection-box';
@@ -3035,126 +3009,27 @@ function initResize() {
   initResize();
 }
 
-document.addEventListener("click", function (e) {
-  if (e.target.tagName === "A") {
-    if (e.ctrlKey) {
-      window.open(e.target.href, "_blank");
-    } else {
-      e.preventDefault(); // không mở
-    }
+// ===== MỞ LINK KHI CLICK (fixed cho contenteditable) =====
+// Dùng mousedown vì contenteditable chặn click thông thường
+document.addEventListener("mousedown", function (e) {
+  const a = e.target.closest("a[href]");
+  if (!a) return;
+
+  // Chỉ xử lý link nằm trong cell của sheet
+  if (!a.closest("[data-cell]")) return;
+
+  e.preventDefault(); // ngăn contenteditable bắt cursor
+  e.stopPropagation();
+
+  const url = a.href;
+  if (url && url !== "javascript:void(0)") {
+    window.open(url, "_blank", "noopener,noreferrer");
   }
 });
 
-  document.addEventListener("paste", function (e) {
-  let cell = document.activeElement;
+  // (paste handler đã được khai báo ở trên - không lặp lại)
 
-  // 🔥 FIX: nếu không phải cell thì tìm cell gần nhất
-  if (!cell || !cell.classList.contains("cell")) {
-    cell = e.target.closest(".cell");
-  }
-
-  if (!cell) return;
-
-  e.preventDefault();
-
-  const text = e.clipboardData.getData("text/plain");
-
-  // 👉 nếu là multi paste
-  if (text.includes("\n") || text.includes("\t")) {
-    handleMultiPaste(
-  text,
-  cell,
-  htmlData
-);
-    return;
-  }
-
- // 👉 nếu là 1 ô thường
-if (/https?:\/\/[^\s]+/.test(text)) {
-  cell.innerHTML = `<a href="${text}" target="_blank">${text}</a>`;
-} else {
-  cell.innerText = text;
-}
-
-  // lưu data
-  const key = cell.dataset.cell;
-  excelData[key] = cell.innerText.trim();
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
-});
-
-function handleMultiPaste(
-  text,
-  startCell,
-  htmlData
-) {
-
-  saveState();
-
-  const rows =
-    text
-      .trim()
-      .split("\n")
-      .map(row => row.split("\t"));
-
-  const startKey =
-    startCell.dataset.cell;
-
-  const match =
-    startKey.match(/([A-Z]+)(\d+)/);
-
-  if (!match) return;
-
-  const startColLetters = match[1];
-  const startRow = parseInt(match[2]);
-
-  const startCol =
-    startColLetters.charCodeAt(0) - 65;
-
-  rows.forEach((row, rIndex) => {
-
-    row.forEach((value, cIndex) => {
-
-      const colLetter =
-        String.fromCharCode(
-          65 + startCol + cIndex
-        );
-
-      const rowNumber =
-        startRow + rIndex;
-
-      const key =
-        `${colLetter}${rowNumber}`;
-
-      excelData[key] = {
-        raw: value.trim(),
-        value: evaluateFormula(
-          value.trim()
-        )
-      };
-
-      const targetCell =
-        document.querySelector(
-          `[data-cell="${key}"]`
-        );
-
-      if (targetCell) {
-        targetCell.innerText =
-          excelData[key].value;
-      }
-
-    });
-
-  });
-
-  localStorage.setItem(
-    'ao_excel_v1',
-    JSON.stringify(excelData)
-  );
-
-  requestAnimationFrame(() => {
-    renderExcelSheet();
-  });
-}
+// handleMultiPaste đã được định nghĩa ở trên (phiên bản có giữ link)
   
 </script>
   

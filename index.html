@@ -1990,7 +1990,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
   '🌐','🌍','🗺️','📍','🚀','✈️','🚗','🚆','⛽','🧭','🏠','🏢',
   '🎓','📖','✏️','🧠','🧑‍🏫','🏫','📒','📓','📔','🖍️','📐','✂️',
   '🎨','🖌️','🖼️','🎬','🎤','🎧','🎵','🎹','🎸','🎻','🥁','🎼',
-  '🎮','🕹️','👾','🏆','🎯','🎲','♟️','🃏','🎪','🎭','🎉','🎁',
+  '🎮','����️','👾','🏆','🎯','🎲','♟️','🃏','🎪','🎭','🎉','🎁',
   '🍔','🍕','🍟','🌮','🍜','☕','🧋','🍩','🍪','🍓','🍎','🍉',
   '🐼','🦊','🐱','🐶','🐻','🐸','🐵','🦄','🐯','🐧','🐙','🦖',
   '🌈','⭐','🌙','☀️','⛅','🌊','🌴','🍀','🌸','🌻','❄️','☁️'
@@ -2022,6 +2022,31 @@ let notesData = safeJSONParse('ao_notes_v1', {
       fbWrite('shared/excelData', excelData);
     }
 
+    // --- MỚI: ghi 1 ô riêng lẻ (giảm ghi đè) ---
+    function fbUpdateCell(cellKey) {
+      if (!_db) return;
+      try {
+        const payload = excelData[cellKey] || { raw: '', value: '' };
+        _db.ref(`shared/excelData/${cellKey}`).set(payload);
+      } catch (e) {
+        console.warn('FB cell write lỗi:', e);
+      }
+    }
+
+    // --- MỚI: ghi toàn bộ sheet nhưng debounce để tránh spam ---
+    let fbSaveTimer = null;
+    function fbSaveWholeSheetDebounced(delay = 500) {
+      if (!_db) return;
+      clearTimeout(fbSaveTimer);
+      fbSaveTimer = setTimeout(() => {
+        try {
+          _db.ref('shared/excelData').set(excelData);
+        } catch (e) {
+          console.warn('FB full write lỗi:', e);
+        }
+      }, delay);
+    }
+
     // Ghi Shortcuts lên Firebase
     function fbSaveShortcuts() {
       fbWrite('shared/shortcuts', userShortcuts);
@@ -2034,9 +2059,12 @@ let notesData = safeJSONParse('ao_notes_v1', {
         // Sync Excel
         _db.ref('shared/excelData').on('value', snap => {
           const data = snap.val();
-          if (!data) return;
-          if (JSON.stringify(data) !== JSON.stringify(excelData)) {
-            excelData = data;
+          // Nếu null (DB trống) -> chuyển về {}
+          const newData = data === null ? {} : data;
+
+          // Cập nhật local nếu khác
+          if (JSON.stringify(newData) !== JSON.stringify(excelData)) {
+            excelData = newData;
             localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
             renderExcelSheet && renderExcelSheet();
             console.log('🔄 Excel synced từ Firebase');
@@ -2689,6 +2717,8 @@ function undo() {
   columnWidths = prev.columnWidths;
 
   renderExcelSheet();
+  // Đồng bộ thay đổi undo lên Firebase (debounced)
+  fbSaveWholeSheetDebounced();
 }
 
 function redo() {
@@ -2709,6 +2739,8 @@ function redo() {
   columnWidths = next.columnWidths;
 
   renderExcelSheet();
+  // Đồng bộ thay đổi redo lên Firebase (debounced)
+  fbSaveWholeSheetDebounced();
 }
 
 function setCell(cell, value) {
@@ -2724,6 +2756,11 @@ function setCell(cell, value) {
     'ao_excel_v1',
     JSON.stringify(excelData)
   );
+
+  // Ghi từng ô lên Firebase
+  fbUpdateCell(cell);
+  // Và cũng đảm bảo ghi cả sheet sau 1 khoảng (nếu cần)
+  fbSaveWholeSheetDebounced();
 }
 
 function getCell(cell) {
@@ -2879,6 +2916,14 @@ let excelRows = 100; // 👉 số hàng
     'ao_excel_v1',
     JSON.stringify(excelData)
   );
+
+  // --- MỚI: ghi thay đổi ô lên Firebase, và debounce ghi toàn sheet ---
+  try {
+    fbUpdateCell(key);
+    fbSaveWholeSheetDebounced();
+  } catch (e) {
+    console.warn('Lỗi khi gửi lên Firebase:', e);
+  }
 }
 
   function clearSheet() {
@@ -2886,7 +2931,9 @@ let excelRows = 100; // 👉 số hàng
     if (!sure) return;
 
     excelData = {};
-    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+    // Ghi lên Firebase (debounced)
+    fbSaveWholeSheetDebounced();
     renderExcelSheet();
   }
 
@@ -2950,7 +2997,9 @@ newData[key] = {
       });
 
       excelData = newData;
-      localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+      localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+      // Đồng bộ toàn bộ sheet (debounced)
+      fbSaveWholeSheetDebounced();
       renderExcelSheet();
       alert('Import CSV thành công nha ní!');
     };
@@ -2990,7 +3039,7 @@ newData[key] = {
       if (file) importCSVFile(file);
     }
   });
-// ===== PASTE MULTI CELL (fixed) =====
+<!-- ===== PASTE MULTI CELL (fixed) ===== -->
 
 document.addEventListener('paste', function (e) {
 
@@ -3016,15 +3065,21 @@ document.addEventListener('paste', function (e) {
     cell.innerHTML = `<a href="${text}" target="_blank" rel="noopener noreferrer">${text}</a>`;
     const key = cell.dataset.cell;
     excelData[key] = { raw: text, value: text, url: text };
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+    // Ghi 1 ô lên Firebase
+    fbUpdateCell(key);
   } else {
     cell.innerText = text;
     const key = cell.dataset.cell;
     excelData[key] = { raw: text, value: evaluateFormula(text) };
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+    fbUpdateCell(key);
   }
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+  // Đồng bộ toàn bộ sheet sau 1 thời gian (nếu cần)
+  fbSaveWholeSheetDebounced();
 });
 
-// ===== HANDLE MULTI PASTE (fixed: giữ link từ HTML clipboard) =====
+<!-- ===== HANDLE MULTI PASTE (fixed: giữ link từ HTML clipboard) ===== -->
 function handleMultiPaste(text, startCell, htmlData) {
 
   saveState();
@@ -3093,10 +3148,12 @@ function handleMultiPaste(text, startCell, htmlData) {
     });
   });
 
-  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+  // Đồng bộ toàn bộ sheet (debounced) sau multi-paste
+  fbSaveWholeSheetDebounced();
   requestAnimationFrame(() => renderExcelSheet());
 }
-// ===== SELECT ENGINE =====
+<!-- ===== SELECT ENGINE ===== -->
 
 function startSelect(input, e) {
   isSelecting = true;
@@ -3224,6 +3281,9 @@ document.addEventListener('keydown', function(e) {
       'ao_excel_v1',
       JSON.stringify(excelData)
     );
+
+    // Đồng bộ thay đổi (debounced)
+    fbSaveWholeSheetDebounced();
 
     requestAnimationFrame(() => {
       renderExcelSheet();
@@ -3457,8 +3517,6 @@ document.addEventListener("mousedown", function (e) {
 
   // (paste handler đã được khai báo ở trên - không lặp lại)
 
-// handleMultiPaste đã được định nghĩa ở trên (phiên bản có giữ link)
-  
 </script>
   
 </body>

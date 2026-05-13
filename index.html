@@ -1541,12 +1541,10 @@ p {
 }
 
   </style>
-  <!-- Firebase SDK -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
-
-    // ⚠️ THAY BẰNG CONFIG FIREBASE CỦA BẠN
+  <!-- Firebase compat SDK (load đồng bộ, không bị lỗi timing) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
     const firebaseConfig = {
       apiKey:            "AIzaSyD5_BYdi2TriCyoQRTMAK2YtRp3IUhw_pc",
       authDomain:        "khangscore-98bfc.firebaseapp.com",
@@ -1556,21 +1554,14 @@ p {
       messagingSenderId: "871738411714",
       appId:             "1:871738411714:web:2047751e4b96ea2126895b"
     };
-
-    let db = null;
-    let fbReady = false;
-
     try {
-      const app = initializeApp(firebaseConfig);
-      db = getDatabase(app);
-      fbReady = true;
-      console.log('✅ Firebase kết nối thành công!');
-    } catch (e) {
-      console.warn('⚠️ Firebase chưa cấu hình - chạy local-only:', e.message);
+      firebase.initializeApp(firebaseConfig);
+      window._firebaseDB = firebase.database();
+      console.log('✅ Firebase kết nối OK');
+    } catch(e) {
+      console.warn('⚠️ Firebase lỗi:', e.message);
+      window._firebaseDB = null;
     }
-
-    // Expose ra window để code dưới dùng
-    window._fb = { db, ref, onValue, set, fbReady };
   </script>
 </head>
 <body id="body">
@@ -2017,38 +2008,53 @@ let notesData = safeJSONParse('ao_notes_v1', {
       localStorage.setItem('ao_notes_v1', JSON.stringify(notesData));
     }
 
-    // ===== FIREBASE SYNC =====
-    // Ghi excel data lên Firebase (shared cho mọi người)
+    // ===== FIREBASE SYNC (compat SDK) =====
+    const _db = window._firebaseDB;
+
+    function fbWrite(path, data) {
+      if (!_db) return;
+      try { _db.ref(path).set(data); }
+      catch(e) { console.warn('FB write lỗi:', e); }
+    }
+
+    // Ghi Excel lên Firebase
     function fbSaveExcel() {
-      const fb = window._fb;
-      if (!fb || !fb.fbReady || !fb.db) return;
-      try {
-        fb.set(fb.ref(fb.db, 'shared/excelData'), excelData);
-      } catch(e) { console.warn('Firebase write lỗi:', e); }
+      fbWrite('shared/excelData', excelData);
     }
 
-    // Lắng nghe thay đổi từ Firebase để sync realtime
-    function fbListenExcel() {
-      const fb = window._fb;
-      if (!fb || !fb.fbReady || !fb.db) return;
-      fb.onValue(fb.ref(fb.db, 'shared/excelData'), (snapshot) => {
-        const data = snapshot.val();
-        if (!data) return;
-        // Chỉ update nếu dữ liệu thật sự khác (tránh vòng lặp)
-        if (JSON.stringify(data) !== JSON.stringify(excelData)) {
-          Object.assign(excelData, data);
-          localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
-          renderExcelSheet && renderExcelSheet();
-          console.log('🔄 Excel sync từ Firebase');
-        }
-      });
+    // Ghi Shortcuts lên Firebase
+    function fbSaveShortcuts() {
+      fbWrite('shared/shortcuts', userShortcuts);
     }
 
-    // Khởi động lắng nghe sau khi DOM ready
+    // Bắt đầu lắng nghe realtime
     document.addEventListener('DOMContentLoaded', () => {
+      if (!_db) { console.warn('Firebase không khả dụng'); return; }
       setTimeout(() => {
-        fbListenExcel();
-      }, 1000);
+        // Sync Excel
+        _db.ref('shared/excelData').on('value', snap => {
+          const data = snap.val();
+          if (!data) return;
+          if (JSON.stringify(data) !== JSON.stringify(excelData)) {
+            excelData = data;
+            localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+            renderExcelSheet && renderExcelSheet();
+            console.log('🔄 Excel synced từ Firebase');
+          }
+        });
+
+        // Sync Shortcuts/Dashboard
+        _db.ref('shared/shortcuts').on('value', snap => {
+          const data = snap.val();
+          if (!data || !Array.isArray(data)) return;
+          if (JSON.stringify(data) !== JSON.stringify(userShortcuts)) {
+            userShortcuts = data;
+            localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
+            renderShortcuts && renderShortcuts();
+            console.log('🔄 Shortcuts synced từ Firebase');
+          }
+        });
+      }, 500);
     });
     let saveTimeout;
 
@@ -2151,6 +2157,7 @@ if (targetPage) targetPage.classList.add('active-page');
       });
 
       saveData();
+      fbSaveShortcuts();
       renderShortcuts();
       closeModal();
     }
@@ -2178,6 +2185,7 @@ if (targetPage) targetPage.classList.add('active-page');
       item.icon = selectedEditEmoji;
 
       saveData();
+      fbSaveShortcuts();
       renderShortcuts();
       closeEditModal();
     }
@@ -2194,6 +2202,7 @@ if (targetPage) targetPage.classList.add('active-page');
     document.getElementById('btnFinalSure').onclick = () => {
       userShortcuts = userShortcuts.filter(s => s.id !== pendingDeleteId);
       saveData();
+      fbSaveShortcuts();
       renderShortcuts();
       closeConfirm();
     };

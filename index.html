@@ -280,21 +280,44 @@
     const sidebar = document.querySelector('.sidebar');
     if(!sidebar) return;
     const openClass = 'sidebar-open';
+    const main = document.querySelector('main.container');
+    const rootStyle = getComputedStyle(document.documentElement);
+    const expandedPadding = ()=> (parseFloat(rootStyle.getPropertyValue('--sidebar-width')) || 260) + 64;
+    const collapsedPadding = ()=> (parseFloat(rootStyle.getPropertyValue('--sidebar-collapsed-width')) || 80) + 48;
+
+    // initialize main padding to collapsed (inline) to be robust
+    try{ if(main) main.style.paddingLeft = collapsedPadding() + 'px'; }catch(e){}
+
     // mouse
-    sidebar.addEventListener('mouseenter', ()=> document.body.classList.add(openClass));
-    sidebar.addEventListener('mouseleave', ()=> document.body.classList.remove(openClass));
+    sidebar.addEventListener('mouseenter', ()=>{
+      document.body.classList.add(openClass);
+      if(main) main.style.paddingLeft = expandedPadding() + 'px';
+    });
+    sidebar.addEventListener('mouseleave', ()=>{
+      document.body.classList.remove(openClass);
+      if(main) main.style.paddingLeft = collapsedPadding() + 'px';
+    });
     // touch / focus-friendly: toggle on click for small screens
     sidebar.addEventListener('click', (e)=>{
       // ignore clicks on nav items to allow navigation
       if(e.target.closest('.nav-item')) return;
-      document.body.classList.toggle(openClass);
+      const opened = document.body.classList.toggle(openClass);
+      if(main) main.style.paddingLeft = (opened ? expandedPadding() : collapsedPadding()) + 'px';
     });
     // ensure closing when clicking outside (for touch devices)
     document.addEventListener('click', (e)=>{
       if(!document.body.classList.contains(openClass)) return;
       if(!e.target.closest('.sidebar')){
         document.body.classList.remove(openClass);
+        if(main) main.style.paddingLeft = collapsedPadding() + 'px';
       }
+    });
+    // responsive: update on window resize (recompute CSS variables)
+    window.addEventListener('resize', ()=>{
+      // recompute rootStyle by re-reading
+      const rs = getComputedStyle(document.documentElement);
+      try{ if(document.body.classList.contains(openClass) && main) main.style.paddingLeft = (parseFloat(rs.getPropertyValue('--sidebar-width')) + 64) + 'px';
+        else if(main) main.style.paddingLeft = (parseFloat(rs.getPropertyValue('--sidebar-collapsed-width')) + 48) + 'px'; }catch(e){}
     });
   })();
 

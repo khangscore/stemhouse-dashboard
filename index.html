@@ -130,7 +130,8 @@
 
     /* MAIN container spacing: adjust when sidebar hover expands */
     main.container{ max-width:1200px; margin:0 auto; padding-top:60px; padding-bottom:100px; padding-left: calc(var(--sidebar-collapsed-width) + 48px); transition: padding-left .28s ease; position:relative; }
-    .sidebar:hover + main.container{ padding-left: calc(var(--sidebar-width) + 48px); }
+    /* use general sibling so it still works if there are elements between aside and main */
+    .sidebar:hover ~ main.container{ padding-left: calc(var(--sidebar-width) + 56px); }
 
     @media(max-width:900px){ .sidebar{ left:6px; } .calendar-cell{ min-height:100px; } }
   </style>
@@ -278,7 +279,8 @@
     btn.addEventListener('click', ()=> inp.click());
     inp.addEventListener('change', (e)=> { const f=e.target.files[0]; if(!f) return; const url=URL.createObjectURL(f); applyBackgroundImage(url, f); });
     ['dragenter','dragover'].forEach(ev => document.body.addEventListener(ev, (e)=> e.preventDefault()));
-    document.body.addEventListener('drop', (e)=>{ e.preventDefault(); const dt=e.dataTransfer; if(dt && dt.files && dt.files[0]){ const f=dt.files[0]; if(f.type && f.type.startsWith('image/')){ const url = URL.createObjectURL(f); applyBackgroundImage(url,f); } } });
+    document.body.addEventListener('drop', (e)=>{ e.preventDefault(); const dt=e.dataTransfer; if(dt && dt.files && dt.files[0]){ const f=dt.files[0]; if(f.type && f.type.startsWith('image/')){ const url = URL.createObjectURL(f); applyBackgroundImage(url,f); } }
+    });
     async function applyBackgroundImage(url,file){ document.body.style.backgroundImage = `url('${url}')`; document.body.style.backgroundSize='cover'; document.body.style.backgroundPosition='center center'; try{ const img = await loadImage(url); const color = getDominantColor(img); document.documentElement.style.setProperty('--accent', color); document.documentElement.style.setProperty('--accent-dark', shade(color,-18)); }catch(err){ console.warn('Cannot compute dominant color', err); } }
     function loadImage(src){ return new Promise((res,rej)=>{ const i=new Image(); i.crossOrigin='anonymous'; i.onload=()=>res(i); i.onerror=rej; i.src=src; }); }
     function getDominantColor(img){ const c=document.createElement('canvas'); const w=64,h=64; c.width=w; c.height=h; const ctx=c.getContext('2d'); ctx.drawImage(img,0,0,w,h); const d=ctx.getImageData(0,0,w,h).data; let r=0,g=0,b=0,count=0; for(let i=0;i<d.length;i+=4){ const a=d[i+3]; if(a<125) continue; r+=d[i]; g+=d[i+1]; b+=d[i+2]; count++; } if(!count) return getComputedStyle(document.documentElement).getPropertyValue('--accent').trim(); r=Math.round(r/count); g=Math.round(g/count); b=Math.round(b/count); return `rgb(${r}, ${g}, ${b})`; }

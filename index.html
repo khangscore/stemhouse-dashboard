@@ -128,6 +128,10 @@
     /* highlight when clicked */
     .excel-cell.highlighted{ box-shadow: 0 0 0 3px var(--accent) !important; border-color:var(--accent) !important; }
 
+    /* MAIN container spacing: adjust when sidebar hover expands */
+    main.container{ max-width:1200px; margin:0 auto; padding-top:60px; padding-bottom:100px; padding-left: calc(var(--sidebar-collapsed-width) + 48px); transition: padding-left .28s ease; position:relative; }
+    .sidebar:hover + main.container{ padding-left: calc(var(--sidebar-width) + 48px); }
+
     @media(max-width:900px){ .sidebar{ left:6px; } .calendar-cell{ min-height:100px; } }
   </style>
 </head>
@@ -169,7 +173,7 @@
   <button class="theme-switch" id="themeSwitch" title="Đổi ngày/đêm">🌗</button>
 
   <!-- MAIN CONTAINER -->
-  <main class="container" style="padding-left:120px;">
+  <main class="container">
     <header class="header-group">
       <h1>AO Dashboard Q10</h1>
       <div class="home-date">Chào mừng bạn!</div>
@@ -240,8 +244,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Hidden file input will be created by JS for background picker -->
 
   <!-- SCRIPTS -->
   <script>

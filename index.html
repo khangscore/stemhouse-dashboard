@@ -189,10 +189,11 @@
       transform: translateX(-6px);
     }
 
-    /* layout for header content when expanded: username inline */
+    /* keep avatar size stable so expanded sidebar won't push nav cards downward */
     .sidebar:hover .sidebar-avatar {
-      width: 72px;
-      height: 72px;
+      width: 45px;
+      height: 45px;
+      transform: translateZ(0);
     }
     .sidebar:hover .sidebar-username {
       opacity: 1;

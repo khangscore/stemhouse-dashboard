@@ -1,274 +1,3465 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AO Dashboard Q10 - Ní Nè Ní</title>
-    
-    <!-- Dependencies chính xác -->
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    
-    <!-- Lucide Icons - Bản chuẩn cho UMD -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide-react.js"></script>
-    
-    <!-- Framer Motion - Bản chuẩn cho UMD -->
-    <script src="https://unpkg.com/framer-motion@11.11.17/dist/framer-motion.js"></script>
-    
-    <!-- Tiện ích -->
-    <script src="https://cdn.jsdelivr.net/npm/date-fns@2.30.0/dist/date-fns.min.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AO Dashboard Q10 | Custom Edition</title>
 
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
-        body { font-family: 'Inter', sans-serif; background-color: #0f172a; color: white; margin: 0; overflow-x: hidden; }
-        .glass-card { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.05); }
-        .moving-bg { position: fixed; inset: 0; z-index: -2; background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 100%); animation: pulse 15s ease infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
-        .btn-depth { box-shadow: 0 4px 0 rgba(0,0,0,0.2); transition: all 0.1s; }
-        .btn-depth:active { transform: translateY(2px); box-shadow: 0 2px 0 rgba(0,0,0,0.2); }
-        .light-mode .moving-bg { background: radial-gradient(circle at 50% 50%, #f1f5f9 0%, #e2e8f0 100%); }
-        .light-mode { color: #0f172a; }
-        .light-mode .glass-card { background: rgba(255, 255, 255, 0.8); border: 1px solid rgba(0, 0, 0, 0.05); }
-        .light-mode h1, .light-mode h2, .light-mode h3, .light-mode p, .light-mode span, .light-mode td { color: #1e293b; }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-    </style>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='black'/%3E%3Ccircle cx='50' cy='50' r='43' fill='%23FFD133'/%3E%3Ccircle cx='32' cy='38' r='14' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='32' cy='38' r='5' fill='black'/%3E%3Ccircle cx='68' cy='30' r='10' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='68' cy='30' r='4' fill='black'/%3E%3Cpath d='M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M 40 55 Q 50 85 70 70 L 60 55 Z' fill='%23FF4747' stroke='black' stroke-width='1.5'/%3E%3Crect x='27' y='55' width='46' height='6' fill='white'/%3E%3C/svg%3E">
+
+  <style>
+    :root {
+      --bg-color: #0f0720;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --card-border: rgba(255, 255, 255, 0.2);
+      --text-main: #ffffff;
+      --accent: #22c55e;
+      --accent-dark: #16a34a;
+      --liam-blue: #3b82f6;
+      --sidebar-width: 260px;
+      --sidebar-collapsed-width: 80px;
+      --shadow-accent: 0 0 18px rgba(34, 197, 94, 0.35);
+    }
+
+    body.light-mode {
+      --bg-color: #f8fafc;
+      --card-bg: rgba(0, 0, 0, 0.05);
+      --card-border: rgba(0, 0, 0, 0.1);
+      --text-main: #1e293b;
+    }
+
+    * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", "Noto Color Emoji", sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  will-change: auto;
+}
+
+    body {
+      background: var(--bg-color);
+      background-image: radial-gradient(circle at 50% -20%, #4c1d95, #1e1045, #0f0720);
+      background-attachment: fixed;
+      color: var(--text-main);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    body.light-mode {
+      background-image: radial-gradient(circle at 50% -20%, #e2e8f0, #f8fafc);
+    }
+
+    .card:hover,
+.btn:hover,
+.btn-save-fixed:hover,
+.theme-switch:hover,
+.nav-item:not(.active):hover {
+  box-shadow:
+    0 0 0 1px var(--accent),
+    0 10px 30px rgba(0,0,0,0.18),
+    var(--shadow-accent) !important;
+  border-color: var(--accent) !important;
+}
+
+    .card:hover {
+  transform: translateY(-6px) scale(1.01);
+  background: rgba(255,255,255,0.02);
+}
+
+    .sidebar {
+  position: fixed;
+  top: 20px;
+  left: 10px;
+  bottom: 20px;
+  width: var(--sidebar-collapsed-width);
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(25px);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  transition:
+  width 0.38s cubic-bezier(0.22, 1, 0.36, 1),
+  border-color 0.28s ease,
+  box-shadow 0.28s ease,
+  background 0.28s ease,
+  transform 0.28s ease;
+}
+
+    .sidebar.expanded {
+      width: var(--sidebar-width);
+      border-color: var(--accent);
+      box-shadow: var(--shadow-accent);
+    }
+
+    .toggle-sidebar {
+  position: absolute;
+  top: 50%;
+  right: -31px;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 90%;
+  border-radius: 16px;
+  border: 2px solid #000;
+  background: color-mix(in srgb, var(--accent) 82%, black 18%);
+  color: #000;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  z-index: 2100;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 6px 14px rgba(0,0,0,0.22);
+
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    filter 0.2s ease;
+}
+    .toggle-sidebar::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(to bottom,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.08) 35%,
+    rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+    .toggle-sidebar:hover{
+  transform: translateY(-50%) translateX(1px);
+  filter: brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 8px 18px rgba(0,0,0,0.28);
+}
+    .toggle-sidebar:active{
+  transform: translateY(-50%) translateX(1px) scale(0.97);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.14),
+    0 2px 0 rgba(0,0,0,0.22),
+    0 4px 8px rgba(0,0,0,0.16);
+}
+    .toggle-sidebar span{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1rem;
+  line-height:1;
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000;
+  transition: transform 0.28s ease;
+}
+    .toggle-sidebar:hover{
+  filter: brightness(1.04);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 8px 18px rgba(0,0,0,0.28);
+}
+
+.toggle-sidebar:active{
+  transform: translateY(-50%) scale(0.97);
+}
+
+    .sidebar.expanded .toggle-sidebar span {
+      transform: rotate(180deg);
+    }
+
+    .sidebar-header {
+  padding: 58px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+    .sidebar-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      border: 2px solid var(--accent);
+      background: #fff;
+      object-fit: cover;
+    }
+
+    .sidebar.expanded .sidebar-avatar {
+      width: 90px;
+      height: 90px;
+    }
+
+    .sidebar-username {
+      margin-top: 12px;
+      font-weight: bold;
+      font-size: 0.9rem;
+      color: var(--accent);
+      opacity: 0;
+      white-space: nowrap;
+    }
+
+    .sidebar.expanded .sidebar-username {
+      opacity: 1;
+    }
+
+    .nav-content {
+  flex: 1;
+  margin-top: 18px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 0 10px 14px;
+  gap: 8px;
+}
+
+    .nav-item {
+  min-height: 56px;
+  height: 56px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  border-radius: 16px;
+  cursor: pointer;
+  color: inherit;
+  flex-shrink: 0;
+  gap: 12px;
+  transition:
+  background 0.22s ease,
+  color 0.22s ease,
+  box-shadow 0.25s ease,
+  transform 0.18s ease,
+  border-color 0.22s ease;
+}
+  /* icon trong sidebar */
+.nav-item > span:first-child{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:26px;
+  font-size:1.15rem;
+  line-height:1;
+  filter: saturate(1.15) contrast(1.08);
+  text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+    -2px  0   0 #000,
+     2px  0   0 #000,
+     0   -2px 0 #000,
+     0    2px 0 #000;
+}
+  .nav-icon{
+  width: 28px;
+  min-width: px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  flex-shrink: 0;
+  transform: translateX(1px);
+}
+
+.sidebar:not(.expanded) .nav-item{
+  justify-content: center;
+  padding: 0;
+}
+
+.sidebar:not(.expanded) .nav-icon{
+  margin-left: 15px;
+}
+   .nav-item.active{
+  text-shadow: 0 1px 1px rgba(255,255,255,0.18);
+}
+
+    .sidebar.expanded .nav-item {
+  justify-content: flex-start;
+  padding-left: 18px;
+}
+
+    .nav-item.active {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+      box-shadow: var(--shadow-accent);
+    }
+
+    .nav-text {
+  flex: 1;
+  opacity: 0;
+  visibility: hidden;
+  white-space: nowrap;
+  overflow: hidden;
+  transform: translateX(-10px);
+  filter: blur(4px);
+  transition:
+    opacity 0.22s ease,
+    transform 0.28s ease,
+    filter 0.28s ease;
+}
+
+    .sidebar.expanded .nav-text {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(0);
+  filter: blur(0);
+}
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 60px 20px 100px 120px;
+      position: relative;
+    }
+
+    .header-group {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .header-group h1 {
+      font-size: 4rem;
+      letter-spacing: -3px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+    }
+
+    .card {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  backdrop-filter: blur(10px);
+  position: relative;
+  min-height: 200px;
+  justify-content: center;
+  transition:
+  transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
+  box-shadow 0.28s ease,
+  border-color 0.25s ease,
+  background 0.25s ease;
+}
+
+    .shortcut-card.dragging {
+      opacity: 0.5;
+      transform: scale(0.98);
+    }
+
+    .add-card {
+      cursor: pointer;
+      border-style: dashed;
+      border-width: 2px;
+    }
+
+    .add-card .plus-icon {
+      font-size: 80px;
+      color: var(--accent);
+      line-height: 1;
+      font-weight: 300;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(255,255,255,0.08);
+      color: var(--text-main);
+      text-decoration: none;
+      border-radius: 14px;
+      font-weight: bold;
+      margin-top: 15px;
+      border: 1px solid var(--card-border);
+      cursor: pointer;
+    }
+    .shortcut-card .btn {
+     background: color-mix(in srgb, var(--accent) 88%, black 15%);
+     color: #000;
+     border: 2px solid #000;
+     box-shadow: 0 4px 10px color-mix(in srgb, var(--accent) 35%, transparent);
+    }
+
+    .btn:hover {
+      transform: scale(1.03);
+    }
+
+    .btn-delete {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      width: 25px;
+      height: 25px;
+      background: rgba(255,0,0,0.2);
+      color: #ff4747;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      border: none;
+      z-index: 10;
+    }
+      .btn-edit{
+       background: rgba(34,197,94,0.18);
+       color: #22c55e;
+    }
+       .btn-edit:hover{
+        background: rgba(34,197,94,0.28);
+        color: #4ade80;
+    }
+
+    .card:hover .btn-delete {
+      opacity: 1;
+    }
+
+    .page-content { display: none; }
+    .page-content.active-page { display: block; }
+
+    .btn-save-fixed {
+      display: none; /* ẩn nút cũ ở góc phải */
+    }
+
+    .btn-save-bottom {
+      width: 100%;
+      max-width: 450px;
+      padding: 16px;
+      background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #fff));
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      box-shadow: 0 6px 24px rgba(0,0,0,0.25), 0 2px 0 rgba(255,255,255,0.1) inset;
+      transition: all 0.15s;
+      position: relative;
+      top: 0;
+    }
+    .btn-save-bottom:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 32px rgba(0,0,0,0.3);
+    }
+    .btn-save-bottom:active {
+      transform: translateY(1px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+      top: 1px;
+    }
+
+    .avatar-preview-box {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      border: 3px solid var(--accent);
+      margin-bottom: 10px;
+      background: #fff;
+      object-fit: cover;
+    }
+
+    .color-palette {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .color-dot {
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 2px solid rgba(255,255,255,0.2);
+    }
+
+    .color-dot:hover {
+      transform: scale(1.12);
+      box-shadow: 0 0 14px var(--dot-color);
+      border-color: var(--dot-color);
+      background: var(--dot-color) !important;
+    }
+
+    .theme-switch {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: var(--accent);
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      z-index: 3000;
+      font-size: 1.6rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+
+        text-shadow:
+    -1px -1px 0 #000,
+     1px -1px 0 #000,
+    -1px  1px 0 #000,
+     1px  1px 0 #000,
+    -2px  0   0 #000,
+     2px  0   0 #000,
+     0   -2px 0 #000,
+     0    2px 0 #000;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(10px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 10002;
+      padding: 20px;
+    }
+
+    .modal-box {
+      background: linear-gradient(180deg, #1f232c, #171a22);
+      width: 100%;
+      max-width: 500px;
+      border-radius: 24px;
+      padding: 24px;
+      color: #e8eaed;
+      border: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+    }
+
+    .modal-title {
+      text-align: left;
+      font-size: 2rem;
+      font-weight: 800;
+      margin-bottom: 18px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.82rem;
+      color: #9aa0a6;
+      margin-bottom: 6px;
+    }
+
+    .input-group input {
+      width: 100%;
+      background: #2a2f3a;
+      border: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 14px;
+      color: #e8eaed;
+      border-radius: 12px;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    .emoji-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 10px;
+      background: #2a2f3a;
+      padding: 12px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+      max-height: 280px;
+      overflow-y: auto;
+
+      scrollbar-width: thin;
+      scrollbar-color: #000 transparent;
+    }
+    .emoji-grid::-webkit-scrollbar{
+  width:10px;
+}
+
+.emoji-grid::-webkit-scrollbar-track{
+  background:transparent;
+  border-radius:999px;
+}
+
+.emoji-grid::-webkit-scrollbar-thumb{
+  background:#000;
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+.emoji-grid::-webkit-scrollbar-thumb:hover{
+  background:#111;
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+    .emoji-item {
+      font-size: 1.6rem;
+      cursor: pointer;
+      padding: 8px;
+      border-radius: 12px;
+      border: 2px solid transparent;
+    }
+
+    .emoji-item:hover { background: rgba(255,255,255,0.05); }
+    .emoji-item.selected {
+      border-color: var(--accent);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .modal-actions button {
+      padding: 11px 22px;
+      border-radius: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-confirm { background: #ff4747; color: #fff; }
+    .btn-cancel { background: #3c4043; color: #fff; }
+
+    .home-clock {
+      font-size: 3.2rem;
+      font-weight: 800;
+      text-align: center;
+      letter-spacing: -2px;
+    }
+
+    .home-date {
+      text-align: center;
+      font-size: 1rem;
+      opacity: 0.8;
+      margin-top: 8px;
+      margin-bottom: 24px;
+    }
+
+    .calendar-box {
+      max-width: 760px;
+      margin: 0 auto 25px;
+      padding: 24px;
+    }
+
+    .calendar-head {
+      text-align: center;
+      font-size: 1.3rem;
+      font-weight: bold;
+      margin-bottom: 15px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+
+    .calendar-cell {
+      padding: 12px 0;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.04);
+      font-size: 0.95rem;
+    }
+
+    .calendar-cell.today {
+      background: var(--accent);
+      color: #000;
+      font-weight: bold;
+    }
+
+    .notes-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .note-box {
+      min-height: 180px;
+      resize: none;
+      width: 100%;
+      border: 1px solid var(--card-border);
+      border-radius: 18px;
+      background: var(--card-bg);
+      color: var(--text-main);
+      padding: 16px;
+      outline: none;
+      font-size: 0.95rem;
+    }
+
+    #avatarDropZone.dragover {
+      border-color: var(--accent) !important;
+      box-shadow: var(--shadow-accent);
+    }
+
+    /* =========================
+   HOME CALENDAR UPGRADE
+========================= */
+.calendar-layout{
+  max-width: 1120px;
+  width: 100%;
+  margin: 0 auto;
+  min-height: 620px;
+  display: grid;
+  grid-template-columns: 1.45fr 0.85fr;
+  gap: 24px;
+  align-items: stretch;
+  text-align: left;
+}
+
+.calendar-left,
+.calendar-right{
+  width: 100%;
+}
+
+.calendar-left{
+  display: flex;
+  flex-direction: column;
+}
+.calendar-top-shell{
+  background: var(--accent);
+  border-radius: 24px;
+  padding: 14px;
+  margin-bottom: 14px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.18);
+}
+
+.calendar-weekdays{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:10px;
+  margin-top:8px;
+}
+
+.calendar-toolbar{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.08),
+    0 0 26px color-mix(in srgb, var(--accent) 35%, transparent),
+    0 0 42px color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.calendar-nav-btn{
+  width:46px;
+  height:46px;
+  border: 2px solid #000;
+  border-radius:14px;
+  cursor:pointer;
+  font-size:1.5rem;
+  font-weight:800;
+  background: var(--accent-dark);
+  color:#101010;
+  transition:transform 0.2s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.calendar-nav-btn:hover{
+  transform:translateY(-2px);
+  border-color:var(--accent);
+  box-shadow:var(--shadow-accent);
+}
+
+.calendar-grid{
+  display:grid;
+  grid-template-columns:repeat(7, 1fr);
+  gap:10px;
+  text-align:center;
+}
+
+.calendar-cell{
+  min-height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  border-radius:18px;
+  background:rgba(255,255,255,0.04);
+  font-size:0.95rem;
+  cursor:pointer;
+  transition:all 0.18s ease;
+}
+
+.calendar-cell:hover{
+  transform:translateY(-2px);
+  border:1px solid var(--accent);
+}
+
+.calendar-cell.weekday{
+  min-height:44px;
+  font-weight:800;
+  background:rgba(255,255,255,0.22);
+  border:1px solid rgba(255,255,255,0.22);
+  color:#101010;
+  text-shadow:none;
+  cursor:default;
+}
+
+.calendar-cell.empty{
+  background:transparent;
+  cursor:default;
+}
+
+.calendar-cell.empty:hover{
+  transform:none;
+  border:none;
+}
+
+.calendar-cell.today{
+  background:var(--accent);
+  color:#000;
+  font-weight:800;
+}
+
+.calendar-cell.selected{
+  border:1px solid var(--accent);
+  box-shadow:var(--shadow-accent);
+}
+
+.calendar-right{
+  display:flex;
+  flex-direction:column;
+  height:100%;
+}
+
+.calendar-notes-title{
+  font-size:1.15rem;
+  font-weight:800;
+  margin-bottom:14px;
+}
+
+.calendar-notes-stack{
+  display:grid;
+  grid-template-rows:repeat(3, 1fr);
+  gap:14px;
+  flex:1;
+}
+
+.integrated-note{
+  min-height:150px;
+  height:100%;
+  resize:none;
+}
+   /* =========================
+   CUSTOM DROPDOWN (CALENDAR)
+========================= */
+
+.custom-dropdown{
+  position: relative;
+}
+
+.dropdown-btn{
+  min-width: 140px;
+  height: 46px;
+  border: 2px solid #000;
+  border-radius: 14px;
+  background: var(--accent-dark);
+  color:#101010;
+  font-weight: 800;
+  font-size: 0.95rem;
+  padding: 0 16px;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  text-align: center;
+}
+
+.dropdown-btn:hover{
+  border-color: var(--accent);
+  box-shadow: var(--shadow-accent);
+}
+
+.dropdown-panel{
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 180px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: #1f232c;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 8px;
+  display: none;
+  z-index: 9999;
+  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+
+  scrollbar-width: thin;
+  scrollbar-color: #000 transparent;
+}
+    .dropdown-panel::-webkit-scrollbar{
+  width:10px;
+}
+
+.dropdown-panel::-webkit-scrollbar-track{
+  background:transparent;
+  border-radius:999px;
+}
+
+.dropdown-panel::-webkit-scrollbar-thumb{
+  background:#000;
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+.dropdown-panel::-webkit-scrollbar-thumb:hover{
+  background:#111;
+  border-radius:999px;
+  border:2px solid transparent;
+  background-clip:padding-box;
+}
+
+.dropdown-item{
+  padding: 12px 14px;
+  border-radius: 12px;
+  color:#fff;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.18s ease;
+}
+
+.dropdown-item:hover{
+  background: rgba(255,255,255,0.08);
+}
+
+.dropdown-item[style*="var(--accent)"]{
+  font-weight: 800;
+}
+    
+    @media(max-width: 900px){
+  .home-clock { font-size: 3.4rem; }
+  .header-group h1 { font-size: 2.8rem; }
+
+  .calendar-layout{
+    grid-template-columns:1fr;
+    min-height:auto;
+  }
+      
+  .calendar-notes-stack{
+    grid-template-columns:1fr;
+    grid-template-rows:none;
+  }
+
+  .integrated-note{
+    min-height:140px;
+  }
+}
+    
+    /* =========================
+   EXCEL MINI
+========================= */
+.excel-wrap{
+  width:100%;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+}
+
+.excel-toolbar{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:12px;
+  flex-wrap:wrap;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:22px;
+  padding:16px;
+  backdrop-filter:blur(10px);
+  position:sticky;
+  top:12px;
+  z-index:100;
+}
+
+.excel-toolbar-left{
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.excel-btn{
+  width:auto;
+  margin-top:0;
+  padding:10px 16px;
+  border-radius:12px;
+}
+
+.excel-toolbar-right{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+
+.excel-badge{
+  padding:8px 12px;
+  border-radius:999px;
+  background:rgba(255,255,255,0.08);
+  border:1px solid var(--card-border);
+  font-size:0.85rem;
+  font-weight:700;
+}
+
+.excel-shell{
+  width:100%;
+  background:var(--card-bg);
+  border:1px solid var(--card-border);
+  border-radius:28px;
+  padding:18px;
+  backdrop-filter:blur(14px);
+  overflow:hidden;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+}
+
+.excel-table-wrap{
+  width:100%;
+  overflow:auto;
+  border-radius:18px;
+  border:1px solid var(--card-border);
+}
+
+.excel-table{
+  width:100%;
+  min-width:900px;
+  border-collapse:collapse;
+  table-layout:fixed;
+  background:rgba(0,0,0,0.10);
+}
+
+.excel-table th,
+.excel-table td{
+  border:1px solid var(--card-border);
+  min-width:110px;
+  height:44px;
+  padding:0;
+  text-align:center;
+  vertical-align:middle;
+}
+
+.excel-table td a {
+  color: #1E90FF;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.excel-table th{
+  position:sticky;
+  top:0;
+  z-index:5;
+  background:rgba(255,255,255,0.08);
+  font-size:0.9rem;
+  font-weight:800;
+}
+
+.excel-table th.row-head{
+  position:sticky;
+  left:0;
+  z-index:6;
+  min-width:56px;
+  width:56px;
+}
+
+.excel-table td.row-index{
+  position:sticky;
+  left:0;
+  z-index:4;
+  background:rgba(255,255,255,0.04);
+  font-weight:700;
+  min-width:56px;
+  width:56px;
+}
+
+.excel-table td input{
+  width:100%;
+  height:100%;
+  border:none;
+  outline:none;
+  padding:10px 12px;
+  background:transparent;
+  color:var(--text-main);
+  font-size:0.95rem;
+  transition:background 0.18s ease, box-shadow 0.18s ease;
+}
+
+.excel-table td input:focus{
+  background:rgba(255,255,255,0.07);
+  box-shadow:
+    inset 0 0 0 2px var(--accent),
+    0 0 0 1px rgba(255,255,255,0.04);
+}
+
+body.light-mode .excel-table{
+  background:rgba(255,255,255,0.65);
+}
+
+body.light-mode .excel-table th{
+  background:rgba(255,255,255,0.85);
+}
+
+body.light-mode .excel-table td.row-index{
+  background:rgba(255,255,255,0.7);
+}
+/* =========================
+   BUTTON DEPTH / PRESS FX
+========================= */
+
+/* Nút Mở trong Dashboard */
+.shortcut-card .btn{
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease,
+    filter 0.18s ease;
+    
+  /* bóng đáy */
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 6px 0 rgba(0,0,0,0.22),
+    0 10px 18px rgba(0,0,0,0.18);
+}
+
+/* phản sáng mặt trên */
+.shortcut-card .btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(to bottom,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.08) 35%,
+    rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+
+/* hover */
+.shortcut-card .btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+/* nhấn xuống */
+.shortcut-card .btn:active{
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.14),
+    0 2px 0 rgba(0,0,0,0.22),
+    0 4px 8px rgba(0,0,0,0.16);
+}
+
+/* =========================
+   CALENDAR TOOLBAR BUTTONS
+========================= */
+
+.calendar-nav-btn,
+.dropdown-btn{
+  position: relative;
+  overflow: hidden;
+  transform: translateY(0);
+  transition:
+    transform 0.08s ease,
+    box-shadow 0.08s ease,
+    filter 0.18s ease;
+    
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.18),
+    inset 0 -2px 0 rgba(0,0,0,0.18),
+    0 6px 0 rgba(0,0,0,0.22),
+    0 10px 18px rgba(0,0,0,0.18);
+}
+
+.calendar-nav-btn::before,
+.dropdown-btn::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(to bottom,
+    rgba(255,255,255,0.22),
+    rgba(255,255,255,0.08) 35%,
+    rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+
+.calendar-nav-btn:hover,
+.dropdown-btn:hover{
+  transform: translateY(-1px);
+  filter: brightness(1.03);
+}
+
+.calendar-nav-btn:active,
+.dropdown-btn:active{
+  transform: translateY(6px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),
+    inset 0 -1px 0 rgba(0,0,0,0.14),
+    0 2px 0 rgba(0,0,0,0.22),
+    0 4px 8px rgba(0,0,0,0.16);
+}
+   /* =========================
+   UNIFY TITLES + SUBTEXT
+========================= */
+
+/* 1. Đồng bộ tất cả title */
+h1, h2, h3 {
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+/* size riêng từng loại nhưng cùng hệ */
+h1 {
+  font-size: 3.2rem !important;
+}
+
+h2 {
+  font-size: 2.4rem !important;
+}
+
+h3 {
+  font-size: 1.8rem !important;
+}
+
+/* 2. Đồng bộ khoảng cách giữa title và p */
+h1 + p,
+h2 + p,
+h3 + p {
+  margin-top: 10px;
+}
+
+/* 3. Style chung cho tất cả dòng mô tả nhỏ */
+p {
+  font-size: 1rem;
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+/* 4. Fix riêng các chỗ đặc biệt trong code bạn */
+
+/* greeting (Haku_Na_Matata) */
+#greeting {
+  margin-top: 10px;
+}
+
+/* excel subtitle */
+#page-excel p {
+  margin-top: 10px !important;
+}
+
+/* ngày tháng dưới đồng hồ */
+.home-date {
+  margin-top: 10px !important;
+}
+
+/* khoảng cách header group */
+.header-group h1 {
+  margin-bottom: 0;
+} 
+  /* =========================
+   FIX HOME TITLE SPACING
+========================= */
+
+/* coi clock như title */
+.home-clock {
+  margin-bottom: 0;
+  line-height: 1.2;
+}
+
+/* đồng bộ khoảng cách như h1 + p */
+.home-clock + .home-date {
+  margin-top: 10px !important;
+}  
+    .selected-cell {
+  background: rgba(59,130,246,0.35) !important;
+  outline: 2px solid #3b82f6;
+  outline-offset: -2px;
+}
+    .selection-box {
+  position: absolute;
+  border: 2px solid #3b82f6;
+  pointer-events: none;
+  z-index: 999;
+}
+    .col-header {
+  position: relative;
+}
+
+.col-resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+}
+
+.row-header {
+  position: relative;
+}
+
+.row-resizer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 6px;
+  width: 100%;
+  cursor: row-resize;
+}
+ .excel-container {
+  width: 100%;
+  overflow-x: auto; /* 🔥 tạo scroll ngang */
+  border: 1px solid #ccc;
+}
+
+.excel-table {
+  border-collapse: collapse;
+  table-layout: fixed;
+  width: max-content; /* 🔥 CHÌA KHÓA */
+}
+
+.excel-table th,
+.excel-table td {
+  min-width: 100px;
+  border: 1px solid #ddd;
+}
+.excel-container::-webkit-scrollbar {
+  height: 10px;
+}
+    
+/* ===== LOGIN SCREEN ===== */
+#login-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0d0d1a;
+  overflow: hidden;
+}
+
+#login-screen .login-bg {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 30%, rgba(124,58,237,0.25) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 80% at 80% 70%, rgba(236,72,153,0.18) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 50% at 50% 50%, rgba(59,130,246,0.1) 0%, transparent 70%);
+  animation: bgPulse 6s ease-in-out infinite alternate;
+}
+
+@keyframes bgPulse {
+  0%   { opacity: 0.7; transform: scale(1); }
+  100% { opacity: 1;   transform: scale(1.05); }
+}
+
+#login-screen .login-stars {
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(1px 1px at 15% 25%, rgba(255,255,255,0.6) 0%, transparent 100%),
+    radial-gradient(1px 1px at 75% 10%, rgba(255,255,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(1px 1px at 90% 55%, rgba(255,255,255,0.3) 0%, transparent 100%),
+    radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,0.5) 0%, transparent 100%),
+    radial-gradient(2px 2px at 30% 60%, rgba(200,180,255,0.4) 0%, transparent 100%),
+    radial-gradient(1px 1px at 65% 90%, rgba(255,255,255,0.3) 0%, transparent 100%);
+}
+
+#login-screen .login-box {
+  position: relative;
+  width: 420px;
+  max-width: 92vw;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 28px;
+  padding: 44px 40px 40px;
+  backdrop-filter: blur(24px);
+  box-shadow:
+    0 0 60px rgba(124,58,237,0.2),
+    0 0 120px rgba(236,72,153,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.08);
+  animation: loginPop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+@keyframes loginPop {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to   { opacity: 1; transform: translateY(0)    scale(1); }
+}
+
+#login-screen .login-emoji {
+  font-size: 3rem;
+  text-align: center;
+  margin-bottom: 8px;
+  animation: wobble 2s ease-in-out infinite;
+}
+
+@keyframes wobble {
+  0%,100% { transform: rotate(-5deg) scale(1); }
+  50%      { transform: rotate(5deg) scale(1.1); }
+}
+
+#login-screen .login-title {
+  text-align: center;
+  font-size: 1.7rem;
+  font-weight: 900;
+  background: linear-gradient(135deg, #a78bfa, #f472b6, #60a5fa);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+  letter-spacing: -0.5px;
+}
+
+#login-screen .login-subtitle {
+  text-align: center;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.35);
+  margin-bottom: 32px;
+  font-style: italic;
+}
+
+#login-screen .login-field {
+  margin-bottom: 18px;
+}
+
+#login-screen .login-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#login-screen .login-input {
+  width: 100%;
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  padding: 14px 18px;
+  color: #fff;
+  font-size: 0.95rem;
+  font-family: inherit;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  outline: none;
+}
+
+#login-screen .login-input:focus {
+  border-color: rgba(167,139,250,0.6);
+  background: rgba(167,139,250,0.08);
+  box-shadow: 0 0 0 3px rgba(167,139,250,0.12);
+}
+
+#login-screen .login-input::placeholder {
+  color: rgba(255,255,255,0.2);
+  font-size: 0.85rem;
+  font-style: italic;
+}
+
+#login-screen .login-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 15px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #7c3aed, #db2777);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 24px rgba(124,58,237,0.35);
+}
+
+#login-screen .login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(124,58,237,0.5);
+}
+
+#login-screen .login-btn:active {
+  transform: translateY(0);
+}
+
+#login-screen .login-error {
+  text-align: center;
+  color: #f87171;
+  font-size: 0.8rem;
+  margin-top: 12px;
+  min-height: 20px;
+  font-weight: 600;
+}
+
+#login-screen .login-footer {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.2);
+}
+
+  </style>
+  <!-- Firebase compat SDK (load đồng bộ, không bị lỗi timing) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey:            "AIzaSyD5_BYdi2TriCyoQRTMAK2YtRp3IUhw_pc",
+      authDomain:        "khangscore-98bfc.firebaseapp.com",
+      databaseURL:       "https://khangscore-98bfc-default-rtdb.firebaseio.com",
+      projectId:         "khangscore-98bfc",
+      storageBucket:     "khangscore-98bfc.firebasestorage.app",
+      messagingSenderId: "871738411714",
+      appId:             "1:871738411714:web:2047751e4b96ea2126895b"
+    };
+    try {
+      firebase.initializeApp(firebaseConfig);
+      window._firebaseDB = firebase.database();
+      console.log('✅ Firebase kết nối OK');
+    } catch(e) {
+      console.warn('⚠️ Firebase lỗi:', e.message);
+      window._firebaseDB = null;
+    }
+  </script>
 </head>
-<body>
-    <div id="root"></div>
+<body id="body">
 
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
-        
-        // --- Fix Lỗi Icon & Motion (Tránh Error #130) ---
-        const MotionLib = window.Motion || window.framerMotion || {};
-        const motion = MotionLib.motion || { div: 'div', button: 'button', h1: 'h1', span: 'span', p: 'p', section: 'section', nav: 'nav' };
-        const AnimatePresence = MotionLib.AnimatePresence || (({children}) => <>{children}</>);
+<!-- ===== LOGIN SCREEN ===== -->
+<div id="login-screen">
+  <div class="login-bg"></div>
+  <div class="login-stars"></div>
+  <div class="login-box">
+    <div class="login-emoji">👾</div>
+    <div class="login-title">Chào mừng zô đây!</div>
+    <div class="login-subtitle">— nơi ai vào cũng được, nhưng phải có danh tính —</div>
 
-        const LucideLib = window.LucideReact || {};
-        const getIcon = (name) => {
-            const Icon = LucideLib[name];
-            return typeof Icon === 'function' ? Icon : (props) => <div {...props} className="opacity-20 border w-6 h-6 rounded flex items-center justify-center text-[8px]">{name.charAt(0)}</div>;
+    <div class="login-field">
+      <label class="login-label">Tên của mày</label>
+      <input
+        class="login-input"
+        id="login-username"
+        type="text"
+        placeholder="SPIT THE NAME PLS"
+        maxlength="30"
+        autocomplete="off"
+      >
+    </div>
+
+    <div class="login-field">
+      <label class="login-label">Mật khẩu (không quan trọng lắm đâu)</label>
+      <input
+        class="login-input"
+        id="login-password"
+        type="password"
+        placeholder="MÚN NHẬP J NHẬP ĐI"
+        maxlength="50"
+        autocomplete="off"
+      >
+    </div>
+
+    <button class="login-btn" onclick="doLogin()">
+      🚀 VÀO THÔI
+    </button>
+
+    <div class="login-error" id="login-error"></div>
+
+    <div class="login-footer">
+      🔒 Chỉ cần điền tên là vào được · mật khẩu tùy bạn nhập gì cũng được
+    </div>
+  </div>
+</div>
+
+  <aside class="sidebar" id="sidebar">
+    <button class="toggle-sidebar" id="toggleBtn"><span>❯</span></button>
+    <div class="sidebar-header">
+      <img id="sidebarAvatar" class="sidebar-avatar" src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="User">
+      <span id="sidebarUsernameDisplay" class="sidebar-username">Ní Hào Ma</span>
+    </div>
+
+    <div class="nav-content">
+<div class="nav-item active" data-page="home" onclick="switchPage('home')"><span class="nav-icon">🏡</span><span class="nav-text">Home</span></div>
+<div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🧩</span><span class="nav-text">Dashboard</span></div>
+<div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
+<div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+    </div>
+  </aside>
+
+  <div class="container">
+    <div id="page-home" class="page-content active-page">
+  <div class="header-group">
+    <div class="home-clock" id="liveClock">00:00:00</div>
+    <div class="home-date" id="liveDate">Thứ ..., ngày ...</div>
+  </div>
+
+  <div class="card calendar-box calendar-layout">
+    <div class="calendar-left">
+
+  <div class="calendar-top-shell">
+    <div class="calendar-toolbar">
+      <button class="calendar-nav-btn" onclick="changeMonth(-1)">‹</button>
+
+      <div class="custom-dropdown">
+        <button class="dropdown-btn" id="monthBtn" onclick="toggleMonthPanel()">Tháng 1 ▼</button>
+        <div class="dropdown-panel" id="monthPanel"></div>
+      </div>
+
+      <div class="custom-dropdown">
+        <button class="dropdown-btn" id="yearBtn" onclick="toggleYearPanel()">2026 ▼</button>
+        <div class="dropdown-panel" id="yearPanel"></div>
+      </div>
+
+      <button class="calendar-nav-btn" onclick="changeMonth(1)">›</button>
+    </div>
+
+    <div class="calendar-weekdays" id="calendarWeekdays"></div>
+  </div>
+
+  <div class="calendar-grid" id="calendarGrid"></div>
+</div>
+
+    <div class="calendar-right">
+      <div class="calendar-notes-title">Ghi chú nhanh</div>
+      <div class="calendar-notes-stack">
+        <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
+        <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
+        <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div id="page-dashboard" class="page-content">
+      <div class="header-group">
+        <h1 id="mainTitle">AO Dashboard Q10</h1>
+        <p id="greeting">Haku_Na_Matata!</p>
+      </div>
+      <div class="grid" id="shortcutGrid"></div>
+    </div>
+
+    <!-- PAGE: EXCEL TRẮNG -->
+<div id="page-excel" class="page-content">
+  <div class="header-group">
+    <h1>EXCEL Trắng</h1>
+    <p style="opacity:0.75;">Trang tính mini ngay trong dashboard ✨</p>
+  </div>
+
+  <div class="excel-wrap">
+    <div class="excel-toolbar">
+      <div class="excel-toolbar-left">
+        <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
+        <label class="btn excel-btn" style="margin-top:0;">
+          📥 Import CSV
+          <input type="file" id="csvImport" accept=".csv" style="display:none;">
+        </label>
+        <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
+        <button class="btn excel-btn" onclick="addRow()">➕ Dòng</button>
+        <button class="btn excel-btn" onclick="addColumn()">➕ Cột</button>
+      </div>
+      <div class="excel-toolbar-right">
+        <span class="excel-badge">Auto Save</span>
+      </div>
+    </div>
+
+    <div class="excel-shell">
+      <div class="excel-table-wrap">
+        <div class="excel-container">
+  <table class="excel-table" id="excelTable"></table>
+</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div id="page-settings" class="page-content">
+      <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
+      <div class="header-group"><h1>Cài đặt</h1></div>
+
+      <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+
+
+        <!-- ===== CARD GỘP: THÔNG TIN + AVATAR ===== -->
+        <div class="card" style="width:100%; max-width:450px; padding:24px;">
+          <h3 style="margin-bottom:20px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">✨ Ní nè Ní</h3>
+
+          <!-- Avatar căn giữa -->
+          <div style="display:flex; justify-content:center; margin-bottom:20px;">
+            <img id="previewAvatar" class="avatar-preview-box" style="width:120px; height:120px; margin-bottom:0;"
+              src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
+          </div>
+
+          <!-- Nút chọn nhân vật: icon trên, chữ dưới -->
+          <div style="display:flex; gap:8px; margin-bottom:14px;">
+            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#3b82f6; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-male" onclick="updatePreview('male')">
+              <span style="font-size:1.4rem;">🐱</span>
+              <span style="font-size:0.78rem; font-weight:700;">Meo</span>
+            </button>
+            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#ec4899; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-female" onclick="updatePreview('female')">
+              <span style="font-size:1.4rem;">🐾</span>
+              <span style="font-size:0.78rem; font-weight:700;">Phi Meo</span>
+            </button>
+            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#f59e0b; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-dog" onclick="updatePreview('dog')">
+              <span style="font-size:1.4rem;">🍲</span>
+              <span style="font-size:0.78rem; font-weight:700;">Lẩu Gà</span>
+            </button>
+          </div>
+
+          <!-- Upload avatar riêng -->
+          <label id="avatarDropZone" style="
+            width:100%;
+            min-height:90px;
+            border:2px dashed var(--card-border);
+            border-radius:16px;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:6px;
+            cursor:pointer;
+            padding:14px;
+            text-align:center;
+            transition: border-color 0.2s, background 0.2s;
+            box-sizing:border-box;
+          " onmouseover="this.style.borderColor='var(--accent)'; this.style.background='rgba(255,255,255,0.04)'"
+             onmouseout="this.style.borderColor=''; this.style.background=''">
+            <div style="font-size:1.4rem;">🖼️</div>
+            <div style="font-weight:600; font-size:0.82rem;">Kéo ảnh vào hoặc bấm chọn</div>
+            <div style="font-size:0.72rem; opacity:0.5;">PNG / JPG / WEBP</div>
+            <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
+          </label>
+
+          <button class="btn" style="margin-top:12px; padding:7px; font-size:0.8rem; opacity:0.6;" onclick="removeCustomAvatar()">🗑️ Xoá Avatar Riêng</button>
+        </div>
+
+        <!-- ===== MÀU CHỦ ĐẠO ===== -->
+        <div class="card" style="padding:22px; width:100%; max-width:450px;">
+          <h3 style="margin-bottom:14px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">🎨 Màu Chủ Đạo</h3>
+          <div class="color-palette">
+            <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
+            <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
+            <div class="color-dot" style="--dot-color:#a855f7; background:#a855f7;" onclick="setAccent('#a855f7')"></div>
+            <div class="color-dot" style="--dot-color:#f59e0b; background:#f59e0b;" onclick="setAccent('#f59e0b')"></div>
+            <div class="color-dot" style="--dot-color:#06b6d4; background:#06b6d4;" onclick="setAccent('#06b6d4')"></div>
+            <div class="color-dot" style="--dot-color:#84cc16; background:#84cc16;" onclick="setAccent('#84cc16')"></div>
+            <div class="color-dot" style="--dot-color:#f43f5e; background:#f43f5e;" onclick="setAccent('#f43f5e')"></div>
+            <div class="color-dot" style="--dot-color:#8b5cf6; background:#8b5cf6;" onclick="setAccent('#8b5cf6')"></div>
+            <div class="color-dot" style="--dot-color:#14b8a6; background:#14b8a6;" onclick="setAccent('#14b8a6')"></div>
+            <div class="color-dot" style="--dot-color:#eab308; background:#eab308;" onclick="setAccent('#eab308')"></div>
+            <div class="color-dot" style="--dot-color:#3b82f6; background:#3b82f6;" onclick="setAccent('#3b82f6')"></div>
+            <div class="color-dot" style="--dot-color:#ec4899; background:#ec4899;" onclick="setAccent('#ec4899')"></div>
+            <div class="color-dot" style="--dot-color:#fb923c; background:#fb923c;" onclick="setAccent('#fb923c')"></div>
+            <div class="color-dot" style="--dot-color:#10b981; background:#10b981;" onclick="setAccent('#10b981')"></div>
+            <div class="color-dot" style="--dot-color:#6366f1; background:#6366f1;" onclick="setAccent('#6366f1')"></div>
+            <div class="color-dot" style="--dot-color:#f97316; background:#f97316;" onclick="setAccent('#f97316')"></div>
+            <div class="color-dot" style="--dot-color:#0ea5e9; background:#0ea5e9;" onclick="setAccent('#0ea5e9')"></div>
+            <div class="color-dot" style="--dot-color:#d946ef; background:#d946ef;" onclick="setAccent('#d946ef')"></div>
+            <div class="color-dot" style="--dot-color:#65a30d; background:#65a30d;" onclick="setAccent('#65a30d')"></div>
+            <div class="color-dot" style="--dot-color:#dc2626; background:#dc2626;" onclick="setAccent('#dc2626')"></div>
+            <div class="color-dot" style="--dot-color:#7c3aed; background:#7c3aed;" onclick="setAccent('#7c3aed')"></div>
+            <div class="color-dot" style="--dot-color:#0891b2; background:#0891b2;" onclick="setAccent('#0891b2')"></div>
+            <div class="color-dot" style="--dot-color:#ff6b6b; background:#ff6b6b;" onclick="setAccent('#ff6b6b')"></div>
+            <div class="color-dot" style="--dot-color:#c084fc; background:#c084fc;" onclick="setAccent('#c084fc')"></div>
+          </div>
+        </div>
+
+        <!-- ===== DỮ LIỆU ===== -->
+        <div class="card" style="padding:22px; width:100%; max-width:450px;">
+          <h3 style="margin-bottom:14px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">💾 Dữ Liệu</h3>
+          <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+            <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
+            <label class="btn" style="margin-top:0; text-align:center;">
+              📥 Import dữ liệu
+              <input type="file" id="importFile" accept=".json" style="display:none;">
+            </label>
+          </div>
+        </div>
+
+        <!-- ===== NÚT LƯU ===== -->
+        <button class="btn-save-bottom" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- MODALS -->
+  <div class="modal-overlay" id="addShortcutModal">
+    <div class="modal-box">
+      <div class="modal-title">Thêm lối tắt</div>
+      <div class="input-group"><label>Tên</label><input type="text" id="newLinkName" placeholder="Ví dụ: Kho Sách"></div>
+      <div class="input-group"><label>URL</label><input type="text" id="newLinkUrl" placeholder="https://..."></div>
+      <div class="emoji-grid" id="emojiGrid"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeModal()">Huỷ</button>
+        <button class="btn" style="width:auto; margin-top:0;" onclick="saveNewLink()">Xong</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="editShortcutModal">
+    <div class="modal-box">
+      <div class="modal-title">Chỉnh sửa lối tắt</div>
+      <div class="input-group"><label>Tên</label><input type="text" id="editLinkName"></div>
+      <div class="input-group"><label>URL</label><input type="text" id="editLinkUrl"></div>
+      <div class="emoji-grid" id="editEmojiGrid"></div>
+      <div class="modal-actions">
+        <button class="btn-cancel" onclick="closeEditModal()">Huỷ</button>
+        <button class="btn" style="width:auto; margin-top:0;" onclick="saveEditedLink()">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-box">
+      <div style="font-size:3rem; margin-bottom:10px;">🤨</div>
+      <h2>MÀY CHẮC CHƯAAA???</h2>
+      <div class="modal-actions">
+        <button class="btn-confirm" id="btnFinalSure">CHẮC</button>
+        <button class="btn-cancel" onclick="closeConfirm()">CHẮC chớt liền</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🤪</div>
+
+  <script>
+    let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) {
+    const AudioClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioClass) return null;
+    audioCtx = new AudioClass();
+  }
+  return audioCtx;
+}
+
+    function playHoverSound() {
+  const ctx = getAudioCtx();
+  if (!ctx) return;
+
+  if (ctx.state === 'suspended') ctx.resume();
+
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  const filter = ctx.createBiquadFilter();
+
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(420, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(260, ctx.currentTime + 0.08);
+
+  filter.type = 'lowpass';
+  filter.frequency.setValueAtTime(900, ctx.currentTime);
+
+  gain.gain.setValueAtTime(0.018, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+
+  osc.connect(filter);
+  filter.connect(gain);
+  gain.connect(ctx.destination);
+
+  osc.start();
+  osc.stop(ctx.currentTime + 0.12);
+}
+
+    function addHoverEvents() {
+      document.querySelectorAll('.card, .nav-item, .btn, .btn-save-fixed, .theme-switch, .emoji-item, .btn-confirm, .btn-cancel, .color-dot').forEach(el => {
+        el.onmouseenter = playHoverSound;
+      });
+    }
+    function safeJSONParse(key, fallback) {
+  try {
+    return JSON.parse(localStorage.getItem(key)) || fallback;
+  } catch {
+    return fallback;
+  }
+}
+
+// ===== LOGIN LOGIC =====
+let currentUser = localStorage.getItem('ao_current_user') || null;
+
+function doLogin() {
+  const nameInput = document.getElementById('login-username');
+  const errorEl   = document.getElementById('login-error');
+  const name = (nameInput ? nameInput.value.trim() : currentUser) || '';
+
+  if (!name) {
+    if (errorEl) errorEl.textContent = '👆 Nhập tên đi bạn ơi... tên thôi cũng được!';
+    if (nameInput) nameInput.focus();
+    return;
+  }
+
+  currentUser = name;
+  localStorage.setItem('ao_current_user', name);
+
+  const loginScreen = document.getElementById('login-screen');
+  if (loginScreen) {
+    loginScreen.style.animation = 'loginFadeOut 0.35s ease forwards';
+    setTimeout(() => {
+      loginScreen.style.display = 'none';
+      const sidebarName = document.getElementById('sidebarUsernameDisplay');
+      if (sidebarName) sidebarName.textContent = name;
+    }, 350);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  ['login-username','login-password'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.addEventListener('keydown', e => { if (e.key === 'Enter') doLogin(); });
+  });
+
+  // Đã login trước đó → auto vào luôn
+  if (currentUser) {
+    const usernameEl = document.getElementById('login-username');
+    if (usernameEl) usernameEl.value = currentUser;
+    doLogin();
+  }
+});
+
+const _fadeStyle = document.createElement('style');
+_fadeStyle.textContent = `@keyframes loginFadeOut {
+  from { opacity:1; transform:scale(1); }
+  to   { opacity:0; transform:scale(1.04); }
+}`;
+document.head.appendChild(_fadeStyle);
+    
+    let appConfig = safeJSONParse('ao_v6_config', {
+  name: "Ní Hào Ma",
+  gender: "male",
+  accent: "#22c55e",
+  isLightMode: false
+});
+
+let userShortcuts = safeJSONParse('user_shortcuts_v6', [
+  { id:'1', name:'Course Key AE', url:'https://learn.eltngl.com/', icon:'🔑' },
+  { id:'2', name:'Kho Sách', url:'#', icon:'📚' }
+]);
+
+let notesData = safeJSONParse('ao_notes_v1', {
+  note1: '',
+  note2: '',
+  note3: ''
+});
+
+    const availableEmojis = [
+  '🔗','🔑','📘','📄','📚','📁','🗂️','📝','📌','📎','📰','🧾',
+  '💻','🖥️','⌨️','🖱️','🛜','📱','☎️','📡','🛰️','🔌','💾','🖨️',
+  '😎','🥵','🤬','🤮','🤪','🤡','👺','😁','💀','📋','🗃️','🗄️',
+  '⚙️','🛠️','🔧','🔨','🪛','🧰','🔍','🧪','🧬','⚡','🔥','💡',
+  '🌐','🌍','🗺️','📍','🚀','✈️','🚗','🚆','⛽','🧭','🏠','🏢',
+  '🎓','📖','✏️','🧠','🧑‍🏫','🏫','📒','📓','📔','🖍️','📐','✂️',
+  '🎨','🖌️','🖼️','🎬','🎤','🎧','🎵','🎹','🎸','🎻','🥁','🎼',
+  '🎮','🕹️','👾','🏆','🎯','🎲','♟️','🃏','🎪','🎭','🎉','🎁',
+  '🍔','🍕','🍟','🌮','🍜','☕','🧋','🍩','🍪','🍓','🍎','🍉',
+  '🐼','🦊','🐱','🐶','🐻','🐸','🐵','🦄','🐯','🐧','🐙','🦖',
+  '🌈','⭐','🌙','☀️','⛅','🌊','🌴','🍀','🌸','🌻','❄️','☁️'
+];
+    let selectedEmoji = '🔗';
+    let selectedEditEmoji = '🔗';
+    let pendingDeleteId = null;
+    let editingShortcutId = null;
+    let calendarDate = new Date();
+    let selectedCalendarDay = null;
+
+    function saveData() {
+      localStorage.setItem('ao_v6_config', JSON.stringify(appConfig));
+      localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
+      localStorage.setItem('ao_notes_v1', JSON.stringify(notesData));
+    }
+
+    // ===== FIREBASE SYNC (compat SDK) =====
+    const _db = window._firebaseDB;
+
+    function fbWrite(path, data) {
+      if (!_db) return;
+      try { _db.ref(path).set(data); }
+      catch(e) { console.warn('FB write lỗi:', e); }
+    }
+
+    // Ghi Excel lên Firebase
+    function fbSaveExcel() {
+      fbWrite('shared/excelData', excelData);
+    }
+
+    // Ghi Shortcuts lên Firebase
+    function fbSaveShortcuts() {
+      fbWrite('shared/shortcuts', userShortcuts);
+    }
+
+    // Bắt đầu lắng nghe realtime
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!_db) { console.warn('Firebase không khả dụng'); return; }
+      setTimeout(() => {
+        // Sync Excel
+        _db.ref('shared/excelData').on('value', snap => {
+          const data = snap.val();
+          if (!data) return;
+          if (JSON.stringify(data) !== JSON.stringify(excelData)) {
+            excelData = data;
+            localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
+            renderExcelSheet && renderExcelSheet();
+            console.log('🔄 Excel synced từ Firebase');
+          }
+        });
+
+        // Sync Shortcuts/Dashboard
+        _db.ref('shared/shortcuts').on('value', snap => {
+          const data = snap.val();
+          if (!data || !Array.isArray(data)) return;
+          if (JSON.stringify(data) !== JSON.stringify(userShortcuts)) {
+            userShortcuts = data;
+            localStorage.setItem('user_shortcuts_v6', JSON.stringify(userShortcuts));
+            renderShortcuts && renderShortcuts();
+            console.log('🔄 Shortcuts synced từ Firebase');
+          }
+        });
+      }, 500);
+    });
+    let saveTimeout;
+
+function saveDataDebounced() {
+  clearTimeout(saveTimeout);
+
+  saveTimeout = setTimeout(() => {
+    saveData();
+  }, 250);
+}
+    function switchPage(pageId) {
+      document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active-page'));
+      const targetPage = document.getElementById(`page-${pageId}`);
+if (targetPage) targetPage.classList.add('active-page');
+
+      document.querySelectorAll('.nav-item').forEach(item => {
+        item.classList.remove('active');
+        if (item.dataset.page === pageId) item.classList.add('active');
+      });
+    }
+    function escapeHTML(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+    
+    function renderShortcuts() {
+  const grid = document.getElementById('shortcutGrid');
+
+  grid.innerHTML =
+    userShortcuts.map((s, index) => {
+      const safeName = escapeHTML(s.name);
+      const safeUrl = escapeHTML(s.url);
+      const safeIcon = escapeHTML(s.icon);
+
+      return `
+        <div class="card shortcut-card" draggable="true" data-id="${s.id}" data-index="${index}">
+          <div style="position:absolute; top:12px; left:12px; display:flex; gap:8px; z-index:11;">
+            <button class="btn-delete btn-edit" style="position:static; opacity:1;" onclick="openEditModal('${s.id}')">✎</button>
+          </div>
+
+          <button class="btn-delete" onclick="askDelete('${s.id}')">✕</button>
+          <div style="font-size:50px;">${safeIcon}</div>
+          <h3>${safeName}</h3>
+          <a class="btn" href="${safeUrl}" target="_blank" rel="noopener noreferrer">Mở</a>
+        </div>
+      `;
+    }).join('') +
+    `
+      <div class="card add-card" onclick="openModal()">
+        <div class="plus-icon">+</div>
+        <div class="add-text">Thêm link</div>
+      </div>
+    `;
+
+  addHoverEvents();
+  initDragAndDrop();
+}
+
+    function renderEmojis() {
+      document.getElementById('emojiGrid').innerHTML = availableEmojis.map(e =>
+        `<div class="emoji-item ${e===selectedEmoji?'selected':''}" onclick="selectEmoji('${e}')">${e}</div>`
+      ).join('');
+      addHoverEvents();
+    }
+
+    function renderEditEmojis() {
+      document.getElementById('editEmojiGrid').innerHTML = availableEmojis.map(e =>
+        `<div class="emoji-item ${e===selectedEditEmoji?'selected':''}" onclick="selectEditEmoji('${e}')">${e}</div>`
+      ).join('');
+      addHoverEvents();
+    }
+
+    function selectEmoji(e){ selectedEmoji = e; renderEmojis(); }
+    function selectEditEmoji(e){ selectedEditEmoji = e; renderEditEmojis(); }
+
+    function openModal() {
+      document.getElementById('newLinkName').value = '';
+      document.getElementById('newLinkUrl').value = '';
+      selectedEmoji = '🔗';
+      renderEmojis();
+      document.getElementById('addShortcutModal').style.display = 'flex';
+    }
+
+    function closeModal(){ document.getElementById('addShortcutModal').style.display = 'none'; }
+
+    function saveNewLink() {
+      const name = document.getElementById('newLinkName').value.trim();
+      const url = document.getElementById('newLinkUrl').value.trim() || '#';
+      if (!name) return;
+
+      userShortcuts.push({
+        id: Date.now().toString(),
+        name,
+        url,
+        icon: selectedEmoji
+      });
+
+      saveData();
+      fbSaveShortcuts();
+      renderShortcuts();
+      closeModal();
+    }
+
+    function openEditModal(id) {
+  const item = userShortcuts.find(s => s.id === id);
+      if (!item) return;
+
+      editingShortcutId = id;
+      selectedEditEmoji = item.icon;
+      document.getElementById('editLinkName').value = item.name;
+      document.getElementById('editLinkUrl').value = item.url;
+      renderEditEmojis();
+      document.getElementById('editShortcutModal').style.display = 'flex';
+    }
+
+    function closeEditModal(){ document.getElementById('editShortcutModal').style.display = 'none'; }
+
+    function saveEditedLink() {
+      const item = userShortcuts.find(s => s.id === editingShortcutId);
+      if (!item) return;
+
+      item.name = document.getElementById('editLinkName').value.trim() || item.name;
+      item.url = document.getElementById('editLinkUrl').value.trim() || item.url;
+      item.icon = selectedEditEmoji;
+
+      saveData();
+      fbSaveShortcuts();
+      renderShortcuts();
+      closeEditModal();
+    }
+
+    function askDelete(id) {
+  pendingDeleteId = id;
+  document.getElementById('confirmModal').style.display = 'flex';
+}
+
+    function closeConfirm() {
+      document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    document.getElementById('btnFinalSure').onclick = () => {
+      userShortcuts = userShortcuts.filter(s => s.id !== pendingDeleteId);
+      saveData();
+      fbSaveShortcuts();
+      renderShortcuts();
+      closeConfirm();
+    };
+
+    function initDragAndDrop() {
+      const cards = document.querySelectorAll('.shortcut-card');
+      let dragged = null;
+
+      cards.forEach(card => {
+        card.addEventListener('dragstart', () => {
+          dragged = card;
+          card.classList.add('dragging');
+        });
+
+        card.addEventListener('dragend', () => {
+          card.classList.remove('dragging');
+          dragged = null;
+          saveData();
+        });
+
+        card.addEventListener('dragover', e => e.preventDefault());
+
+        card.addEventListener('drop', e => {
+          e.preventDefault();
+          if (!dragged || dragged === card) return;
+
+          const from = +dragged.dataset.index;
+          const to = +card.dataset.index;
+          const moved = userShortcuts.splice(from, 1)[0];
+          userShortcuts.splice(to, 0, moved);
+
+          renderShortcuts();
+        });
+      });
+    }
+
+    function updatePreview(g) {
+      appConfig.tempGender = g;
+      const seeds = { male:'Liam', female:'Adrian', dog:'Luis' };
+      document.getElementById('previewAvatar').src = `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[g]}`;
+      document.querySelectorAll('#page-settings #btn-male, #page-settings #btn-female, #page-settings #btn-dog').forEach(b => b.style.opacity = '0.6');
+      document.getElementById(`btn-${g}`).style.opacity = '1';
+    }
+
+    function setAccent(c) {
+  appConfig.accent = c;
+
+  const darkMap = {
+    '#22c55e': '#16a34a',
+    '#ef4444': '#dc2626',
+    '#a855f7': '#9333ea',
+    '#f59e0b': '#d97706',
+    '#06b6d4': '#0891b2',
+    '#84cc16': '#65a30d',
+    '#f43f5e': '#e11d48',
+    '#8b5cf6': '#7c3aed',
+    '#14b8a6': '#0f766e',
+    '#eab308': '#ca8a04',
+    '#3b82f6': '#2563eb',
+    '#ec4899': '#db2777'
+  };
+
+  document.documentElement.style.setProperty('--accent', c);
+  document.documentElement.style.setProperty('--accent-dark', darkMap[c] || c);
+  document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${c}55`);
+}
+
+    function saveAllSettings() {
+      // Tên lấy từ login (currentUser), không còn input nữa
+      if (currentUser) appConfig.name = currentUser;
+      if (appConfig.tempGender) appConfig.gender = appConfig.tempGender;
+      // Lưu settings riêng theo user
+      const userKey = currentUser ? `ao_v6_config_${currentUser}` : 'ao_v6_config';
+      localStorage.setItem(userKey, JSON.stringify(appConfig));
+      saveData();
+      applyConfig();
+      alert('Đã lưu rồi ní ơi!');
+    }
+
+    function applyConfig() {
+      document.documentElement.style.setProperty('--accent', appConfig.accent);
+
+const darkMap = {
+  '#22c55e': '#16a34a',
+  '#ef4444': '#dc2626',
+  '#a855f7': '#9333ea',
+  '#f59e0b': '#d97706',
+  '#06b6d4': '#0891b2',
+  '#84cc16': '#65a30d',
+  '#f43f5e': '#e11d48',
+  '#8b5cf6': '#7c3aed',
+  '#14b8a6': '#0f766e',
+  '#eab308': '#ca8a04',
+  '#3b82f6': '#2563eb',
+  '#ec4899': '#db2777',
+  '#fb923c': '#ea580c',
+  '#10b981': '#059669',
+  '#6366f1': '#4f46e5',
+  '#f97316': '#ea580c',
+  '#0ea5e9': '#0284c7',
+  '#d946ef': '#c026d3',
+  '#65a30d': '#4d7c0f',
+  '#dc2626': '#b91c1c',
+  '#7c3aed': '#6d28d9',
+  '#0891b2': '#0e7490'
+};
+
+document.documentElement.style.setProperty('--accent-dark', darkMap[appConfig.accent] || appConfig.accent);
+document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appConfig.accent}55`);
+
+      document.getElementById('body').classList.toggle('light-mode', appConfig.isLightMode);
+      document.getElementById('themeBtn').innerText = appConfig.isLightMode ? '😎' : '🤪';
+
+      const displayName = currentUser || appConfig.name || 'Ní Hào Ma';
+      document.getElementById('sidebarUsernameDisplay').innerText = displayName;
+
+      // Đổi seed avatar theo tên mới: Meo, Phi Meo, Lẩu Gà
+      const seeds = { male:'Meo', female:'PhiMeo', dog:'LauGa' };
+      const avatar = appConfig.customAvatar || `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender] || 'Meo'}`;
+
+      document.getElementById('sidebarAvatar').src = avatar;
+      document.getElementById('previewAvatar').src = avatar;
+      document.getElementById('greeting').innerText = `Haku_Na_Matata, ${displayName}! 🚀`;
+    }
+
+    function toggleTheme() {
+      appConfig.isLightMode = !appConfig.isLightMode;
+      applyConfig();
+      saveData();
+    }
+
+    function setupAvatarUpload() {
+      const input = document.getElementById('avatarUpload');
+      const zone = document.getElementById('avatarDropZone');
+
+      zone.addEventListener('click', () => input.click());
+
+      zone.addEventListener('dragover', e => {
+        e.preventDefault();
+        zone.classList.add('dragover');
+      });
+
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+
+      zone.addEventListener('drop', e => {
+        e.preventDefault();
+        zone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) handleAvatarFile(file);
+      });
+
+      input.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) handleAvatarFile(file);
+      });
+    }
+
+    function handleAvatarFile(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        appConfig.customAvatar = e.target.result;
+        saveData();
+        applyConfig();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeCustomAvatar() {
+      delete appConfig.customAvatar;
+      saveData();
+      applyConfig();
+    }
+
+    function exportData() {
+      const payload = { config: appConfig, shortcuts: userShortcuts, notes: notesData };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type:'application/json' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'ao-dashboard-backup.json';
+      a.click();
+    }
+
+    document.addEventListener('change', (e) => {
+      if (e.target && e.target.id === 'importFile') {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = evt => {
+          try {
+            const data = JSON.parse(evt.target.result);
+            if (data.config) appConfig = data.config;
+            if (data.shortcuts) userShortcuts = data.shortcuts;
+            if (data.notes) notesData = data.notes;
+
+            saveData();
+            applyConfig();
+            renderShortcuts();
+            initNotes();
+            alert('Import thành công nha ní!');
+          } catch {
+            alert('File không hợp lệ rồi ní ơi!');
+          }
         };
+        reader.readAsText(file);
+      }
+    });
 
-        const Home = getIcon('Home');
-        const LayoutGrid = getIcon('LayoutGrid');
-        const FileSpreadsheet = getIcon('FileSpreadsheet');
-        const Settings = getIcon('Settings');
-        const LogOut = getIcon('LogOut');
-        const Plus = getIcon('Plus');
-        const X = getIcon('X');
-        const Trash2 = getIcon('Trash2');
-        const Pencil = getIcon('Pencil');
-        const Sparkles = getIcon('Sparkles');
-        const Save = getIcon('Save');
-        const Table = getIcon('Table');
-        const ChevronLeft = getIcon('ChevronLeft');
-        const ChevronRight = getIcon('ChevronRight');
-        const MessageSquare = getIcon('MessageSquare');
-        const Search = getIcon('Search');
+    function updateClock() {
+      const now = new Date();
+      const days = ['Chủ Nhật','Thứ Hai','Thứ Ba','Thứ Tư','Thứ Năm','Thứ Sáu','Thứ Bảy'];
 
-        const df = window.dateFns || {};
-        const cn = (...args) => args.filter(Boolean).join(' ');
+      document.getElementById('liveClock').innerText = now.toLocaleTimeString('vi-VN');
+      document.getElementById('liveDate').innerText =
+        `${days[now.getDay()]}, ${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()}`;
+    }
+     function renderCalendarSelectors() {
+  const monthPanel = document.getElementById('monthPanel');
+  const yearPanel = document.getElementById('yearPanel');
 
-        // --- Lunar Utils ---
-        const holidays = [{ d: 1, m: 1, name: 'Tết DL' }, { d: 30, m: 4, name: 'Giải Phóng' }, { d: 1, m: 5, name: 'Quốc Tế Lao Động' }, { d: 2, m: 9, name: 'Quốc Khánh' }];
-        function getLunarDate(date) {
-            const d = date.getDate(); const m = date.getMonth() + 1;
-            const holiday = holidays.find(h => h.d === d && h.m === m);
-            return { day: (d + 2) % 30 || 1, month: m % 12 || 1, isHoliday: !!holiday, holidayName: holiday ? holiday.name : '' };
+  if(!monthPanel || !yearPanel) return;
+
+  const currentMonth = calendarDate.getMonth();
+  const currentYear = calendarDate.getFullYear();
+  const nowYear = new Date().getFullYear();
+
+  let mHTML = '';
+  for(let i=0;i<12;i++){
+    mHTML += `
+      <div class="dropdown-item"
+        style="${i===currentMonth?'background:var(--accent);color:#000;':''}"
+        onclick="selectMonth(${i})"
+      >
+        Tháng ${i+1}
+      </div>
+    `;
+  }
+
+  let yHTML = '';
+  const start = nowYear - 25;
+
+  for(let i=0;i<50;i++){
+    const y = start + i;
+    yHTML += `
+      <div class="dropdown-item"
+        style="${y===currentYear?'background:var(--accent);color:#000;':''}"
+        onclick="selectYear(${y})"
+      >
+        ${y}
+      </div>
+    `;
+  }
+
+  monthPanel.innerHTML = mHTML;
+  yearPanel.innerHTML = yHTML;
+}
+
+function handleCalendarPickerChange() {
+  const month = parseInt(document.getElementById('monthSelect').value, 10);
+  const year = parseInt(document.getElementById('yearSelect').value, 10);
+
+  calendarDate = new Date(year, month, 1);
+  selectedCalendarDay = null;
+  renderCalendar();
+}
+
+function changeMonth(step) {
+  calendarDate.setMonth(calendarDate.getMonth() + step);
+  selectedCalendarDay = null;
+  renderCalendar();
+}
+
+function selectCalendarDay(day) {
+  selectedCalendarDay = day;
+  renderCalendar();
+}
+
+function renderCalendar() {
+  const year = calendarDate.getFullYear();
+  const month = calendarDate.getMonth();
+  const todayReal = new Date();
+
+document.getElementById('monthBtn').innerText = `Tháng ${month + 1} ▼`;
+document.getElementById('yearBtn').innerText = `${year} ▼`;
+  
+  const grid = document.getElementById('calendarGrid');
+  const days = ['CN','T2','T3','T4','T5','T6','T7'];
+
+  document.getElementById('calendarWeekdays').innerHTML =
+  days.map(d => `<div class="calendar-cell weekday">${d}</div>`).join('');
+  
+  let html = '';
+  const firstDay = new Date(year, month, 1).getDay();
+  const totalDays = new Date(year, month + 1, 0).getDate();
+
+  for (let i = 0; i < firstDay; i++) {
+    html += `<div class="calendar-cell empty"></div>`;
+  }
+
+  for (let d = 1; d <= totalDays; d++) {
+    const isToday =
+      d === todayReal.getDate() &&
+      month === todayReal.getMonth() &&
+      year === todayReal.getFullYear();
+
+    const isSelected = selectedCalendarDay === d;
+
+    html += `
+      <div
+        class="calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
+        onclick="selectCalendarDay(${d})"
+      >
+        ${d}
+      </div>
+    `;
+  }
+
+  grid.innerHTML = html;
+  renderCalendarSelectors();
+}
+    
+    function toggleMonthPanel() {
+  const m = document.getElementById('monthPanel');
+  const y = document.getElementById('yearPanel');
+
+  if (!m || !y) return;
+
+  m.style.display = (m.style.display === 'block') ? 'none' : 'block';
+  y.style.display = 'none';
+}
+
+function toggleYearPanel() {
+  const m = document.getElementById('monthPanel');
+  const y = document.getElementById('yearPanel');
+
+  if (!m || !y) return;
+
+  y.style.display = (y.style.display === 'block') ? 'none' : 'block';
+  m.style.display = 'none';
+}
+
+function closeDropdowns() {
+  const m = document.getElementById('monthPanel');
+  const y = document.getElementById('yearPanel');
+
+  if (m) m.style.display = 'none';
+  if (y) y.style.display = 'none';
+}
+
+function selectMonth(m) {
+  calendarDate.setMonth(m);
+  closeDropdowns();
+  renderCalendar();
+}
+
+function selectYear(y) {
+  calendarDate.setFullYear(y);
+  closeDropdowns();
+  renderCalendar();
+}
+
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.custom-dropdown')) {
+    closeDropdowns();
+  }
+});
+  
+    function initNotes() {
+      ['note1','note2','note3'].forEach(id => {
+        const el = document.getElementById(id);
+        el.value = notesData[id] || '';
+        el.oninput = () => {
+          notesData[id] = el.value;
+          saveDataDebounced();
+        };
+      });
+    }
+
+    document.getElementById('toggleBtn').onclick = () => {
+      document.getElementById('sidebar').classList.toggle('expanded');
+    };
+
+    window.onload = () => {
+
+  renderShortcuts();
+  applyConfig();
+  updatePreview(appConfig.gender);
+  updateClock();
+  renderCalendar();
+  initNotes();
+  setupAvatarUpload();
+
+  setInterval(updateClock, 1000);
+
+  addHoverEvents();
+
+  // delay render excel
+  setTimeout(() => {
+
+    if (typeof renderExcelSheet === "function") {
+      renderExcelSheet();
+    }
+
+  }, 0);
+
+};
+  // ===== EXCEL CORE STATE =====
+
+function formatCellDisplay(value) {
+  // Nếu là object (có thể có .url riêng cho hyperlink)
+  if (typeof value === 'object' && value !== null) {
+    const text = value.value || value.raw || '';
+    const url  = value.url  || '';
+    if (url) {
+      return `<a href="${url}" target="_blank" rel="noopener noreferrer">${text || url}</a>`;
+    }
+    if (/https?:\/\//.test(text)) {
+      return `<a href="${text}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    }
+    return text;
+  }
+
+  const str = String(value || '');
+  if (/https?:\/\//.test(str)) {
+    return `<a href="${str}" target="_blank" rel="noopener noreferrer">${str}</a>`;
+  }
+  return str;
+}
+
+let isSelecting = false;
+let startCell = null;
+  /* =========================
+     EXCEL MINI LOGIC
+  ========================= */
+
+  // ===== EXCEL DATA ENGINE =====
+let excelData = safeJSONParse('ao_excel_v1', {});
+let selectedCells = new Set();
+
+let rowHeights = {};
+let columnWidths = {};
+
+let undoStack = [];
+let redoStack = [];
+
+const DEFAULT_ROW_HEIGHT = 32;
+const DEFAULT_COL_WIDTH = 120;
+
+function saveState() {
+
+  undoStack.push(JSON.stringify({
+    excelData,
+    rowHeights,
+    columnWidths
+  }));
+
+  if (undoStack.length > 50) {
+    undoStack.shift();
+  }
+
+  redoStack = [];
+
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
+}
+
+function undo() {
+
+  if (!undoStack.length) return;
+
+  redoStack.push(JSON.stringify({
+    excelData,
+    rowHeights,
+    columnWidths
+  }));
+
+  const prev =
+    JSON.parse(undoStack.pop());
+
+  excelData = prev.excelData;
+  rowHeights = prev.rowHeights;
+  columnWidths = prev.columnWidths;
+
+  renderExcelSheet();
+}
+
+function redo() {
+
+  if (!redoStack.length) return;
+
+  undoStack.push(JSON.stringify({
+    excelData,
+    rowHeights,
+    columnWidths
+  }));
+
+  const next =
+    JSON.parse(redoStack.pop());
+
+  excelData = next.excelData;
+  rowHeights = next.rowHeights;
+  columnWidths = next.columnWidths;
+
+  renderExcelSheet();
+}
+
+function setCell(cell, value) {
+
+  saveState();
+
+  excelData[cell] = {
+    raw: value,
+    value: evaluateFormula(value)
+  };
+
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
+}
+
+function getCell(cell) {
+  return excelData[cell]?.value || "";
+}
+
+function evaluateFormula(value) {
+  if (typeof value !== "string") return value;
+
+  if (!value.startsWith("=")) {
+    return value;
+  }
+
+  try {
+
+    // SUM(A1:A5)
+    const sumMatch = value.match(/=SUM\(([A-Z]+)(\d+):([A-Z]+)(\d+)\)/i);
+
+    if (sumMatch) {
+
+      const startCol = sumMatch[1];
+      const startRow = parseInt(sumMatch[2]);
+
+      const endCol = sumMatch[3];
+      const endRow = parseInt(sumMatch[4]);
+
+      let total = 0;
+
+      for (let r = startRow; r <= endRow; r++) {
+
+        const cell = `${startCol}${r}`;
+
+        const v = parseFloat(getCell(cell)) || 0;
+
+        total += v;
+      }
+
+      return total;
+    }
+
+    return value;
+
+  } catch (err) {
+    return "#ERROR";
+  }
+}
+  
+  function generateCols(n) {
+  const cols = [];
+  for (let i = 0; i < n; i++) {
+    let col = '';
+    let temp = i;
+
+    do {
+      col = String.fromCharCode(65 + (temp % 26)) + col;
+      temp = Math.floor(temp / 26) - 1;
+    } while (temp >= 0);
+
+    cols.push(col);
+  }
+  return cols;
+}
+
+const excelCols = generateCols(50); // 👉 muốn bao nhiêu cột tùy bạn
+let excelRows = 100; // 👉 số hàng
+
+  function renderExcelSheet() {
+    const table = document.getElementById('excelTable');
+    if (!table) return;
+
+    let html = '<thead><tr><th class="row-head">#</th>';
+    excelCols.forEach(col => {
+      html += `
+<th class="col-header">
+  ${col}
+  <div class="col-resizer"></div>
+</th>
+`;
+    });
+    html += '</tr></thead><tbody>';
+
+    for (let row = 1; row <= excelRows; row++) {
+      html += `<tr>`;
+      html += `
+<td class="row-header">
+  ${row}
+  <div class="row-resizer"></div>
+</td>
+`;
+
+      excelCols.forEach(col => {
+        const key = `${col}${row}`;
+        // Truyền NGUYÊN object vào formatCellDisplay để giữ url
+        const value = excelData[key] || '';
+
+        html += `
+ <td 
+  contenteditable="true"
+  class="cell"
+  data-cell="${key}"
+  oninput="updateCell(this)"
+  onmousedown="startSelect(this, event)"
+  onmouseover="hoverSelect(this)"
+>
+  ${formatCellDisplay(value)}
+</td>
+`;
+      });
+
+      html += `</tr>`;
+    }
+
+    html += '</tbody>';
+    table.innerHTML = html;
+    initResize();
+  }
+
+ function updateCell(cell) {
+
+  const key = cell.dataset.cell;
+  const text = cell.innerText.trim();
+
+  excelData[key] = {
+  raw: text,
+  value: evaluateFormula(text)
+};
+
+  // link
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML =
+      `<a href="${text}" target="_blank">${text}</a>`;
+  }
+
+  // ===== AUTO WIDTH =====
+
+  const colLetter =
+    key.match(/[A-Z]+/)[0];
+
+  const textLength =
+    String(text || "").length;
+
+  const estimatedWidth =
+    Math.max(DEFAULT_COL_WIDTH, textLength * 8);
+
+  if (
+    !columnWidths[colLetter] ||
+    estimatedWidth > columnWidths[colLetter]
+  ) {
+    columnWidths[colLetter] = estimatedWidth;
+  }
+
+  localStorage.setItem(
+    'ao_excel_v1',
+    JSON.stringify(excelData)
+  );
+}
+
+  function clearSheet() {
+    const sure = confirm('Xoá toàn bộ dữ liệu sheet này nha ní?');
+    if (!sure) return;
+
+    excelData = {};
+    localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+    renderExcelSheet();
+  }
+
+  function exportCSV() {
+    let csv = [];
+    csv.push(['', ...excelCols].join(','));
+
+    for (let row = 1; row <= excelRows; row++) {
+      let line = [row];
+
+      excelCols.forEach(col => {
+        const key = `${col}${row}`;
+        let value = excelData[key] || '';
+
+if (
+  typeof value === 'object' &&
+  value !== null
+) {
+  value = value.value || '';
+}
+
+value =
+  `"${String(value).replace(/"/g, '""')}"`;
+        line.push(value);
+      });
+
+      csv.push(line.join(','));
+    }
+
+    const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ao-excel-sheet.csv';
+    a.click();
+  }
+
+  function importCSVFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const text = e.target.result;
+      const rows = text.split(/\r?\n/).filter(Boolean);
+
+      if (!rows.length) return;
+
+      let newData = {};
+
+      rows.slice(1).forEach((line, rowIndex) => {
+        const values = parseCSVLine(line);
+
+        excelCols.forEach((col, colIndex) => {
+          const key = `${col}${rowIndex + 1}`;
+          const rawValue =
+  values[colIndex + 1] || '';
+
+newData[key] = {
+  raw: rawValue,
+  value: evaluateFormula(rawValue)
+};
+        });
+      });
+
+      excelData = newData;
+      localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+      renderExcelSheet();
+      alert('Import CSV thành công nha ní!');
+    };
+
+    reader.readAsText(file);
+  }
+
+  function parseCSVLine(line) {
+    const result = [];
+    let current = '';
+    let insideQuotes = false;
+
+    for (let i = 0; i < line.length; i++) {
+      const char = line[i];
+      const next = line[i + 1];
+
+      if (char === '"' && insideQuotes && next === '"') {
+        current += '"';
+        i++;
+      } else if (char === '"') {
+        insideQuotes = !insideQuotes;
+      } else if (char === ',' && !insideQuotes) {
+        result.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+
+    result.push(current);
+    return result;
+  }
+
+  document.addEventListener('change', (e) => {
+    if (e.target && e.target.id === 'csvImport') {
+      const file = e.target.files[0];
+      if (file) importCSVFile(file);
+    }
+  });
+// ===== PASTE MULTI CELL (fixed) =====
+
+document.addEventListener('paste', function (e) {
+
+  let cell = document.activeElement;
+  if (!cell || !cell.classList.contains('cell')) {
+    cell = e.target.closest('.cell');
+  }
+  if (!cell) return;
+
+  e.preventDefault();
+
+  const text     = e.clipboardData.getData('text/plain');
+  const htmlData = e.clipboardData.getData('text/html');
+
+  // Multi-cell paste (có tab hoặc newline)
+  if (text.includes('\n') || text.includes('\t')) {
+    handleMultiPaste(text, cell, htmlData);
+    return;
+  }
+
+  // Single-cell paste
+  if (/https?:\/\/[^\s]+/.test(text)) {
+    cell.innerHTML = `<a href="${text}" target="_blank" rel="noopener noreferrer">${text}</a>`;
+    const key = cell.dataset.cell;
+    excelData[key] = { raw: text, value: text, url: text };
+  } else {
+    cell.innerText = text;
+    const key = cell.dataset.cell;
+    excelData[key] = { raw: text, value: evaluateFormula(text) };
+  }
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+});
+
+// ===== HANDLE MULTI PASTE (fixed: giữ link từ HTML clipboard) =====
+function handleMultiPaste(text, startCell, htmlData) {
+
+  saveState();
+
+  // --- Bước 1: Parse HTML clipboard để lấy href theo vị trí từng ô ---
+  const htmlCells = {};
+  if (htmlData) {
+    const temp = document.createElement('div');
+    temp.innerHTML = htmlData;
+    const trs = temp.querySelectorAll('tr');
+    trs.forEach((tr, rIdx) => {
+      const tds = tr.querySelectorAll('td, th');
+      tds.forEach((td, cIdx) => {
+        const a = td.querySelector('a');
+        htmlCells[`${rIdx},${cIdx}`] = {
+          href: a ? a.href : null,
+          text: td.innerText.trim()
+        };
+      });
+    });
+  }
+
+  // --- Bước 2: Parse text/plain thành mảng 2D ---
+  const rows = text.trim().split('\n').map(row => row.split('\t'));
+
+  const startKey = startCell.dataset ? startCell.dataset.cell : startCell;
+  const match = startKey.match(/([A-Z]+)(\d+)/);
+  if (!match) return;
+
+  const startCol = match[1].charCodeAt(0) - 65;
+  const startRow = parseInt(match[2]);
+
+  rows.forEach((row, rIndex) => {
+    row.forEach((value, cIndex) => {
+      const colLetter  = String.fromCharCode(65 + startCol + cIndex);
+      const rowNumber  = startRow + rIndex;
+      const key        = `${colLetter}${rowNumber}`;
+      const cleanValue = value.trim();
+
+      // Lấy href của ô tương ứng từ HTML clipboard (nếu có)
+      const htmlCell = htmlCells[`${rIndex},${cIndex}`];
+      const href     = (htmlCell && htmlCell.href) ? htmlCell.href : null;
+
+      // Lưu dữ liệu (kèm url nếu có)
+      excelData[key] = {
+        raw:   cleanValue,
+        value: evaluateFormula(cleanValue),
+        ...(href ? { url: href } : {})
+      };
+
+      // Cập nhật cell DOM
+      const targetCell = document.querySelector(`[data-cell="${key}"]`);
+      if (targetCell) {
+        if (href) {
+          targetCell.innerHTML = `<a href="${href}" target="_blank" rel="noopener noreferrer">${cleanValue || href}</a>`;
+        } else if (/https?:\/\//.test(cleanValue)) {
+          targetCell.innerHTML = `<a href="${cleanValue}" target="_blank" rel="noopener noreferrer">${cleanValue}</a>`;
+        } else {
+          targetCell.innerText = cleanValue;
         }
 
-        // --- Sidebar ---
-        function Sidebar({ activePage, setActivePage, accentColor, user, onLogout }) {
-            const [isExpanded, setIsExpanded] = useState(false);
-            const items = [{ id: 'home', icon: Home, label: 'Trang chủ' }, { id: 'dashboard', icon: LayoutGrid, label: 'Dashboard' }, { id: 'excel', icon: FileSpreadsheet, label: 'Excel Trắng' }, { id: 'settings', icon: Settings, label: 'Cài đặt' }];
-            return (
-                <div className="fixed left-0 top-0 h-full z-50 p-3 transition-all duration-300" onMouseEnter={() => setIsExpanded(true)} onMouseLeave={() => setIsExpanded(false)} style={{ width: isExpanded ? '280px' : '100px' }}>
-                    <div className="h-full rounded-[32px] p-2 flex flex-col shadow-2xl" style={{ backgroundColor: accentColor }}>
-                        <div className="h-full w-full bg-[#160a2c] rounded-[24px] flex flex-col overflow-hidden">
-                            <div className={cn("p-6 flex items-center gap-4 transition-all", isExpanded ? "flex-row" : "flex-col")}>
-                                <div className="w-12 h-12 rounded-full border-2 p-0.5" style={{ borderColor: accentColor }}><img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${user.name}`} className="rounded-full" /></div>
-                                {isExpanded && <div className="text-white font-bold truncate">Ní {user.name}</div>}
-                            </div>
-                            <nav className="flex-1 px-3 space-y-2">
-                                {items.map(item => (
-                                    <button key={item.id} onClick={() => setActivePage(item.id)} className={cn("w-full flex items-center p-4 rounded-xl transition-all", activePage === item.id ? "bg-white/10 text-white" : "text-white/40 hover:text-white hover:bg-white/5", !isExpanded && "justify-center")}>
-                                        <item.icon size={24} style={activePage === item.id ? { color: accentColor } : {}} />
-                                        {isExpanded && <span className="ml-4 font-bold">{item.label}</span>}
-                                    </button>
-                                ))}
-                            </nav>
-                            <button onClick={onLogout} className={cn("p-4 m-3 rounded-xl text-red-400 hover:bg-red-500/10 flex items-center", !isExpanded && "justify-center")}>
-                                <LogOut size={24} />{isExpanded && <span className="ml-4 font-bold">Đăng xuất</span>}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            );
-        }
+        // Flash xanh nhẹ để biết ô đã được paste
+        targetCell.style.background = 'rgba(34,197,94,0.3)';
+        setTimeout(() => { targetCell.style.background = ''; }, 400);
+      }
+    });
+  });
 
-        // --- Dashboard Grid ---
-        function DashboardGrid({ accentColor }) {
-            const [shortcuts, setShortcuts] = useState(() => JSON.parse(localStorage.getItem('shortcuts') || '[{"id":"1","name":"ELT Learn","url":"#","icon":"🔑"}]'));
-            const [isModalOpen, setIsModalOpen] = useState(false);
-            const [newS, setNewS] = useState({ name: '', url: '', icon: '🔗' });
-            useEffect(() => localStorage.setItem('shortcuts', JSON.stringify(shortcuts)), [shortcuts]);
-            return (
-                <div className="space-y-10">
-                    <div className="text-center"><h1 className="text-6xl font-black tracking-tighter">AO Dashboard Q10</h1><p className="text-white/20 font-bold tracking-widest text-sm uppercase">Haku_Na_Matata!</p></div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {shortcuts.map(s => (
-                            <div key={s.id} className="glass-card rounded-[32px] p-8 flex flex-col items-center group relative">
-                                <button onClick={() => setShortcuts(shortcuts.filter(x => x.id !== s.id))} className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 text-white/20 hover:text-red-400 transition-all"><Trash2 size={18} /></button>
-                                <div className="text-5xl mb-6">{s.icon}</div>
-                                <h3 className="text-xl font-bold mb-6">{s.name}</h3>
-                                <a href={s.url} target="_blank" className="w-full py-3 rounded-2xl text-black font-black text-center btn-depth" style={{ backgroundColor: accentColor }}>MỞ</a>
-                            </div>
-                        ))}
-                        <button onClick={() => setIsModalOpen(true)} className="glass-card rounded-[32px] p-8 flex flex-col items-center justify-center border-dashed border-2 border-white/10 hover:border-white/30 transition-all">
-                            <Plus size={32} className="text-white/20 mb-2" /><span className="text-white/20 font-black text-xs uppercase">Thêm lối tắt</span>
-                        </button>
-                    </div>
-                    <AnimatePresence>
-                        {isModalOpen && (
-                            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/80 backdrop-blur-xl">
-                                <div className="glass-card rounded-[40px] p-10 max-w-lg w-full space-y-6">
-                                    <h2 className="text-3xl font-black">Thêm lối tắt</h2>
-                                    <input placeholder="Tên" value={newS.name} onChange={e => setNewS({...newS, name: e.target.value})} className="w-full bg-white/5 p-4 rounded-xl outline-none" />
-                                    <input placeholder="URL (https://...)" value={newS.url} onChange={e => setNewS({...newS, url: e.target.value})} className="w-full bg-white/5 p-4 rounded-xl outline-none" />
-                                    <div className="flex gap-4"><button onClick={() => setIsModalOpen(false)} className="flex-1 text-white/40 font-bold uppercase">Hủy</button><button onClick={() => { setShortcuts([...shortcuts, { ...newS, id: Date.now().toString() }]); setIsModalOpen(false); }} className="flex-1 py-4 rounded-xl text-black font-black" style={{ backgroundColor: accentColor }}>XONG</button></div>
-                                </div>
-                            </div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            );
-        }
+  localStorage.setItem('ao_excel_v1', JSON.stringify(excelData)); fbSaveExcel();
+  requestAnimationFrame(() => renderExcelSheet());
+}
+// ===== SELECT ENGINE =====
 
-        // --- Excel Trắng ---
-        function ExcelSheet({ accentColor }) {
-            const [cols, setCols] = useState(() => JSON.parse(localStorage.getItem('excel_cols') || '["A","B","C","D","E","F"]'));
-            const [rows, setRows] = useState(() => JSON.parse(localStorage.getItem('excel_rows') || '[1,2,3,4,5,6,7,8,9,10]'));
-            const [data, setData] = useState(() => JSON.parse(localStorage.getItem('excel_data') || '{}'));
-            useEffect(() => { localStorage.setItem('excel_cols', JSON.stringify(cols)); localStorage.setItem('excel_rows', JSON.stringify(rows)); localStorage.setItem('excel_data', JSON.stringify(data)); }, [cols, rows, data]);
-            return (
-                <div className="glass-card rounded-[32px] overflow-hidden flex flex-col h-[650px] shadow-2xl">
-                    <div className="p-6 bg-white/5 border-b border-white/10 flex justify-between items-center">
-                        <div className="flex items-center gap-4"><div className="p-3 bg-green-500 rounded-xl"><Table size={20} /></div><div className="font-black text-xl">Excel Trắng</div></div>
-                        <div className="flex gap-2">
-                            <button onClick={() => setCols([...cols, String.fromCharCode(65 + cols.length)])} className="px-4 py-2 bg-white/5 rounded-xl text-xs font-black">+ CỘT</button>
-                            <button onClick={() => setRows([...rows, rows.length + 1])} className="px-4 py-2 bg-white/5 rounded-xl text-xs font-black">+ DÒNG</button>
-                            <button onClick={() => { if(confirm("Xoá hết hả ní?")) setData({}); }} className="px-4 py-2 bg-red-500/20 text-red-400 rounded-xl text-xs font-black">XOÁ HẾT</button>
-                        </div>
-                    </div>
-                    <div className="flex-1 overflow-auto bg-black/20">
-                        <table className="w-full border-collapse">
-                            <thead className="sticky top-0 z-10 bg-[#1f232c]"><th className="w-12 border border-white/10 p-2 text-[10px] text-white/30">#</th>{cols.map(c => <th key={c} className="w-40 border border-white/10 p-2 text-xs font-black text-white/40">{c}</th>)}</thead>
-                            <tbody>
-                                {rows.map(r => (
-                                    <tr key={r}><td className="bg-[#1f232c] border border-white/10 text-[10px] text-white/30 text-center font-bold">{r}</td>{cols.map(c => <td key={c} className="border border-white/5 p-0"><input value={data[`${c}${r}`] || ''} onChange={e => setData({...data, [`${c}${r}`]: e.target.value})} className="w-full p-3 bg-transparent outline-none focus:bg-white/5 text-sm" /></td>)}</tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            );
-        }
+function startSelect(input, e) {
+  isSelecting = true;
+  startCell = input.dataset.cell;
 
-        // --- Settings Panel ---
-        function SettingsPanel({ accentColor, setAccentColor, user, setUser }) {
-            const colors = ['#22c55e', '#ef4444', '#a855f7', '#f59e0b', '#06b6d4', '#ec4899'];
-            return (
-                <div className="max-w-xl mx-auto space-y-10">
-                    <div className="text-center"><h1 className="text-6xl font-black tracking-tighter uppercase leading-none">NÍ NÈ NÍ</h1><p className="text-white/20 font-bold tracking-widest text-sm uppercase">Trang trí lại tí cho nó rực rỡ</p></div>
-                    <div className="glass-card rounded-[40px] p-10 space-y-10 border-2" style={{ borderColor: `${accentColor}20` }}>
-                        <div className="flex flex-col items-center gap-6">
-                            <div className="relative w-32 h-32 rounded-full border-4 p-1" style={{ borderColor: accentColor }}><img src={`https://api.dicebear.com/7.x/miniavs/svg?seed=${user.name}`} className="rounded-full" /></div>
-                            <input value={user.name} onChange={e => setUser({...user, name: e.target.value})} className="w-full bg-white/5 p-5 rounded-2xl text-center font-black text-2xl outline-none focus:ring-2" style={{ ringColor: accentColor }} />
-                        </div>
-                        <div className="space-y-4">
-                            <h3 className="text-center text-xs font-black tracking-widest opacity-30 uppercase">Màu phong thủy</h3>
-                            <div className="grid grid-cols-6 gap-3">
-                                {colors.map(c => <button key={c} onClick={() => setAccentColor(c)} className={cn("aspect-square rounded-xl transition-all", accentColor === c ? "ring-4 ring-white scale-110 shadow-2xl" : "opacity-40 hover:opacity-100")} style={{ backgroundColor: c }} />)}
-                            </div>
-                        </div>
-                        <button onClick={() => alert("Đã lưu rùi ní ơi! ✨")} className="w-full py-6 rounded-[24px] font-black text-black btn-depth flex justify-center gap-3" style={{ backgroundColor: accentColor }}><Save size={24} /> LƯU THAY ĐỔI</button>
-                    </div>
-                </div>
-            );
-        }
+  if (!e.ctrlKey && !e.shiftKey) {
+  clearSelection();
+}
 
-        // --- Home Calendar ---
-        function HomeCalendar({ accentColor }) {
-            const [notes, setNotes] = useState(() => JSON.parse(localStorage.getItem('notes') || '{}'));
-            useEffect(() => localStorage.setItem('notes', JSON.stringify(notes)), [notes]);
-            const cells = [];
-            const today = new Date();
-            for(let i = 1; i <= 30; i++) {
-                const dateKey = `2024-05-${i}`;
-                cells.push(
-                    <div key={i} className="glass-card rounded-2xl min-h-[100px] p-3 border border-white/5 transition-all hover:bg-white/5 cursor-pointer">
-                        <div className="flex justify-between items-start"><span className="text-xl font-bold">{i}</span><span className="text-[10px] opacity-30">{(i+2)%30||1}/5 âm</span></div>
-                        <div className="mt-2 text-[10px] text-white/40 italic line-clamp-2">{notes[dateKey] || ""}</div>
-                    </div>
-                );
-            }
-            return (
-                <div className="glass-card rounded-[32px] p-8 w-full border-2 border-white/5">
-                    <div className="flex justify-between items-center mb-8"><h2 className="text-3xl font-black">Tháng 5, 2024</h2><div className="text-xs font-black uppercase flex gap-2"><Sparkles size={16} /> Lịch trình ăn chơi</div></div>
-                    <div className="grid grid-cols-7 gap-2">{cells}</div>
-                </div>
-            );
-        }
+  addToSelection(input);
+}
 
-        // --- Main App ---
-        function App() {
-            const [activePage, setActivePage] = useState('home');
-            const [isLoggedIn, setIsLoggedIn] = useState(() => localStorage.getItem('isLoggedIn') === 'true');
-            const [accentColor, setAccentColor] = useState(() => localStorage.getItem('accentColor') || '#22c55e');
-            const [user, setUser] = useState(() => JSON.parse(localStorage.getItem('user') || '{"name":"Đại Ca"}'));
-            const [bg, setBg] = useState(() => localStorage.getItem('bg'));
-            const fileRef = useRef();
+function hoverSelect(input) {
+  if (!isSelecting) return;
 
-            useEffect(() => { localStorage.setItem('isLoggedIn', isLoggedIn); localStorage.setItem('accentColor', accentColor); localStorage.setItem('user', JSON.stringify(user)); if(bg) localStorage.setItem('bg', bg); }, [isLoggedIn, accentColor, user, bg]);
+  const endCell = input.dataset.cell;
+  selectRange(startCell, endCell);
+}
 
-            if(!isLoggedIn) {
-                return (
-                    <div className="fixed inset-0 flex items-center justify-center bg-[#0f172a] p-6 text-center">
-                        <div className="moving-bg" /><div className="glass-card rounded-[48px] p-12 max-w-sm w-full space-y-8 animate-in zoom-in duration-500">
-                            <div className="text-8xl animate-bounce">🤪</div><h1 className="text-4xl font-black tracking-tighter">NI NÈ NI VÔ ĐI!</h1>
-                            <input value={user.name} onChange={e => setUser({...user, name: e.target.value})} className="w-full bg-white/5 p-5 rounded-2xl text-center font-bold outline-none border border-white/10" placeholder="TÊN CỦA MÀY" />
-                            <button onClick={() => setIsLoggedIn(true)} className="w-full py-5 rounded-2xl font-black text-white bg-gradient-to-r from-blue-600 to-purple-600 shadow-xl hover:scale-105 active:scale-95 transition-all">🚀 QUẤT THÔI</button>
-                        </div>
-                    </div>
-                );
-            }
+document.addEventListener('mouseup', () => {
+  isSelecting = false;
+});
 
-            return (
-                <div className="min-h-screen relative">
-                    <div className="moving-bg" />
-                    {bg && <div className="fixed inset-0 z-[-1] bg-cover bg-center brightness-50" style={{ backgroundImage: `url(${bg})` }} />}
-                    <Sidebar activePage={activePage} setActivePage={setActivePage} accentColor={accentColor} user={user} onLogout={() => { if(confirm("Đăng xuất hả ní? 🥺")) setIsLoggedIn(false); }} />
-                    <main className="pl-[120px] pr-8 pt-16 pb-32 container mx-auto max-w-6xl">
-                        {activePage === 'home' && <HomeCalendar accentColor={accentColor} />}
-                        {activePage === 'dashboard' && <DashboardGrid accentColor={accentColor} />}
-                        {activePage === 'excel' && <ExcelSheet accentColor={accentColor} />}
-                        {activePage === 'settings' && <SettingsPanel accentColor={accentColor} setAccentColor={setAccentColor} user={user} setUser={setUser} />}
-                    </main>
-                    <div className="fixed bottom-10 right-10 flex flex-col gap-4">
-                        <input type="file" ref={fileRef} className="hidden" onChange={e => { const r = new FileReader(); r.onload = x => setBg(x.target.result); r.readAsDataURL(e.target.files[0]); }} />
-                        <button onClick={() => fileRef.current.click()} className="w-14 h-14 rounded-full flex items-center justify-center btn-depth shadow-2xl text-black" style={{ backgroundColor: accentColor }}><Pencil size={24} /></button>
-                        <button className="w-14 h-14 rounded-full bg-[#160a2c] flex items-center justify-center text-2xl shadow-2xl btn-depth">😎</button>
-                    </div>
-                </div>
-            );
-        }
+function selectRange(start, end) {
+  const newSelection = new Set();
 
-        ReactDOM.createRoot(document.getElementById('root')).render(<App />);
-    </script>
+  const startCol = start.charCodeAt(0);
+  const startRow = parseInt(start.slice(1));
+
+  const endCol = end.charCodeAt(0);
+  const endRow = parseInt(end.slice(1));
+
+  const minCol = Math.min(startCol, endCol);
+  const maxCol = Math.max(startCol, endCol);
+
+  const minRow = Math.min(startRow, endRow);
+  const maxRow = Math.max(startRow, endRow);
+
+  for (let c = minCol; c <= maxCol; c++) {
+    for (let r = minRow; r <= maxRow; r++) {
+      newSelection.add(`${String.fromCharCode(c)}${r}`);
+    }
+  }
+
+  // ✨ chỉ update khác biệt
+  selectedCells.forEach(key => {
+    if (!newSelection.has(key)) {
+      const el = document.querySelector(`[data-cell="${key}"]`);
+      if (el) el.classList.remove('selected-cell');
+    }
+  });
+
+  newSelection.forEach(key => {
+    if (!selectedCells.has(key)) {
+      const el = document.querySelector(`[data-cell="${key}"]`);
+      if (el) el.classList.add('selected-cell');
+    }
+  });
+
+  selectedCells = newSelection;
+  updateSelectionBox();
+}
+
+function addToSelection(input) {
+  const key = input.dataset.cell;
+
+  if (!selectedCells.has(key)) {
+    selectedCells.add(key);
+    input.classList.add('selected-cell');
+  }
+}
+
+function clearSelection() {
+  selectedCells.forEach(key => {
+    const el = document.querySelector(`[data-cell="${key}"]`);
+    if (el) el.classList.remove('selected-cell');
+  });
+  selectedCells.clear();
+}
+  // ===== DELETE =====
+document.addEventListener('keydown', function(e) {
+
+  // ===== CTRL + Z =====
+  if (e.ctrlKey && e.key.toLowerCase() === 'z') {
+
+    e.preventDefault();
+
+    undo();
+    return;
+  }
+
+  // ===== CTRL + Y =====
+  if (e.ctrlKey && e.key.toLowerCase() === 'y') {
+
+    e.preventDefault();
+
+    redo();
+    return;
+  }
+
+  // ===== DELETE =====
+  if (e.key === 'Delete') {
+
+    saveState();
+
+    selectedCells.forEach(key => {
+
+      excelData[key] = {
+        raw: '',
+        value: ''
+      };
+
+      const input =
+        document.querySelector(
+          `[data-cell="${key}"]`
+        );
+
+      if (input) {
+        input.value = '';
+      }
+
+    });
+
+    localStorage.setItem(
+      'ao_excel_v1',
+      JSON.stringify(excelData)
+    );
+
+    requestAnimationFrame(() => {
+      renderExcelSheet();
+    });
+  }
+
+});
+  // ===== COPY (fixed: giữ link khi paste vào Excel) =====
+document.addEventListener('copy', function(e) {
+  if (selectedCells.size === 0) return;
+
+  e.preventDefault();
+
+  const cells = Array.from(selectedCells).sort();
+
+  let text        = '';
+  let currentRow  = null;
+  let htmlRows    = [];
+  let currentHtml = [];
+
+  cells.forEach(key => {
+    const row      = key.slice(1);
+    const cellData = excelData[key] || '';
+
+    let displayValue = '';
+    let urlValue     = '';
+
+    if (typeof cellData === 'object' && cellData !== null) {
+      displayValue = cellData.value || cellData.raw || '';
+      urlValue     = cellData.url   || '';
+    } else {
+      displayValue = String(cellData);
+    }
+
+    if (currentRow === null) {
+      currentRow = row;
+    }
+
+    if (row !== currentRow) {
+      text += '\n';
+      htmlRows.push(currentHtml);
+      currentHtml = [];
+      currentRow  = row;
+    } else if (text !== '') {
+      text += '\t';
+    }
+
+    text += displayValue;
+
+    // Tạo cell HTML: nếu có url thì bọc <a>
+    const effectiveUrl = urlValue || (/https?:\/\//.test(displayValue) ? displayValue : '');
+    if (effectiveUrl) {
+      currentHtml.push(`<td><a href="${effectiveUrl}">${displayValue}</a></td>`);
+    } else {
+      currentHtml.push(`<td>${displayValue}</td>`);
+    }
+  });
+
+  htmlRows.push(currentHtml);
+
+  const htmlTable =
+    `<table><tbody>` +
+    htmlRows.map(r => `<tr>${r.join('')}</tr>`).join('') +
+    `</tbody></table>`;
+
+  e.clipboardData.setData('text/plain', text);
+  e.clipboardData.setData('text/html',  htmlTable);
+});
+  let selectionBox = document.createElement('div');
+selectionBox.className = 'selection-box';
+document.body.appendChild(selectionBox);
+
+function updateSelectionBox() {
+  if (selectedCells.size === 0) {
+    selectionBox.style.display = 'none';
+    return;
+  }
+
+  const elements = Array.from(selectedCells)
+    .map(key => document.querySelector(`[data-cell="${key}"]`))
+    .filter(Boolean);
+
+  if (elements.length === 0) return;
+
+  const firstRect = elements[0].getBoundingClientRect();
+
+  let left = firstRect.left;
+  let top = firstRect.top;
+  let right = firstRect.right;
+  let bottom = firstRect.bottom;
+
+  elements.forEach(el => {
+    const rect = el.getBoundingClientRect();
+    left = Math.min(left, rect.left);
+    top = Math.min(top, rect.top);
+    right = Math.max(right, rect.right);
+    bottom = Math.max(bottom, rect.bottom);
+  });
+
+  // 🔥 FIX LỆCH: cộng scroll
+  const scrollX = window.scrollX;
+  const scrollY = window.scrollY;
+
+  selectionBox.style.display = 'block';
+  selectionBox.style.left = left + scrollX + 'px';
+  selectionBox.style.top = top + scrollY + 'px';
+  selectionBox.style.width = (right - left) + 'px';
+  selectionBox.style.height = (bottom - top) + 'px';
+}
+  document.addEventListener('mousedown', function(e) {
+  if (!e.target.matches('input[data-cell]')) {
+    clearSelection();
+    selectionBox.style.display = 'none';
+  }
+});
+  let isResizingRow = false;
+let currentRow = null;
+let startY = 0;
+let startHeight = 0;
+
+document.querySelectorAll('.row-resizer').forEach(resizer => {
+  resizer.addEventListener('mousedown', function(e) {
+    isResizingRow = true;
+    currentRow = e.target.parentElement.parentElement;
+    startY = e.clientY;
+    startHeight = currentRow.offsetHeight;
+
+    document.body.style.cursor = 'row-resize';
+    e.stopPropagation();
+  });
+});
+
+document.addEventListener('mousemove', function(e) {
+  if (!isResizingRow) return;
+
+  const newHeight = startHeight + (e.clientY - startY);
+  currentRow.style.height = newHeight + 'px';
+});
+
+document.addEventListener('mouseup', function() {
+  isResizingRow = false;
+  document.body.style.cursor = 'default';
+});
+function initResize() {
+  // ===== COL =====
+  document.querySelectorAll('.col-resizer').forEach(resizer => {
+    resizer.onmousedown = function(e) {
+      const th = e.target.parentElement;
+      const startX = e.clientX;
+      const startWidth = th.offsetWidth;
+
+      function onMove(e) {
+        const newWidth = startWidth + (e.clientX - startX);
+        th.style.width = newWidth + 'px';
+
+        const index = th.cellIndex;
+        document.querySelectorAll(`td:nth-child(${index + 1})`)
+          .forEach(td => td.style.width = newWidth + 'px');
+      }
+
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+
+      e.stopPropagation();
+    };
+  });
+
+  // ===== ROW =====
+  document.querySelectorAll('.row-resizer').forEach(resizer => {
+    resizer.onmousedown = function(e) {
+      const tr = e.target.closest('tr');
+      const startY = e.clientY;
+      const startHeight = tr.offsetHeight;
+
+      function onMove(e) {
+        const newHeight = startHeight + (e.clientY - startY);
+        tr.style.height = newHeight + 'px';
+      }
+
+      function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+      }
+
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+
+      e.stopPropagation();
+    };
+  });
+}
+  function addColumn() {
+  const nextIndex = excelCols.length;
+  const newCol = generateCols(nextIndex + 1)[nextIndex];
+  excelCols.push(newCol);
+  renderExcelSheet();
+  initResize();
+}
+
+function addRow() {
+  excelRows += 1;
+  renderExcelSheet();
+  initResize();
+  // Scroll xuống dòng mới
+  const table = document.getElementById('excelTable');
+  if (table) table.scrollIntoView({ block: 'end', behavior: 'smooth' });
+}
+
+// ===== MỞ LINK KHI CLICK (fixed cho contenteditable) =====
+// Dùng mousedown vì contenteditable chặn click thông thường
+document.addEventListener("mousedown", function (e) {
+  const a = e.target.closest("a[href]");
+  if (!a) return;
+
+  // Chỉ xử lý link nằm trong cell của sheet
+  if (!a.closest("[data-cell]")) return;
+
+  e.preventDefault(); // ngăn contenteditable bắt cursor
+  e.stopPropagation();
+
+  const url = a.href;
+  if (url && url !== "javascript:void(0)") {
+    window.open(url, "_blank", "noopener,noreferrer");
+  }
+});
+
+  // (paste handler đã được khai báo ở trên - không lặp lại)
+
+// handleMultiPaste đã được định nghĩa ở trên (phiên bản có giữ link)
+  
+</script>
+  
 </body>
 </html>

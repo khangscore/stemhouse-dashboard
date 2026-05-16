@@ -157,18 +157,322 @@
       width: var(--sidebar-width);
     }
 
+/* ===== BLUR OVERLAY KHI SIDEBAR MỞ RỘNG ===== */
+/* Overlay phủ toàn màn hình, nằm dưới sidebar */
+.sidebar-blur-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1999; /* Ngay dưới sidebar (2000) */
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.38s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Khi sidebar hover hoặc expanded → overlay hiện lên */
+.sidebar:hover ~ .sidebar-blur-overlay,
+.sidebar.expanded ~ .sidebar-blur-overlay {
+  opacity: 1;
+  pointer-events: auto;
+}
+
 /* toggle-sidebar removed */
+
+/* ===== LOGOUT BUTTON IN SIDEBAR ===== */
+.sidebar-logout {
+  margin: 0 10px 14px;
+  flex-shrink: 0;
+}
+
+.logout-btn {
+  width: 100%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center; /* Icon nằm giữa khi thu nhỏ */
+  gap: 0; /* Không gap khi thu nhỏ - text đang ẩn */
+  background: rgba(248, 113, 113, 0.12);
+  border: 1px solid rgba(248, 113, 113, 0.25);
+  border-radius: 14px;
+  color: #f87171;
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0 12px;
+}
+
+/* Khi mở rộng: căn trái, có gap */
+.sidebar:hover .logout-btn,
+.sidebar.expanded .logout-btn {
+  justify-content: center; /* Vẫn giữa nhưng có text nên tự cân bằng */
+  gap: 10px;
+}
+
+.logout-btn:hover {
+  background: rgba(248, 113, 113, 0.22);
+  border-color: #f87171;
+  box-shadow: 0 0 18px rgba(248, 113, 113, 0.28);
+  transform: translateY(-2px);
+}
+
+.logout-btn-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+
+.logout-btn-text {
+  opacity: 0;
+  max-width: 0;           /* Không chiếm chỗ khi ẩn */
+  overflow: hidden;
+  transform: translateX(-8px);
+  transition: opacity 0.28s ease, max-width 0.38s cubic-bezier(0.22, 1, 0.36, 1), transform 0.28s ease;
+}
+
+.sidebar:hover .logout-btn-text,
+.sidebar.expanded .logout-btn-text {
+  opacity: 1;
+  max-width: 160px;       /* Hiện ra khi mở rộng */
+  transform: translateX(0);
+}
+
+/* ===== BG CHANGER BUTTON ===== */
+.bg-changer-btn {
+  position: fixed;
+  bottom: 96px;
+  right: 30px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.12);
+  border: 2px solid rgba(255,255,255,0.2);
+  backdrop-filter: blur(12px);
+  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 3000;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+  transition: all 0.22s ease;
+}
+
+.bg-changer-btn:hover {
+  background: rgba(255,255,255,0.2);
+  border-color: var(--accent);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3), var(--shadow-accent);
+  transform: scale(1.08);
+}
+
+/* ===== SETTINGS UNIFIED CARD ===== */
+.settings-unified-card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 28px;
+  backdrop-filter: blur(10px);
+  overflow: hidden;
+}
+
+.settings-section {
+  padding: 22px 24px;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.settings-section:last-child {
+  border-bottom: none;
+}
+
+.settings-section-title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: var(--accent);   /* Sáng theo màu chủ đạo */
+  opacity: 0.85;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Font size setting */
+.font-size-slider {
+  width: 100%;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* Quick note widget inside settings */
+.settings-quick-note {
+  width: 100%;
+  min-height: 70px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: var(--text-main);
+  font-size: 0.88rem;
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.settings-quick-note:focus {
+  border-color: var(--accent);
+}
+
+/* bg overlay for custom bg */
+body.has-custom-bg {
+  background-image: none !important;
+}
+
+body.has-custom-bg::before,
+body.has-custom-bg::after {
+  display: none !important;
+}
+
+#customBgLayer {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* Logout confirmation modal */
+#logoutModal .modal-box {
+  text-align: center;
+}
+
+#logoutModal .modal-emoji {
+  font-size: 2.8rem;
+  margin-bottom: 10px;
+}
+
+#logoutModal h2 {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+}
+
+#logoutModal .modal-sub {
+  font-size: 0.82rem;
+  opacity: 0.55;
+  margin-bottom: 20px;
+}
+
+.btn-logout-yes {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: #fff;
+  border: none;
+  padding: 11px 22px;
+  border-radius: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+
+.btn-logout-yes:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(239,68,68,0.4);
+}
+
+.btn-logout-no {
+  background: rgba(255,255,255,0.08);
+  color: var(--text-main);
+  border: 1px solid rgba(255,255,255,0.12);
+  padding: 11px 22px;
+  border-radius: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* bg changer modal */
+#bgChangerModal .modal-box {
+  max-width: 420px;
+}
+
+.bg-drop-zone {
+  width: 100%;
+  min-height: 120px;
+  border: 2px dashed rgba(255,255,255,0.18);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.22s;
+  margin-bottom: 14px;
+}
+
+.bg-drop-zone:hover, .bg-drop-zone.dragover {
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.04);
+  box-shadow: var(--shadow-accent);
+}
+
+.bg-drop-zone-icon { font-size: 2rem; }
+.bg-drop-zone-text { font-size: 0.85rem; font-weight: 600; }
+.bg-drop-zone-sub { font-size: 0.72rem; opacity: 0.45; }
+
+.bg-preset-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.bg-preset-btn {
+  height: 44px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.18s;
+  font-size: 0;
+}
+
+.bg-preset-btn:hover {
+  border-color: #fff;
+  transform: scale(1.06);
+}
+
+.bg-preset-btn.active {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-accent);
+}
 
     .sidebar-header {
   padding: 18px 12px 12px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 10px;
+  justify-content: center;  /* Giữa khi thu nhỏ */
+  gap: 0;
   flex-shrink: 0;
   overflow: hidden;
   min-height: 72px;
+  width: 100%;
+  transition: justify-content 0.28s ease, gap 0.28s ease, padding 0.28s ease;
 }
+
+    /* Khi mở rộng: căn trái, có gap */
+    .sidebar:hover .sidebar-header,
+    .sidebar.expanded .sidebar-header {
+      justify-content: flex-start;
+      gap: 10px;
+      padding-left: 18px;
+    }
 
     .sidebar-avatar {
       width: 45px;
@@ -190,10 +494,12 @@
       opacity: 0;
       white-space: nowrap;
       overflow: hidden;
+      max-width: 0;
       transform: translateX(-8px);
       filter: blur(3px);
       transition:
         opacity 0.28s ease,
+        max-width 0.38s cubic-bezier(0.22, 1, 0.36, 1),
         transform 0.28s ease,
         filter 0.28s ease;
       pointer-events: none;
@@ -201,12 +507,14 @@
 
     .sidebar:hover .sidebar-username {
       opacity: 1;
+      max-width: 180px;
       transform: translateX(0);
       filter: blur(0);
     }
 
     .sidebar.expanded .sidebar-username {
       opacity: 1;
+      max-width: 180px;
       transform: translateX(0);
       filter: blur(0);
     }
@@ -271,6 +579,14 @@
   line-height: 1;
   flex-shrink: 0;
   transform: translateX(1px);
+}
+
+/* ===== ACTIVE NAV: collapsed → kéo dài chạm cạnh phải sidebar ===== */
+.sidebar:not(:hover):not(.expanded) .nav-item.active {
+  border-radius: 16px 0 0 16px;
+  margin-right: -10px;          /* bù padding của nav-content */
+  padding-right: 10px;
+  width: calc(100% + 10px);
 }
 
 .sidebar:not(:hover):not(.expanded) .nav-item{
@@ -508,19 +824,21 @@
       gap: 10px;
       width: 100%;
       margin-top: 8px;
+      justify-items: center;
     }
 
     .color-dot {
       width: 42px;
       height: 42px;
-      border-radius: 50%;
+      border-radius: 10px;
       cursor: pointer;
-      border: 2px solid rgba(255,255,255,0.2);
+      border: 2px solid rgba(255,255,255,0.15);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
     }
 
     .color-dot:hover {
-      transform: scale(1.12);
-      box-shadow: 0 0 14px var(--dot-color);
+      transform: scale(1.14) translateY(-2px);
+      box-shadow: 0 6px 20px var(--dot-color), 0 0 0 2px var(--dot-color);
       border-color: var(--dot-color);
       background: var(--dot-color) !important;
     }
@@ -659,17 +977,46 @@
 
     .modal-actions {
       display: flex;
-      justify-content: flex-end;
+      justify-content: center;
       gap: 12px;
-      margin-top: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
     }
 
     .modal-actions button {
-      padding: 11px 22px;
+      min-width: 130px;
+      padding: 12px 20px;
       border-radius: 14px;
-      font-weight: bold;
+      font-weight: 800;
+      font-size: 0.9rem;
       cursor: pointer;
       border: none;
+      position: relative;
+      transition: transform 0.1s ease, box-shadow 0.1s ease, filter 0.15s ease;
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        inset 0 -3px 0 rgba(0,0,0,0.25),
+        0 6px 0 rgba(0,0,0,0.2),
+        0 8px 16px rgba(0,0,0,0.2);
+    }
+
+    .modal-actions button:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.08);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.18),
+        inset 0 -3px 0 rgba(0,0,0,0.25),
+        0 8px 0 rgba(0,0,0,0.22),
+        0 12px 20px rgba(0,0,0,0.25);
+    }
+
+    .modal-actions button:active {
+      transform: translateY(4px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.10),
+        inset 0 -1px 0 rgba(0,0,0,0.15),
+        0 2px 0 rgba(0,0,0,0.2),
+        0 4px 8px rgba(0,0,0,0.15);
     }
 
     .btn-confirm { background: #ff4747; color: #fff; }
@@ -749,26 +1096,18 @@
     }
 
     /* =========================
-   HOME CALENDAR UPGRADE
+   HOME CALENDAR UPGRADE - FULL WIDTH
 ========================= */
 .calendar-layout{
   max-width: 1120px;
   width: 100%;
   margin: 0 auto;
-  min-height: 620px;
-  display: grid;
-  grid-template-columns: 1.45fr 0.85fr;
-  gap: 24px;
-  align-items: stretch;
+  display: block;
   text-align: left;
 }
 
-.calendar-left,
-.calendar-right{
-  width: 100%;
-}
-
 .calendar-left{
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
@@ -783,7 +1122,7 @@
 .calendar-weekdays{
   display:grid;
   grid-template-columns:repeat(7, 1fr);
-  gap:10px;
+  gap:8px;
   margin-top:8px;
 }
 
@@ -821,81 +1160,152 @@
 .calendar-grid{
   display:grid;
   grid-template-columns:repeat(7, 1fr);
-  gap:10px;
-  text-align:center;
+  gap:8px;
+  text-align:left;
 }
 
+/* Ô lịch mới - đủ chỗ cho âm lịch + ghi chú */
 .calendar-cell{
-  min-height:58px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  border-radius:18px;
-  background:rgba(255,255,255,0.04);
-  font-size:0.95rem;
-  cursor:pointer;
-  transition:all 0.18s ease;
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  padding: 8px 10px 6px;
+  border-radius: 14px;
+  background: rgba(255,255,255,0.04);
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  position: relative;
+  border: 1px solid rgba(255,255,255,0.06);
+  gap: 2px;
+  overflow: hidden;
 }
 
 .calendar-cell:hover{
-  transform:translateY(-2px);
-  border:1px solid var(--accent);
+  transform: translateY(-2px);
+  border-color: var(--accent);
+  background: rgba(255,255,255,0.07);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+}
+
+.cell-solar {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.cell-lunar {
+  font-size: 0.68rem;
+  opacity: 0.55;
+  font-weight: 500;
+  margin-bottom: 2px;
+  transition: color 0.2s, opacity 0.2s;
+}
+
+.cell-holiday {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #f87171;
+  background: rgba(248,113,113,0.12);
+  border-radius: 4px;
+  padding: 1px 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.cell-note-area {
+  margin-top: auto;
+  width: 100%;
+}
+
+.cell-note-input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-main);
+  font-size: 0.65rem;
+  opacity: 0.55;
+  resize: none;
+  padding: 0;
+  line-height: 1.3;
+  font-family: inherit;
+  cursor: text;
+  max-height: 36px;
+  overflow: hidden;
+}
+
+.cell-note-input:focus {
+  opacity: 0.85;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+}
+
+.cell-note-input::placeholder {
+  color: inherit;
+  opacity: 0.35;
 }
 
 .calendar-cell.weekday{
-  min-height:44px;
-  font-weight:800;
-  background:rgba(255,255,255,0.22);
-  border:1px solid rgba(255,255,255,0.22);
-  color:#101010;
-  text-shadow:none;
-  cursor:default;
+  min-height: 36px;
+  font-weight: 800;
+  background: rgba(255,255,255,0.22);
+  border: 1px solid rgba(255,255,255,0.22);
+  color: #101010;
+  text-shadow: none;
+  cursor: default;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.85rem;
+  padding: 6px;
 }
 
 .calendar-cell.empty{
-  background:transparent;
-  cursor:default;
+  background: transparent;
+  cursor: default;
+  border-color: transparent;
 }
 
 .calendar-cell.empty:hover{
-  transform:none;
-  border:none;
+  transform: none;
+  border-color: transparent;
+  box-shadow: none;
 }
 
 .calendar-cell.today{
-  background:var(--accent);
-  color:#000;
-  font-weight:800;
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: var(--accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 25%, transparent);
+}
+
+.calendar-cell.today .cell-solar {
+  color: var(--accent);
+}
+
+/* Âm lịch cũng sáng theo màu chủ đạo khi là ngày hôm nay */
+.calendar-cell.today .cell-lunar {
+  color: var(--accent);
+  opacity: 0.8;
+  font-weight: 700;
 }
 
 .calendar-cell.selected{
-  border:1px solid var(--accent);
-  box-shadow:var(--shadow-accent);
+  border: 2px solid var(--accent);
+  box-shadow: var(--shadow-accent);
 }
 
-.calendar-right{
-  display:flex;
-  flex-direction:column;
-  height:100%;
-}
+/* Chủ nhật đỏ nhẹ */
+.calendar-cell.sunday .cell-solar { color: #f87171; }
+.calendar-cell.sunday.today .cell-solar { color: #f87171; }
 
-.calendar-notes-title{
-  font-size:1.15rem;
-  font-weight:800;
-  margin-bottom:14px;
-}
-
-.calendar-notes-stack{
-  display:grid;
-  grid-template-rows:repeat(3, 1fr);
-  gap:14px;
-  flex:1;
-}
-
-.integrated-note{
-  min-height:150px;
-  height:100%;
-  resize:none;
+@media(max-width: 900px){
+  .home-clock { font-size: 3.4rem; }
+  .header-group h1 { font-size: 2.8rem; }
+  .calendar-cell { min-height: 72px; }
+  .cell-note-input { display: none; }
 }
    /* =========================
    CUSTOM DROPDOWN (CALENDAR)
@@ -983,24 +1393,7 @@
   font-weight: 800;
 }
     
-    @media(max-width: 900px){
-  .home-clock { font-size: 3.4rem; }
-  .header-group h1 { font-size: 2.8rem; }
-
-  .calendar-layout{
-    grid-template-columns:1fr;
-    min-height:auto;
-  }
-      
-  .calendar-notes-stack{
-    grid-template-columns:1fr;
-    grid-template-rows:none;
-  }
-
-  .integrated-note{
-    min-height:140px;
-  }
-}
+/* old media query merged into calendar layout above */
     
     /* =========================
    EXCEL MINI
@@ -1142,6 +1535,13 @@
   box-shadow:
     inset 0 0 0 2px var(--accent),
     0 0 0 1px rgba(255,255,255,0.04);
+}
+
+.excel-table td[contenteditable]:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -2px;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  box-shadow: inset 0 0 12px color-mix(in srgb, var(--accent) 12%, transparent);
 }
 
 body.light-mode .excel-table{
@@ -1328,15 +1728,16 @@ p {
   margin-top: 10px !important;
 }  
     .selected-cell {
-  background: rgba(59,130,246,0.35) !important;
-  outline: 2px solid #3b82f6;
+  background: color-mix(in srgb, var(--accent) 28%, transparent) !important;
+  outline: 2px solid var(--accent);
   outline-offset: -2px;
 }
     .selection-box {
   position: absolute;
-  border: 2px solid #3b82f6;
+  border: 2px solid var(--accent);
   pointer-events: none;
   z-index: 999;
+  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 40%, transparent);
 }
     .col-header {
   position: relative;
@@ -1589,12 +1990,12 @@ p {
   <div class="login-bg"></div>
   <div class="login-stars"></div>
   <div class="login-box">
-    <div class="login-emoji">👾</div>
-    <div class="login-title">Chào mừng zô đây!</div>
-    <div class="login-subtitle">— nơi ai vào cũng được, nhưng phải có danh tính —</div>
+    <div class="login-emoji">🤪</div>
+    <div class="login-title">HAKU-NA-MATATA!</div>
+    <div class="login-subtitle">— thích thì zo, không cấm —</div>
 
     <div class="login-field">
-      <label class="login-label">Tên của mày</label>
+      <label class="login-label">Khai báo cái tên hoặc ún trà</label>
       <input
         class="login-input"
         id="login-username"
@@ -1606,25 +2007,25 @@ p {
     </div>
 
     <div class="login-field">
-      <label class="login-label">Mật khẩu (không quan trọng lắm đâu)</label>
+      <label class="login-label">Mật khẩu (khangdeptrai)</label>
       <input
         class="login-input"
         id="login-password"
         type="password"
-        placeholder="MÚN NHẬP J NHẬP ĐI"
+        placeholder="khangdeptrai"
         maxlength="50"
         autocomplete="off"
       >
     </div>
 
     <button class="login-btn" onclick="doLogin()">
-      🚀 VÀO THÔI
+      🚀 TURN ON THE MUSIC
     </button>
 
     <div class="login-error" id="login-error"></div>
 
     <div class="login-footer">
-      🔒 Chỉ cần điền tên là vào được · mật khẩu tùy bạn nhập gì cũng được
+      🔒 KHANG'S CORE
     </div>
   </div>
 </div>
@@ -1641,7 +2042,16 @@ p {
 <div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
 <div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
     </div>
+    <div class="sidebar-logout">
+      <button class="logout-btn" onclick="askLogout()">
+        <span class="logout-btn-icon">🚪</span>
+        <span class="logout-btn-text">Đăng xuất</span>
+      </button>
+    </div>
   </aside>
+
+  <!-- Overlay blur khi sidebar mở rộng -->
+  <div class="sidebar-blur-overlay" id="sidebarBlurOverlay"></div>
 
   <div class="container">
     <div id="page-home" class="page-content active-page">
@@ -1675,15 +2085,6 @@ p {
 
   <div class="calendar-grid" id="calendarGrid"></div>
 </div>
-
-    <div class="calendar-right">
-      <div class="calendar-notes-title">Ghi chú nhanh</div>
-      <div class="calendar-notes-stack">
-        <textarea class="note-box integrated-note" id="note1" placeholder="Ghi chú 1..."></textarea>
-        <textarea class="note-box integrated-note" id="note2" placeholder="Ghi chú 2..."></textarea>
-        <textarea class="note-box integrated-note" id="note3" placeholder="Ghi chú 3..."></textarea>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -1733,108 +2134,97 @@ p {
       <button class="btn-save-fixed" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
       <div class="header-group"><h1>Cài đặt</h1></div>
 
-      <div class="grid" style="display:flex; flex-direction:column; align-items:center; gap:20px;">
+      <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+        <div class="settings-unified-card">
 
-
-        <!-- ===== CARD GỘP: THÔNG TIN + AVATAR ===== -->
-        <div class="card" style="width:100%; max-width:450px; padding:24px;">
-          <h3 style="margin-bottom:20px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">✨ Ní nè Ní</h3>
-
-          <!-- Avatar căn giữa -->
-          <div style="display:flex; justify-content:center; margin-bottom:20px;">
-            <img id="previewAvatar" class="avatar-preview-box" style="width:120px; height:120px; margin-bottom:0;"
-              src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
-          </div>
-
-          <!-- Nút chọn nhân vật: icon trên, chữ dưới -->
-          <div style="display:flex; gap:8px; margin-bottom:14px;">
-            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#3b82f6; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-male" onclick="updatePreview('male')">
-              <span style="font-size:1.4rem;">🐱</span>
-              <span style="font-size:0.78rem; font-weight:700;">Meo</span>
-            </button>
-            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#ec4899; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-female" onclick="updatePreview('female')">
-              <span style="font-size:1.4rem;">🐾</span>
-              <span style="font-size:0.78rem; font-weight:700;">Phi Meo</span>
-            </button>
-            <button class="btn" style="flex:1; padding:10px 4px; opacity:0.6; background:#f59e0b; color:#fff; border-radius:12px; display:flex; flex-direction:column; align-items:center; gap:4px;" id="btn-dog" onclick="updatePreview('dog')">
-              <span style="font-size:1.4rem;">🍲</span>
-              <span style="font-size:0.78rem; font-weight:700;">Lẩu Gà</span>
-            </button>
-          </div>
-
-          <!-- Upload avatar riêng -->
-          <label id="avatarDropZone" style="
-            width:100%;
-            min-height:90px;
-            border:2px dashed var(--card-border);
-            border-radius:16px;
-            display:flex;
-            flex-direction:column;
-            align-items:center;
-            justify-content:center;
-            gap:6px;
-            cursor:pointer;
-            padding:14px;
-            text-align:center;
-            transition: border-color 0.2s, background 0.2s;
-            box-sizing:border-box;
-          " onmouseover="this.style.borderColor='var(--accent)'; this.style.background='rgba(255,255,255,0.04)'"
-             onmouseout="this.style.borderColor=''; this.style.background=''">
-            <div style="font-size:1.4rem;">🖼️</div>
-            <div style="font-weight:600; font-size:0.82rem;">Kéo ảnh vào hoặc bấm chọn</div>
-            <div style="font-size:0.72rem; opacity:0.5;">PNG / JPG / WEBP</div>
-            <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
-          </label>
-
-          <button class="btn" style="margin-top:12px; padding:7px; font-size:0.8rem; opacity:0.6;" onclick="removeCustomAvatar()">🗑️ Xoá Avatar Riêng</button>
-        </div>
-
-        <!-- ===== MÀU CHỦ ĐẠO ===== -->
-        <div class="card" style="padding:22px; width:100%; max-width:450px;">
-          <h3 style="margin-bottom:14px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">🎨 Màu Chủ Đạo</h3>
-          <div class="color-palette">
-            <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
-            <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
-            <div class="color-dot" style="--dot-color:#a855f7; background:#a855f7;" onclick="setAccent('#a855f7')"></div>
-            <div class="color-dot" style="--dot-color:#f59e0b; background:#f59e0b;" onclick="setAccent('#f59e0b')"></div>
-            <div class="color-dot" style="--dot-color:#06b6d4; background:#06b6d4;" onclick="setAccent('#06b6d4')"></div>
-            <div class="color-dot" style="--dot-color:#84cc16; background:#84cc16;" onclick="setAccent('#84cc16')"></div>
-            <div class="color-dot" style="--dot-color:#f43f5e; background:#f43f5e;" onclick="setAccent('#f43f5e')"></div>
-            <div class="color-dot" style="--dot-color:#8b5cf6; background:#8b5cf6;" onclick="setAccent('#8b5cf6')"></div>
-            <div class="color-dot" style="--dot-color:#14b8a6; background:#14b8a6;" onclick="setAccent('#14b8a6')"></div>
-            <div class="color-dot" style="--dot-color:#eab308; background:#eab308;" onclick="setAccent('#eab308')"></div>
-            <div class="color-dot" style="--dot-color:#3b82f6; background:#3b82f6;" onclick="setAccent('#3b82f6')"></div>
-            <div class="color-dot" style="--dot-color:#ec4899; background:#ec4899;" onclick="setAccent('#ec4899')"></div>
-            <div class="color-dot" style="--dot-color:#fb923c; background:#fb923c;" onclick="setAccent('#fb923c')"></div>
-            <div class="color-dot" style="--dot-color:#10b981; background:#10b981;" onclick="setAccent('#10b981')"></div>
-            <div class="color-dot" style="--dot-color:#6366f1; background:#6366f1;" onclick="setAccent('#6366f1')"></div>
-            <div class="color-dot" style="--dot-color:#f97316; background:#f97316;" onclick="setAccent('#f97316')"></div>
-            <div class="color-dot" style="--dot-color:#0ea5e9; background:#0ea5e9;" onclick="setAccent('#0ea5e9')"></div>
-            <div class="color-dot" style="--dot-color:#d946ef; background:#d946ef;" onclick="setAccent('#d946ef')"></div>
-            <div class="color-dot" style="--dot-color:#65a30d; background:#65a30d;" onclick="setAccent('#65a30d')"></div>
-            <div class="color-dot" style="--dot-color:#dc2626; background:#dc2626;" onclick="setAccent('#dc2626')"></div>
-            <div class="color-dot" style="--dot-color:#7c3aed; background:#7c3aed;" onclick="setAccent('#7c3aed')"></div>
-            <div class="color-dot" style="--dot-color:#0891b2; background:#0891b2;" onclick="setAccent('#0891b2')"></div>
-            <div class="color-dot" style="--dot-color:#ff6b6b; background:#ff6b6b;" onclick="setAccent('#ff6b6b')"></div>
-            <div class="color-dot" style="--dot-color:#c084fc; background:#c084fc;" onclick="setAccent('#c084fc')"></div>
-          </div>
-        </div>
-
-        <!-- ===== DỮ LIỆU ===== -->
-        <div class="card" style="padding:22px; width:100%; max-width:450px;">
-          <h3 style="margin-bottom:14px; font-size:1rem; letter-spacing:0.06em; opacity:0.7; text-transform:uppercase;">💾 Dữ Liệu</h3>
-          <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
-            <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
-            <label class="btn" style="margin-top:0; text-align:center;">
-              📥 Import dữ liệu
-              <input type="file" id="importFile" accept=".json" style="display:none;">
+          <!-- ===== ✨ Ní nè Ní ===== -->
+          <div class="settings-section">
+            <div class="settings-section-title">✨ Ní nè Ní</div>
+            <div style="display:flex; justify-content:center; margin-bottom:16px;">
+              <img id="previewAvatar" class="avatar-preview-box" style="width:100px; height:100px; margin-bottom:0;"
+                src="https://api.dicebear.com/7.x/miniavs/svg?seed=Liam" alt="Preview">
+            </div>
+            <label id="avatarDropZone" style="
+              width:100%; min-height:80px; border:2px dashed var(--card-border);
+              border-radius:14px; display:flex; flex-direction:column; align-items:center;
+              justify-content:center; gap:6px; cursor:pointer; padding:12px;
+              text-align:center; transition: border-color 0.2s, background 0.2s; box-sizing:border-box;"
+              onmouseover="this.style.borderColor='var(--accent)'; this.style.background='rgba(255,255,255,0.04)'"
+              onmouseout="this.style.borderColor=''; this.style.background=''">
+              <div style="font-size:1.4rem;">🖼️</div>
+              <div style="font-weight:600; font-size:0.82rem;">Kéo ảnh vào hoặc bấm chọn</div>
+              <div style="font-size:0.72rem; opacity:0.5;">PNG / JPG / WEBP</div>
+              <input type="file" id="avatarUpload" accept="image/*" style="display:none;">
             </label>
+            <button class="btn" style="margin-top:10px; padding:7px; font-size:0.8rem; opacity:0.6; width:100%;" onclick="removeCustomAvatar()">🗑️ Xoá Avatar Riêng</button>
           </div>
+
+          <!-- ===== 🎨 Màu Chủ Đạo ===== -->
+          <div class="settings-section">
+            <div class="settings-section-title">🎨 Màu Chủ Đạo</div>
+            <div class="color-palette">
+              <div class="color-dot" style="--dot-color:#22c55e; background:#22c55e;" onclick="setAccent('#22c55e')"></div>
+              <div class="color-dot" style="--dot-color:#ef4444; background:#ef4444;" onclick="setAccent('#ef4444')"></div>
+              <div class="color-dot" style="--dot-color:#a855f7; background:#a855f7;" onclick="setAccent('#a855f7')"></div>
+              <div class="color-dot" style="--dot-color:#f59e0b; background:#f59e0b;" onclick="setAccent('#f59e0b')"></div>
+              <div class="color-dot" style="--dot-color:#06b6d4; background:#06b6d4;" onclick="setAccent('#06b6d4')"></div>
+              <div class="color-dot" style="--dot-color:#84cc16; background:#84cc16;" onclick="setAccent('#84cc16')"></div>
+              <div class="color-dot" style="--dot-color:#f43f5e; background:#f43f5e;" onclick="setAccent('#f43f5e')"></div>
+              <div class="color-dot" style="--dot-color:#8b5cf6; background:#8b5cf6;" onclick="setAccent('#8b5cf6')"></div>
+              <div class="color-dot" style="--dot-color:#14b8a6; background:#14b8a6;" onclick="setAccent('#14b8a6')"></div>
+              <div class="color-dot" style="--dot-color:#eab308; background:#eab308;" onclick="setAccent('#eab308')"></div>
+              <div class="color-dot" style="--dot-color:#3b82f6; background:#3b82f6;" onclick="setAccent('#3b82f6')"></div>
+              <div class="color-dot" style="--dot-color:#ec4899; background:#ec4899;" onclick="setAccent('#ec4899')"></div>
+              <div class="color-dot" style="--dot-color:#fb923c; background:#fb923c;" onclick="setAccent('#fb923c')"></div>
+              <div class="color-dot" style="--dot-color:#10b981; background:#10b981;" onclick="setAccent('#10b981')"></div>
+              <div class="color-dot" style="--dot-color:#6366f1; background:#6366f1;" onclick="setAccent('#6366f1')"></div>
+              <div class="color-dot" style="--dot-color:#f97316; background:#f97316;" onclick="setAccent('#f97316')"></div>
+              <div class="color-dot" style="--dot-color:#0ea5e9; background:#0ea5e9;" onclick="setAccent('#0ea5e9')"></div>
+              <div class="color-dot" style="--dot-color:#d946ef; background:#d946ef;" onclick="setAccent('#d946ef')"></div>
+              <div class="color-dot" style="--dot-color:#65a30d; background:#65a30d;" onclick="setAccent('#65a30d')"></div>
+              <div class="color-dot" style="--dot-color:#dc2626; background:#dc2626;" onclick="setAccent('#dc2626')"></div>
+              <div class="color-dot" style="--dot-color:#7c3aed; background:#7c3aed;" onclick="setAccent('#7c3aed')"></div>
+              <div class="color-dot" style="--dot-color:#0891b2; background:#0891b2;" onclick="setAccent('#0891b2')"></div>
+              <div class="color-dot" style="--dot-color:#ff6b6b; background:#ff6b6b;" onclick="setAccent('#ff6b6b')"></div>
+              <div class="color-dot" style="--dot-color:#c084fc; background:#c084fc;" onclick="setAccent('#c084fc')"></div>
+            </div>
+          </div>
+
+          <!-- ===== 🔤 Cỡ chữ ===== -->
+          <div class="settings-section">
+            <div class="settings-section-title">🔤 Cỡ Chữ Toàn Trang</div>
+            <div style="display:flex; align-items:center; gap:12px;">
+              <span style="font-size:0.78rem; opacity:0.5;">A</span>
+              <input type="range" class="font-size-slider" id="fontSizeSlider" min="12" max="20" value="16" oninput="applyFontSize(this.value)" style="flex:1;">
+              <span style="font-size:1.1rem; opacity:0.5;">A</span>
+              <span id="fontSizeLabel" style="font-size:0.78rem; opacity:0.5; min-width:30px;">16px</span>
+            </div>
+          </div>
+
+          <!-- ===== 💾 Dữ Liệu ===== -->
+          <div class="settings-section">
+            <div class="settings-section-title">💾 Dữ Liệu</div>
+            <div style="display:flex; flex-direction:column; gap:10px; width:100%;">
+              <button class="btn" onclick="exportData()">📤 Export dữ liệu</button>
+              <label class="btn" style="margin-top:0; text-align:center;">
+                📥 Import dữ liệu
+                <input type="file" id="importFile" accept=".json" style="display:none;">
+              </label>
+            </div>
+          </div>
+
+          <!-- ===== 📝 Ghi chú riêng ===== -->
+          <div class="settings-section">
+            <div class="settings-section-title">📝 Ghi Chú Cá Nhân</div>
+            <textarea class="settings-quick-note" id="settingsPersonalNote" placeholder="Ghi gì đó cho bản thân... mình sẽ nhớ cho ✨"></textarea>
+          </div>
+
+          <!-- ===== 💾 Nút lưu ===== -->
+          <div class="settings-section">
+            <button class="btn-save-bottom" onclick="saveAllSettings()" style="width:100%; max-width:100%;">💾 LƯU THAY ĐỔI</button>
+          </div>
+
         </div>
-
-        <!-- ===== NÚT LƯU ===== -->
-        <button class="btn-save-bottom" onclick="saveAllSettings()">💾 LƯU THAY ĐỔI</button>
-
       </div>
     </div>
   </div>
@@ -1878,6 +2268,58 @@ p {
   </div>
 
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🤪</div>
+  <div class="bg-changer-btn" onclick="openBgChanger()" title="Đổi hình nền">✏️</div>
+
+  <!-- Custom background layer -->
+  <div id="customBgLayer"></div>
+
+  <!-- Logout confirmation modal -->
+  <div class="modal-overlay" id="logoutModal">
+    <div class="modal-box" style="max-width:380px; text-align:center;">
+      <div class="modal-emoji" style="font-size:2.8rem; margin-bottom:10px;">🙄</div>
+      <h2 style="margin-bottom:8px; font-size:1.4rem;">Mày chắc chưa???</h2>
+      <p style="font-size:0.82rem; opacity:0.55; margin-bottom:22px;">Ngon Thì Thoát ...</p>
+      <div class="modal-actions" style="justify-content:center; gap:12px;">
+        <button class="btn-logout-no" onclick="closeLogoutModal()">Chắc 🤪</button>
+        <button class="btn-logout-yes" onclick="doLogout()">Chắc chết liền 🤡</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- BG Changer modal -->
+  <div class="modal-overlay" id="bgChangerModal">
+    <div class="modal-box" style="max-width:420px;">
+      <div class="modal-title" style="font-size:1.4rem;">🖼️ Hình Nền</div>
+
+      <div style="margin-bottom:14px;">
+        <div class="settings-section-title" style="margin-bottom:8px;">Màu nền có sẵn</div>
+        <div class="bg-preset-grid">
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#7c3aed,#0d0520);" onclick="setBgPreset('purple')" title="Tím tối (mặc định)"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#0f172a,#1e3a5f);" onclick="setBgPreset('navy')" title="Navy xanh đêm"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#064e3b,#0d0520);" onclick="setBgPreset('forest')" title="Rừng đêm"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#831843,#1e0a50);" onclick="setBgPreset('rose')" title="Hồng tối"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#f8fafc,#e2e8f0);" onclick="setBgPreset('light')" title="Sáng trắng"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#0c0c0c,#1a1a2e);" onclick="setBgPreset('dark')" title="Đen tuyền"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#1e3a8a,#7c3aed);" onclick="setBgPreset('bluePurple')" title="Xanh tím galaxy"></button>
+          <button class="bg-preset-btn" style="background:linear-gradient(135deg,#92400e,#1c1917);" onclick="setBgPreset('amber')" title="Hổ phách ấm"></button>
+        </div>
+      </div>
+
+      <div class="settings-section-title" style="margin-bottom:8px;">Tải ảnh lên</div>
+      <label class="bg-drop-zone" id="bgDropZone">
+        <div class="bg-drop-zone-icon">🌄</div>
+        <div class="bg-drop-zone-text">Kéo ảnh vào đây hoặc bấm chọn</div>
+        <div class="bg-drop-zone-sub">Ảnh sẽ tự chỉnh màu nền phần dư theo tone ảnh</div>
+        <input type="file" id="bgImageUpload" accept="image/*" style="display:none;">
+      </label>
+
+      <button class="btn" style="width:100%; margin-top:0; margin-bottom:12px; opacity:0.6; font-size:0.82rem;" onclick="removeBg()">🗑️ Xoá hình nền tùy chỉnh</button>
+
+      <div class="modal-actions" style="justify-content:flex-end;">
+        <button class="btn-cancel" onclick="document.getElementById('bgChangerModal').style.display='none'">Đóng</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     let audioCtx = null;
@@ -2316,11 +2758,11 @@ if (targetPage) targetPage.classList.add('active-page');
 }
 
     function saveAllSettings() {
-      // Tên lấy từ login (currentUser), không còn input nữa
       if (currentUser) appConfig.name = currentUser;
-      if (appConfig.tempGender) appConfig.gender = appConfig.tempGender;
-      // Lưu settings riêng theo user
       const userKey = currentUser ? `ao_v6_config_${currentUser}` : 'ao_v6_config';
+      // Save font size
+      const slider = document.getElementById('fontSizeSlider');
+      if (slider) applyFontSize(slider.value);
       localStorage.setItem(userKey, JSON.stringify(appConfig));
       saveData();
       applyConfig();
@@ -2364,12 +2806,10 @@ document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appCon
       const displayName = currentUser || appConfig.name || 'Ní Hào Ma';
       document.getElementById('sidebarUsernameDisplay').innerText = displayName;
 
-      // Đổi seed avatar theo tên mới: Meo, Phi Meo, Lẩu Gà
-      const seeds = { male:'Meo', female:'PhiMeo', dog:'LauGa' };
-      const avatar = appConfig.customAvatar || `https://api.dicebear.com/7.x/miniavs/svg?seed=${seeds[appConfig.gender] || 'Meo'}`;
-
+      const avatar = appConfig.customAvatar || `https://api.dicebear.com/7.x/miniavs/svg?seed=${encodeURIComponent(displayName)}`;
       document.getElementById('sidebarAvatar').src = avatar;
-      document.getElementById('previewAvatar').src = avatar;
+      const previewEl = document.getElementById('previewAvatar');
+      if (previewEl) previewEl.src = avatar;
       document.getElementById('greeting').innerText = `Haku_Na_Matata, ${displayName}! 🚀`;
     }
 
@@ -2382,8 +2822,10 @@ document.documentElement.style.setProperty('--shadow-accent', `0 0 18px ${appCon
     function setupAvatarUpload() {
       const input = document.getElementById('avatarUpload');
       const zone = document.getElementById('avatarDropZone');
+      if (!input || !zone) return;
 
-      zone.addEventListener('click', () => input.click());
+      // NOTE: do NOT add zone.click → input.click() because <label> already
+      // triggers the input natively — adding JS click causes double dialog.
 
       zone.addEventListener('dragover', e => {
         e.preventDefault();
@@ -2514,6 +2956,186 @@ function handleCalendarPickerChange() {
   renderCalendar();
 }
 
+// ===== LUNAR CALENDAR (Âm Lịch VN) =====
+// Thuật toán chuẩn VN - Ho Ngoc Duc algorithm
+function toJulianDay(Y, M, D) {
+  if (M <= 2) { Y--; M += 12; }
+  const A = Math.floor(Y / 100);
+  const B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (Y + 4716)) + Math.floor(30.6001 * (M + 1)) + D + B - 1524.5;
+}
+
+function newMoonDay(k, timeZone) {
+  const T = k / 1236.85;
+  const T2 = T * T;
+  const T3 = T2 * T;
+  let Jd1 = 2415020.75933 + 29.53058868 * k
+    + 0.0001178 * T2 - 0.000000155 * T3
+    + 0.00033 * Math.sin((166.56 + 132.87 * T - 0.009173 * T2) * Math.PI / 180);
+  const M  = 359.2242 + 29.10535608 * k - 0.0000333 * T2 - 0.00000347 * T3;
+  const Mpr = 306.0253 + 385.81691806 * k + 0.0107306 * T2 + 0.00001236 * T3;
+  const F  = 21.2964 + 390.67050646 * k - 0.0016528 * T2 - 0.00000239 * T3;
+  const C1 = (0.1734 - 0.000393 * T) * Math.sin(M * Math.PI / 180)
+    + 0.0021 * Math.sin(2 * M * Math.PI / 180)
+    - 0.4068 * Math.sin(Mpr * Math.PI / 180)
+    + 0.0161 * Math.sin(2 * Mpr * Math.PI / 180)
+    - 0.0004 * Math.sin(3 * Mpr * Math.PI / 180)
+    + 0.0104 * Math.sin(2 * F * Math.PI / 180)
+    - 0.0051 * Math.sin((M + Mpr) * Math.PI / 180)
+    - 0.0074 * Math.sin((M - Mpr) * Math.PI / 180)
+    + 0.0004 * Math.sin((2 * F + M) * Math.PI / 180)
+    - 0.0004 * Math.sin((2 * F - M) * Math.PI / 180)
+    - 0.0006 * Math.sin((2 * F + Mpr) * Math.PI / 180)
+    + 0.0010 * Math.sin((2 * F - Mpr) * Math.PI / 180)
+    + 0.0005 * Math.sin((M + 2 * Mpr) * Math.PI / 180);
+  return Math.floor(Jd1 + C1 + 0.5 + timeZone / 24);
+}
+
+function sunLongitude(jdn, timeZone) {
+  const T = (jdn - 0.5 - timeZone / 24 - 2451545.0) / 36525;
+  const T2 = T * T;
+  const dr = Math.PI / 180;
+  let M = 357.52910 + 35999.05030 * T - 0.0001559 * T2 - 0.00000048 * T * T2;
+  let lon = 280.46645 + 36000.76983 * T + 0.0003032 * T2;
+  let C = (1.9146 - 0.004817 * T - 0.000014 * T2) * Math.sin(dr * M)
+    + (0.019993 - 0.000101 * T) * Math.sin(dr * 2 * M)
+    + 0.00029 * Math.sin(dr * 3 * M);
+  lon = lon + C;
+  lon = lon - 0.00569 - 0.00478 * Math.sin(dr * (125.04 - 1934.136 * T));
+  lon = lon * dr;
+  lon = lon - Math.PI * 2 * Math.floor(lon / (Math.PI * 2));
+  return Math.floor(lon / Math.PI * 6);
+}
+
+function lunarMonth(dayNumber, timeZone) {
+  const k = Math.floor((dayNumber - 2415021.076) / 29.530588853);
+  let monthStart = newMoonDay(k + 1, timeZone);
+  if (monthStart > dayNumber) monthStart = newMoonDay(k, timeZone);
+  return monthStart;
+}
+
+function solarToLunar(sYear, sMonth, sDay) {
+  const TZ = 7; // UTC+7 Việt Nam
+  const dayNumber = Math.floor(toJulianDay(sYear, sMonth, sDay)) + 1;
+  let k = Math.floor((dayNumber - 2415021.076) / 29.530588853);
+  let monthStart = newMoonDay(k + 1, TZ);
+  if (monthStart > dayNumber) monthStart = newMoonDay(k, TZ);
+  let lunarDay = dayNumber - monthStart + 1;
+  if (lunarDay > 29) {
+    const nextMonthStart = newMoonDay(k + 2, TZ);
+    if (nextMonthStart <= dayNumber) {
+      monthStart = nextMonthStart;
+      lunarDay = dayNumber - monthStart + 1;
+      k++;
+    }
+  }
+
+  // Tính tháng âm lịch
+  let a11 = lunarMonth11(sYear - 1, TZ);
+  let b11 = lunarMonth11(sYear, TZ);
+  let lunarYear, lunarMonth2;
+  if (b11 >= monthStart) {
+    lunarYear = sYear;
+    lunarMonth2 = Math.round((monthStart - a11) / 29.5) + 11;
+  } else {
+    a11 = b11;
+    b11 = lunarMonth11(sYear + 1, TZ);
+    lunarYear = sYear + 1;
+    lunarMonth2 = Math.round((monthStart - a11) / 29.5) + 11;
+  }
+  if (lunarMonth2 > 12) lunarMonth2 -= 12;
+  if (lunarMonth2 < 1)  lunarMonth2 += 12;
+
+  return { day: lunarDay, month: lunarMonth2, year: lunarYear };
+}
+
+// Ngày trăng non tháng 11 âm lịch của năm dương lịch Y (dùng để tính tháng âm)
+function lunarMonth11(Y, TZ) {
+  const off = toJulianDay(Y, 12, 31) - 2415021.076;
+  const k = Math.floor(off / 29.530588853);
+  let nm = newMoonDay(k, TZ);
+  const sunLon = sunLongitude(nm, TZ);
+  if (sunLon >= 9) nm = newMoonDay(k - 1, TZ);
+  return nm;
+}
+
+function fromJulianDay(jd) {
+  const r = solarToLunar_jd(jd);
+  return r;
+}
+
+function solarToLunar_jd(jd) {
+  // wrapper không dùng nữa - giữ để tránh lỗi tham chiếu cũ
+  return { day: 1, month: 1, year: 2000 };
+}
+
+// ===== HOLIDAYS VN (cố định dương lịch + tính âm lịch) =====
+function getVnHolidays(year) {
+  // Dương lịch cố định
+  const fixed = {
+    '1-1':   'Tết Dương Lịch',
+    '4-30':  'Giải Phóng MN',
+    '5-1':   'Quốc Tế Lao Động',
+    '9-2':   'Quốc Khánh',
+    '12-24': 'Giáng Sinh',
+  };
+  // Âm lịch → dương lịch
+  const lunar = [
+    { lm:1,  ld:1,  name:'Mùng 1 Tết' },
+    { lm:1,  ld:2,  name:'Mùng 2 Tết' },
+    { lm:1,  ld:3,  name:'Mùng 3 Tết' },
+    { lm:1,  ld:15, name:'Rằm Tháng Giêng' },
+    { lm:3,  ld:10, name:'Giỗ Tổ Hùng Vương' },
+    { lm:4,  ld:15, name:'Phật Đản' },
+    { lm:7,  ld:15, name:'Rằm Tháng 7 (Vu Lan)' },
+    { lm:8,  ld:15, name:'Tết Trung Thu' },
+    { lm:12, ld:30, name:'Giao Thừa' },
+  ];
+
+  const result = {};
+
+  // Add fixed holidays
+  for (const [key, name] of Object.entries(fixed)) {
+    result[`${year}-${key}`] = name;
+  }
+
+  // Convert lunar to solar for this year (approx via reverse search)
+  lunar.forEach(({ lm, ld, name }) => {
+    // Try to find matching solar date
+    for (let month = 1; month <= 12; month++) {
+      const days = new Date(year, month, 0).getDate();
+      for (let day = 1; day <= days; day++) {
+        const lunar = solarToLunar(year, month, day);
+        if (lunar.month === lm && lunar.day === ld) {
+          const key = `${year}-${month}-${day}`;
+          if (!result[key]) result[key] = name;
+          break;
+        }
+      }
+    }
+  });
+
+  return result;
+}
+
+let cachedHolidays = {};
+let cachedHolidayYear = null;
+
+function getHolidaysForYear(year) {
+  if (cachedHolidayYear === year) return cachedHolidays;
+  cachedHolidays = getVnHolidays(year);
+  cachedHolidayYear = year;
+  return cachedHolidays;
+}
+
+// Calendar day notes storage
+let calendarNotes = safeJSONParse('ao_cal_notes_v1', {});
+
+function saveCalendarNote(dateKey, text) {
+  calendarNotes[dateKey] = text;
+  localStorage.setItem('ao_cal_notes_v1', JSON.stringify(calendarNotes));
+}
+
 function changeMonth(step) {
   calendarDate.setMonth(calendarDate.getMonth() + step);
   selectedCalendarDay = null;
@@ -2527,22 +3149,25 @@ function selectCalendarDay(day) {
 
 function renderCalendar() {
   const year = calendarDate.getFullYear();
-  const month = calendarDate.getMonth();
+  const month = calendarDate.getMonth(); // 0-based
   const todayReal = new Date();
 
-document.getElementById('monthBtn').innerText = `Tháng ${month + 1} ▼`;
-document.getElementById('yearBtn').innerText = `${year} ▼`;
-  
+  document.getElementById('monthBtn').innerText = `Tháng ${month + 1} ▼`;
+  document.getElementById('yearBtn').innerText = `${year} ▼`;
+
   const grid = document.getElementById('calendarGrid');
   const days = ['CN','T2','T3','T4','T5','T6','T7'];
 
   document.getElementById('calendarWeekdays').innerHTML =
-  days.map(d => `<div class="calendar-cell weekday">${d}</div>`).join('');
-  
+    days.map(d => `<div class="calendar-cell weekday">${d}</div>`).join('');
+
+  const holidays = getHolidaysForYear(year);
+
   let html = '';
   const firstDay = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
 
+  // empty cells
   for (let i = 0; i < firstDay; i++) {
     html += `<div class="calendar-cell empty"></div>`;
   }
@@ -2552,15 +3177,46 @@ document.getElementById('yearBtn').innerText = `${year} ▼`;
       d === todayReal.getDate() &&
       month === todayReal.getMonth() &&
       year === todayReal.getFullYear();
-
     const isSelected = selectedCalendarDay === d;
 
+    // Day of week (0=Sun)
+    const dow = new Date(year, month, d).getDay();
+    const isSunday = dow === 0;
+
+    // Lunar
+    const lunar = solarToLunar(year, month + 1, d);
+    const lunarStr = `${lunar.day}`;
+
+    // Holiday
+    const hKey1 = `${year}-${month+1}-${d}`;
+    const hKey2 = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const holiday = holidays[hKey1] || holidays[hKey2] || '';
+
+    // Note
+    const noteKey = `${year}-${month+1}-${d}`;
+    const existingNote = calendarNotes[noteKey] || '';
+
+    const classes = [
+      'calendar-cell',
+      isToday ? 'today' : '',
+      isSelected ? 'selected' : '',
+      isSunday ? 'sunday' : ''
+    ].filter(Boolean).join(' ');
+
     html += `
-      <div
-        class="calendar-cell ${isToday ? 'today' : ''} ${isSelected ? 'selected' : ''}"
-        onclick="selectCalendarDay(${d})"
-      >
-        ${d}
+      <div class="${classes}" onclick="selectCalendarDay(${d})">
+        <div class="cell-solar">${d}</div>
+        <div class="cell-lunar">âl ${lunarStr}</div>
+        ${holiday ? `<div class="cell-holiday" title="${holiday}">🎉 ${holiday}</div>` : ''}
+        <div class="cell-note-area">
+          <textarea
+            class="cell-note-input"
+            placeholder="ghi chú..."
+            onclick="event.stopPropagation()"
+            onmousedown="event.stopPropagation()"
+            oninput="saveCalendarNote('${noteKey}', this.value)"
+          >${existingNote}</textarea>
+        </div>
       </div>
     `;
   }
@@ -2616,41 +3272,213 @@ document.addEventListener('click', function(e) {
 });
   
     function initNotes() {
+      // Old note system kept for backward compat but not shown in UI
       ['note1','note2','note3'].forEach(id => {
         const el = document.getElementById(id);
+        if (!el) return;
         el.value = notesData[id] || '';
         el.oninput = () => {
           notesData[id] = el.value;
           saveDataDebounced();
         };
       });
+      // Personal note in settings
+      const pnEl = document.getElementById('settingsPersonalNote');
+      if (pnEl) {
+        pnEl.value = localStorage.getItem('ao_personal_note') || '';
+        pnEl.oninput = () => localStorage.setItem('ao_personal_note', pnEl.value);
+      }
+    }
+
+    // ===== LOGOUT =====
+    function askLogout() {
+      document.getElementById('logoutModal').style.display = 'flex';
+    }
+
+    function closeLogoutModal() {
+      document.getElementById('logoutModal').style.display = 'none';
+    }
+
+    function doLogout() {
+      currentUser = null;
+      localStorage.removeItem('ao_current_user');
+      closeLogoutModal();
+      // Show login screen again
+      const ls = document.getElementById('login-screen');
+      if (ls) {
+        ls.style.display = 'flex';
+        ls.style.animation = '';
+        ls.style.opacity = '1';
+        ls.style.transform = 'scale(1)';
+        const uInput = document.getElementById('login-username');
+        if (uInput) { uInput.value = ''; uInput.focus(); }
+        const pwInput = document.getElementById('login-password');
+        if (pwInput) pwInput.value = '';
+        const errEl = document.getElementById('login-error');
+        if (errEl) errEl.textContent = '';
+      }
+    }
+
+    // ===== FONT SIZE =====
+    function applyFontSize(val) {
+      document.documentElement.style.fontSize = val + 'px';
+      const lbl = document.getElementById('fontSizeLabel');
+      if (lbl) lbl.textContent = val + 'px';
+      localStorage.setItem('ao_font_size', val);
+    }
+
+    function initFontSize() {
+      const saved = localStorage.getItem('ao_font_size') || '16';
+      const slider = document.getElementById('fontSizeSlider');
+      if (slider) { slider.value = saved; }
+      applyFontSize(saved);
+    }
+
+    // ===== BG CHANGER =====
+    const BG_PRESETS = {
+      purple:     'linear-gradient(135deg,#7c3aed 0%,#4c1d95 40%,#0d0520 100%)',
+      navy:       'linear-gradient(135deg,#0f172a 0%,#1e3a5f 100%)',
+      forest:     'linear-gradient(135deg,#064e3b 0%,#0d0520 100%)',
+      rose:       'linear-gradient(135deg,#831843 0%,#1e0a50 100%)',
+      light:      'linear-gradient(135deg,#f8fafc 0%,#e2e8f0 100%)',
+      dark:       'linear-gradient(135deg,#0c0c0c 0%,#1a1a2e 100%)',
+      bluePurple: 'linear-gradient(135deg,#1e3a8a 0%,#7c3aed 100%)',
+      amber:      'linear-gradient(135deg,#92400e 0%,#1c1917 100%)',
+    };
+
+    function openBgChanger() {
+      document.getElementById('bgChangerModal').style.display = 'flex';
+    }
+
+    function setBgPreset(key) {
+      const layer = document.getElementById('customBgLayer');
+      layer.style.backgroundImage = BG_PRESETS[key];
+      layer.style.backgroundColor = '';
+      document.body.classList.add('has-custom-bg');
+      localStorage.setItem('ao_custom_bg_type', 'preset');
+      localStorage.setItem('ao_custom_bg_value', key);
+      // update body vars for light mode
+      if (key === 'light') {
+        document.getElementById('body').classList.add('light-mode');
+        appConfig.isLightMode = true;
+      }
+      document.querySelectorAll('.bg-preset-btn').forEach((b, i) => {
+        b.classList.toggle('active', Object.keys(BG_PRESETS)[i] === key);
+      });
+    }
+
+    function removeBg() {
+      const layer = document.getElementById('customBgLayer');
+      layer.style.backgroundImage = '';
+      layer.style.backgroundColor = '';
+      document.body.classList.remove('has-custom-bg');
+      localStorage.removeItem('ao_custom_bg_type');
+      localStorage.removeItem('ao_custom_bg_value');
+    }
+
+    // Extract dominant color from image using canvas
+    function getDominantColor(imgEl) {
+      try {
+        const canvas = document.createElement('canvas');
+        canvas.width = 50; canvas.height = 50;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(imgEl, 0, 0, 50, 50);
+        const data = ctx.getImageData(0, 0, 50, 50).data;
+        let r = 0, g = 0, b = 0, count = 0;
+        for (let i = 0; i < data.length; i += 16) {
+          r += data[i]; g += data[i+1]; b += data[i+2]; count++;
+        }
+        r = Math.floor(r/count); g = Math.floor(g/count); b = Math.floor(b/count);
+        // Darken for bg
+        return `rgb(${Math.floor(r*0.35)},${Math.floor(g*0.35)},${Math.floor(b*0.35)})`;
+      } catch(e) { return '#0d0520'; }
+    }
+
+    function setupBgUpload() {
+      const input = document.getElementById('bgImageUpload');
+      const zone = document.getElementById('bgDropZone');
+      if (!input || !zone) return;
+
+      zone.addEventListener('click', () => input.click());
+      zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+      zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+      zone.addEventListener('drop', e => {
+        e.preventDefault(); zone.classList.remove('dragover');
+        const file = e.dataTransfer.files[0];
+        if (file) handleBgFile(file);
+      });
+      input.addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) handleBgFile(file);
+      });
+    }
+
+    function handleBgFile(file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        const dataUrl = e.target.result;
+        // Create temp img to extract dominant color
+        const img = new Image();
+        img.onload = () => {
+          const dominantColor = getDominantColor(img);
+          const layer = document.getElementById('customBgLayer');
+          layer.style.backgroundImage = `url('${dataUrl}')`;
+          layer.style.backgroundColor = dominantColor;
+          layer.style.backgroundSize = 'cover';
+          layer.style.backgroundPosition = 'center';
+          document.body.classList.add('has-custom-bg');
+          // Store (careful about size — only store if < 2MB)
+          if (dataUrl.length < 2_000_000) {
+            localStorage.setItem('ao_custom_bg_type', 'image');
+            localStorage.setItem('ao_custom_bg_value', dataUrl);
+            localStorage.setItem('ao_custom_bg_color', dominantColor);
+          }
+          document.getElementById('bgChangerModal').style.display = 'none';
+        };
+        img.src = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function loadSavedBg() {
+      const type = localStorage.getItem('ao_custom_bg_type');
+      const value = localStorage.getItem('ao_custom_bg_value');
+      if (!type || !value) return;
+      const layer = document.getElementById('customBgLayer');
+      if (type === 'preset') {
+        layer.style.backgroundImage = BG_PRESETS[value] || '';
+        document.body.classList.add('has-custom-bg');
+      } else if (type === 'image') {
+        const color = localStorage.getItem('ao_custom_bg_color') || '#0d0520';
+        layer.style.backgroundImage = `url('${value}')`;
+        layer.style.backgroundColor = color;
+        layer.style.backgroundSize = 'cover';
+        layer.style.backgroundPosition = 'center';
+        document.body.classList.add('has-custom-bg');
+      }
     }
 
     // sidebar expands on hover via CSS - no JS toggle needed
 
     window.onload = () => {
-
   renderShortcuts();
   applyConfig();
-  updatePreview(appConfig.gender);
   updateClock();
   renderCalendar();
   initNotes();
+  initFontSize();
   setupAvatarUpload();
+  setupBgUpload();
+  loadSavedBg();
 
   setInterval(updateClock, 1000);
-
   addHoverEvents();
 
-  // delay render excel
   setTimeout(() => {
-
     if (typeof renderExcelSheet === "function") {
       renderExcelSheet();
     }
-
   }, 0);
-
 };
   // ===== EXCEL CORE STATE =====
 

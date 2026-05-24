@@ -661,9 +661,9 @@ body.has-custom-bg::after {
 }
 
     .container {
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 60px 20px 100px 120px;
+      margin-left: 110px;
+      margin-right: 20px;
+      padding: 60px 20px 100px 20px;
       position: relative;
     }
 
@@ -1472,17 +1472,18 @@ body.has-custom-bg::after {
   min-width:900px;
   border-collapse:collapse;
   table-layout:fixed;
-  background:rgba(0,0,0,0.10);
+  background: #ffffff;
 }
 
 .excel-table th,
 .excel-table td{
-  border:1px solid var(--card-border);
+  border:1px solid #d0d0d0;
   min-width:110px;
   height:44px;
   padding:0;
   text-align:center;
   vertical-align:middle;
+  color: #1e293b;
 }
 
 .excel-table td a {
@@ -1495,9 +1496,11 @@ body.has-custom-bg::after {
   position:sticky;
   top:0;
   z-index:5;
-  background:rgba(255,255,255,0.08);
+  background: #f0f0f0;
   font-size:0.9rem;
   font-weight:800;
+  color: #374151;
+  border-color: #b0b0b0;
 }
 
 .excel-table th.row-head{
@@ -1506,16 +1509,19 @@ body.has-custom-bg::after {
   z-index:6;
   min-width:56px;
   width:56px;
+  background: #f0f0f0;
 }
 
 .excel-table td.row-index{
   position:sticky;
   left:0;
   z-index:4;
-  background:rgba(255,255,255,0.04);
+  background: #f5f5f5;
   font-weight:700;
   min-width:56px;
   width:56px;
+  color: #374151;
+  border-color: #c0c0c0;
 }
 
 .excel-table td input{
@@ -1525,13 +1531,13 @@ body.has-custom-bg::after {
   outline:none;
   padding:10px 12px;
   background:transparent;
-  color:var(--text-main);
+  color: #1e293b;
   font-size:0.95rem;
   transition:background 0.18s ease, box-shadow 0.18s ease;
 }
 
 .excel-table td input:focus{
-  background:rgba(255,255,255,0.07);
+  background: rgba(34,197,94,0.08);
   box-shadow:
     inset 0 0 0 2px var(--accent),
     0 0 0 1px rgba(255,255,255,0.04);
@@ -1545,15 +1551,15 @@ body.has-custom-bg::after {
 }
 
 body.light-mode .excel-table{
-  background:rgba(255,255,255,0.65);
+  background: #ffffff;
 }
 
 body.light-mode .excel-table th{
-  background:rgba(255,255,255,0.85);
+  background: #f0f0f0;
 }
 
 body.light-mode .excel-table td.row-index{
-  background:rgba(255,255,255,0.7);
+  background: #f5f5f5;
 }
 /* =========================
    BUTTON DEPTH / PRESS FX
@@ -1959,6 +1965,397 @@ p {
   color: rgba(255,255,255,0.2);
 }
 
+
+/* ===== VAT INVOICE PAGE ===== */
+#page-vat {
+  padding: 20px 20px 100px 20px;
+  margin-left: 110px;
+  margin-right: 20px;
+  position: relative;
+}
+
+/* Sticky top zone: toolbar + summary frozen together */
+.vat-sticky-top {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: transparent;
+  padding: 0;
+  border-radius: 14px 14px 0 0;
+  overflow: visible;
+}
+body.light-mode .vat-sticky-top { background: transparent; }
+
+/* Toolbar — inside a rounded bordered frame */
+.vat-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  padding: 12px 16px;
+  background: color-mix(in srgb, var(--accent) 12%, #111827);
+  border: 2px solid var(--accent);
+  border-bottom: none;
+  border-radius: 14px 14px 0 0;
+  margin-bottom: 0;
+}
+body.light-mode .vat-toolbar {
+  background: color-mix(in srgb, var(--accent) 10%, #e8edf2);
+}
+
+/* Buttons follow accent */
+.vat-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 18px;
+  border-radius: 12px;
+  border: 1.5px solid var(--accent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--text-main);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.vat-btn:hover {
+  background: color-mix(in srgb, var(--accent) 32%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+/* ➕ Thêm dòng — solid accent fill */
+.vat-btn.primary {
+  background: var(--accent);
+  color: #000;
+  border-color: var(--accent);
+  font-weight: 800;
+}
+.vat-btn.primary:hover {
+  background: color-mix(in srgb, var(--accent) 80%, white);
+}
+/* 📋 Thêm nhiều dòng — accent outlined */
+.vat-btn.secondary {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  border-color: var(--accent);
+  color: var(--text-main);
+  font-weight: 800;
+}
+.vat-btn.secondary:hover {
+  background: color-mix(in srgb, var(--accent) 36%, transparent);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--accent) 40%, transparent);
+}
+/* 🗑️ Xoá tất cả — deep solid red, bright white text */
+.vat-btn.danger {
+  background: #b91c1c;
+  border-color: #ef4444;
+  color: #ffffff;
+  font-weight: 800;
+}
+.vat-btn.danger:hover {
+  background: #dc2626;
+  border-color: #fca5a5;
+  box-shadow: 0 0 16px rgba(239,68,68,0.45);
+}
+
+/* Summary bar — middle band */
+.vat-summary-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  margin: 0;
+  padding: 10px 16px;
+  background: color-mix(in srgb, var(--accent) 10%, #111827);
+  border-left: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  border-top: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-bottom: none;
+  border-radius: 0;
+}
+body.light-mode .vat-summary-bar {
+  background: color-mix(in srgb, var(--accent) 10%, #fff);
+}
+.vat-summary-chip {
+  padding: 6px 20px 6px 0;
+  font-size: 0.95rem;
+  font-weight: 700;
+  white-space: nowrap;
+  color: var(--text-main);
+  border: none;
+  background: transparent;
+  border-radius: 0;
+}
+body.light-mode .vat-summary-chip { color: #1e293b; }
+.vat-summary-chip span {
+  color: var(--accent);
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+.vat-summary-chip span.vat-ht-val {
+  color: #dc2626 !important;
+  font-weight: 900;
+  font-size: 1.05rem;
+}
+
+/* Table wrap — connected to summary bar above */
+.vat-table-wrap {
+  overflow: auto;
+  border-radius: 0 0 14px 14px;
+  border: 2px solid var(--accent);
+  border-top: none;
+  background: #ffffff;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+}
+
+.vat-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 1200px;
+  font-size: 0.82rem;
+  table-layout: fixed;
+}
+
+/* Freeze header row */
+.vat-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--accent) 28%, #111827);
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 2px solid var(--accent);
+  border-right: 1px solid rgba(255,255,255,0.10);
+  color: #ffffff;
+  white-space: nowrap;
+  user-select: none;
+  overflow: visible !important;
+}
+body.light-mode .vat-table thead th {
+  color: #ffffff;
+}
+
+/* Body rows — white background, gray grid */
+.vat-table tbody tr {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background 0.15s;
+  background: #ffffff;
+}
+.vat-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+.vat-table tbody tr:hover {
+  background: color-mix(in srgb, var(--accent) 8%, #ffffff);
+}
+.vat-table tbody tr.vat-row-selected {
+  background: color-mix(in srgb, var(--accent) 14%, #ffffff);
+}
+.vat-table td {
+  padding: 0;
+  vertical-align: middle;
+  border-right: 1px solid #e5e7eb;
+  color: #1e293b;
+}
+.vat-table td input,
+.vat-table td textarea,
+.vat-table td select {
+  width: 100%;
+  padding: 9px 10px;
+  background: transparent;
+  border: none;
+  color: #1e293b;
+  font-size: 0.82rem;
+  font-family: inherit;
+  outline: none;
+  transition: background 0.15s;
+  resize: none;
+}
+.vat-table td.td-tonght input {
+  color: #dc2626 !important;
+  font-weight: 800;
+  text-align: right;
+}
+.vat-table td input:focus,
+.vat-table td textarea:focus {
+  background: color-mix(in srgb, var(--accent) 10%, #ffffff);
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  border-radius: 4px;
+}
+.vat-table td.td-stt {
+  text-align: center;
+  color: #9ca3af;
+  font-weight: 700;
+  font-size: 0.75rem;
+  padding: 0 6px;
+}
+.vat-table td.td-tong {
+  font-weight: 800;
+  color: var(--accent);
+  text-align: right;
+  padding-right: 12px;
+}
+.vat-table td.td-tonght {
+  font-weight: 800;
+  color: #dc2626;
+  text-align: right;
+  padding-right: 12px;
+}
+.vat-table td.td-link a {
+  color: #2563eb;
+  text-decoration: underline;
+  word-break: break-all;
+}
+.vat-table td input[type="number"] { text-align: right; }
+.vat-table td.td-action { text-align: center; }
+.vat-row-del-btn {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(239,68,68,0.15);
+  color: #dc2626;
+  cursor: pointer;
+  font-size: 0.9rem;
+  display: flex; align-items: center; justify-content: center;
+  margin: auto;
+  opacity: 0;
+  transition: opacity 0.15s, background 0.15s;
+}
+.vat-table tbody tr:hover .vat-row-del-btn { opacity: 1; }
+.vat-row-del-btn:hover { background: rgba(239,68,68,0.3); }
+
+/* tfoot totals */
+.vat-table tfoot td {
+  padding: 12px 10px;
+  font-weight: 800;
+  font-size: 0.85rem;
+  background: #f3f4f6;
+  border-top: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  color: #1e293b;
+}
+.vat-total-label { text-align: right; padding-right: 12px; opacity: 0.65; font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; }
+.vat-grand-total { color: var(--accent); font-size: 1rem; text-align: right; padding-right: 12px; }
+.vat-grand-total-ht { color: #dc2626; font-size: 1rem; text-align: right; padding-right: 12px; }
+.vat-sort-dropdown {
+  position: relative;
+  display: inline-block;
+}
+.vat-sort-panel {
+  display: none;
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 500;
+  background: #1a0a3a;
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 8px;
+  min-width: 160px;
+  max-height: 280px;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  scrollbar-width: thin;
+  scrollbar-color: var(--accent) transparent;
+}
+.vat-sort-panel.open { display: block; }
+.vat-sort-panel-item {
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.vat-sort-panel-item:hover {
+  background: color-mix(in srgb, var(--accent) 20%, transparent);
+}
+.vat-sort-panel-item.active {
+  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  color: var(--accent);
+}
+.vat-sort-panel-empty {
+  padding: 8px 12px;
+  font-size: 0.78rem;
+  opacity: 0.45;
+  text-align: center;
+}
+.vat-sort-active-badge {
+  display: inline-block;
+  margin-left: 6px;
+  background: var(--accent);
+  color: #000;
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  font-weight: 900;
+  vertical-align: middle;
+}
+
+/* VAT column resize */
+.vat-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: color-mix(in srgb, var(--accent) 18%, rgba(10,5,30,0.9));
+  padding: 12px 10px;
+  text-align: center;
+  font-weight: 800;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-bottom: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  color: var(--text-main);
+  white-space: nowrap;
+  user-select: none;
+  overflow: visible !important;
+}
+.vat-col-resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 7px;
+  height: 100%;
+  cursor: col-resize;
+  z-index: 10;
+  background: transparent;
+  transition: background 0.15s;
+}
+.vat-col-resizer:hover,
+.vat-col-resizer.dragging {
+  background: color-mix(in srgb, var(--accent) 60%, transparent);
+}
+.vat-embed-modal {
+  display: none;
+  position: fixed; inset: 0; z-index: 9999;
+  background: rgba(0,0,0,0.7);
+  backdrop-filter: blur(8px);
+  align-items: center; justify-content: center;
+}
+.vat-embed-modal.open { display: flex; }
+.vat-embed-box {
+  background: #16082e;
+  border: 1px solid var(--card-border);
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%; max-width: 860px;
+  max-height: 90vh;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.vat-embed-box iframe {
+  flex: 1; min-height: 500px;
+  border: none; border-radius: 12px;
+  background: #fff;
+}
+.vat-embed-close {
+  align-self: flex-end;
+  padding: 8px 20px; border-radius: 10px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid var(--card-border);
+  color: var(--text-main);
+  cursor: pointer; font-weight: 700;
+}
+.vat-embed-close:hover { background: rgba(255,255,255,0.14); }
   </style>
   <!-- Firebase compat SDK (load đồng bộ, không bị lỗi timing) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -2041,6 +2438,7 @@ p {
 <div class="nav-item" data-page="dashboard" onclick="switchPage('dashboard')"><span class="nav-icon">🧩</span><span class="nav-text">Dashboard</span></div>
 <div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
 <div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
+<div class="nav-item" data-page="vat" onclick="switchPage('vat')"><span class="nav-icon">🧾</span><span class="nav-text">Báo cáo HĐ VAT</span></div>
     </div>
     <div class="sidebar-logout">
       <button class="logout-btn" onclick="askLogout()">
@@ -2318,6 +2716,115 @@ p {
       <div class="modal-actions" style="justify-content:flex-end;">
         <button class="btn-cancel" onclick="document.getElementById('bgChangerModal').style.display='none'">Đóng</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===== PAGE: BÁO CÁO HÓA ĐƠN VAT ===== -->
+  <div id="page-vat" class="page-content">
+    <div class="header-group" style="margin-bottom:20px;">
+      <h1>&#x1F9FE; Báo cáo Hóa đơn VAT</h1>
+      <p style="opacity:0.75; margin-top:8px;">Quản lý toàn bộ hóa đơn mua hàng — nhập liệu trực tiếp, tính tổng tự động.</p>
+    </div>
+
+    <!-- Sticky zone: toolbar + summary -->
+    <div class="vat-sticky-top">
+      <!-- Toolbar -->
+      <div class="vat-toolbar">
+      <button class="vat-btn primary" onclick="vatAddRow()">&#x2795; Thêm dòng</button>
+      <button class="vat-btn secondary" onclick="vatAddMultiple()">&#x1F4CB; Thêm nhiều dòng</button>
+      <button class="vat-btn danger" onclick="vatClearAll()">&#x1F5D1;&#xFE0F; Xoá tất cả</button>
+
+      <!-- Sort buttons -->
+      <div class="vat-sort-dropdown" id="sortDayDrop">
+        <button class="vat-btn" onclick="vatToggleSortPanel('day')" id="sortDayBtn">
+          &#x1F4C5; Ngày <span id="sortDayBadge"></span>
+        </button>
+        <div class="vat-sort-panel" id="sortDayPanel"></div>
+      </div>
+
+      <div class="vat-sort-dropdown" id="sortMonthDrop">
+        <button class="vat-btn" onclick="vatToggleSortPanel('month')" id="sortMonthBtn">
+          &#x1F4C6; Tháng <span id="sortMonthBadge"></span>
+        </button>
+        <div class="vat-sort-panel" id="sortMonthPanel"></div>
+      </div>
+
+      <div class="vat-sort-dropdown" id="sortYearDrop">
+        <button class="vat-btn" onclick="vatToggleSortPanel('year')" id="sortYearBtn">
+          &#x1F5D3;&#xFE0F; Năm <span id="sortYearBadge"></span>
+        </button>
+        <div class="vat-sort-panel" id="sortYearPanel"></div>
+      </div>
+
+      <button class="vat-btn" onclick="vatExportCSV()" style="margin-left:auto;">&#x1F4E5; Xuất CSV</button>
+    </div>
+
+    <!-- Summary chips (inside sticky zone) -->
+    <div class="vat-summary-bar">
+      <div class="vat-summary-chip">Tổng dòng: <span id="vatCount">0</span></div>
+      <div class="vat-summary-chip">Tổng giá ghi: <span id="vatSumTong">0 đ</span></div>
+      <div class="vat-summary-chip">Tổng giá thực tế: <span id="vatSumTongHT" class="vat-ht-val">0 đ</span></div>
+    </div>
+    </div><!-- end .vat-sticky-top -->
+
+    <!-- Table -->
+    <div class="vat-table-wrap">
+      <table class="vat-table" id="vatTable" style="table-layout:fixed;">
+        <colgroup id="vatColGroup">
+          <col style="width:50px">
+          <col style="width:120px">
+          <col style="width:200px">
+          <col style="width:85px">
+          <col style="width:80px">
+          <col style="width:115px">
+          <col style="width:125px">
+          <col style="width:125px">
+          <col style="width:185px">
+          <col style="width:150px">
+          <col style="width:165px">
+          <col style="width:44px">
+        </colgroup>
+        <thead>
+          <tr id="vatHeaderRow">
+            <th style="position:relative;">STT<span class="vat-col-resizer" data-col="0"></span></th>
+            <th style="position:relative;">NGÀY<span class="vat-col-resizer" data-col="1"></span></th>
+            <th style="position:relative;">TÊN HÀNG HOÁ<span class="vat-col-resizer" data-col="2"></span></th>
+            <th style="position:relative;">ĐVT<span class="vat-col-resizer" data-col="3"></span></th>
+            <th style="position:relative;">SL<span class="vat-col-resizer" data-col="4"></span></th>
+            <th style="position:relative;">ĐƠN GIÁ<span class="vat-col-resizer" data-col="5"></span></th>
+            <th style="position:relative;">TỔNG GIÁ<span class="vat-col-resizer" data-col="6"></span></th>
+            <th style="position:relative;">TỔNG GIÁ TT<span class="vat-col-resizer" data-col="7"></span></th>
+            <th style="position:relative;">LÝ DO MUA<span class="vat-col-resizer" data-col="8"></span></th>
+            <th style="position:relative;">LINK HĐ<span class="vat-col-resizer" data-col="9"></span></th>
+            <th style="position:relative;">GHI CHÚ<span class="vat-col-resizer" data-col="10"></span></th>
+            <th style="position:relative;"></th>
+          </tr>
+        </thead>
+        <tbody id="vatBody"></tbody>
+        <tfoot id="vatFoot">
+          <tr>
+            <td colspan="6" class="vat-total-label">TỔNG CỘNG</td>
+            <td class="vat-grand-total" id="vatFootTong">0 đ</td>
+            <td class="vat-grand-total-ht" id="vatFootTongHT">0 đ</td>
+            <td colspan="4"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-size:0.72rem; opacity:0.4; margin-top:12px; text-align:right;">
+      &#x1F4A1; Dữ liệu lưu tự động trong trình duyệt. TỔNG GIÁ tự tính từ SL x ĐƠN GIÁ. TỔNG GIÁ TT nhập tay. Kéo cạnh tiêu đề cột để thay đổi độ rộng.
+    </p>
+  </div>
+
+  <!-- Embed modal xem hóa đơn -->
+  <div class="vat-embed-modal" id="vatEmbedModal">
+    <div class="vat-embed-box">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-weight:800; font-size:1rem;">&#x1F4C4; Xem Hóa đơn</span>
+        <button class="vat-embed-close" onclick="vatCloseEmbed()">&#x2715; Đóng</button>
+      </div>
+      <iframe id="vatEmbedFrame" src="" allowfullscreen></iframe>
     </div>
   </div>
 
@@ -3470,6 +3977,8 @@ document.addEventListener('click', function(e) {
   setupAvatarUpload();
   setupBgUpload();
   loadSavedBg();
+  vatRender();
+  setTimeout(() => { initVatColResize(); vatUpdateSortBadges(); }, 20);
 
   setInterval(updateClock, 1000);
   addHoverEvents();
@@ -4359,6 +4868,398 @@ document.addEventListener("mousedown", function (e) {
 });
 
   // (paste handler đã được khai báo ở trên - không lặp lại)
+
+// ===== VAT SORT =====
+let vatSortMode = null;   // null | {type:'day'|'month'|'year', value:string}
+
+function vatGetDateParts(rows) {
+  const days = new Set(), months = new Set(), years = new Set();
+  rows.forEach(r => {
+    if (!r.ngay) return;
+    const [y, m, d] = r.ngay.split('-');
+    if (d) days.add(d);
+    if (m) months.add(m);
+    if (y) years.add(y);
+  });
+  return {
+    days:   [...days].sort(),
+    months: [...months].sort(),
+    years:  [...years].sort()
+  };
+}
+
+const MONTH_VI = ['','Tháng 1','Tháng 2','Tháng 3','Tháng 4','Tháng 5','Tháng 6',
+                  'Tháng 7','Tháng 8','Tháng 9','Tháng 10','Tháng 11','Tháng 12'];
+
+function vatToggleSortPanel(type) {
+  const panelId = { day:'sortDayPanel', month:'sortMonthPanel', year:'sortYearPanel' }[type];
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  const isOpen = panel.classList.contains('open');
+
+  // Close all panels
+  ['sortDayPanel','sortMonthPanel','sortYearPanel'].forEach(id => {
+    const p = document.getElementById(id);
+    if (p) p.classList.remove('open');
+  });
+
+  if (!isOpen) {
+    // Build panel content
+    const rows = vatLoad();
+    const parts = vatGetDateParts(rows);
+    const list = type === 'day' ? parts.days : type === 'month' ? parts.months : parts.years;
+
+    if (!list.length) {
+      panel.innerHTML = `<div class="vat-sort-panel-empty">Chưa có dữ liệu ngày</div>`;
+    } else {
+      const activeVal = (vatSortMode && vatSortMode.type === type) ? vatSortMode.value : null;
+      let html = `<div class="vat-sort-panel-item${!activeVal ? ' active' : ''}" onclick="vatApplySort('${type}', null)">— Tất cả —</div>`;
+      list.forEach(v => {
+        let label = v;
+        if (type === 'month') label = MONTH_VI[parseInt(v, 10)] || ('Tháng ' + parseInt(v,10));
+        if (type === 'day')   label = 'Ngày ' + parseInt(v, 10);
+        const isAct = (v === activeVal) ? ' active' : '';
+        html += `<div class="vat-sort-panel-item${isAct}" onclick="vatApplySort('${type}', '${v}')">${label}</div>`;
+      });
+      panel.innerHTML = html;
+    }
+    panel.classList.add('open');
+  }
+}
+
+function vatApplySort(type, value) {
+  // Close panels
+  ['sortDayPanel','sortMonthPanel','sortYearPanel'].forEach(id => {
+    const p = document.getElementById(id);
+    if (p) p.classList.remove('open');
+  });
+
+  if (!value) {
+    vatSortMode = null;
+  } else {
+    vatSortMode = { type, value };
+  }
+  vatUpdateSortBadges();
+  vatRender();
+}
+
+function vatUpdateSortBadges() {
+  ['day','month','year'].forEach(type => {
+    const badgeEl = document.getElementById({ day:'sortDayBadge', month:'sortMonthBadge', year:'sortYearBadge' }[type]);
+    if (!badgeEl) return;
+    if (vatSortMode && vatSortMode.type === type) {
+      let label = vatSortMode.value;
+      if (type === 'month') label = 'T' + parseInt(vatSortMode.value, 10);
+      if (type === 'day')   label = parseInt(vatSortMode.value, 10) + '';
+      badgeEl.innerHTML = `<span class="vat-sort-active-badge">${label}</span>`;
+    } else {
+      badgeEl.innerHTML = '';
+    }
+  });
+}
+
+// Close sort panels on outside click
+document.addEventListener('click', function(e) {
+  if (!e.target.closest('.vat-sort-dropdown')) {
+    ['sortDayPanel','sortMonthPanel','sortYearPanel'].forEach(id => {
+      const p = document.getElementById(id);
+      if (p) p.classList.remove('open');
+    });
+  }
+});
+
+// ===== VAT COLUMN RESIZE =====
+const VAT_COL_WIDTHS_KEY = 'ao_vat_col_widths_v1';
+
+function vatLoadColWidths() {
+  try { return JSON.parse(localStorage.getItem(VAT_COL_WIDTHS_KEY)) || {}; }
+  catch(e) { return {}; }
+}
+function vatSaveColWidths(widths) {
+  localStorage.setItem(VAT_COL_WIDTHS_KEY, JSON.stringify(widths));
+}
+
+function vatApplyColWidths() {
+  const widths = vatLoadColWidths();
+  const cols = document.querySelectorAll('#vatColGroup col');
+  cols.forEach((col, i) => {
+    if (widths[i] !== undefined) col.style.width = widths[i] + 'px';
+  });
+}
+
+function initVatColResize() {
+  vatApplyColWidths();
+  document.querySelectorAll('.vat-col-resizer').forEach(handle => {
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      const colIdx = parseInt(this.dataset.col);
+      const cols = document.querySelectorAll('#vatColGroup col');
+      const col = cols[colIdx];
+      if (!col) return;
+
+      const startX = e.clientX;
+      const startW = col.getBoundingClientRect().width || 100;
+      handle.classList.add('dragging');
+
+      const onMove = (ev) => {
+        const newW = Math.max(44, startW + (ev.clientX - startX));
+        col.style.width = newW + 'px';
+      };
+      const onUp = (ev) => {
+        handle.classList.remove('dragging');
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        // Save
+        const widths = vatLoadColWidths();
+        widths[colIdx] = Math.max(44, startW + (ev.clientX - startX));
+        vatSaveColWidths(widths);
+      };
+      document.addEventListener('mousemove', onMove);
+      document.addEventListener('mouseup', onUp);
+    });
+  });
+}
+
+// ===== VAT SORT =====
+
+const VAT_KEY = 'ao_vat_invoices_v1';
+
+function vatLoad() {
+  try { return JSON.parse(localStorage.getItem(VAT_KEY)) || []; }
+  catch(e) { return []; }
+}
+
+function vatSave(rows) {
+  localStorage.setItem(VAT_KEY, JSON.stringify(rows));
+}
+
+function vatFmt(num) {
+  const n = parseFloat(num);
+  if (isNaN(n) || n === 0) return '0 đ';
+  return n.toLocaleString('vi-VN') + ' đ';
+}
+
+// TỔNG GIÁ TT: toggle between display span and input
+function vatTonghtFocus(span) {
+  const wrap = span.parentElement;
+  const inp = wrap.querySelector('input');
+  span.style.display = 'none';
+  inp.style.display = 'block';
+  inp.focus();
+  inp.select();
+}
+function vatTonghtBlur(inp) {
+  const wrap = inp.parentElement;
+  const span = wrap.querySelector('.vat-tonght-display');
+  const val = parseFloat(inp.value) || 0;
+  inp.style.display = 'none';
+  span.style.display = 'block';
+  span.innerHTML = val > 0 ? vatFmt(val) : '<span style="opacity:0.35; color:#9ca3af; font-weight:400;">Nhập tay...</span>';
+}
+function vatTonghtRefresh(inp) {
+  // live-update display while typing (optional, blur handles it)
+}
+
+function vatNewRow() {
+  return { id: Date.now() + Math.random(), ngay: '', ten: '', dvt: '', sl: '', dongia: '', tongt: '', ly_do: '', link: '', note: '' };
+}
+
+function vatRender() {
+  let rows = vatLoad();
+
+  // Apply sort filter
+  if (vatSortMode && vatSortMode.value) {
+    const { type, value } = vatSortMode;
+    rows = rows.filter(r => {
+      if (!r.ngay) return false;
+      const [y, m, d] = r.ngay.split('-');
+      if (type === 'day')   return d === value;
+      if (type === 'month') return m === value;
+      if (type === 'year')  return y === value;
+      return true;
+    });
+  }
+  const tbody = document.getElementById('vatBody');
+  if (!tbody) return;
+
+  let sumTong = 0, sumTongHT = 0;
+
+  tbody.innerHTML = rows.map((r, i) => {
+    const tong = (parseFloat(r.sl) || 0) * (parseFloat(r.dongia) || 0);
+    const tongHT = parseFloat(r.tongt) || 0;
+    sumTong += tong;
+    sumTongHT += tongHT;
+
+    const linkHtml = r.link
+      ? `<a href="${escapeHTML(r.link)}" target="_blank" rel="noopener" title="${escapeHTML(r.link)}" onclick="event.stopPropagation()">&#x1F517; Xem</a>`
+      : '';
+
+    return `<tr data-id="${r.id}">
+      <td class="td-stt">${i + 1}</td>
+      <td><input type="date" value="${escapeHTML(r.ngay||'')}" oninput="vatUpdate('${r.id}','ngay',this.value)"></td>
+      <td><input type="text" value="${escapeHTML(r.ten||'')}" placeholder="Tên hàng hoá..." oninput="vatUpdate('${r.id}','ten',this.value)"></td>
+      <td><input type="text" value="${escapeHTML(r.dvt||'')}" placeholder="Cái/kg..." oninput="vatUpdate('${r.id}','dvt',this.value)" style="text-align:center;"></td>
+      <td><input type="number" min="0" value="${r.sl||''}" placeholder="0" oninput="vatUpdate('${r.id}','sl',this.value)"></td>
+      <td><input type="number" min="0" value="${r.dongia||''}" placeholder="0" oninput="vatUpdate('${r.id}','dongia',this.value)"></td>
+      <td class="td-tong">${tong > 0 ? vatFmt(tong) : '<span style="opacity:0.3">0 đ</span>'}</td>
+      <td class="td-tonght">
+        <div style="position:relative; width:100%;">
+          <span class="vat-tonght-display" onclick="vatTonghtFocus(this)" style="display:block; width:100%; padding:9px 10px; cursor:text; text-align:right; color:#dc2626; font-weight:800; font-size:0.82rem; min-height:36px;">${tongHT > 0 ? vatFmt(tongHT) : '<span style="opacity:0.35; color:#9ca3af; font-weight:400;">Nhập tay...</span>'}</span>
+          <input type="number" min="0" value="${r.tongt||''}" style="display:none; position:absolute; inset:0; width:100%; padding:9px 10px; background:rgba(220,38,38,0.08); border:none; outline:none; color:#dc2626; font-weight:800; font-size:0.82rem; text-align:right; z-index:2;" oninput="vatUpdate('${r.id}','tongt',this.value); vatTonghtRefresh(this);" onblur="vatTonghtBlur(this)">
+        </div>
+      </td>
+      <td><input type="text" value="${escapeHTML(r.ly_do||'')}" placeholder="Lý do mua..." oninput="vatUpdate('${r.id}','ly_do',this.value)"></td>
+      <td class="td-link">
+        <div style="display:flex; align-items:center; gap:4px;">
+          <input type="url" value="${escapeHTML(r.link||'')}" placeholder="https://..." oninput="vatUpdate('${r.id}','link',this.value)" style="flex:1; min-width:80px;">
+          ${r.link ? `<button class="vat-btn" style="padding:4px 8px; font-size:0.7rem; flex-shrink:0;" onclick="vatOpenEmbed('${escapeHTML(r.link)}')">&#x1F441;</button>` : ''}
+        </div>
+      </td>
+      <td><input type="text" value="${escapeHTML(r.note||'')}" placeholder="Ghi chú..." oninput="vatUpdate('${r.id}','note',this.value)"></td>
+      <td class="td-action"><button class="vat-row-del-btn" onclick="vatDeleteRow('${r.id}')" title="Xoá dòng">&#x2715;</button></td>
+    </tr>`;
+  }).join('');
+
+  const cnt = document.getElementById('vatCount');
+  const st = document.getElementById('vatSumTong');
+  const sht = document.getElementById('vatSumTongHT');
+  const ft = document.getElementById('vatFootTong');
+  const fht = document.getElementById('vatFootTongHT');
+  if (cnt) cnt.textContent = rows.length;
+  if (st) st.textContent = vatFmt(sumTong);
+  if (sht) sht.textContent = vatFmt(sumTongHT);
+  if (ft) ft.textContent = vatFmt(sumTong);
+  if (fht) fht.textContent = vatFmt(sumTongHT);
+}
+
+function vatUpdate(id, field, value) {
+  const rows = vatLoad();
+  const row = rows.find(r => String(r.id) === String(id));
+  if (!row) return;
+  row[field] = value;
+  vatSave(rows);
+  // Re-render only TỔNG GIÁ cells and summary (not full re-render to keep focus)
+  if (field === 'sl' || field === 'dongia' || field === 'tongt') {
+    vatRenderTotalsOnly(rows);
+  }
+  if (field === 'link') {
+    // need full re-render to show/hide embed button
+    vatRender();
+  }
+}
+
+function vatRenderTotalsOnly(rows) {
+  let sumTong = 0, sumTongHT = 0;
+  rows.forEach(r => {
+    const t = (parseFloat(r.sl)||0) * (parseFloat(r.dongia)||0);
+    const ht = parseFloat(r.tongt)||0;
+    sumTong += t; sumTongHT += ht;
+    // Update individual cell
+    const tr = document.querySelector(`#vatBody tr[data-id="${r.id}"]`);
+    if (tr) {
+      const tongCell = tr.querySelector('.td-tong');
+      if (tongCell) tongCell.innerHTML = t > 0 ? vatFmt(t) : '<span style="opacity:0.3">0 đ</span>';
+    }
+  });
+  const cnt = document.getElementById('vatCount');
+  const st = document.getElementById('vatSumTong');
+  const sht = document.getElementById('vatSumTongHT');
+  const ft = document.getElementById('vatFootTong');
+  const fht = document.getElementById('vatFootTongHT');
+  if (cnt) cnt.textContent = rows.length;
+  if (st) st.textContent = vatFmt(sumTong);
+  if (sht) sht.textContent = vatFmt(sumTongHT);
+  if (ft) ft.textContent = vatFmt(sumTong);
+  if (fht) fht.textContent = vatFmt(sumTongHT);
+}
+
+function vatAddRow() {
+  const rows = vatLoad();
+  rows.push(vatNewRow());
+  vatSave(rows);
+  vatRender();
+  // Focus tên hàng hoá của dòng mới
+  setTimeout(() => {
+    const trs = document.querySelectorAll('#vatBody tr');
+    if (trs.length) {
+      const lastRow = trs[trs.length - 1];
+      const inp = lastRow.querySelectorAll('input')[1]; // ten
+      if (inp) { inp.focus(); lastRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); }
+    }
+  }, 80);
+}
+
+function vatAddMultiple() {
+  const n = parseInt(prompt('Thêm bao nhiêu dòng trống?', '5'));
+  if (isNaN(n) || n <= 0) return;
+  const rows = vatLoad();
+  for (let i = 0; i < n; i++) rows.push(vatNewRow());
+  vatSave(rows);
+  vatRender();
+}
+
+function vatDeleteRow(id) {
+  let rows = vatLoad();
+  rows = rows.filter(r => String(r.id) !== String(id));
+  vatSave(rows);
+  vatRender();
+}
+
+function vatClearAll() {
+  if (!confirm('Bạn chắc chắn muốn XOÁ TẤT CẢ hóa đơn? Không thể hoàn tác!')) return;
+  vatSave([]);
+  vatRender();
+}
+
+function vatExportCSV() {
+  const rows = vatLoad();
+  if (!rows.length) { alert('Không có dữ liệu để xuất!'); return; }
+  const headers = ['STT','NGÀY','TÊN HÀNG HOÁ','ĐVT','SỐ LƯỢNG','ĐƠN GIÁ','TỔNG GIÁ','TỔNG GIÁ TT','LÝ DO MUA','LINK HĐ','GHI CHÚ'];
+  const csvRows = [headers.join(',')];
+  rows.forEach((r, i) => {
+    const tong = (parseFloat(r.sl)||0) * (parseFloat(r.dongia)||0);
+    const cols = [
+      i+1, r.ngay||'', r.ten||'', r.dvt||'', r.sl||'', r.dongia||'',
+      tong, r.tongt||'', r.ly_do||'', r.link||'', r.note||''
+    ].map(v => `"${String(v).replace(/"/g,'""')}"`);
+    csvRows.push(cols.join(','));
+  });
+  const blob = new Blob(['\uFEFF' + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'hoa_don_vat_' + new Date().toISOString().slice(0,10) + '.csv';
+  document.body.appendChild(a); a.click();
+  document.body.removeChild(a); URL.revokeObjectURL(url);
+}
+
+function vatOpenEmbed(url) {
+  if (!url) return;
+  document.getElementById('vatEmbedFrame').src = url;
+  document.getElementById('vatEmbedModal').classList.add('open');
+}
+
+function vatCloseEmbed() {
+  document.getElementById('vatEmbedFrame').src = '';
+  document.getElementById('vatEmbedModal').classList.remove('open');
+}
+
+// Khởi tạo VAT khi trang load
+(function initVAT() {
+  // Nếu không có dòng nào, thêm 5 dòng trống mặc định
+  const rows = vatLoad();
+  if (rows.length === 0) {
+    for (let i = 0; i < 5; i++) rows.push(vatNewRow());
+    vatSave(rows);
+  }
+})();
+
+// Re-render VAT khi switchPage
+const _origSwitchPage = window.switchPage;
+// Will be patched after switchPage is defined — see window.onload hook below
+document.addEventListener('click', function(e) {
+  const ni = e.target.closest('.nav-item[data-page="vat"]');
+  if (ni) setTimeout(() => { vatRender(); initVatColResize(); vatUpdateSortBadges(); }, 10);
+});
 
 </script>
   

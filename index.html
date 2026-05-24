@@ -2465,6 +2465,135 @@ body.light-mode .vat-table thead th {
   cursor: pointer; font-weight: 700;
 }
 .vat-embed-close:hover { background: rgba(255,255,255,0.14); }
+
+/* ===== FILE DROP ZONE IN VAT TABLE ===== */
+.td-file-drop { padding: 4px 6px !important; vertical-align: top; }
+.vat-file-zone {
+  min-height: 44px;
+  border: 1.5px dashed rgba(34,197,94,0.35);
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 4px 6px;
+  transition: border-color 0.2s, background 0.2s;
+  background: rgba(255,255,255,0.01);
+  cursor: default;
+}
+.vat-file-zone.dragover {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+.vat-file-label {
+  display: flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 6px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  cursor: pointer; flex-shrink: 0; transition: background 0.15s;
+}
+.vat-file-label:hover { background: color-mix(in srgb, var(--accent) 28%, transparent); }
+.vat-file-icon { font-size: 0.95rem; }
+.vat-file-chips { display: flex; flex-wrap: wrap; gap: 3px; align-items: center; flex: 1; }
+.vat-file-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: color-mix(in srgb, var(--accent) 12%, rgba(255,255,255,0.06));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 5px; padding: 2px 5px;
+  font-size: 0.68rem; font-weight: 600; color: #1e293b;
+  cursor: pointer; max-width: 110px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  transition: background 0.15s; position: relative;
+}
+.vat-file-chip:hover { background: color-mix(in srgb, var(--accent) 22%, rgba(255,255,255,0.1)); }
+.vat-file-chip-del {
+  display: inline-block; margin-left: 2px; font-size: 0.6rem;
+  color: #dc2626; cursor: pointer; opacity: 0; transition: opacity 0.15s;
+  background: transparent; border: none; padding: 0; line-height: 1;
+}
+.vat-file-chip:hover .vat-file-chip-del { opacity: 1; }
+
+/* ===== INVOICE NAME MODAL ===== */
+#vatInvNameModal .modal-box { max-width: 420px; text-align: left; }
+#vatInvNameModal input {
+  width: 100%; padding: 11px 14px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 12px; color: #e8eaed;
+  font-size: 1rem; outline: none;
+  transition: border-color 0.2s; margin-top: 10px;
+}
+#vatInvNameModal input:focus { border-color: var(--accent); }
+#vatInvRenameModal .modal-box { max-width: 420px; text-align: left; }
+#vatInvRenameModal input {
+  width: 100%; padding: 11px 14px;
+  background: rgba(255,255,255,0.07);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 12px; color: #e8eaed;
+  font-size: 1rem; outline: none;
+  transition: border-color 0.2s; margin-top: 10px;
+}
+#vatInvRenameModal input:focus { border-color: var(--accent); }
+
+/* ===== INVOICE ACTION BUTTONS ===== */
+.vat-inv-action-btn {
+  padding: 5px 14px; border-radius: 8px;
+  font-size: 0.78rem; font-weight: 700;
+  cursor: pointer; transition: all 0.15s;
+}
+.vat-inv-action-btn.rename {
+  border: 1.5px solid #3b82f6; background: rgba(59,130,246,0.08); color: #3b82f6;
+}
+.vat-inv-action-btn.rename:hover { background: #3b82f6; color: #fff; }
+.vat-inv-action-btn.edit {
+  border: 1.5px solid #f59e0b; background: rgba(245,158,11,0.08); color: #b45309;
+}
+.vat-inv-action-btn.edit:hover { background: #f59e0b; color: #fff; }
+
+/* ===== INVOICE EDIT MODAL ===== */
+#vatInvEditModal .modal-box {
+  max-width: 860px; width: 96vw; text-align: left;
+  max-height: 90vh; overflow-y: auto;
+}
+.inv-edit-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; margin-top: 10px; }
+.inv-edit-table th {
+  background: rgba(255,255,255,0.08); padding: 8px 10px;
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+  color: rgba(255,255,255,0.65); border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.inv-edit-table td { padding: 4px 6px; border-bottom: 1px solid rgba(255,255,255,0.06); vertical-align: middle; }
+.inv-edit-table input {
+  width: 100%; background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 6px; padding: 5px 7px; color: #e8eaed; font-size: 0.8rem; outline: none;
+}
+.inv-edit-table input:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); }
+.inv-edit-del-btn {
+  width: 22px; height: 22px; border-radius: 50%; border: none;
+  background: rgba(239,68,68,0.15); color: #dc2626;
+  cursor: pointer; font-size: 0.8rem; display: flex; align-items: center;
+  justify-content: center; margin: auto; transition: background 0.15s;
+}
+.inv-edit-del-btn:hover { background: rgba(239,68,68,0.35); }
+
+/* Invoice file chips in invoice list */
+.inv-file-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 5px; padding: 2px 6px; font-size: 0.68rem; font-weight: 600;
+  color: #1e293b; cursor: pointer; max-width: 120px;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap; margin: 1px 0;
+}
+.inv-file-chip:hover { background: rgba(34,197,94,0.2); }
+
+/* File preview modal */
+#vatFilePreviewModal .modal-box {
+  max-width: 860px; width: 96vw; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px; max-height: 92vh;
+}
+#vatFilePreviewFrame { flex: 1; min-height: 480px; max-height: 72vh; border-radius: 10px; border: none; background: #fff; }
+#vatFilePreviewImg { max-height: 72vh; border-radius: 10px; object-fit: contain; display: block; margin: 0 auto; }
+
   </style>
   <!-- Firebase compat SDK (load đồng bộ, không bị lỗi timing) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -2904,7 +3033,7 @@ body.light-mode .vat-table thead th {
             <th style="position:relative;">TỔNG GIÁ<span class="vat-col-resizer" data-col="6"></span></th>
             <th style="position:relative;">TỔNG GIÁ TT<span class="vat-col-resizer" data-col="7"></span></th>
             <th style="position:relative;">LÝ DO MUA<span class="vat-col-resizer" data-col="8"></span></th>
-            <th style="position:relative;">LINK HĐ<span class="vat-col-resizer" data-col="9"></span></th>
+            <th style="position:relative;">HÓA ĐƠN<span class="vat-col-resizer" data-col="9"></span></th>
             <th style="position:relative;">GHI CHÚ<span class="vat-col-resizer" data-col="10"></span></th>
             <th style="position:relative;"></th>
           </tr>
@@ -5253,7 +5382,7 @@ function vatTonghtRefresh(inp) {
 }
 
 function vatNewRow() {
-  return { id: Date.now() + Math.random(), ngay: '', ten: '', dvt: '', sl: '', dongia: '', tongt: '', ly_do: '', link: '', note: '' };
+  return { id: Date.now() + Math.random(), ngay: '', ten: '', dvt: '', sl: '', dongia: '', tongt: '', ly_do: '', link: '', note: '', files: [] };
 }
 
 function vatRender() {
@@ -5282,10 +5411,6 @@ function vatRender() {
     sumTong += tong;
     sumTongHT += tongHT;
 
-    const linkHtml = r.link
-      ? `<a href="${escapeHTML(r.link)}" target="_blank" rel="noopener" title="${escapeHTML(r.link)}" onclick="event.stopPropagation()">&#x1F517; Xem</a>`
-      : '';
-
     return `<tr data-id="${r.id}">
       <td class="td-stt">${i + 1}</td>
       <td><input type="date" value="${escapeHTML(r.ngay||'')}" oninput="vatUpdate('${r.id}','ngay',this.value)"></td>
@@ -5301,10 +5426,13 @@ function vatRender() {
         </div>
       </td>
       <td><input type="text" value="${escapeHTML(r.ly_do||'')}" placeholder="Lý do mua..." oninput="vatUpdate('${r.id}','ly_do',this.value)"></td>
-      <td class="td-link">
-        <div style="display:flex; align-items:center; gap:4px;">
-          <input type="url" value="${escapeHTML(r.link||'')}" placeholder="https://..." oninput="vatUpdate('${r.id}','link',this.value)" style="flex:1; min-width:80px;">
-          ${r.link ? `<button class="vat-btn" style="padding:4px 8px; font-size:0.7rem; flex-shrink:0;" onclick="vatOpenEmbed('${escapeHTML(r.link)}')">&#x1F441;</button>` : ''}
+      <td class="td-file-drop" data-rowid="${r.id}">
+        <div class="vat-file-zone" id="fzone-${r.id}" ondragover="vatFileDragOver(event,this)" ondragleave="vatFileDragLeave(this)" ondrop="vatFileDrop(event,'${r.id}')">
+          <label class="vat-file-label" title="Kéo file vào hoặc bấm để chọn">
+            <span class="vat-file-icon">📎</span>
+            <input type="file" accept=".pdf,.png,.jpg,.jpeg,.webp" multiple style="display:none;" onchange="vatFileAdd(event,'${r.id}')">
+          </label>
+          <div class="vat-file-chips" id="fchips-${r.id}">${vatRenderFileChips(r.files||[],r.id)}</div>
         </div>
       </td>
       <td><input type="text" value="${escapeHTML(r.note||'')}" placeholder="Ghi chú..." oninput="vatUpdate('${r.id}','note',this.value)"></td>
@@ -5333,10 +5461,6 @@ function vatUpdate(id, field, value) {
   // Re-render only TỔNG GIÁ cells and summary (not full re-render to keep focus)
   if (field === 'sl' || field === 'dongia' || field === 'tongt') {
     vatRenderTotalsOnly(rows);
-  }
-  if (field === 'link') {
-    // need full re-render to show/hide embed button
-    vatRender();
   }
 }
 
@@ -5413,17 +5537,38 @@ function vatExportInvoice() {
   const timeStr = now.toLocaleTimeString('vi-VN', {hour:'2-digit', minute:'2-digit'});
   const id = 'HD-' + Date.now().toString(36).toUpperCase();
 
+  // Hiện modal đặt tên
+  document.getElementById('vatInvNameInput').value = id;
+  document.getElementById('vatInvNameModal').style.display = 'flex';
+  document.getElementById('vatInvNameModal').dataset.pendingId = id;
+  document.getElementById('vatInvNameModal').dataset.pendingDate = dateStr;
+  document.getElementById('vatInvNameModal').dataset.pendingTime = timeStr;
+  setTimeout(() => {
+    const inp = document.getElementById('vatInvNameInput');
+    if (inp) { inp.focus(); inp.select(); }
+  }, 80);
+}
+
+function vatConfirmExport() {
+  const modal = document.getElementById('vatInvNameModal');
+  const id = modal.dataset.pendingId;
+  const dateStr = modal.dataset.pendingDate;
+  const timeStr = modal.dataset.pendingTime;
+  const customName = document.getElementById('vatInvNameInput').value.trim() || id;
+  modal.style.display = 'none';
+
+  const rows = vatLoad();
   const invs = vatLoadInvoices();
   invs.unshift({
     id,
+    name: customName,
     date: dateStr,
     time: timeStr,
-    rows: JSON.parse(JSON.stringify(rows)) // snapshot
+    rows: JSON.parse(JSON.stringify(rows))
   });
   vatSaveInvoices(invs);
   vatRenderInvoices();
 
-  // scroll down to invoice list
   setTimeout(() => {
     const el = document.getElementById('vatInvoiceList');
     if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -5446,11 +5591,17 @@ function vatRenderInvoices() {
     const rows = inv.rows || [];
     const totalTong  = rows.reduce((s,r) => s + (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0), 0);
     const totalTongHT = rows.reduce((s,r) => s + (parseFloat(r.tongt)||0), 0);
-    const label = `${inv.id} — ${inv.date} ${inv.time}`;
+    const displayName = inv.name || inv.id;
+    const label = `${displayName} — ${inv.date} ${inv.time}`;
 
     const rowsHtml = rows.map((r, i) => {
       const tong = (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0);
       const tongHT = parseFloat(r.tongt)||0;
+      const filesHtml = (r.files||[]).map(f =>
+        `<div class="inv-file-chip" onclick="vatOpenFilePreview('${escapeHTML(f.data)}','${escapeHTML(f.type)}','${escapeHTML(f.name)}')">
+          <span>${f.type==='application/pdf'?'📄':'🖼️'}</span><span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(f.name)}</span>
+        </div>`
+      ).join('');
       return `<tr>
         <td style="text-align:center; color:#9ca3af; font-weight:700;">${i+1}</td>
         <td>${r.ngay||'—'}</td>
@@ -5462,13 +5613,14 @@ function vatRenderInvoices() {
         <td style="text-align:right; color:#dc2626; font-weight:800;">${tongHT > 0 ? vatFmt(tongHT) : '<span style="opacity:0.3">—</span>'}</td>
         <td style="text-align:left; font-size:0.78rem; color:#6b7280;">${r.ly_do||'—'}</td>
         <td style="text-align:left; font-size:0.75rem;">${r.note||'—'}</td>
+        <td style="min-width:100px;">${filesHtml || '<span style="opacity:0.3;font-size:0.72rem;">—</span>'}</td>
       </tr>`;
     }).join('');
 
     html += `<div class="vat-inv-group" id="invGroup-${inv.id}">
       <div class="vat-inv-group-header" onclick="vatToggleInvGroup('${inv.id}')">
         <div class="vat-inv-group-title">
-          &#x1F9FE; ${label}
+          &#x1F9FE; <span id="invLabel-${inv.id}">${label}</span>
           <span class="vat-inv-group-meta">${rows.length} dòng</span>
         </div>
         <div style="display:flex; align-items:center; gap:16px;">
@@ -5481,18 +5633,20 @@ function vatRenderInvoices() {
           <table class="vat-inv-table">
             <thead><tr>
               <th>STT</th><th>Ngày</th><th>Tên hàng hoá</th><th>ĐVT</th><th>SL</th>
-              <th>Đơn giá</th><th>Tổng giá</th><th>Tổng giá TT</th><th>Lý do mua</th><th>Ghi chú</th>
+              <th>Đơn giá</th><th>Tổng giá</th><th>Tổng giá TT</th><th>Lý do mua</th><th>Ghi chú</th><th>Hóa đơn</th>
             </tr></thead>
             <tbody>${rowsHtml}</tbody>
             <tfoot class="vat-inv-tfoot"><tr>
               <td colspan="6" style="text-align:right; opacity:0.6; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.05em;">TỔNG CỘNG</td>
               <td class="inv-total-tong">${vatFmt(totalTong)}</td>
               <td class="inv-total-tt">${vatFmt(totalTongHT)}</td>
-              <td colspan="2"></td>
+              <td colspan="3"></td>
             </tr></tfoot>
           </table>
         </div>
         <div class="vat-inv-group-actions">
+          <button class="vat-inv-action-btn rename" onclick="vatRenameInvoice('${inv.id}')">&#x270F;&#xFE0F; Đổi tên</button>
+          <button class="vat-inv-action-btn edit" onclick="vatEditInvoice('${inv.id}')">&#x1F4DD; Chỉnh sửa nội dung</button>
           <button class="vat-inv-del-btn" onclick="vatDeleteInvoice('${inv.id}')">&#x1F5D1; Xoá hóa đơn này</button>
         </div>
       </div>
@@ -5524,13 +5678,13 @@ function vatClearInvoices() {
 function vatExportCSV() {
   const rows = vatLoad();
   if (!rows.length) { alert('Không có dữ liệu để xuất!'); return; }
-  const headers = ['STT','NGÀY','TÊN HÀNG HOÁ','ĐVT','SỐ LƯỢNG','ĐƠN GIÁ','TỔNG GIÁ','TỔNG GIÁ TT','LÝ DO MUA','LINK HĐ','GHI CHÚ'];
+  const headers = ['STT','NGÀY','TÊN HÀNG HOÁ','ĐVT','SỐ LƯỢNG','ĐƠN GIÁ','TỔNG GIÁ','TỔNG GIÁ TT','LÝ DO MUA','GHI CHÚ'];
   const csvRows = [headers.join(',')];
   rows.forEach((r, i) => {
     const tong = (parseFloat(r.sl)||0) * (parseFloat(r.dongia)||0);
     const cols = [
       i+1, r.ngay||'', r.ten||'', r.dvt||'', r.sl||'', r.dongia||'',
-      tong, r.tongt||'', r.ly_do||'', r.link||'', r.note||''
+      tong, r.tongt||'', r.ly_do||'', r.note||''
     ].map(v => `"${String(v).replace(/"/g,'""')}"`);
     csvRows.push(cols.join(','));
   });
@@ -5563,6 +5717,358 @@ function vatCloseEmbed() {
   }
 })();
 
+
+// ===== FILE DROP / ADD / REMOVE IN VAT TABLE =====
+
+// vatFiles: temporary in-memory store for base64 files (keyed by row id)
+// The actual data is stored in localStorage via vatSave
+
+function vatRenderFileChips(files, rowId) {
+  if (!files || !files.length) return '';
+  return files.map((f, idx) =>
+    `<div class="vat-file-chip" onclick="vatOpenFilePreview('${encodeURIComponent(f.data)}','${f.type}','${escapeHTML(f.name)}')">
+      <span>${f.type==='application/pdf'?'📄':'🖼️'}</span>
+      <span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="${escapeHTML(f.name)}">${escapeHTML(f.name)}</span>
+      <button class="vat-file-chip-del" onclick="event.stopPropagation(); vatFileRemove('${rowId}',${idx})">✕</button>
+    </div>`
+  ).join('');
+}
+
+function vatFileDragOver(e, zone) {
+  e.preventDefault();
+  zone.classList.add('dragover');
+}
+function vatFileDragLeave(zone) {
+  zone.classList.remove('dragover');
+}
+function vatFileDrop(e, rowId) {
+  e.preventDefault();
+  const zone = document.getElementById('fzone-' + rowId);
+  if (zone) zone.classList.remove('dragover');
+  const files = Array.from(e.dataTransfer.files).filter(f =>
+    ['application/pdf','image/png','image/jpeg','image/webp','image/jpg'].includes(f.type)
+  );
+  if (!files.length) return;
+  vatFileReadAndStore(files, rowId);
+}
+function vatFileAdd(e, rowId) {
+  const files = Array.from(e.target.files);
+  if (!files.length) return;
+  vatFileReadAndStore(files, rowId);
+  e.target.value = '';
+}
+function vatFileReadAndStore(files, rowId) {
+  let pending = files.length;
+  const rows = vatLoad();
+  const row = rows.find(r => String(r.id) === String(rowId));
+  if (!row) return;
+  if (!row.files) row.files = [];
+
+  files.forEach(file => {
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      row.files.push({ name: file.name, type: file.type, data: ev.target.result });
+      pending--;
+      if (pending === 0) {
+        vatSave(rows);
+        // Update chips without full re-render
+        const chipsEl = document.getElementById('fchips-' + rowId);
+        if (chipsEl) chipsEl.innerHTML = vatRenderFileChips(row.files, rowId);
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+}
+function vatFileRemove(rowId, idx) {
+  const rows = vatLoad();
+  const row = rows.find(r => String(r.id) === String(rowId));
+  if (!row || !row.files) return;
+  row.files.splice(idx, 1);
+  vatSave(rows);
+  const chipsEl = document.getElementById('fchips-' + rowId);
+  if (chipsEl) chipsEl.innerHTML = vatRenderFileChips(row.files, rowId);
+}
+function vatOpenFilePreview(encodedData, type, name) {
+  const data = decodeURIComponent(encodedData);
+  document.getElementById('vatFilePreviewTitle').textContent = '📎 ' + name;
+  const frame = document.getElementById('vatFilePreviewFrame');
+  const img   = document.getElementById('vatFilePreviewImg');
+  if (type === 'application/pdf') {
+    frame.style.display = 'block'; img.style.display = 'none';
+    frame.src = data;
+  } else {
+    img.style.display = 'block'; frame.style.display = 'none';
+    img.src = data;
+  }
+  document.getElementById('vatFilePreviewModal').style.display = 'flex';
+}
+
+// ===== RENAME INVOICE =====
+let _vatRenamingId = null;
+function vatRenameInvoice(id) {
+  _vatRenamingId = id;
+  const invs = vatLoadInvoices();
+  const inv = invs.find(i => i.id === id);
+  if (!inv) return;
+  document.getElementById('vatInvRenameInput').value = inv.name || inv.id;
+  document.getElementById('vatInvRenameModal').style.display = 'flex';
+  setTimeout(() => {
+    const inp = document.getElementById('vatInvRenameInput');
+    if (inp) { inp.focus(); inp.select(); }
+  }, 60);
+}
+function vatConfirmRename() {
+  const newName = document.getElementById('vatInvRenameInput').value.trim();
+  if (!newName || !_vatRenamingId) return;
+  const invs = vatLoadInvoices();
+  const inv = invs.find(i => i.id === _vatRenamingId);
+  if (inv) {
+    inv.name = newName;
+    vatSaveInvoices(invs);
+    vatRenderInvoices();
+    // Re-open the group
+    setTimeout(() => {
+      const el = document.getElementById('invGroup-' + _vatRenamingId);
+      if (el) el.classList.add('open');
+    }, 30);
+  }
+  document.getElementById('vatInvRenameModal').style.display = 'none';
+  _vatRenamingId = null;
+}
+
+// ===== EDIT INVOICE CONTENT =====
+let _vatEditingId = null;
+let _vatEditRows  = [];
+
+function vatEditInvoice(id) {
+  _vatEditingId = id;
+  const invs = vatLoadInvoices();
+  const inv  = invs.find(i => i.id === id);
+  if (!inv) return;
+  _vatEditRows = JSON.parse(JSON.stringify(inv.rows || []));
+  vatRenderInvEditTable();
+  document.getElementById('vatInvEditModal').style.display = 'flex';
+}
+
+function vatRenderInvEditTable() {
+  const body = document.getElementById('vatInvEditBody');
+  if (!body) return;
+  const rowsHtml = _vatEditRows.map((r, i) => `
+    <tr data-idx="${i}">
+      <td><input value="${escapeHTML(r.ngay||'')}" oninput="_vatEditRows[${i}].ngay=this.value" placeholder="YYYY-MM-DD" style="width:110px;"></td>
+      <td><input value="${escapeHTML(r.ten||'')}" oninput="_vatEditRows[${i}].ten=this.value" placeholder="Tên hàng hoá" style="min-width:140px;"></td>
+      <td><input value="${escapeHTML(r.dvt||'')}" oninput="_vatEditRows[${i}].dvt=this.value" placeholder="ĐVT" style="width:70px;"></td>
+      <td><input type="number" value="${r.sl||''}" oninput="_vatEditRows[${i}].sl=this.value" placeholder="SL" style="width:60px;"></td>
+      <td><input type="number" value="${r.dongia||''}" oninput="_vatEditRows[${i}].dongia=this.value" placeholder="Đơn giá" style="width:90px;"></td>
+      <td><input type="number" value="${r.tongt||''}" oninput="_vatEditRows[${i}].tongt=this.value" placeholder="Tổng TT" style="width:90px;"></td>
+      <td><input value="${escapeHTML(r.ly_do||'')}" oninput="_vatEditRows[${i}].ly_do=this.value" placeholder="Lý do" style="min-width:100px;"></td>
+      <td><input value="${escapeHTML(r.note||'')}" oninput="_vatEditRows[${i}].note=this.value" placeholder="Ghi chú" style="min-width:90px;"></td>
+      <td><button class="inv-edit-del-btn" onclick="vatInvEditDelRow(${i})">✕</button></td>
+    </tr>`
+  ).join('');
+  body.innerHTML = `<table class="inv-edit-table">
+    <thead><tr>
+      <th>Ngày</th><th>Tên hàng hoá</th><th>ĐVT</th><th>SL</th>
+      <th>Đơn giá</th><th>Tổng TT</th><th>Lý do</th><th>Ghi chú</th><th></th>
+    </tr></thead>
+    <tbody>${rowsHtml}</tbody>
+  </table>`;
+}
+
+function vatInvEditAddRow() {
+  _vatEditRows.push({ id: Date.now()+Math.random(), ngay:'', ten:'', dvt:'', sl:'', dongia:'', tongt:'', ly_do:'', note:'', files:[] });
+  vatRenderInvEditTable();
+}
+function vatInvEditDelRow(idx) {
+  _vatEditRows.splice(idx, 1);
+  vatRenderInvEditTable();
+}
+function vatConfirmEditContent() {
+  if (!_vatEditingId) return;
+  const invs = vatLoadInvoices();
+  const inv  = invs.find(i => i.id === _vatEditingId);
+  if (inv) {
+    inv.rows = JSON.parse(JSON.stringify(_vatEditRows));
+    vatSaveInvoices(invs);
+    vatRenderInvoices();
+    setTimeout(() => {
+      const el = document.getElementById('invGroup-' + _vatEditingId);
+      if (el) el.classList.add('open');
+    }, 30);
+  }
+  document.getElementById('vatInvEditModal').style.display = 'none';
+  _vatEditingId = null;
+  _vatEditRows  = [];
+}
+
+// ===== ARROW KEY NAVIGATION IN VAT TABLE =====
+document.addEventListener('keydown', function(e) {
+  const active = document.activeElement;
+  if (!active || active.tagName !== 'INPUT') return;
+  const td = active.closest('td');
+  if (!td) return;
+  const tr = td.closest('tr');
+  if (!tr || !tr.closest('#vatBody')) return;
+
+  const allRows  = Array.from(document.querySelectorAll('#vatBody tr'));
+  const allCells = Array.from(tr.querySelectorAll('td'));
+  const rowIdx   = allRows.indexOf(tr);
+  const colIdx   = allCells.indexOf(td);
+
+  let targetInput = null;
+  if (e.key === 'ArrowRight') {
+    e.preventDefault();
+    const nextTd = allCells[colIdx + 1];
+    if (nextTd) targetInput = nextTd.querySelector('input:not([style*="display:none"])');
+    if (!targetInput && allRows[rowIdx + 1]) {
+      targetInput = allRows[rowIdx + 1].querySelectorAll('td')[1]?.querySelector('input');
+    }
+  } else if (e.key === 'ArrowLeft') {
+    e.preventDefault();
+    const prevTd = allCells[colIdx - 1];
+    if (prevTd) targetInput = prevTd.querySelector('input:not([style*="display:none"])');
+  } else if (e.key === 'ArrowDown') {
+    e.preventDefault();
+    if (allRows[rowIdx + 1]) {
+      const nextTr = allRows[rowIdx + 1];
+      const sameTd = nextTr.querySelectorAll('td')[colIdx];
+      if (sameTd) targetInput = sameTd.querySelector('input:not([style*="display:none"])');
+    }
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault();
+    if (allRows[rowIdx - 1]) {
+      const prevTr = allRows[rowIdx - 1];
+      const sameTd = prevTr.querySelectorAll('td')[colIdx];
+      if (sameTd) targetInput = sameTd.querySelector('input:not([style*="display:none"])');
+    }
+  } else if (e.key === 'Tab') {
+    // Tab also works naturally, but let's ensure Enter moves down
+    return;
+  } else if (e.key === 'Enter') {
+    e.preventDefault();
+    if (allRows[rowIdx + 1]) {
+      const nextTr = allRows[rowIdx + 1];
+      const sameTd = nextTr.querySelectorAll('td')[colIdx];
+      if (sameTd) targetInput = sameTd.querySelector('input:not([style*="display:none"])');
+    }
+  }
+  if (targetInput) {
+    targetInput.focus();
+    if (targetInput.type !== 'date') {
+      try { targetInput.select(); } catch(e) {}
+    }
+  }
+});
+
+// ===== MULTI-CELL SELECT + DELETE IN VAT TABLE =====
+let _vatSelStart = null;
+let _vatSelEnd   = null;
+let _vatIsSelecting = false;
+
+function vatGetCellPos(input) {
+  const td = input.closest('td');
+  const tr = input.closest('tr');
+  if (!td || !tr) return null;
+  const allRows = Array.from(document.querySelectorAll('#vatBody tr'));
+  const allCols = Array.from(tr.querySelectorAll('td'));
+  return { row: allRows.indexOf(tr), col: allCols.indexOf(td), tr, td };
+}
+
+document.addEventListener('mousedown', function(e) {
+  const inp = e.target.closest('input[type="text"], input[type="number"], input[type="date"]');
+  if (!inp) return;
+  const tr = inp.closest('#vatBody tr');
+  if (!tr) return;
+  if (e.shiftKey && _vatSelStart) {
+    e.preventDefault();
+    _vatSelEnd = vatGetCellPos(inp);
+    vatHighlightSelection();
+    return;
+  }
+  _vatSelStart = vatGetCellPos(inp);
+  _vatSelEnd = null;
+  _vatIsSelecting = true;
+  vatClearHighlight();
+});
+document.addEventListener('mouseover', function(e) {
+  if (!_vatIsSelecting) return;
+  const inp = e.target.closest('input[type="text"], input[type="number"], input[type="date"]');
+  if (!inp) return;
+  const tr = inp.closest('#vatBody tr');
+  if (!tr) return;
+  _vatSelEnd = vatGetCellPos(inp);
+  vatHighlightSelection();
+});
+document.addEventListener('mouseup', function() {
+  _vatIsSelecting = false;
+});
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Delete' || e.key === 'Backspace') {
+    const sel = vatGetSelectedCells();
+    if (sel.length > 1) {
+      e.preventDefault();
+      vatClearSelectedCells(sel);
+      return;
+    }
+  }
+  if (e.key === 'Escape') {
+    vatClearHighlight();
+    _vatSelStart = null;
+    _vatSelEnd = null;
+  }
+}, true);
+
+function vatGetSelectedCells() {
+  if (!_vatSelStart || !_vatSelEnd) return [];
+  const allRows = Array.from(document.querySelectorAll('#vatBody tr'));
+  const r1 = Math.min(_vatSelStart.row, _vatSelEnd.row);
+  const r2 = Math.max(_vatSelStart.row, _vatSelEnd.row);
+  const c1 = Math.min(_vatSelStart.col, _vatSelEnd.col);
+  const c2 = Math.max(_vatSelStart.col, _vatSelEnd.col);
+  const cells = [];
+  for (let r = r1; r <= r2; r++) {
+    const tds = allRows[r] ? Array.from(allRows[r].querySelectorAll('td')) : [];
+    for (let c = c1; c <= c2; c++) {
+      if (tds[c]) cells.push(tds[c]);
+    }
+  }
+  return cells;
+}
+function vatHighlightSelection() {
+  vatClearHighlight();
+  const cells = vatGetSelectedCells();
+  cells.forEach(td => td.style.background = 'color-mix(in srgb, var(--accent) 22%, transparent)');
+}
+function vatClearHighlight() {
+  document.querySelectorAll('#vatBody td[style*="background"]').forEach(td => td.style.background = '');
+}
+function vatClearSelectedCells(cells) {
+  cells.forEach(td => {
+    const inp = td.querySelector('input:not([style*="display:none"])');
+    if (inp) {
+      const rowId = inp.closest('tr')?.dataset?.id;
+      // Determine field by input type/placeholder
+      if (!rowId) return;
+      let field = null;
+      if (inp.type === 'date') field = 'ngay';
+      else if (inp.placeholder === 'Tên hàng hoá...') field = 'ten';
+      else if (inp.placeholder === 'Cái/kg...') field = 'dvt';
+      else if (inp.type === 'number' && inp.placeholder === '0' && inp.min === '0') {
+        const tdIdx = Array.from(inp.closest('tr').querySelectorAll('td')).indexOf(inp.closest('td'));
+        field = tdIdx === 4 ? 'sl' : 'dongia';
+      }
+      else if (inp.placeholder === 'Lý do mua...') field = 'ly_do';
+      else if (inp.placeholder === 'Ghi chú...') field = 'note';
+      if (field) {
+        inp.value = '';
+        vatUpdate(rowId, field, '');
+      }
+    }
+  });
+  vatClearHighlight();
+  _vatSelStart = null; _vatSelEnd = null;
+}
+
 // Re-render VAT khi switchPage
 const _origSwitchPage = window.switchPage;
 // Will be patched after switchPage is defined — see window.onload hook below
@@ -5573,5 +6079,60 @@ document.addEventListener('click', function(e) {
 
 </script>
   
+
+  <!-- ===== VAT INVOICE NAME MODAL (khi bấm Xuất HĐ) ===== -->
+  <div class="modal-overlay" id="vatInvNameModal" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title" style="font-size:1.3rem;">📄 Đặt tên hóa đơn</div>
+      <p style="opacity:0.6; font-size:0.82rem;">Nhập tên cho hóa đơn vừa xuất (hoặc giữ mã tự động)</p>
+      <input type="text" id="vatInvNameInput" placeholder="VD: HĐ tháng 5 / Mua văn phòng phẩm..." maxlength="80"
+        onkeydown="if(event.key==='Enter') vatConfirmExport();">
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-cancel" onclick="document.getElementById('vatInvNameModal').style.display='none'">Huỷ</button>
+        <button class="btn" style="width:auto; margin-top:0; background:var(--accent); color:#000;" onclick="vatConfirmExport()">✅ Xuất</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VAT INVOICE RENAME MODAL ===== -->
+  <div class="modal-overlay" id="vatInvRenameModal" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title" style="font-size:1.3rem;">✏️ Đổi tên hóa đơn</div>
+      <input type="text" id="vatInvRenameInput" placeholder="Tên mới..." maxlength="80"
+        onkeydown="if(event.key==='Enter') vatConfirmRename();">
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-cancel" onclick="document.getElementById('vatInvRenameModal').style.display='none'">Huỷ</button>
+        <button class="btn" style="width:auto; margin-top:0; background:var(--accent); color:#000;" onclick="vatConfirmRename()">💾 Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== VAT INVOICE EDIT CONTENT MODAL ===== -->
+  <div class="modal-overlay" id="vatInvEditModal" style="display:none;">
+    <div class="modal-box">
+      <div class="modal-title" style="font-size:1.3rem;">📝 Chỉnh sửa nội dung hóa đơn</div>
+      <div id="vatInvEditBody" style="overflow-x:auto;"></div>
+      <div class="modal-actions" style="margin-top:16px; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+        <button class="vat-btn primary" onclick="vatInvEditAddRow()" style="margin:0;">➕ Thêm dòng</button>
+        <div style="display:flex; gap:10px;">
+          <button class="btn-cancel" onclick="document.getElementById('vatInvEditModal').style.display='none'">Huỷ</button>
+          <button class="btn" style="width:auto; margin-top:0; background:var(--accent); color:#000;" onclick="vatConfirmEditContent()">💾 Lưu thay đổi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FILE PREVIEW MODAL ===== -->
+  <div class="modal-overlay" id="vatFilePreviewModal" style="display:none;">
+    <div class="modal-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+        <span id="vatFilePreviewTitle" style="font-weight:800; font-size:1rem;"></span>
+        <button class="vat-embed-close" onclick="document.getElementById('vatFilePreviewModal').style.display='none'">✕ Đóng</button>
+      </div>
+      <iframe id="vatFilePreviewFrame" src="" style="display:none;"></iframe>
+      <img id="vatFilePreviewImg" src="" alt="" style="display:none;">
+    </div>
+  </div>
+
 </body>
 </html>

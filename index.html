@@ -3130,6 +3130,31 @@ let notesData = safeJSONParse('ao_notes_v1', {
       fbWrite('shared/shortcuts', userShortcuts);
     }
 
+    // Ghi VAT lên Firebase
+    function fbSaveVat(rows) {
+      if (!_db) return;
+      try {
+        const data = rows !== undefined ? rows : vatLoad();
+        _db.ref('shared/vatRows').set(data);
+      } catch(e) { console.warn('FB VAT write lỗi:', e); }
+    }
+
+    // Ghi VAT Invoices (hóa đơn đã xuất) lên Firebase
+    function fbSaveVatInvoices(invs) {
+      if (!_db) return;
+      try {
+        const data = invs !== undefined ? invs : vatLoadInvoices();
+        _db.ref('shared/vatInvoices').set(data);
+      } catch(e) { console.warn('FB VAT invoices write lỗi:', e); }
+    }
+
+    let fbVatSaveTimer = null;
+    function fbSaveVatDebounced(delay = 600) {
+      if (!_db) return;
+      clearTimeout(fbVatSaveTimer);
+      fbVatSaveTimer = setTimeout(() => fbSaveVat(), delay);
+    }
+
     // Bắt đầu lắng nghe realtime
     document.addEventListener('DOMContentLoaded', () => {
       if (!_db) { console.warn('Firebase không khả dụng'); return; }
@@ -3160,6 +3185,40 @@ let notesData = safeJSONParse('ao_notes_v1', {
             console.log('🔄 Shortcuts synced từ Firebase');
           }
         });
+
+        // Sync VAT rows
+        let _vatSyncingFromFB = false;
+        _db.ref('shared/vatRows').on('value', snap => {
+          const data = snap.val();
+          if (data === null) return;
+          const newRows = Array.isArray(data) ? data : [];
+          const current = vatLoad();
+          if (JSON.stringify(newRows) !== JSON.stringify(current)) {
+            _vatSyncingFromFB = true;
+            vatSave(newRows);
+            _vatSyncingFromFB = false;
+            typeof vatRender === 'function' && vatRender();
+            console.log('🔄 VAT rows synced từ Firebase');
+          }
+        });
+        window._vatSyncingFromFB = () => _vatSyncingFromFB;
+
+        // Sync VAT invoices (hóa đơn đã xuất)
+        let _vatInvSyncingFromFB = false;
+        _db.ref('shared/vatInvoices').on('value', snap => {
+          const data = snap.val();
+          if (data === null) return;
+          const newInvs = Array.isArray(data) ? data : [];
+          const current = vatLoadInvoices();
+          if (JSON.stringify(newInvs) !== JSON.stringify(current)) {
+            _vatInvSyncingFromFB = true;
+            vatSaveInvoices(newInvs);
+            _vatInvSyncingFromFB = false;
+            typeof vatRenderInvoices === 'function' && vatRenderInvoices();
+            console.log('🔄 VAT invoices synced từ Firebase');
+          }
+        });
+        window._vatInvSyncingFromFB = () => _vatInvSyncingFromFB;
       }, 500);
     });
     let saveTimeout;
@@ -5151,6 +5210,9 @@ function vatLoad() {
 }
 function vatSave(rows) {
   localStorage.setItem(vatGetKey(), JSON.stringify(rows));
+  // Only push to Firebase when the change originated locally (not from FB sync)
+  if (typeof window._vatSyncingFromFB === 'function' && window._vatSyncingFromFB()) return;
+  if (typeof fbSaveVatDebounced === 'function') fbSaveVatDebounced();
 }
 function vatLoadInvoices() {
   try { return JSON.parse(localStorage.getItem(vatGetInvKey())) || []; }
@@ -5158,6 +5220,9 @@ function vatLoadInvoices() {
 }
 function vatSaveInvoices(invs) {
   localStorage.setItem(vatGetInvKey(), JSON.stringify(invs));
+  // Only push to Firebase when the change originated locally
+  if (typeof window._vatInvSyncingFromFB === 'function' && window._vatInvSyncingFromFB()) return;
+  if (typeof fbSaveVatInvoices === 'function') fbSaveVatInvoices();
 }
 
 function vatFmt(num) {

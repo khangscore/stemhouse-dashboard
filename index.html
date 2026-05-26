@@ -7829,25 +7829,13 @@ function toggleMiniPlayer() {
 }
 
 function musicTogglePlay() {
-  // Toggle play/pause on the YouTube iframe in the main page
   const iframe = document.getElementById('ytPlayerIframe');
-  const btn = document.getElementById('miniPlayPauseBtn');
   if (!iframe || iframe.src === 'about:blank') return;
-
-  // We use postMessage to control the YouTube iframe
-  const isPlaying = btn && btn.textContent === '⏸';
-  if (isPlaying) {
+  if (_ytIsPlaying) {
     iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-    if (btn) btn.textContent = '▶';
-    const bubbleBtn = document.getElementById('musicBubbleBtn');
-    if (bubbleBtn) bubbleBtn.classList.remove('playing');
-    clearInterval(_miniProgressTimer);
+    // State will sync via onStateChange message
   } else {
     iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-    if (btn) btn.textContent = '⏸';
-    const bubbleBtn = document.getElementById('musicBubbleBtn');
-    if (bubbleBtn) bubbleBtn.classList.add('playing');
-    startMiniProgress();
   }
 }
 
@@ -7916,26 +7904,108 @@ function musicClose() {
 
   ytCurrentId = null;
   window._ytCurrentTrack = null;
+  _ytIsPlaying = false;
+  _ytDuration = 0;
+  _ytCurrentTime = 0;
 
   // Reset active card
   document.querySelectorAll('.ytlike-video-card').forEach(c => c.classList.remove('active'));
 }
 
-function startMiniProgress() {
-  clearInterval(_miniProgressTimer);
-  let progress = 0;
-  const CIRCUMFERENCE = 175.9;
-  _miniProgressTimer = setInterval(() => {
-    progress = Math.min(progress + 0.12, 100);
-    const bar = document.getElementById('miniProgressBar');
-    if (bar) bar.style.width = progress + '%';
-    const ring = document.getElementById('progressRingFill');
-    if (ring) ring.style.strokeDashoffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
-    if (progress >= 100) {
+// ===== REAL YOUTUBE STATE SYNC =====
+// Nhận event từ YouTube iframe (play/pause/end/progress)
+let _ytDuration = 0;
+let _ytCurrentTime = 0;
+let _ytIsPlaying = false;
+
+window.addEventListener('message', function(e) {
+  if (!e.data) return;
+  let data;
+  try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(err) { return; }
+
+  // YouTube iframe API events
+  if (data.event === 'onStateChange') {
+    const state = data.info;
+    // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+    if (state === 1) {
+      // Playing
+      _ytIsPlaying = true;
+      _syncMiniPlayBtn(true);
+      _startProgressPoll();
+    } else if (state === 2) {
+      // Paused
+      _ytIsPlaying = false;
+      _syncMiniPlayBtn(false);
+      clearInterval(_miniProgressTimer);
+    } else if (state === 0) {
+      // Ended
+      _ytIsPlaying = false;
+      _syncMiniPlayBtn(false);
       clearInterval(_miniProgressTimer);
       setTimeout(musicNext, 600);
     }
-  }, 900);
+  }
+  if (data.event === 'onReady') {
+    // Request state polling
+    _startProgressPoll();
+  }
+  // getCurrentTime / getDuration responses
+  if (data.info && typeof data.info === 'object') {
+    if (data.info.currentTime !== undefined) _ytCurrentTime = data.info.currentTime;
+    if (data.info.duration !== undefined) _ytDuration = data.info.duration;
+  }
+  // Flat info (some YT builds)
+  if (typeof data.info === 'number' && data.event === 'infoDelivery') {
+    // handled above
+  }
+});
+
+function _syncMiniPlayBtn(isPlaying) {
+  const btn = document.getElementById('miniPlayPauseBtn');
+  if (btn) btn.textContent = isPlaying ? '⏸' : '▶';
+  const bubbleBtn = document.getElementById('musicBubbleBtn');
+  if (bubbleBtn) bubbleBtn.classList.toggle('playing', isPlaying);
+}
+
+function _updateProgressUI(pct) {
+  const bar = document.getElementById('miniProgressBar');
+  if (bar) bar.style.width = pct + '%';
+  const ring = document.getElementById('progressRingFill');
+  const CIRCUMFERENCE = 175.9;
+  if (ring) ring.style.strokeDashoffset = CIRCUMFERENCE - (pct / 100) * CIRCUMFERENCE;
+}
+
+function _startProgressPoll() {
+  clearInterval(_miniProgressTimer);
+  _miniProgressTimer = setInterval(() => {
+    const iframe = document.getElementById('ytPlayerIframe');
+    if (!iframe || !iframe.contentWindow) return;
+    // Gửi lệnh lấy currentTime + duration
+    try {
+      iframe.contentWindow.postMessage('{"event":"listening"}', '*');
+      iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'getCurrentTime',args:[]}), '*');
+      iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'getDuration',args:[]}), '*');
+    } catch(err) {}
+
+    // Tính progress từ giá trị đã nhận
+    if (_ytDuration > 0 && _ytCurrentTime > 0) {
+      const pct = Math.min((_ytCurrentTime / _ytDuration) * 100, 100);
+      _updateProgressUI(pct);
+    }
+  }, 500);
+}
+
+function startMiniProgress() {
+  // Gửi enablejsapi listening ngay khi bắt đầu phát
+  const iframe = document.getElementById('ytPlayerIframe');
+  if (iframe && iframe.contentWindow) {
+    try {
+      iframe.contentWindow.postMessage('{"event":"listening"}', '*');
+    } catch(err) {}
+  }
+  _ytIsPlaying = true;
+  _syncMiniPlayBtn(true);
+  _startProgressPoll();
 }
 
 function miniSeek(e) {
@@ -8044,6 +8114,9 @@ function ytRenderGrid(items, append) {
 
 function ytPlayVideo(id, title, channel, thumb) {
   ytCurrentId = id;
+  _ytDuration = 0;
+  _ytCurrentTime = 0;
+  _ytIsPlaying = false;
 
   // Update iframe in main page
   const iframe = document.getElementById('ytPlayerIframe');

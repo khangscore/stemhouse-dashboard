@@ -7852,15 +7852,31 @@ function musicTogglePlay() {
 }
 
 function musicNext() {
-  if (!ytQueue.length) return;
-  const next = (ytQueueIdx + 1) % ytQueue.length;
-  ytPlayFromQueue(next);
+  if (ytQueue.length) {
+    const next = (ytQueueIdx + 1) % ytQueue.length;
+    ytPlayFromQueue(next);
+    return;
+  }
+  // Không có queue → dùng danh sách video trên grid
+  const cards = Array.from(document.querySelectorAll('.ytlike-video-card'));
+  if (!cards.length) return;
+  const curIdx = cards.findIndex(c => c.classList.contains('active'));
+  const nextIdx = (curIdx + 1) % cards.length;
+  cards[nextIdx]?.click();
 }
 
 function musicPrev() {
-  if (!ytQueue.length) return;
-  const prev = (ytQueueIdx - 1 + ytQueue.length) % ytQueue.length;
-  ytPlayFromQueue(prev);
+  if (ytQueue.length) {
+    const prev = (ytQueueIdx - 1 + ytQueue.length) % ytQueue.length;
+    ytPlayFromQueue(prev);
+    return;
+  }
+  // Không có queue → dùng danh sách video trên grid
+  const cards = Array.from(document.querySelectorAll('.ytlike-video-card'));
+  if (!cards.length) return;
+  const curIdx = cards.findIndex(c => c.classList.contains('active'));
+  const prevIdx = (curIdx - 1 + cards.length) % cards.length;
+  cards[prevIdx]?.click();
 }
 
 function musicClose() {

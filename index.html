@@ -11,6 +11,8 @@
   <!-- jsPDF + html2canvas for PDF download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- YouTube IFrame API - REQUIRED FOR PLAYER -->
+  <script src="https://www.youtube.com/iframe_api"></script>
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='black'/%3E%3Ccircle cx='50' cy='50' r='43' fill='%23FFD133'/%3E%3Ccircle cx='32' cy='38' r='14' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='32' cy='38' r='5' fill='black'/%3E%3Ccircle cx='68' cy='30' r='10' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='68' cy='30' r='4' fill='black'/%3E%3Cpath d='M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M 40 55 Q 50 85 70 70 L 60 55 Z' fill='%23FF4747' stroke='black' stroke-width='1.5'/%3E%3Crect x='27' y='55' width='46' height='6' fill='white'/%3E%3C/svg%3E">
 
@@ -3173,6 +3175,18 @@ body.light-mode .vat-table thead th {
       position: relative;
       border: 1px solid rgba(255,255,255,0.08);
       box-shadow: 0 12px 40px rgba(0,0,0,0.6);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+    }
+    #ytPlayerIframeContainer {
+      width: 100% !important;
+      height: 100% !important;
+      display: none;
+    }
+    #ytPlayerIframeContainer[style*="display:block"],
+    #ytPlayerIframeContainer[style*="display: block"] {
+      display: flex !important;
     }
     .ytlike-player-placeholder {
       position: absolute;
@@ -7977,7 +7991,18 @@ let ytNextPageToken = '';
 let ytLastQuery = '';
 let ytPlaylists = JSON.parse(localStorage.getItem('ao_yt_playlists') || '[]');
 
-function ytEsc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+// YouTube API Ready callback
+window.onYouTubeIframeAPIReady = function() {
+  console.log('✅ YouTube IFrame API Ready!');
+  if (window._ytPendingVideoId) {
+    _createYTPlayer(window._ytPendingVideoId);
+    window._ytPendingVideoId = null;
+  }
+};
+
+function ytEsc(s) { 
+  return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#x27;'); 
+}
 
 function ytFmtViews(n) {
   if (!n) return '';
@@ -8053,17 +8078,28 @@ function ytRenderGrid(items, append) {
     const channel = item.snippet.channelTitle;
     const thumb = item.snippet.thumbnails?.medium?.url || item.snippet.thumbnails?.default?.url || '';
     const pub = item.snippet.publishedAt ? new Date(item.snippet.publishedAt).toLocaleDateString('vi-VN') : '';
-    return `<div class="ytlike-video-card${id===ytCurrentId?' active':''}" onclick="ytPlayVideo('${ytEsc(id)}','${ytEsc(title)}','${ytEsc(channel)}','${ytEsc(thumb)}')">
-      <img class="ytlike-card-thumb" src="${ytEsc(thumb)}" loading="lazy" alt="" onerror="this.src='https://i.ytimg.com/vi/${ytEsc(id)}/mqdefault.jpg'">
+    return `<div class="ytlike-video-card${id===ytCurrentId?' active':''}" data-video-id="${id}" data-title="${title}" data-channel="${channel}" data-thumb="${thumb}">
+      <img class="ytlike-card-thumb" src="${thumb}" loading="lazy" alt="" onerror="this.src='https://i.ytimg.com/vi/${id}/mqdefault.jpg'">
       <div class="ytlike-card-info">
-        <div class="ytlike-card-title">${ytEsc(title)}</div>
-        <div class="ytlike-card-channel">${ytEsc(channel)}</div>
+        <div class="ytlike-card-title">${title}</div>
+        <div class="ytlike-card-channel">${channel}</div>
         <div class="ytlike-card-views">${pub}</div>
       </div>
     </div>`;
   }).join('');
   if (append) grid.insertAdjacentHTML('beforeend', html);
   else grid.innerHTML = html;
+  
+  // Add event listeners
+  grid.querySelectorAll('.ytlike-video-card').forEach(card => {
+    card.addEventListener('click', function() {
+      const id = this.dataset.videoId;
+      const title = this.dataset.title;
+      const channel = this.dataset.channel;
+      const thumb = this.dataset.thumb;
+      ytPlayVideo(id, title, channel, thumb);
+    });
+  });
 }
 
 function ytPlayVideo(id, title, channel, thumb) {
@@ -8075,18 +8111,24 @@ function ytPlayVideo(id, title, channel, thumb) {
   // Show container, hide placeholder
   const container = document.getElementById('ytPlayerIframeContainer');
   const placeholder = document.getElementById('ytPlayerPlaceholder');
-  if (container) container.style.display = 'block';
+  if (container) {
+    container.style.display = 'block';
+    container.style.visibility = 'visible';
+    container.style.opacity = '1';
+  }
   if (placeholder) placeholder.style.display = 'none';
 
   // Use YT.Player API
   if (window._ytPlayer && typeof window._ytPlayer.loadVideoById === 'function') {
     // Player already exists — just load new video
-    try { window._ytPlayer.loadVideoById(id); } catch(e) {}
+    try { window._ytPlayer.loadVideoById(id); } catch(e) { console.warn('Load video error:', e); }
   } else if (window.YT && window.YT.Player) {
     // Create player fresh
+    console.log('Creating YT player for video:', id);
     _createYTPlayer(id);
   } else {
     // YT API not loaded yet — queue it
+    console.log('YT API not ready, queuing video:', id);
     window._ytPendingVideoId = id;
   }
 
@@ -8128,38 +8170,59 @@ function ytPlayVideo(id, title, channel, thumb) {
 
 // Create/recreate YT.Player in the container div
 function _createYTPlayer(videoId) {
+  console.log('_createYTPlayer called with:', videoId);
   const container = document.getElementById('ytPlayerIframeContainer');
-  if (!container) return;
+  if (!container) {
+    console.error('Container not found!');
+    return;
+  }
+  
+  // Ensure container has proper dimensions
+  container.style.width = '100%';
+  container.style.height = '100%';
+  container.style.display = 'flex';
+  container.style.alignItems = 'stretch';
+  container.style.justifyContent = 'center';
+  container.style.background = '#000';
+  container.style.visibility = 'visible';
+  
   // Clear previous player
-  container.innerHTML = '<div id="ytPlayerMountPoint"></div>';
-  window._ytPlayer = new YT.Player('ytPlayerMountPoint', {
-    width: '100%',
-    height: '100%',
-    videoId: videoId,
-    playerVars: {
-      autoplay: 1,
-      rel: 0,
-      modestbranding: 1,
-      fs: 1
-    },
-    events: {
-      onReady: function(e) {
-        e.target.playVideo();
-        _startProgressPoll();
+  container.innerHTML = '<div id="ytPlayerMountPoint" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;"></div>';
+  
+  try {
+    console.log('Creating new YT.Player instance...');
+    window._ytPlayer = new YT.Player('ytPlayerMountPoint', {
+      width: '100%',
+      height: '100%',
+      videoId: videoId,
+      playerVars: {
+        autoplay: 1,
+        rel: 0,
+        modestbranding: 1,
+        fs: 1,
+        controls: 1,
+        iv_load_policy: 3
       },
-      onStateChange: function(e) {
-        const state = e.data;
-        // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
-        if (state === YT.PlayerState.PLAYING) {
-          _ytIsPlaying = true;
-          _syncMiniPlayBtn(true);
+      events: {
+        onReady: function(e) {
+          console.log('✅ Player Ready!');
+          e.target.playVideo();
           _startProgressPoll();
-        } else if (state === YT.PlayerState.PAUSED) {
-          _ytIsPlaying = false;
-          _syncMiniPlayBtn(false);
-          clearInterval(_miniProgressTimer);
-        } else if (state === YT.PlayerState.ENDED) {
-          _ytIsPlaying = false;
+        },
+        onStateChange: function(e) {
+          const state = e.data;
+          console.log('Player state changed:', state);
+          // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+          if (state === YT.PlayerState.PLAYING) {
+            _ytIsPlaying = true;
+            _syncMiniPlayBtn(true);
+            _startProgressPoll();
+          } else if (state === YT.PlayerState.PAUSED) {
+            _ytIsPlaying = false;
+            _syncMiniPlayBtn(false);
+            clearInterval(_miniProgressTimer);
+          } else if (state === YT.PlayerState.ENDED) {
+            _ytIsPlaying = false;
           _syncMiniPlayBtn(false);
           clearInterval(_miniProgressTimer);
           if (musicLoop && ytCurrentId) {
@@ -8169,8 +8232,10 @@ function _createYTPlayer(videoId) {
           }
         }
       }
-    }
-  });
+    });
+  } catch(err) {
+    console.error('Error creating YT.Player:', err);
+  }
 }
 
 function ytAddToQueue() {
@@ -8298,6 +8363,16 @@ window.addEventListener('load', () => {
 
   // Init YouTube-like UI
   ytRenderPlaylists();
+  
+  // Load recommended videos immediately on page load
+  setTimeout(() => {
+    const grid = document.getElementById('ytVideoGrid');
+    if (grid && !grid.innerHTML.trim()) {
+      console.log('Loading recommended videos...');
+      ytLoadRecommended('');
+    }
+  }, 500);
+  
   // Load recommended when music tab is opened
   document.querySelectorAll('.nav-item').forEach(item => {
     if (item.dataset.page === 'music') {
@@ -8305,7 +8380,10 @@ window.addEventListener('load', () => {
       item.addEventListener('click', () => {
         setTimeout(() => {
           const grid = document.getElementById('ytVideoGrid');
-          if (grid && !grid.innerHTML.trim()) ytLoadRecommended('');
+          if (grid && !grid.innerHTML.trim()) {
+            console.log('Loading recommended videos for music tab...');
+            ytLoadRecommended('');
+          }
         }, 200);
       });
     }

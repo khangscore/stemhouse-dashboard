@@ -3045,8 +3045,12 @@ body.light-mode .vat-table thead th {
       flex-direction: column;
       background: rgba(10,6,25,0.7);
       border-radius: 20px;
-      overflow: hidden;
+      overflow: visible;
       border: 1px solid rgba(255,255,255,0.07);
+    }
+    /* Clip only the corners visually without blocking sticky */
+    .ytlike-shell > .ytlike-topbar:first-child {
+      border-radius: 20px 20px 0 0;
     }
 
     /* TOP BAR */
@@ -3055,10 +3059,15 @@ body.light-mode .vat-table thead th {
       align-items: center;
       gap: 14px;
       padding: 12px 20px;
-      background: rgba(0,0,0,0.45);
+      background: rgba(10,6,25,0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid rgba(255,255,255,0.07);
       flex-shrink: 0;
       flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
     .ytlike-logo { flex-shrink: 0; display: flex; align-items: center; }
     .ytlike-search-wrap {
@@ -3920,9 +3929,8 @@ body.light-mode .vat-table thead th {
               <div style="font-size:3rem;margin-bottom:12px;">▶</div>
               <div style="font-size:0.95rem;opacity:0.6;">Chọn một video để xem</div>
             </div>
-            <iframe id="ytPlayerIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
-              allowfullscreen src="about:blank"
-              style="display:none;width:100%;height:100%;border:none;"></iframe>
+            <!-- YT.Player sẽ mount vào div này -->
+            <div id="ytPlayerIframeContainer" style="display:none;width:100%;height:100%;"></div>
           </div>
           <!-- Now playing info -->
           <div class="ytlike-now-info" id="ytNowInfo" style="display:none;">
@@ -7829,14 +7837,14 @@ function toggleMiniPlayer() {
 }
 
 function musicTogglePlay() {
-  const iframe = document.getElementById('ytPlayerIframe');
-  if (!iframe || iframe.src === 'about:blank') return;
-  if (_ytIsPlaying) {
-    iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
-    // State will sync via onStateChange message
-  } else {
-    iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
-  }
+  if (!window._ytPlayer) return;
+  try {
+    if (_ytIsPlaying) {
+      window._ytPlayer.pauseVideo();
+    } else {
+      window._ytPlayer.playVideo();
+    }
+  } catch(e) {}
 }
 
 function musicNext() {
@@ -7869,12 +7877,10 @@ function musicPrev() {
 
 function musicClose() {
   // Stop the player
-  const iframe = document.getElementById('ytPlayerIframe');
+  try { if (window._ytPlayer) window._ytPlayer.stopVideo(); } catch(e) {}
+  const container = document.getElementById('ytPlayerIframeContainer');
   const placeholder = document.getElementById('ytPlayerPlaceholder');
-  if (iframe) {
-    iframe.src = 'about:blank';
-    iframe.style.display = 'none';
-  }
+  if (container) container.style.display = 'none';
   if (placeholder) placeholder.style.display = 'flex';
 
   // Hide now info
@@ -7912,53 +7918,10 @@ function musicClose() {
   document.querySelectorAll('.ytlike-video-card').forEach(c => c.classList.remove('active'));
 }
 
-// ===== REAL YOUTUBE STATE SYNC =====
-// Nhận event từ YouTube iframe (play/pause/end/progress)
+// ===== REAL YOUTUBE STATE SYNC via YT.Player API =====
 let _ytDuration = 0;
 let _ytCurrentTime = 0;
 let _ytIsPlaying = false;
-
-window.addEventListener('message', function(e) {
-  if (!e.data) return;
-  let data;
-  try { data = typeof e.data === 'string' ? JSON.parse(e.data) : e.data; } catch(err) { return; }
-
-  // YouTube iframe API events
-  if (data.event === 'onStateChange') {
-    const state = data.info;
-    // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
-    if (state === 1) {
-      // Playing
-      _ytIsPlaying = true;
-      _syncMiniPlayBtn(true);
-      _startProgressPoll();
-    } else if (state === 2) {
-      // Paused
-      _ytIsPlaying = false;
-      _syncMiniPlayBtn(false);
-      clearInterval(_miniProgressTimer);
-    } else if (state === 0) {
-      // Ended
-      _ytIsPlaying = false;
-      _syncMiniPlayBtn(false);
-      clearInterval(_miniProgressTimer);
-      setTimeout(musicNext, 600);
-    }
-  }
-  if (data.event === 'onReady') {
-    // Request state polling
-    _startProgressPoll();
-  }
-  // getCurrentTime / getDuration responses
-  if (data.info && typeof data.info === 'object') {
-    if (data.info.currentTime !== undefined) _ytCurrentTime = data.info.currentTime;
-    if (data.info.duration !== undefined) _ytDuration = data.info.duration;
-  }
-  // Flat info (some YT builds)
-  if (typeof data.info === 'number' && data.event === 'infoDelivery') {
-    // handled above
-  }
-});
 
 function _syncMiniPlayBtn(isPlaying) {
   const btn = document.getElementById('miniPlayPauseBtn');
@@ -7978,31 +7941,19 @@ function _updateProgressUI(pct) {
 function _startProgressPoll() {
   clearInterval(_miniProgressTimer);
   _miniProgressTimer = setInterval(() => {
-    const iframe = document.getElementById('ytPlayerIframe');
-    if (!iframe || !iframe.contentWindow) return;
-    // Gửi lệnh lấy currentTime + duration
+    if (!window._ytPlayer) return;
     try {
-      iframe.contentWindow.postMessage('{"event":"listening"}', '*');
-      iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'getCurrentTime',args:[]}), '*');
-      iframe.contentWindow.postMessage(JSON.stringify({event:'command',func:'getDuration',args:[]}), '*');
-    } catch(err) {}
-
-    // Tính progress từ giá trị đã nhận
-    if (_ytDuration > 0 && _ytCurrentTime > 0) {
-      const pct = Math.min((_ytCurrentTime / _ytDuration) * 100, 100);
-      _updateProgressUI(pct);
-    }
+      _ytCurrentTime = window._ytPlayer.getCurrentTime() || 0;
+      _ytDuration = window._ytPlayer.getDuration() || 0;
+      if (_ytDuration > 0) {
+        const pct = Math.min((_ytCurrentTime / _ytDuration) * 100, 100);
+        _updateProgressUI(pct);
+      }
+    } catch(e) {}
   }, 500);
 }
 
 function startMiniProgress() {
-  // Gửi enablejsapi listening ngay khi bắt đầu phát
-  const iframe = document.getElementById('ytPlayerIframe');
-  if (iframe && iframe.contentWindow) {
-    try {
-      iframe.contentWindow.postMessage('{"event":"listening"}', '*');
-    } catch(err) {}
-  }
   _ytIsPlaying = true;
   _syncMiniPlayBtn(true);
   _startProgressPoll();
@@ -8014,6 +7965,9 @@ function miniSeek(e) {
   const pct = (e.clientX - rect.left) / rect.width;
   const barFill = document.getElementById('miniProgressBar');
   if (barFill) barFill.style.width = (pct * 100) + '%';
+  if (window._ytPlayer && _ytDuration > 0) {
+    try { window._ytPlayer.seekTo(pct * _ytDuration, true); } catch(e2) {}
+  }
 }
 const YT_API_KEY = 'AIzaSyDYwY8DrgVrGDWCqxgs1XAerL-x4PgdOt0';
 let ytQueue = [];
@@ -8118,14 +8072,23 @@ function ytPlayVideo(id, title, channel, thumb) {
   _ytCurrentTime = 0;
   _ytIsPlaying = false;
 
-  // Update iframe in main page
-  const iframe = document.getElementById('ytPlayerIframe');
+  // Show container, hide placeholder
+  const container = document.getElementById('ytPlayerIframeContainer');
   const placeholder = document.getElementById('ytPlayerPlaceholder');
-  if (iframe) {
-    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1`;
-    iframe.style.display = 'block';
-  }
+  if (container) container.style.display = 'block';
   if (placeholder) placeholder.style.display = 'none';
+
+  // Use YT.Player API
+  if (window._ytPlayer && typeof window._ytPlayer.loadVideoById === 'function') {
+    // Player already exists — just load new video
+    try { window._ytPlayer.loadVideoById(id); } catch(e) {}
+  } else if (window.YT && window.YT.Player) {
+    // Create player fresh
+    _createYTPlayer(id);
+  } else {
+    // YT API not loaded yet — queue it
+    window._ytPendingVideoId = id;
+  }
 
   // Update now info panel
   const nowInfo = document.getElementById('ytNowInfo');
@@ -8161,9 +8124,53 @@ function ytPlayVideo(id, title, channel, thumb) {
   // Set play button to pause (since it's now playing)
   const playBtn = document.getElementById('miniPlayPauseBtn');
   if (playBtn) playBtn.textContent = '⏸';
+}
 
-  // Start progress ring
-  startMiniProgress();
+// Create/recreate YT.Player in the container div
+function _createYTPlayer(videoId) {
+  const container = document.getElementById('ytPlayerIframeContainer');
+  if (!container) return;
+  // Clear previous player
+  container.innerHTML = '<div id="ytPlayerMountPoint"></div>';
+  window._ytPlayer = new YT.Player('ytPlayerMountPoint', {
+    width: '100%',
+    height: '100%',
+    videoId: videoId,
+    playerVars: {
+      autoplay: 1,
+      rel: 0,
+      modestbranding: 1,
+      fs: 1
+    },
+    events: {
+      onReady: function(e) {
+        e.target.playVideo();
+        _startProgressPoll();
+      },
+      onStateChange: function(e) {
+        const state = e.data;
+        // -1=unstarted, 0=ended, 1=playing, 2=paused, 3=buffering, 5=cued
+        if (state === YT.PlayerState.PLAYING) {
+          _ytIsPlaying = true;
+          _syncMiniPlayBtn(true);
+          _startProgressPoll();
+        } else if (state === YT.PlayerState.PAUSED) {
+          _ytIsPlaying = false;
+          _syncMiniPlayBtn(false);
+          clearInterval(_miniProgressTimer);
+        } else if (state === YT.PlayerState.ENDED) {
+          _ytIsPlaying = false;
+          _syncMiniPlayBtn(false);
+          clearInterval(_miniProgressTimer);
+          if (musicLoop && ytCurrentId) {
+            setTimeout(() => { try { window._ytPlayer.seekTo(0); window._ytPlayer.playVideo(); } catch(err) {} }, 400);
+          } else {
+            setTimeout(musicNext, 600);
+          }
+        }
+      }
+    }
+  });
 }
 
 function ytAddToQueue() {

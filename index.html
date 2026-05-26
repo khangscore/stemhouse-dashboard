@@ -2951,12 +2951,7 @@ body.light-mode .vat-table thead th {
       padding: 12px 14px 14px;
     }
     .mini-channel-text {
-      font-size: 0.68rem;
-      opacity: 0.45;
-      margin-bottom: 10px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: none;
     }
     .mini-player-controls {
       display: flex;
@@ -3037,10 +3032,9 @@ body.light-mode .vat-table thead th {
 
     /* ===== MUSIC PAGE ===== */
     #page-music {
-      padding: 0;
+      padding: 18px 20px 40px;
       margin-left: 110px;
       margin-right: 20px;
-      padding-bottom: 40px;
     }
 
 
@@ -4002,7 +3996,7 @@ body.light-mode .vat-table thead th {
   </button>
 
   <!-- MINI PLAYER POPUP (bubble popup) -->
-  <div id="miniMusicPlayer">
+  <div id="miniMusicPlayer" onclick="event.stopPropagation()">
     <!-- Thumbnail header -->
     <div class="mini-thumb-wrap">
       <img class="mini-player-thumb" id="miniThumb" src="" alt=""
@@ -4018,14 +4012,14 @@ body.light-mode .vat-table thead th {
         <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicPrev()" title="Trước">⏮</button>
         <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" title="Phát/Dừng" onclick="event.stopPropagation();musicTogglePlay()">▶</button>
         <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicNext()" title="Tiếp">⏭</button>
-        <button class="mini-ctrl-btn" id="miniLoopBtn" onclick="musicToggleLoop()" title="Lặp bài">🔁</button>
+        <button class="mini-ctrl-btn" id="miniLoopBtn" onclick="event.stopPropagation();musicToggleLoop()" title="Lặp bài">🔁</button>
       </div>
       <div class="mini-player-progress" onclick="miniSeek(event)">
         <div class="mini-player-progress-bar" id="miniProgressBar"></div>
       </div>
       <div class="mini-footer-btns">
-        <button class="mini-footer-btn" onclick="switchPage('music');toggleMiniPlayer()">🎵 Mở trang nhạc</button>
-        <button class="mini-footer-btn" onclick="musicClose()">✕ Đóng</button>
+        <button class="mini-footer-btn" onclick="event.stopPropagation();switchPage('music');document.getElementById('miniMusicPlayer').classList.remove('visible')">⛶ Mở rộng</button>
+        <button class="mini-footer-btn" onclick="event.stopPropagation();musicClose()">✕ Đóng</button>
       </div>
     </div>
   </div>
@@ -8229,7 +8223,7 @@ window.addEventListener('load', () => {
     if (!popup.contains(e.target) && !bubbleBtn.contains(e.target)) {
       popup.classList.remove('visible');
     }
-  }, true);
+  }, false);
 });
 </script>
 

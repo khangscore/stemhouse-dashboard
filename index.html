@@ -6,6 +6,11 @@
   <title>AO Dashboard Q10 | Custom Edition</title>
 
   <link href="https://fonts.googleapis.com/css2?family=Noto+Color+Emoji&display=swap" rel="stylesheet">
+  <!-- SheetJS for proper XLSX export -->
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <!-- jsPDF + html2canvas for PDF download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='48' fill='black'/%3E%3Ccircle cx='50' cy='50' r='43' fill='%23FFD133'/%3E%3Ccircle cx='32' cy='38' r='14' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='32' cy='38' r='5' fill='black'/%3E%3Ccircle cx='68' cy='30' r='10' fill='white' stroke='black' stroke-width='2'/%3E%3Ccircle cx='68' cy='30' r='4' fill='black'/%3E%3Cpath d='M 25 55 L 75 55 Q 75 80 50 80 Q 25 80 25 55 Z' fill='white' stroke='black' stroke-width='2'/%3E%3Cpath d='M 40 55 Q 50 85 70 70 L 60 55 Z' fill='%23FF4747' stroke='black' stroke-width='1.5'/%3E%3Crect x='27' y='55' width='46' height='6' fill='white'/%3E%3C/svg%3E">
 
@@ -528,6 +533,11 @@ body.has-custom-bg::after {
   padding: 0 10px 14px;
   gap: 8px;
 }
+/* Thẻ CÀI ĐẶT luôn nằm cuối */
+.nav-item[data-page="settings"] {
+  order: 9999;
+  margin-top: auto;
+}
 
     .nav-item {
   min-height: 56px;
@@ -663,7 +673,7 @@ body.has-custom-bg::after {
     .container {
       margin-left: 110px;
       margin-right: 20px;
-      padding: 60px 20px 100px 20px;
+      padding: 18px 20px 100px 20px;
       position: relative;
     }
 
@@ -679,7 +689,7 @@ body.has-custom-bg::after {
 
     .grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      grid-template-columns: repeat(auto-fill, 220px);
       gap: 25px;
     }
 
@@ -694,7 +704,9 @@ body.has-custom-bg::after {
   text-align: center;
   backdrop-filter: blur(10px);
   position: relative;
-  min-height: 200px;
+  width: 220px;
+  height: 220px;
+  min-height: unset;
   justify-content: center;
   transition:
   transform 0.28s cubic-bezier(0.22, 1, 0.36, 1),
@@ -706,6 +718,21 @@ body.has-custom-bg::after {
     .shortcut-card.dragging {
       opacity: 0.5;
       transform: scale(0.98);
+    }
+
+    /* Fix: allow button shadow to show outside card boundary */
+    .shortcut-card {
+      overflow: visible;
+    }
+
+    /* Prevent h3 from wrapping and pushing btn out of view */
+    .shortcut-card h3 {
+      font-size: 1rem !important;
+      line-height: 1.3;
+      max-width: 100%;
+      word-break: break-word;
+      text-align: center;
+      margin: 0;
     }
 
     .add-card {
@@ -774,8 +801,35 @@ body.has-custom-bg::after {
       opacity: 1;
     }
 
+    /* ===== TAB TRANSITION ANIMATIONS ===== */
+    @keyframes pageSlideIn {
+      from { opacity: 0; transform: translateY(14px) scale(0.985); filter: blur(3px); }
+      to   { opacity: 1; transform: translateY(0)   scale(1);     filter: blur(0); }
+    }
+    @keyframes pageSlideOut {
+      from { opacity: 1; transform: translateY(0)   scale(1);     }
+      to   { opacity: 0; transform: translateY(-8px) scale(0.98); }
+    }
+
     .page-content { display: none; }
-    .page-content.active-page { display: block; }
+    .page-content.active-page {
+      display: block;
+      animation: pageSlideIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    .page-content.page-leaving {
+      display: block;
+      animation: pageSlideOut 0.18s ease forwards;
+      pointer-events: none;
+    }
+
+    /* Ẩn container khi đang ở trang VAT (page-vat nằm ngoài container) */
+    body.vat-active .container { display: none; }
+    /* Ẩn page-vat khi không active */
+    #page-vat { display: none; }
+    #page-vat.active-page {
+      display: block;
+      animation: pageSlideIn 0.32s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
 
     .btn-save-fixed {
       display: none; /* ẩn nút cũ ở góc phải */
@@ -1041,6 +1095,10 @@ body.has-custom-bg::after {
       max-width: 760px;
       margin: 0 auto 25px;
       padding: 24px;
+      /* Override fixed card dimensions so calendar grid is fully enclosed */
+      width: auto !important;
+      height: auto !important;
+      min-height: unset !important;
     }
 
     .calendar-head {
@@ -1100,7 +1158,9 @@ body.has-custom-bg::after {
 ========================= */
 .calendar-layout{
   max-width: 1120px;
-  width: 100%;
+  width: 100% !important;
+  height: auto !important;
+  min-height: unset !important;
   margin: 0 auto;
   display: block;
   text-align: left;
@@ -1968,10 +2028,15 @@ p {
 
 /* ===== VAT INVOICE PAGE ===== */
 #page-vat {
-  padding: 20px 20px 100px 20px;
+  position: relative;
   margin-left: 110px;
   margin-right: 20px;
-  position: relative;
+  padding: 18px 20px 100px 20px;
+}
+
+/* Khi sticky kích hoạt, giữ toolbar không đè lên sidebar */
+#page-vat .vat-sticky-top {
+  margin-left: 0;
 }
 
 /* Sticky top zone: toolbar + summary frozen together */
@@ -2032,7 +2097,7 @@ body.light-mode .vat-toolbar {
 .vat-btn.primary:hover {
   background: color-mix(in srgb, var(--accent) 80%, white);
 }
-/* 📋 Thêm nhiều dòng — accent outlined */
+/* ➕ Thêm nhiều dòng — accent outlined */
 .vat-btn.secondary {
   background: color-mix(in srgb, var(--accent) 22%, transparent);
   border-color: var(--accent);
@@ -2273,6 +2338,59 @@ body.light-mode .vat-table thead th {
 .vat-sort-panel-item.active {
   background: color-mix(in srgb, var(--accent) 30%, transparent);
   color: var(--accent);
+}
+.vat-sort-panel-item.selected {
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+  color: var(--accent);
+}
+.vat-sort-panel-item.selected:hover {
+  background: color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.vat-panel-check {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid rgba(255,255,255,0.25);
+  margin-right: 7px;
+  font-size: 0.65rem;
+  font-weight: 900;
+  color: transparent;
+  background: transparent;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.vat-sort-panel-item.selected .vat-panel-check {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+.vat-sort-panel-item.active .vat-panel-check {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+}
+.vat-sort-panel-actions {
+  padding: 6px 8px 2px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+  margin-top: 4px;
+  display: flex;
+  justify-content: flex-end;
+}
+.vat-sort-panel-clear {
+  font-size: 0.72rem;
+  color: #f87171;
+  cursor: pointer;
+  padding: 2px 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  font-weight: 700;
+}
+.vat-sort-panel-clear:hover {
+  background: rgba(248,113,113,0.15);
 }
 .vat-sort-panel-empty {
   padding: 8px 12px;
@@ -2549,6 +2667,10 @@ body.light-mode .vat-table thead th {
   border: 1.5px solid #f59e0b; background: rgba(245,158,11,0.08); color: #b45309;
 }
 .vat-inv-action-btn.edit:hover { background: #f59e0b; color: #fff; }
+.vat-inv-action-btn.export {
+  border: 1.5px solid rgba(34,197,94,0.45); background: rgba(34,197,94,0.08); color: #22c55e;
+}
+.vat-inv-action-btn.export:hover { background: #22c55e; color: #000; }
 
 /* ===== INVOICE EDIT MODAL ===== */
 #vatInvEditModal .modal-box {
@@ -2588,13 +2710,360 @@ body.light-mode .vat-table thead th {
 
 /* File preview modal */
 #vatFilePreviewModal .modal-box {
-  max-width: 860px; width: 96vw; padding: 16px;
-  display: flex; flex-direction: column; gap: 12px; max-height: 92vh;
+  max-width: 1100px; width: 96vw; padding: 16px;
+  display: flex; flex-direction: column; gap: 12px; max-height: 94vh;
 }
-#vatFilePreviewFrame { flex: 1; min-height: 480px; max-height: 72vh; border-radius: 10px; border: none; background: #fff; }
-#vatFilePreviewImg { max-height: 72vh; border-radius: 10px; object-fit: contain; display: block; margin: 0 auto; }
+#vatFilePreviewFrame { flex: 1; min-height: 600px; max-height: 80vh; border-radius: 10px; border: none; background: #fff; }
+#vatFilePreviewImg { max-height: 80vh; border-radius: 10px; object-fit: contain; display: block; margin: 0 auto; }
 
-  </style>
+  
+    /* ===== VAT INVOICE TOOLTIP PREVIEW ===== */
+    .vat-inv-group-header { position: relative; }
+    .vat-inv-tooltip {
+      position: absolute;
+      top: 50%;
+      right: calc(100% + 14px);
+      transform: translateY(-50%);
+      background: linear-gradient(160deg, #1a1f2e, #131720);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 14px 16px;
+      width: 230px;
+      z-index: 9999;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.18s ease, transform 0.18s ease;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.5);
+      transform: translateY(-50%) translateX(6px);
+    }
+    .vat-inv-group-header:hover .vat-inv-tooltip {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    /* ===== MONTHLY CHART BARS ===== */
+    .vat-month-bar-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      min-width: 52px;
+    }
+    .vat-month-bar-stack {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: center;
+      width: 36px;
+      gap: 2px;
+    }
+    .vat-month-bar {
+      width: 100%;
+      border-radius: 5px 5px 0 0;
+      transition: height 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.3s;
+      position: relative;
+    }
+    .vat-month-bar:hover { opacity: 0.82; }
+    .vat-month-bar-label {
+      font-size: 0.62rem;
+      opacity: 0.55;
+      text-align: center;
+      white-space: nowrap;
+      font-weight: 600;
+    }
+    .vat-month-bar-val {
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: var(--accent);
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    /* ===== MINI MUSIC PLAYER ===== */
+    #miniMusicPlayer {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 68px;
+      background: rgba(13, 5, 32, 0.92);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      z-index: 9998;
+      display: flex;
+      align-items: center;
+      padding: 0 20px 0 110px;
+      gap: 16px;
+      box-shadow: 0 -6px 30px rgba(0,0,0,0.4);
+      transform: translateY(100%);
+      transition: transform 0.38s cubic-bezier(0.22,1,0.36,1);
+    }
+    #miniMusicPlayer.visible { transform: translateY(0); }
+    body.has-mini-player { padding-bottom: 68px; }
+
+    .mini-player-thumb {
+      width: 44px;
+      height: 44px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: rgba(255,255,255,0.1);
+      flex-shrink: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .mini-player-info {
+      flex: 1;
+      min-width: 0;
+      overflow: hidden;
+    }
+    .mini-player-title {
+      font-weight: 700;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #fff;
+    }
+    .mini-player-channel {
+      font-size: 0.7rem;
+      opacity: 0.5;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .mini-player-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+    .mini-ctrl-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      transition: all 0.18s;
+      flex-shrink: 0;
+    }
+    .mini-ctrl-btn:hover {
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+      box-shadow: 0 0 12px rgba(34,197,94,0.4);
+    }
+    .mini-ctrl-btn.play-pause {
+      width: 42px;
+      height: 42px;
+      font-size: 1.1rem;
+      background: var(--accent);
+      color: #000;
+      border-color: var(--accent);
+    }
+    .mini-ctrl-btn.play-pause:hover {
+      transform: scale(1.08);
+      box-shadow: 0 0 18px rgba(34,197,94,0.5);
+    }
+    .mini-player-progress {
+      flex: 1;
+      max-width: 200px;
+      height: 3px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 3px;
+      cursor: pointer;
+      position: relative;
+      flex-shrink: 0;
+    }
+    .mini-player-progress-bar {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 3px;
+      width: 0%;
+      transition: width 0.5s linear;
+      pointer-events: none;
+    }
+    .mini-player-go {
+      font-size: 0.7rem;
+      opacity: 0.45;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      padding: 4px 8px;
+      border-radius: 8px;
+      transition: all 0.15s;
+    }
+    .mini-player-go:hover {
+      opacity: 1;
+      background: rgba(255,255,255,0.08);
+      color: var(--accent);
+    }
+
+    /* ===== MUSIC PAGE ===== */
+    #page-music { padding: 0; }
+    .music-page-wrap {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 24px 20px;
+    }
+    .music-search-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+    .music-search-input {
+      flex: 1;
+      padding: 13px 18px;
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.15);
+      background: rgba(255,255,255,0.07);
+      color: var(--text-main);
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    .music-search-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(34,197,94,0.15);
+    }
+    .music-search-btn {
+      padding: 13px 22px;
+      border-radius: 16px;
+      background: var(--accent);
+      color: #000;
+      border: none;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.18s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+    .music-search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(34,197,94,0.35);
+    }
+    .music-player-embed {
+      width: 100%;
+      aspect-ratio: 16/9;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+      background: #000;
+      margin-bottom: 20px;
+      box-shadow: 0 12px 40px rgba(0,0,0,0.5);
+    }
+    .music-player-embed iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+    .music-now-info {
+      padding: 16px 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      border: 1px solid rgba(255,255,255,0.08);
+      margin-bottom: 20px;
+    }
+    .music-now-title {
+      font-size: 1.1rem;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+    .music-now-channel {
+      font-size: 0.82rem;
+      opacity: 0.5;
+    }
+    .music-results-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 14px;
+    }
+    .music-result-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.22s cubic-bezier(0.22,1,0.36,1);
+    }
+    .music-result-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      border-color: var(--accent);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3), 0 0 18px rgba(34,197,94,0.2);
+    }
+    .music-result-card.active {
+      border-color: var(--accent);
+      background: rgba(34,197,94,0.08);
+    }
+    .music-result-thumb {
+      width: 100%;
+      aspect-ratio: 16/9;
+      object-fit: cover;
+      background: rgba(255,255,255,0.05);
+    }
+    .music-result-info {
+      padding: 10px 12px;
+    }
+    .music-result-title {
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .music-result-channel {
+      font-size: 0.68rem;
+      opacity: 0.45;
+      margin-top: 3px;
+    }
+    .music-empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      opacity: 0.4;
+    }
+    .music-empty-icon { font-size: 3.5rem; margin-bottom: 14px; }
+    .music-empty-text { font-size: 0.88rem; line-height: 1.6; }
+    .music-queue-section { margin-top: 24px; }
+    .music-queue-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      color: var(--accent);
+      opacity: 0.8;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .music-playlist-wrap {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+    .music-playlist-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 14px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.05);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s;
+    }
+    .music-playlist-input:focus { border-color: var(--accent); }
+
+</style>
   <!-- Firebase compat SDK (load đồng bộ, không bị lỗi timing) -->
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
@@ -2677,6 +3146,7 @@ body.light-mode .vat-table thead th {
 <div class="nav-item" data-page="excel" onclick="switchPage('excel')"><span class="nav-icon">📗</span><span class="nav-text">EXCEL Trắng</span></div>
 <div class="nav-item" data-page="settings" onclick="switchPage('settings')"><span class="nav-icon">⚙️</span><span class="nav-text">Cài đặt</span></div>
 <div class="nav-item" data-page="vat" onclick="switchPage('vat')"><span class="nav-icon">🧾</span><span class="nav-text">Báo cáo HĐ VAT</span></div>
+<div class="nav-item" data-page="music" onclick="switchPage('music')"><span class="nav-icon">🎵</span><span class="nav-text">Âm nhạc</span></div>
     </div>
     <div class="sidebar-logout">
       <button class="logout-btn" onclick="askLogout()">
@@ -2742,7 +3212,7 @@ body.light-mode .vat-table thead th {
   <div class="excel-wrap">
     <div class="excel-toolbar">
       <div class="excel-toolbar-left">
-        <button class="btn excel-btn" onclick="exportCSV()">📤 Export CSV</button>
+        <button class="btn excel-btn" onclick="exportCSV()">📤 Export Excel</button>
         <label class="btn excel-btn" style="margin-top:0;">
           📥 Import CSV
           <input type="file" id="csvImport" accept=".csv" style="display:none;">
@@ -2865,6 +3335,201 @@ body.light-mode .vat-table thead th {
     </div>
   </div>
 
+  </div><!-- end .container -->
+
+
+  <!-- ===== PAGE: BÁO CÁO HÓA ĐƠN VAT ===== -->
+  <div id="page-vat" class="page-content">
+    <div class="header-group">
+      <h1>Báo cáo HĐ VAT</h1>
+      <p style="opacity:0.75; margin-top:8px;">Quản lý toàn bộ hóa đơn mua hàng</p>
+    </div>
+
+    <!-- Sticky zone: toolbar + summary -->
+    <div class="vat-sticky-top">
+      <!-- Toolbar -->
+      <div class="vat-toolbar">
+      <button class="vat-btn primary" onclick="vatAddRow()">&#x2795; Thêm dòng</button>
+      <button class="vat-btn primary" onclick="vatAddMultiple()">&#x2795; Thêm nhiều dòng</button>
+      <button class="vat-btn danger" onclick="vatClearAll()">&#x1F5D1;&#xFE0F; Xoá tất cả</button>
+
+      <!-- Sort buttons -->
+      <div class="vat-sort-dropdown" id="sortDayDrop">
+        <button class="vat-btn" onclick="vatToggleSortPanel('day')" id="sortDayBtn">
+          &#x1F4C5; Ngày <span id="sortDayBadge"></span>
+        </button>
+        <div class="vat-sort-panel" id="sortDayPanel"></div>
+      </div>
+
+      <div class="vat-sort-dropdown" id="sortMonthDrop">
+        <button class="vat-btn" onclick="vatToggleSortPanel('month')" id="sortMonthBtn">
+          &#x1F4C6; Tháng <span id="sortMonthBadge"></span>
+        </button>
+        <div class="vat-sort-panel" id="sortMonthPanel"></div>
+      </div>
+
+      <div class="vat-sort-dropdown" id="sortYearDrop">
+        <button class="vat-btn" onclick="vatToggleSortPanel('year')" id="sortYearBtn">
+          &#x1F5D3;&#xFE0F; Năm <span id="sortYearBadge"></span>
+        </button>
+        <div class="vat-sort-panel" id="sortYearPanel"></div>
+      </div>
+
+      <button class="vat-btn primary" onclick="vatExportInvoice()" id="vatExportHDBtn" style="margin-left:auto;">&#x1F4C4; Xuất HĐ</button>
+      <button class="vat-btn primary" onclick="vatExportCSV()">&#x1F4E5; Xuất Excel</button>
+      <button class="vat-btn primary" onclick="vatExportPDF()">&#x1F4CC; Xuất PDF</button>
+    </div>
+
+    <!-- Summary chips (inside sticky zone) -->
+    <div class="vat-summary-bar">
+      <div class="vat-summary-chip">TỔNG DÒNG: <span id="vatCount">0</span></div>
+      <div class="vat-summary-chip">TỔNG GIÁ: <span id="vatSumTong">0 đ</span></div>
+      <div class="vat-summary-chip">TỔNG GIÁ TT: <span id="vatSumTongHT" class="vat-ht-val">0 đ</span></div>
+    </div>
+    </div><!-- end .vat-sticky-top -->
+
+    <!-- Table -->
+    <div class="vat-table-wrap">
+      <table class="vat-table" id="vatTable" style="table-layout:fixed;">
+        <colgroup id="vatColGroup">
+          <col style="width:50px">
+          <col style="width:120px">
+          <col style="width:200px">
+          <col style="width:85px">
+          <col style="width:80px">
+          <col style="width:115px">
+          <col style="width:125px">
+          <col style="width:125px">
+          <col style="width:185px">
+          <col style="width:150px">
+          <col style="width:165px">
+          <col style="width:44px">
+        </colgroup>
+        <thead>
+          <tr id="vatHeaderRow">
+            <th style="position:relative;">STT<span class="vat-col-resizer" data-col="0"></span></th>
+            <th style="position:relative;">NGÀY<span class="vat-col-resizer" data-col="1"></span></th>
+            <th style="position:relative;">TÊN HÀNG HOÁ<span class="vat-col-resizer" data-col="2"></span></th>
+            <th style="position:relative;">ĐVT<span class="vat-col-resizer" data-col="3"></span></th>
+            <th style="position:relative;">SL<span class="vat-col-resizer" data-col="4"></span></th>
+            <th style="position:relative;">ĐƠN GIÁ<span class="vat-col-resizer" data-col="5"></span></th>
+            <th style="position:relative;">TỔNG GIÁ<span class="vat-col-resizer" data-col="6"></span></th>
+            <th style="position:relative;">TỔNG GIÁ TT<span class="vat-col-resizer" data-col="7"></span></th>
+            <th style="position:relative;">LÝ DO MUA<span class="vat-col-resizer" data-col="8"></span></th>
+            <th style="position:relative;">HÓA ĐƠN<span class="vat-col-resizer" data-col="9"></span></th>
+            <th style="position:relative;">GHI CHÚ<span class="vat-col-resizer" data-col="10"></span></th>
+            <th style="position:relative;"></th>
+          </tr>
+        </thead>
+        <tbody id="vatBody"></tbody>
+        <tfoot id="vatFoot">
+          <tr>
+            <td colspan="6" class="vat-total-label">TỔNG CỘNG</td>
+            <td class="vat-grand-total" id="vatFootTong">0 đ</td>
+            <td class="vat-grand-total-ht" id="vatFootTongHT">0 đ</td>
+            <td colspan="4"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <p style="font-size:0.72rem; opacity:0.4; margin-top:12px; text-align:right;">
+      &#x1F4A1; Dữ liệu lưu tự động trong trình duyệt. TỔNG GIÁ tự tính từ SL x ĐƠN GIÁ. TỔNG GIÁ TT nhập tay.
+    </p>
+
+    <!-- ===== BIỂU ĐỒ TỔNG HỢP THEO THÁNG ===== -->
+    <div id="vatMonthChart" style="margin-top:24px; padding:20px 24px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1); border-radius:20px; backdrop-filter:blur(8px);">
+      <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+        <div style="font-weight:800; font-size:0.88rem; letter-spacing:0.06em; color:var(--accent); text-transform:uppercase; opacity:0.85;">📊 Tổng hợp theo Tháng</div>
+        <div style="display:flex; gap:10px; font-size:0.72rem; opacity:0.55;">
+          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:3px;background:var(--accent);display:inline-block;"></span>Tổng giá</span>
+          <span style="display:flex;align-items:center;gap:5px;"><span style="width:10px;height:10px;border-radius:3px;background:#dc2626;display:inline-block;"></span>Tổng TT</span>
+        </div>
+      </div>
+      <div id="vatMonthBars" style="display:flex; align-items:flex-end; gap:8px; height:120px; overflow-x:auto; padding-bottom:4px;"></div>
+    </div>
+
+    <!-- ===== PHẦN XUẤT HÓA ĐƠN ===== -->
+    <div id="vatInvoiceList" style="margin-top:32px;"></div>
+  </div>
+
+
+  <!-- ===== MUSIC PAGE ===== -->
+  <div id="page-music" class="page-content">
+    <div class="music-page-wrap">
+      <h2 style="font-size:1.8rem; font-weight:900; letter-spacing:-1px; margin-bottom:6px;">🎵 Âm nhạc</h2>
+      <p style="opacity:0.4; font-size:0.82rem; margin-bottom:22px;">Tìm và phát nhạc từ YouTube ngay trong dashboard</p>
+
+      <!-- Search -->
+      <div class="music-search-bar">
+        <input class="music-search-input" id="musicSearchInput" type="text"
+          placeholder="🔍 Tìm bài hát, nghệ sĩ, playlist..."
+          onkeydown="if(event.key==='Enter') musicSearch()">
+        <button class="music-search-btn" onclick="musicSearch()">🔍 Tìm</button>
+        <button class="music-search-btn" style="background:rgba(255,255,255,0.1); color:var(--text-main);" onclick="musicOpenURL()">🔗 Dán link</button>
+      </div>
+
+      <!-- Now playing embed -->
+      <div id="musicPlayerSection" style="display:none;">
+        <div class="music-now-info">
+          <div class="music-now-title" id="musicNowTitle">—</div>
+          <div class="music-now-channel" id="musicNowChannel">—</div>
+        </div>
+        <div class="music-player-embed" id="musicEmbedWrap">
+          <iframe id="musicIframe" allow="autoplay; encrypted-media" allowfullscreen
+            src="about:blank"></iframe>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div class="music-empty-state" id="musicEmptyState">
+        <div class="music-empty-icon">🎧</div>
+        <div class="music-empty-text">Tìm một bài hát để bắt đầu nghe nhạc<br>hoặc dán thẳng link YouTube vào đây</div>
+      </div>
+
+      <!-- Results -->
+      <div id="musicResultsSection" style="display:none;">
+        <div class="music-queue-title" style="margin-top:24px;">KẾT QUẢ TÌM KIẾM</div>
+        <div class="music-results-grid" id="musicResultsGrid"></div>
+      </div>
+
+      <!-- Queue / Playlist -->
+      <div class="music-queue-section" id="musicQueueSection" style="display:none;">
+        <div class="music-queue-title">DANH SÁCH PHÁT</div>
+        <div class="music-playlist-wrap">
+          <input class="music-playlist-input" id="musicQueueNameInput" placeholder="Tên playlist mới...">
+          <button class="music-search-btn" style="padding:10px 16px; font-size:0.82rem;" onclick="musicSavePlaylist()">💾 Lưu playlist</button>
+        </div>
+        <div id="musicQueueList"></div>
+      </div>
+
+      <!-- Saved playlists -->
+      <div id="musicPlaylistsSection" style="display:none; margin-top:24px;">
+        <div class="music-queue-title">PLAYLIST ĐÃ LƯU</div>
+        <div id="musicPlaylistsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MINI PLAYER (fixed bottom) -->
+  <div id="miniMusicPlayer">
+    <img class="mini-player-thumb" id="miniThumb" src="" alt="">
+    <div class="mini-player-info">
+      <div class="mini-player-title" id="miniTitle">Chưa phát bài nào</div>
+      <div class="mini-player-channel" id="miniChannel">—</div>
+    </div>
+    <div class="mini-player-controls">
+      <button class="mini-ctrl-btn" onclick="musicPrev()" title="Trước">⏮</button>
+      <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" onclick="musicTogglePlay()" title="Phát/Dừng">▶</button>
+      <button class="mini-ctrl-btn" onclick="musicNext()" title="Tiếp">⏭</button>
+    </div>
+    <div class="mini-player-progress" onclick="miniSeek(event)" title="Tiến độ bài">
+      <div class="mini-player-progress-bar" id="miniProgressBar"></div>
+    </div>
+    <button class="mini-player-go" onclick="switchPage('music')" title="Mở trang nhạc">🎵 Mở player</button>
+    <button class="mini-ctrl-btn" onclick="musicClose()" title="Đóng" style="font-size:0.8rem; width:28px; height:28px; opacity:0.5;">✕</button>
+  </div>
+
   <!-- MODALS -->
   <div class="modal-overlay" id="addShortcutModal">
     <div class="modal-box">
@@ -2957,106 +3622,6 @@ body.light-mode .vat-table thead th {
     </div>
   </div>
 
-  <!-- ===== PAGE: BÁO CÁO HÓA ĐƠN VAT ===== -->
-  <div id="page-vat" class="page-content">
-    <div class="header-group" style="margin-bottom:20px;">
-      <h1>&#x1F9FE; Báo cáo Hóa đơn VAT</h1>
-      <p style="opacity:0.75; margin-top:8px;">Quản lý toàn bộ hóa đơn mua hàng — nhập liệu trực tiếp, tính tổng tự động.</p>
-    </div>
-
-    <!-- Sticky zone: toolbar + summary -->
-    <div class="vat-sticky-top">
-      <!-- Toolbar -->
-      <div class="vat-toolbar">
-      <button class="vat-btn primary" onclick="vatAddRow()">&#x2795; Thêm dòng</button>
-      <button class="vat-btn primary" onclick="vatAddMultiple()">&#x1F4CB; Thêm nhiều dòng</button>
-      <button class="vat-btn danger" onclick="vatClearAll()">&#x1F5D1;&#xFE0F; Xoá tất cả</button>
-
-      <!-- Sort buttons -->
-      <div class="vat-sort-dropdown" id="sortDayDrop">
-        <button class="vat-btn" onclick="vatToggleSortPanel('day')" id="sortDayBtn">
-          &#x1F4C5; Ngày <span id="sortDayBadge"></span>
-        </button>
-        <div class="vat-sort-panel" id="sortDayPanel"></div>
-      </div>
-
-      <div class="vat-sort-dropdown" id="sortMonthDrop">
-        <button class="vat-btn" onclick="vatToggleSortPanel('month')" id="sortMonthBtn">
-          &#x1F4C6; Tháng <span id="sortMonthBadge"></span>
-        </button>
-        <div class="vat-sort-panel" id="sortMonthPanel"></div>
-      </div>
-
-      <div class="vat-sort-dropdown" id="sortYearDrop">
-        <button class="vat-btn" onclick="vatToggleSortPanel('year')" id="sortYearBtn">
-          &#x1F5D3;&#xFE0F; Năm <span id="sortYearBadge"></span>
-        </button>
-        <div class="vat-sort-panel" id="sortYearPanel"></div>
-      </div>
-
-      <button class="vat-btn" onclick="vatExportInvoice()" id="vatExportHDBtn" style="margin-left:auto;">&#x1F4C4; Xuất HĐ</button><button class="vat-btn" onclick="vatExportCSV()">&#x1F4E5; Xuất CSV</button>
-    </div>
-
-    <!-- Summary chips (inside sticky zone) -->
-    <div class="vat-summary-bar">
-      <div class="vat-summary-chip">Tổng dòng: <span id="vatCount">0</span></div>
-      <div class="vat-summary-chip">Tổng giá ghi: <span id="vatSumTong">0 đ</span></div>
-      <div class="vat-summary-chip">Tổng giá thực tế: <span id="vatSumTongHT" class="vat-ht-val">0 đ</span></div>
-    </div>
-    </div><!-- end .vat-sticky-top -->
-
-    <!-- Table -->
-    <div class="vat-table-wrap">
-      <table class="vat-table" id="vatTable" style="table-layout:fixed;">
-        <colgroup id="vatColGroup">
-          <col style="width:50px">
-          <col style="width:120px">
-          <col style="width:200px">
-          <col style="width:85px">
-          <col style="width:80px">
-          <col style="width:115px">
-          <col style="width:125px">
-          <col style="width:125px">
-          <col style="width:185px">
-          <col style="width:150px">
-          <col style="width:165px">
-          <col style="width:44px">
-        </colgroup>
-        <thead>
-          <tr id="vatHeaderRow">
-            <th style="position:relative;">STT<span class="vat-col-resizer" data-col="0"></span></th>
-            <th style="position:relative;">NGÀY<span class="vat-col-resizer" data-col="1"></span></th>
-            <th style="position:relative;">TÊN HÀNG HOÁ<span class="vat-col-resizer" data-col="2"></span></th>
-            <th style="position:relative;">ĐVT<span class="vat-col-resizer" data-col="3"></span></th>
-            <th style="position:relative;">SL<span class="vat-col-resizer" data-col="4"></span></th>
-            <th style="position:relative;">ĐƠN GIÁ<span class="vat-col-resizer" data-col="5"></span></th>
-            <th style="position:relative;">TỔNG GIÁ<span class="vat-col-resizer" data-col="6"></span></th>
-            <th style="position:relative;">TỔNG GIÁ TT<span class="vat-col-resizer" data-col="7"></span></th>
-            <th style="position:relative;">LÝ DO MUA<span class="vat-col-resizer" data-col="8"></span></th>
-            <th style="position:relative;">HÓA ĐƠN<span class="vat-col-resizer" data-col="9"></span></th>
-            <th style="position:relative;">GHI CHÚ<span class="vat-col-resizer" data-col="10"></span></th>
-            <th style="position:relative;"></th>
-          </tr>
-        </thead>
-        <tbody id="vatBody"></tbody>
-        <tfoot id="vatFoot">
-          <tr>
-            <td colspan="6" class="vat-total-label">TỔNG CỘNG</td>
-            <td class="vat-grand-total" id="vatFootTong">0 đ</td>
-            <td class="vat-grand-total-ht" id="vatFootTongHT">0 đ</td>
-            <td colspan="4"></td>
-          </tr>
-        </tfoot>
-      </table>
-    </div>
-
-    <p style="font-size:0.72rem; opacity:0.4; margin-top:12px; text-align:right;">
-      &#x1F4A1; Dữ liệu lưu tự động trong trình duyệt. TỔNG GIÁ tự tính từ SL x ĐƠN GIÁ. TỔNG GIÁ TT nhập tay. Kéo cạnh tiêu đề cột để thay đổi độ rộng.
-    </p>
-
-    <!-- ===== PHẦN XUẤT HÓA ĐƠN ===== -->
-    <div id="vatInvoiceList" style="margin-top:32px;"></div>
-  </div>
 
   <!-- Embed modal xem hóa đơn -->
   <div class="vat-embed-modal" id="vatEmbedModal">
@@ -3360,14 +3925,38 @@ function saveDataDebounced() {
   }, 250);
 }
     function switchPage(pageId) {
-      document.querySelectorAll('.page-content').forEach(page => page.classList.remove('active-page'));
+      const currentActive = document.querySelector('.page-content.active-page');
       const targetPage = document.getElementById(`page-${pageId}`);
-if (targetPage) targetPage.classList.add('active-page');
+      if (!targetPage || (currentActive && currentActive === targetPage)) return;
 
+      // Update nav items immediately
       document.querySelectorAll('.nav-item').forEach(item => {
         item.classList.remove('active');
         if (item.dataset.page === pageId) item.classList.add('active');
       });
+
+      // Handle vat-active body class
+      if (pageId === 'vat') {
+        document.body.classList.add('vat-active');
+      } else {
+        document.body.classList.remove('vat-active');
+      }
+
+      if (!currentActive || currentActive === targetPage) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page','page-leaving'));
+        targetPage.classList.add('active-page');
+        return;
+      }
+
+      // Animate out current, then animate in new
+      currentActive.classList.add('page-leaving');
+      currentActive.classList.remove('active-page');
+
+      setTimeout(() => {
+        currentActive.classList.remove('page-leaving');
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page','page-leaving'));
+        targetPage.classList.add('active-page');
+      }, 180);
     }
     function escapeHTML(str) {
   return String(str)
@@ -4206,7 +4795,7 @@ document.addEventListener('click', function(e) {
       const zone = document.getElementById('bgDropZone');
       if (!input || !zone) return;
 
-      zone.addEventListener('click', () => input.click());
+      // bgDropZone là <label> bao <input> → trình duyệt tự mở dialog, không cần gọi input.click()
       zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
       zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
       zone.addEventListener('drop', e => {
@@ -4217,6 +4806,7 @@ document.addEventListener('click', function(e) {
       input.addEventListener('change', e => {
         const file = e.target.files[0];
         if (file) handleBgFile(file);
+        input.value = '';
       });
     }
 
@@ -4278,7 +4868,7 @@ document.addEventListener('click', function(e) {
   setupBgUpload();
   loadSavedBg();
   vatRender();
-  setTimeout(() => { initVatColResize(); vatUpdateSortBadges(); vatRenderInvoices(); }, 20);
+  setTimeout(() => { initVatColResize(); vatUpdateSortBadges(); vatRenderInvoices(); vatRenderMonthChart(); }, 20);
 
   setInterval(updateClock, 1000);
   addHoverEvents();
@@ -4590,36 +5180,32 @@ let excelRows = 100; // 👉 số hàng
   }
 
   function exportCSV() {
-    let csv = [];
-    csv.push(['', ...excelCols].join(','));
-
+    if (typeof XLSX === 'undefined') {
+      alert('Thư viện xuất Excel chưa tải xong, vui lòng thử lại sau vài giây!');
+      return;
+    }
+    const wsData = [];
+    // Header row: trống + tên cột
+    wsData.push(['', ...excelCols]);
+    // Data rows
     for (let row = 1; row <= excelRows; row++) {
-      let line = [row];
-
+      const line = [row];
       excelCols.forEach(col => {
         const key = `${col}${row}`;
         let value = excelData[key] || '';
-
-if (
-  typeof value === 'object' &&
-  value !== null
-) {
-  value = value.value || '';
-}
-
-value =
-  `"${String(value).replace(/"/g, '""')}"`;
-        line.push(value);
+        if (typeof value === 'object' && value !== null) {
+          value = value.value || value.raw || '';
+        }
+        const s = String(value);
+        const n = parseFloat(s);
+        line.push(!isNaN(n) && s.trim() !== '' ? n : s);
       });
-
-      csv.push(line.join(','));
+      wsData.push(line);
     }
-
-    const blob = new Blob([csv.join('\n')], { type: 'text/csv;charset=utf-8;' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'ao-excel-sheet.csv';
-    a.click();
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, 'ao-excel-sheet.xlsx');
   }
 
   function importCSVFile(file) {
@@ -5169,8 +5755,8 @@ document.addEventListener("mousedown", function (e) {
 
   // (paste handler đã được khai báo ở trên - không lặp lại)
 
-// ===== VAT SORT =====
-let vatSortMode = null;   // null | {type:'day'|'month'|'year', value:string}
+// ===== VAT FILTER (MULTI-SELECT) =====
+let vatFilter = { day: new Set(), month: new Set(), year: new Set() };
 
 function vatGetDateParts(rows) {
   const days = new Set(), months = new Set(), years = new Set();
@@ -5204,53 +5790,85 @@ function vatToggleSortPanel(type) {
   });
 
   if (!isOpen) {
-    // Build panel content
-    const rows = vatLoad();
-    const parts = vatGetDateParts(rows);
-    const list = type === 'day' ? parts.days : type === 'month' ? parts.months : parts.years;
-
-    if (!list.length) {
-      panel.innerHTML = `<div class="vat-sort-panel-empty">Chưa có dữ liệu ngày</div>`;
-    } else {
-      const activeVal = (vatSortMode && vatSortMode.type === type) ? vatSortMode.value : null;
-      let html = `<div class="vat-sort-panel-item${!activeVal ? ' active' : ''}" onclick="vatApplySort('${type}', null)">— Tất cả —</div>`;
-      list.forEach(v => {
-        let label = v;
-        if (type === 'month') label = MONTH_VI[parseInt(v, 10)] || ('Tháng ' + parseInt(v,10));
-        if (type === 'day')   label = 'Ngày ' + parseInt(v, 10);
-        const isAct = (v === activeVal) ? ' active' : '';
-        html += `<div class="vat-sort-panel-item${isAct}" onclick="vatApplySort('${type}', '${v}')">${label}</div>`;
-      });
-      panel.innerHTML = html;
-    }
+    vatBuildFilterPanel(type, panel);
     panel.classList.add('open');
   }
 }
 
-function vatApplySort(type, value) {
-  // Close panels
-  ['sortDayPanel','sortMonthPanel','sortYearPanel'].forEach(id => {
-    const p = document.getElementById(id);
-    if (p) p.classList.remove('open');
+function vatBuildFilterPanel(type, panel) {
+  const rows = vatLoad();
+  const parts = vatGetDateParts(rows);
+  const list = type === 'day' ? parts.days : type === 'month' ? parts.months : parts.years;
+  const selected = vatFilter[type];
+
+  if (!list.length) {
+    panel.innerHTML = `<div class="vat-sort-panel-empty">Chưa có dữ liệu ngày</div>`;
+    return;
+  }
+
+  const allSelected = selected.size === 0;
+  let html = `<div class="vat-sort-panel-item${allSelected ? ' active' : ''}" onclick="vatFilterClear('${type}'); event.stopPropagation();">
+    <span class="vat-panel-check">${allSelected ? '✓' : ''}</span> — Tất cả —
+  </div>`;
+
+  list.forEach(v => {
+    let label = v;
+    if (type === 'month') label = MONTH_VI[parseInt(v, 10)] || ('Tháng ' + parseInt(v,10));
+    if (type === 'day')   label = 'Ngày ' + parseInt(v, 10);
+    const isSel = selected.has(v);
+    html += `<div class="vat-sort-panel-item${isSel ? ' selected' : ''}" onclick="vatFilterToggle('${type}','${v}'); event.stopPropagation();">
+      <span class="vat-panel-check">${isSel ? '✓' : ''}</span> ${label}
+    </div>`;
   });
 
-  if (!value) {
-    vatSortMode = null;
+  panel.innerHTML = html;
+}
+
+function vatFilterToggle(type, value) {
+  const set = vatFilter[type];
+  if (set.has(value)) {
+    set.delete(value);
   } else {
-    vatSortMode = { type, value };
+    set.add(value);
   }
+  // Rebuild the open panel in-place (keep it open)
+  const panelId = { day:'sortDayPanel', month:'sortMonthPanel', year:'sortYearPanel' }[type];
+  const panel = document.getElementById(panelId);
+  if (panel) vatBuildFilterPanel(type, panel);
   vatUpdateSortBadges();
   vatRender();
+}
+
+function vatFilterClear(type) {
+  vatFilter[type].clear();
+  const panelId = { day:'sortDayPanel', month:'sortMonthPanel', year:'sortYearPanel' }[type];
+  const panel = document.getElementById(panelId);
+  if (panel) vatBuildFilterPanel(type, panel);
+  vatUpdateSortBadges();
+  vatRender();
+}
+
+function vatApplySort(type, value) {
+  // Legacy shim — no longer used but kept for safety
+  if (!value) vatFilterClear(type);
+  else vatFilterToggle(type, value);
 }
 
 function vatUpdateSortBadges() {
   ['day','month','year'].forEach(type => {
     const badgeEl = document.getElementById({ day:'sortDayBadge', month:'sortMonthBadge', year:'sortYearBadge' }[type]);
     if (!badgeEl) return;
-    if (vatSortMode && vatSortMode.type === type) {
-      let label = vatSortMode.value;
-      if (type === 'month') label = 'T' + parseInt(vatSortMode.value, 10);
-      if (type === 'day')   label = parseInt(vatSortMode.value, 10) + '';
+    const set = vatFilter[type];
+    if (set.size > 0) {
+      let label;
+      if (set.size === 1) {
+        const v = [...set][0];
+        if (type === 'month') label = 'T' + parseInt(v, 10);
+        else if (type === 'day') label = parseInt(v, 10) + '';
+        else label = v;
+      } else {
+        label = set.size + ' ✓';
+      }
       badgeEl.innerHTML = `<span class="vat-sort-active-badge">${label}</span>`;
     } else {
       badgeEl.innerHTML = '';
@@ -5388,15 +6006,15 @@ function vatNewRow() {
 function vatRender() {
   let rows = vatLoad();
 
-  // Apply sort filter
-  if (vatSortMode && vatSortMode.value) {
-    const { type, value } = vatSortMode;
+  // Apply multi-select filter
+  const { day: _daySet, month: _monthSet, year: _yearSet } = vatFilter;
+  if (_daySet.size || _monthSet.size || _yearSet.size) {
     rows = rows.filter(r => {
       if (!r.ngay) return false;
       const [y, m, d] = r.ngay.split('-');
-      if (type === 'day')   return d === value;
-      if (type === 'month') return m === value;
-      if (type === 'year')  return y === value;
+      if (_daySet.size   && !_daySet.has(d))   return false;
+      if (_monthSet.size && !_monthSet.has(m)) return false;
+      if (_yearSet.size  && !_yearSet.has(y))  return false;
       return true;
     });
   }
@@ -5575,85 +6193,325 @@ function vatConfirmExport() {
   }, 80);
 }
 
-function vatRenderInvoices() {
-  const container = document.getElementById('vatInvoiceList');
-  if (!container) return;
+function vatExportFromInvoice(srcId) {
+  // Legacy alias — redirects to PDF export
+  vatExportInvoicePDF(srcId);
+}
+
+async function vatExportInvoicePDF(invId) {
   const invs = vatLoadInvoices();
+  const inv = invs.find(i => i.id === invId);
+  if (!inv || !inv.rows || !inv.rows.length) { alert('Hóa đơn không có dữ liệu để xuất PDF!'); return; }
 
-  if (!invs.length) { container.innerHTML = ''; return; }
+  if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+    alert('Thư viện PDF chưa tải xong, vui lòng thử lại sau vài giây!');
+    return;
+  }
 
-  let html = `<div class="vat-inv-list-header">
-    <div class="vat-inv-list-title">&#x1F4C2; Lịch sử Hóa đơn đã xuất (${invs.length})</div>
-    <button class="vat-btn danger" onclick="vatClearInvoices()" style="font-size:0.78rem; padding:6px 14px;">&#x1F5D1; Xoá tất cả HĐ</button>
-  </div>`;
+  // Hiện loading trên nút
+  const btn = document.querySelector(`.vat-inv-action-btn.export[onclick="vatExportInvoicePDF('${invId}')"]`);
+  const origText = btn ? btn.innerHTML : '';
+  if (btn) { btn.innerHTML = '⏳...'; btn.disabled = true; }
 
-  invs.forEach((inv, idx) => {
-    const rows = inv.rows || [];
-    const totalTong  = rows.reduce((s,r) => s + (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0), 0);
-    const totalTongHT = rows.reduce((s,r) => s + (parseFloat(r.tongt)||0), 0);
-    const displayName = inv.name || inv.id;
-    const label = `${displayName} — ${inv.date} ${inv.time}`;
+  try {
+    const rows = inv.rows;
+    const fmt = n => n > 0 ? n.toLocaleString('vi-VN') + ' đ' : '0 đ';
+    let sumTong = 0, sumTongHT = 0;
 
     const rowsHtml = rows.map((r, i) => {
-      const tong = (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0);
+      const tong  = (parseFloat(r.sl)||0) * (parseFloat(r.dongia)||0);
       const tongHT = parseFloat(r.tongt)||0;
-      const filesHtml = (r.files||[]).map(f =>
-        `<div class="inv-file-chip" onclick="vatOpenFilePreview('${escapeHTML(f.data)}','${escapeHTML(f.type)}','${escapeHTML(f.name)}')">
-          <span>${f.type==='application/pdf'?'📄':'🖼️'}</span><span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(f.name)}</span>
-        </div>`
-      ).join('');
-      return `<tr>
-        <td style="text-align:center; color:#9ca3af; font-weight:700;">${i+1}</td>
-        <td>${r.ngay||'—'}</td>
-        <td style="text-align:left;">${r.ten||'—'}</td>
-        <td style="text-align:center;">${r.dvt||'—'}</td>
-        <td style="text-align:center;">${r.sl||0}</td>
-        <td style="text-align:right;">${r.dongia ? vatFmt(parseFloat(r.dongia)) : '—'}</td>
-        <td style="text-align:right; color:var(--accent); font-weight:800;">${tong > 0 ? vatFmt(tong) : '<span style="opacity:0.3">0 đ</span>'}</td>
-        <td style="text-align:right; color:#dc2626; font-weight:800;">${tongHT > 0 ? vatFmt(tongHT) : '<span style="opacity:0.3">—</span>'}</td>
-        <td style="text-align:left; font-size:0.78rem; color:#6b7280;">${r.ly_do||'—'}</td>
-        <td style="text-align:left; font-size:0.75rem;">${r.note||'—'}</td>
-        <td style="min-width:100px;">${filesHtml || '<span style="opacity:0.3;font-size:0.72rem;">—</span>'}</td>
+      sumTong += tong; sumTongHT += tongHT;
+      const ngayFmt = r.ngay ? r.ngay.split('-').reverse().join('/') : '';
+      const bg = i % 2 === 1 ? 'background:#f9fafb;' : '';
+      return `<tr style="${bg}">
+        <td style="text-align:center;padding:6px;border:1px solid #d1d5db;">${i+1}</td>
+        <td style="text-align:center;padding:6px;border:1px solid #d1d5db;">${ngayFmt}</td>
+        <td style="padding:6px;border:1px solid #d1d5db;">${r.ten||''}</td>
+        <td style="text-align:center;padding:6px;border:1px solid #d1d5db;">${r.dvt||''}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;">${r.sl||0}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;">${r.dongia ? parseFloat(r.dongia).toLocaleString('vi-VN') : '0'}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;color:#16a34a;font-weight:700;">${fmt(tong)}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;color:#dc2626;font-weight:700;">${tongHT > 0 ? fmt(tongHT) : '0 đ'}</td>
+        <td style="padding:6px;border:1px solid #d1d5db;">${r.ly_do||''}</td>
+        <td style="padding:6px;border:1px solid #d1d5db;">${r.note||''}</td>
       </tr>`;
     }).join('');
 
-    html += `<div class="vat-inv-group" id="invGroup-${inv.id}">
-      <div class="vat-inv-group-header" onclick="vatToggleInvGroup('${inv.id}')">
-        <div class="vat-inv-group-title">
-          &#x1F9FE; <span id="invLabel-${inv.id}">${label}</span>
-          <span class="vat-inv-group-meta">${rows.length} dòng</span>
-        </div>
-        <div style="display:flex; align-items:center; gap:16px;">
-          <span style="color:#fff; font-size:0.82rem; font-weight:700;">TG: <span style="color:var(--accent);">${vatFmt(totalTong)}</span> &nbsp;|&nbsp; TT: <span style="color:#dc2626;">${vatFmt(totalTongHT)}</span></span>
-          <span class="vat-inv-group-chevron">&#x25BC;</span>
-        </div>
+    const invName = inv.name || inv.id;
+    const invDate = inv.date || new Date().toLocaleDateString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric'});
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = `
+      position:fixed; left:-9999px; top:0;
+      width:1122px; background:#fff; padding:20px;
+      font-family:"Segoe UI",Arial,sans-serif; font-size:9pt; color:#111;
+      box-sizing:border-box;
+    `;
+    wrapper.innerHTML = `
+      <h1 style="text-align:center;font-size:18pt;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#111827;">${invName}</h1>
+      <div style="text-align:center;font-size:8.5pt;color:#6b7280;margin-bottom:14px;">Ngày xuất: ${invDate} ${inv.time || ''}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:8.5pt;">
+        <thead>
+          <tr>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:4%">STT</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:8%">Ngày</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:18%">Tên hàng hoá</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:6%">ĐVT</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:5%">SL</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:9%">Đơn giá</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:10%">Tổng giá</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:10%">Tổng giá TT</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:15%">Lý do mua</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:15%">Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" style="padding:7px 6px;font-weight:800;background:#f3f4f6;border:1px solid #d1d5db;text-align:right;color:#374151;text-transform:uppercase;font-size:8pt;letter-spacing:0.05em;">TỔNG CỘNG</td>
+            <td style="padding:7px 6px;font-weight:800;background:#f3f4f6;border:1px solid #d1d5db;color:#16a34a;text-align:right;">${fmt(sumTong)}</td>
+            <td style="padding:7px 6px;font-weight:800;background:#f3f4f6;border:1px solid #d1d5db;color:#dc2626;text-align:right;">${fmt(sumTongHT)}</td>
+            <td colspan="2" style="padding:7px 6px;background:#f3f4f6;border:1px solid #d1d5db;"></td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
+    document.body.appendChild(wrapper);
+
+    const canvas = await html2canvas(wrapper, {
+      scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false
+    });
+    document.body.removeChild(wrapper);
+
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+    const pageW = pdf.internal.pageSize.getWidth();
+    const pageH = pdf.internal.pageSize.getHeight();
+    const margin = 10;
+    const imgW = pageW - margin * 2;
+    const imgH = (canvas.height * imgW) / canvas.width;
+
+    let yPos = margin, remainH = imgH;
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+    while (remainH > 0) {
+      const drawH = Math.min(remainH, pageH - margin * 2);
+      const srcY = (imgH - remainH) / imgH * canvas.height;
+      const srcH = drawH / imgH * canvas.height;
+
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = srcH;
+      const ctx = pageCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
+
+      pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, yPos, imgW, drawH);
+      remainH -= drawH;
+      if (remainH > 0) { pdf.addPage(); yPos = margin; }
+    }
+
+    const safeFileName = (invName).replace(/[^a-zA-Z0-9À-ỹ _\-]/g, '_').replace(/\s+/g, '_');
+    pdf.save(safeFileName + '_' + new Date().toISOString().slice(0,10) + '.pdf');
+
+  } catch(err) {
+    console.error('PDF export error:', err);
+    alert('Xuất PDF thất bại: ' + err.message);
+  } finally {
+    if (btn) { btn.innerHTML = origText; btn.disabled = false; }
+  }
+}
+
+function vatRenderInvoices() {
+  const container = document.getElementById('vatInvoiceList');
+  if (!container) return;
+  const allInvs = vatLoadInvoices();
+
+  if (!allInvs.length) { container.innerHTML = ''; return; }
+
+  // Search filter
+  const searchVal = (document.getElementById('vatInvSearch') ? document.getElementById('vatInvSearch').value : '').toLowerCase().trim();
+  const invs = searchVal ? allInvs.filter(inv => (inv.name||inv.id).toLowerCase().includes(searchVal)) : allInvs;
+
+  // Group by month/year
+  const groups = {};
+  invs.forEach(inv => {
+    // date like "25/05/2026"
+    const parts = (inv.date||'').split('/');
+    let groupKey = 'Không rõ ngày';
+    if (parts.length === 3) {
+      groupKey = `Tháng ${parseInt(parts[1],10)}/${parts[2]}`;
+    }
+    if (!groups[groupKey]) groups[groupKey] = [];
+    groups[groupKey].push(inv);
+  });
+
+  let html = `<div class="vat-inv-list-header" style="flex-wrap:wrap; gap:10px;">
+    <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+      <div class="vat-inv-list-title">&#x1F4C2; Lịch sử Hóa đơn đã xuất (${allInvs.length})</div>
+      <div style="position:relative;">
+        <input id="vatInvSearch" type="text" placeholder="🔍 Tìm theo tên HĐ..." value="${searchVal}"
+          oninput="vatRenderInvoices()"
+          style="padding:7px 14px 7px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.15);
+                 background:rgba(255,255,255,0.06); color:var(--text-main); font-size:0.82rem;
+                 outline:none; width:220px; transition:border-color 0.2s;"
+          onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='rgba(255,255,255,0.15)'">
       </div>
-      <div class="vat-inv-group-body">
-        <div style="overflow-x:auto;">
-          <table class="vat-inv-table">
-            <thead><tr>
-              <th>STT</th><th>Ngày</th><th>Tên hàng hoá</th><th>ĐVT</th><th>SL</th>
-              <th>Đơn giá</th><th>Tổng giá</th><th>Tổng giá TT</th><th>Lý do mua</th><th>Ghi chú</th><th>Hóa đơn</th>
-            </tr></thead>
-            <tbody>${rowsHtml}</tbody>
-            <tfoot class="vat-inv-tfoot"><tr>
-              <td colspan="6" style="text-align:right; opacity:0.6; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.05em;">TỔNG CỘNG</td>
-              <td class="inv-total-tong">${vatFmt(totalTong)}</td>
-              <td class="inv-total-tt">${vatFmt(totalTongHT)}</td>
-              <td colspan="3"></td>
-            </tr></tfoot>
-          </table>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <button id="vatBulkDelBtn" class="vat-btn danger" style="display:none; font-size:0.78rem; padding:6px 14px;" onclick="vatBulkDelete()">🗑️ Xoá đã chọn</button>
+      <button class="vat-btn danger" onclick="vatClearInvoices()" style="font-size:0.78rem; padding:6px 14px;">&#x1F5D1; Xoá tất cả HĐ</button>
+    </div>
+  </div>`;
+
+  if (!invs.length) {
+    html += `<div style="padding:24px; text-align:center; opacity:0.4; font-size:0.88rem;">Không tìm thấy hóa đơn nào phù hợp.</div>`;
+    container.innerHTML = html;
+    return;
+  }
+
+  // Sort group keys by date descending
+  const sortedGroupKeys = Object.keys(groups).sort((a, b) => {
+    const parseGK = k => {
+      const m = k.match(/Tháng (\d+)\/(\d+)/);
+      if (!m) return 0;
+      return parseInt(m[2])*100 + parseInt(m[1]);
+    };
+    return parseGK(b) - parseGK(a);
+  });
+
+  sortedGroupKeys.forEach(groupKey => {
+    const groupInvs = groups[groupKey];
+    const groupTotal = groupInvs.reduce((s,inv) => s + (inv.rows||[]).reduce((ss,r)=>(parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0)+ss,0), 0);
+    const groupTotalHT = groupInvs.reduce((s,inv) => s + (inv.rows||[]).reduce((ss,r)=>ss+(parseFloat(r.tongt)||0),0), 0);
+
+    html += `<div class="vat-month-group" style="margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;padding:8px 14px;background:rgba(255,255,255,0.05);border-radius:12px;border-left:3px solid var(--accent);">
+        <span style="font-weight:800;font-size:0.85rem;color:var(--accent);">📅 ${groupKey}</span>
+        <span style="font-size:0.75rem;opacity:0.55;">${groupInvs.length} hóa đơn</span>
+        <span style="margin-left:auto;font-size:0.75rem;font-weight:700;">TG: <span style="color:var(--accent);">${vatFmt(groupTotal)}</span> | TT: <span style="color:#dc2626;">${vatFmt(groupTotalHT)}</span></span>
+        <label style="display:flex;align-items:center;gap:5px;font-size:0.72rem;opacity:0.65;cursor:pointer;white-space:nowrap;">
+          <input type="checkbox" class="vat-group-checkall" data-group="${groupKey}" onchange="vatGroupCheckAll(this,'${groupKey}')" style="accent-color:var(--accent);width:13px;height:13px;">
+          Chọn tất cả
+        </label>
+      </div>`;
+
+    groupInvs.forEach((inv) => {
+      const rows = inv.rows || [];
+      const totalTong  = rows.reduce((s,r) => s + (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0), 0);
+      const totalTongHT = rows.reduce((s,r) => s + (parseFloat(r.tongt)||0), 0);
+      const displayName = inv.name || inv.id;
+      const label = `${displayName} — ${inv.date} ${inv.time}`;
+
+      const rowsHtml = rows.map((r, i) => {
+        const tong = (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0);
+        const tongHT = parseFloat(r.tongt)||0;
+        const filesHtml = (r.files||[]).map(f =>
+          `<div class="inv-file-chip" onclick="vatOpenFilePreview('${escapeHTML(f.data)}','${escapeHTML(f.type)}','${escapeHTML(f.name)}')">
+            <span>${f.type==='application/pdf'?'📄':'🖼️'}</span><span style="max-width:80px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHTML(f.name)}</span>
+          </div>`
+        ).join('');
+        return `<tr>
+          <td style="text-align:center; color:#9ca3af; font-weight:700;">${i+1}</td>
+          <td>${r.ngay||'—'}</td>
+          <td style="text-align:left;">${r.ten||'—'}</td>
+          <td style="text-align:center;">${r.dvt||'—'}</td>
+          <td style="text-align:center;">${r.sl||0}</td>
+          <td style="text-align:right;">${r.dongia ? vatFmt(parseFloat(r.dongia)) : '—'}</td>
+          <td style="text-align:right; color:var(--accent); font-weight:800;">${tong > 0 ? vatFmt(tong) : '<span style="opacity:0.3">0 đ</span>'}</td>
+          <td style="text-align:right; color:#dc2626; font-weight:800;">${tongHT > 0 ? vatFmt(tongHT) : '<span style="opacity:0.3">—</span>'}</td>
+          <td style="text-align:left; font-size:0.78rem; color:#6b7280;">${r.ly_do||'—'}</td>
+          <td style="text-align:left; font-size:0.75rem;">${r.note||'—'}</td>
+          <td style="min-width:100px;">${filesHtml || '<span style="opacity:0.3;font-size:0.72rem;">—</span>'}</td>
+        </tr>`;
+      }).join('');
+
+      // Tooltip preview data
+      const previewLines = rows.length;
+      const previewTong = vatFmt(totalTong);
+      const previewTT = vatFmt(totalTongHT);
+
+      html += `<div class="vat-inv-group" id="invGroup-${inv.id}" style="position:relative;">
+        <div class="vat-inv-group-header" style="position:relative;">
+          <div style="display:flex;align-items:center;gap:10px;flex:1;min-width:0;">
+            <input type="checkbox" class="vat-inv-checkbox" data-invid="${inv.id}" data-group="${groupKey}"
+              style="accent-color:var(--accent);width:15px;height:15px;flex-shrink:0;cursor:pointer;"
+              onchange="vatCheckboxChange()" onclick="event.stopPropagation()">
+            <div style="flex:1;min-width:0;" onclick="vatToggleInvGroup('${inv.id}')">
+              <div class="vat-inv-group-title">
+                &#x1F9FE; <span id="invLabel-${inv.id}">${label}</span>
+                <span class="vat-inv-group-meta">${rows.length} dòng</span>
+              </div>
+            </div>
+          </div>
+          <div style="display:flex; align-items:center; gap:16px;" onclick="vatToggleInvGroup('${inv.id}')">
+            <span style="color:#fff; font-size:0.82rem; font-weight:700;">TG: <span style="color:var(--accent);">${vatFmt(totalTong)}</span> &nbsp;|&nbsp; TT: <span style="color:#dc2626;">${vatFmt(totalTongHT)}</span></span>
+            <span class="vat-inv-group-chevron">&#x25BC;</span>
+          </div>
+          <!-- Tooltip -->
+          <div class="vat-inv-tooltip">
+            <div style="font-weight:800;font-size:0.82rem;margin-bottom:6px;color:var(--accent);">${escapeHTML(displayName)}</div>
+            <div style="font-size:0.75rem;opacity:0.7;margin-bottom:3px;">📅 ${inv.date} ${inv.time||''}</div>
+            <div style="font-size:0.75rem;margin-bottom:3px;">📋 <b>${previewLines}</b> dòng hàng</div>
+            <div style="font-size:0.75rem;margin-bottom:3px;">💰 Tổng giá: <span style="color:var(--accent);font-weight:700;">${previewTong}</span></div>
+            <div style="font-size:0.75rem;">🔴 Tổng TT: <span style="color:#dc2626;font-weight:700;">${previewTT}</span></div>
+          </div>
         </div>
-        <div class="vat-inv-group-actions">
-          <button class="vat-inv-action-btn rename" onclick="vatRenameInvoice('${inv.id}')">&#x270F;&#xFE0F; Đổi tên</button>
-          <button class="vat-inv-action-btn edit" onclick="vatEditInvoice('${inv.id}')">&#x1F4DD; Chỉnh sửa nội dung</button>
-          <button class="vat-inv-del-btn" onclick="vatDeleteInvoice('${inv.id}')">&#x1F5D1; Xoá hóa đơn này</button>
+        <div class="vat-inv-group-body">
+          <div style="overflow-x:auto;">
+            <table class="vat-inv-table">
+              <thead><tr>
+                <th>STT</th><th>Ngày</th><th>Tên hàng hoá</th><th>ĐVT</th><th>SL</th>
+                <th>Đơn giá</th><th>Tổng giá</th><th>Tổng giá TT</th><th>Lý do mua</th><th>Ghi chú</th><th>Hóa đơn</th>
+              </tr></thead>
+              <tbody>${rowsHtml}</tbody>
+              <tfoot class="vat-inv-tfoot"><tr>
+                <td colspan="6" style="text-align:right; opacity:0.6; font-size:0.76rem; text-transform:uppercase; letter-spacing:0.05em;">TỔNG CỘNG</td>
+                <td class="inv-total-tong">${vatFmt(totalTong)}</td>
+                <td class="inv-total-tt">${vatFmt(totalTongHT)}</td>
+                <td colspan="3"></td>
+              </tr></tfoot>
+            </table>
+          </div>
+          <div class="vat-inv-group-actions">
+            <button class="vat-inv-action-btn rename" onclick="vatRenameInvoice('${inv.id}')">&#x270F;&#xFE0F; Đổi tên</button>
+            <button class="vat-inv-action-btn edit" onclick="vatEditInvoice('${inv.id}')">&#x1F4DD; Chỉnh sửa nội dung</button>
+            <button class="vat-inv-action-btn export" onclick="vatExportInvoicePDF('${inv.id}')">&#x1F4CC; Xuất PDF</button>
+            <button class="vat-inv-del-btn" onclick="vatDeleteInvoice('${inv.id}')">&#x1F5D1; Xoá hóa đơn này</button>
+          </div>
         </div>
-      </div>
-    </div>`;
+      </div>`;
+    });
+
+    html += `</div>`; // end vat-month-group
   });
 
   container.innerHTML = html;
+}
+
+function vatCheckboxChange() {
+  const checked = document.querySelectorAll('.vat-inv-checkbox:checked');
+  const btn = document.getElementById('vatBulkDelBtn');
+  if (btn) {
+    btn.style.display = checked.length > 0 ? 'inline-flex' : 'none';
+    btn.textContent = `🗑️ Xoá ${checked.length} đã chọn`;
+  }
+}
+
+function vatGroupCheckAll(el, groupKey) {
+  const checkboxes = document.querySelectorAll(`.vat-inv-checkbox[data-group="${groupKey}"]`);
+  checkboxes.forEach(cb => cb.checked = el.checked);
+  vatCheckboxChange();
+}
+
+function vatBulkDelete() {
+  const checked = Array.from(document.querySelectorAll('.vat-inv-checkbox:checked'));
+  if (!checked.length) return;
+  if (!confirm(`Xoá ${checked.length} hóa đơn đã chọn?`)) return;
+  const ids = new Set(checked.map(cb => cb.dataset.invid));
+  let invs = vatLoadInvoices().filter(inv => !ids.has(inv.id));
+  vatSaveInvoices(invs);
+  vatRenderInvoices();
 }
 
 function vatToggleInvGroup(id) {
@@ -5678,22 +6536,174 @@ function vatClearInvoices() {
 function vatExportCSV() {
   const rows = vatLoad();
   if (!rows.length) { alert('Không có dữ liệu để xuất!'); return; }
+
   const headers = ['STT','NGÀY','TÊN HÀNG HOÁ','ĐVT','SỐ LƯỢNG','ĐƠN GIÁ','TỔNG GIÁ','TỔNG GIÁ TT','LÝ DO MUA','GHI CHÚ'];
-  const csvRows = [headers.join(',')];
-  rows.forEach((r, i) => {
+  const dataRows = rows.map((r, i) => {
     const tong = (parseFloat(r.sl)||0) * (parseFloat(r.dongia)||0);
-    const cols = [
-      i+1, r.ngay||'', r.ten||'', r.dvt||'', r.sl||'', r.dongia||'',
-      tong, r.tongt||'', r.ly_do||'', r.note||''
-    ].map(v => `"${String(v).replace(/"/g,'""')}"`);
-    csvRows.push(cols.join(','));
+    return [
+      i+1,
+      r.ngay||'',
+      r.ten||'',
+      r.dvt||'',
+      parseFloat(r.sl)||0,
+      parseFloat(r.dongia)||0,
+      tong,
+      parseFloat(r.tongt)||0,
+      r.ly_do||'',
+      r.note||''
+    ];
   });
-  const blob = new Blob(['\uFEFF' + csvRows.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url; a.download = 'hoa_don_vat_' + new Date().toISOString().slice(0,10) + '.csv';
-  document.body.appendChild(a); a.click();
-  document.body.removeChild(a); URL.revokeObjectURL(url);
+
+  if (typeof XLSX === 'undefined') {
+    alert('Thư viện xuất Excel chưa tải xong, vui lòng thử lại sau vài giây!');
+    return;
+  }
+
+  const wb = XLSX.utils.book_new();
+  const wsData = [headers, ...dataRows];
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Đặt độ rộng cột tự động
+  ws['!cols'] = [
+    {wch:6},{wch:14},{wch:28},{wch:10},
+    {wch:10},{wch:14},{wch:14},{wch:14},
+    {wch:24},{wch:20}
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'HoaDonVAT');
+  XLSX.writeFile(wb, 'hoa_don_vat_' + new Date().toISOString().slice(0,10) + '.xlsx');
+}
+
+async function vatExportPDF() {
+  const rows = vatLoad();
+  if (!rows.length) { alert('Không có dữ liệu để xuất PDF!'); return; }
+
+  // Kiểm tra thư viện
+  if (typeof window.jspdf === 'undefined' || typeof html2canvas === 'undefined') {
+    alert('Thư viện PDF chưa tải xong, vui lòng thử lại sau vài giây!');
+    return;
+  }
+
+  // Hiện loading
+  const pdfBtn = document.querySelector('.vat-btn[onclick="vatExportPDF()"]');
+  const origText = pdfBtn ? pdfBtn.innerHTML : '';
+  if (pdfBtn) { pdfBtn.innerHTML = '⏳ Đang tạo PDF...'; pdfBtn.disabled = true; }
+
+  try {
+    const fmt = n => n > 0 ? n.toLocaleString('vi-VN') + ' đ' : '0 đ';
+    let sumTong = 0, sumTongHT = 0;
+
+    const rowsHtml = rows.map((r, i) => {
+      const tong = (parseFloat(r.sl)||0) * (parseFloat(r.dongia)||0);
+      const tongHT = parseFloat(r.tongt)||0;
+      sumTong += tong; sumTongHT += tongHT;
+      const ngayFmt = r.ngay ? r.ngay.split('-').reverse().join('/') : '';
+      const bg = i % 2 === 1 ? 'background:#f9fafb;' : '';
+      return `<tr style="${bg}">
+        <td style="text-align:center;padding:6px;border:1px solid #d1d5db;">${i+1}</td>
+        <td style="text-align:center;padding:6px;border:1px solid #d1d5db;">${ngayFmt}</td>
+        <td style="padding:6px;border:1px solid #d1d5db;">${r.ten||''}</td>
+        <td style="text-align:center;padding:6px;border:1px solid #d1d5db;">${r.dvt||''}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;">${r.sl||0}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;">${r.dongia ? parseFloat(r.dongia).toLocaleString('vi-VN') : '0'}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;color:#16a34a;font-weight:700;">${fmt(tong)}</td>
+        <td style="text-align:right;padding:6px;border:1px solid #d1d5db;color:#dc2626;font-weight:700;">${tongHT > 0 ? fmt(tongHT) : '0 đ'}</td>
+        <td style="padding:6px;border:1px solid #d1d5db;">${r.ly_do||''}</td>
+        <td style="padding:6px;border:1px solid #d1d5db;">${r.note||''}</td>
+      </tr>`;
+    }).join('');
+
+    const dateStr = new Date().toLocaleDateString('vi-VN', {day:'2-digit',month:'2-digit',year:'numeric'});
+
+    // Tạo DOM tạm ẩn để render
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = `
+      position:fixed; left:-9999px; top:0;
+      width:1122px; background:#fff; padding:20px;
+      font-family:"Segoe UI",Arial,sans-serif; font-size:9pt; color:#111;
+      box-sizing:border-box;
+    `;
+    wrapper.innerHTML = `
+      <h1 style="text-align:center;font-size:18pt;font-weight:900;letter-spacing:1px;margin-bottom:4px;color:#111827;">BÁO CÁO HÓA ĐƠN VAT</h1>
+      <div style="text-align:center;font-size:8.5pt;color:#6b7280;margin-bottom:14px;">Ngày xuất: ${dateStr}</div>
+      <table style="width:100%;border-collapse:collapse;font-size:8.5pt;">
+        <thead>
+          <tr>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:4%">STT</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:8%">Ngày</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:18%">Tên hàng hoá</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:6%">ĐVT</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:5%">SL</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:9%">Đơn giá</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:10%">Tổng giá</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;white-space:nowrap;width:10%">Tổng giá TT</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:15%">Lý do mua</th>
+            <th style="background:#111827;color:#fff;font-weight:700;padding:7px 6px;text-align:center;border:1px solid #374151;width:15%">Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody>${rowsHtml}</tbody>
+        <tfoot>
+          <tr>
+            <td colspan="6" style="padding:7px 6px;font-weight:800;background:#f3f4f6;border:1px solid #d1d5db;text-align:right;color:#374151;text-transform:uppercase;font-size:8pt;letter-spacing:0.05em;">TỔNG CỘNG</td>
+            <td style="padding:7px 6px;font-weight:800;background:#f3f4f6;border:1px solid #d1d5db;color:#16a34a;text-align:right;">${fmt(sumTong)}</td>
+            <td style="padding:7px 6px;font-weight:800;background:#f3f4f6;border:1px solid #d1d5db;color:#dc2626;text-align:right;">${fmt(sumTongHT)}</td>
+            <td colspan="2" style="padding:7px 6px;background:#f3f4f6;border:1px solid #d1d5db;"></td>
+          </tr>
+        </tfoot>
+      </table>
+    `;
+    document.body.appendChild(wrapper);
+
+    // Render thành canvas
+    const canvas = await html2canvas(wrapper, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#ffffff',
+      logging: false
+    });
+    document.body.removeChild(wrapper);
+
+    // Tạo PDF A4 landscape
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
+
+    const pageW = pdf.internal.pageSize.getWidth();   // 297mm
+    const pageH = pdf.internal.pageSize.getHeight();  // 210mm
+    const margin = 10;
+    const imgW = pageW - margin * 2;
+    const imgH = (canvas.height * imgW) / canvas.width;
+
+    let yPos = margin;
+    let remainH = imgH;
+    const imgData = canvas.toDataURL('image/jpeg', 0.92);
+
+    // Nếu nội dung dài hơn 1 trang → tự động sang trang mới
+    while (remainH > 0) {
+      const drawH = Math.min(remainH, pageH - margin * 2);
+      const srcY = (imgH - remainH) / imgH * canvas.height;
+      const srcH = drawH / imgH * canvas.height;
+
+      // Cắt canvas cho từng trang
+      const pageCanvas = document.createElement('canvas');
+      pageCanvas.width = canvas.width;
+      pageCanvas.height = srcH;
+      const ctx = pageCanvas.getContext('2d');
+      ctx.drawImage(canvas, 0, srcY, canvas.width, srcH, 0, 0, canvas.width, srcH);
+
+      pdf.addImage(pageCanvas.toDataURL('image/jpeg', 0.92), 'JPEG', margin, yPos, imgW, drawH);
+      remainH -= drawH;
+      if (remainH > 0) { pdf.addPage(); yPos = margin; }
+    }
+
+    const fileName = 'bao_cao_hoa_don_vat_' + new Date().toISOString().slice(0,10) + '.pdf';
+    pdf.save(fileName);
+
+  } catch(err) {
+    console.error('PDF export error:', err);
+    alert('Xuất PDF thất bại: ' + err.message);
+  } finally {
+    if (pdfBtn) { pdfBtn.innerHTML = origText; pdfBtn.disabled = false; }
+  }
 }
 
 function vatOpenEmbed(url) {
@@ -6037,10 +7047,39 @@ function vatGetSelectedCells() {
 function vatHighlightSelection() {
   vatClearHighlight();
   const cells = vatGetSelectedCells();
-  cells.forEach(td => td.style.background = 'color-mix(in srgb, var(--accent) 22%, transparent)');
+  if (!cells.length) return;
+
+  // tính bounding box của selection để vẽ viền ngoài
+  const allRows = Array.from(document.querySelectorAll('#vatBody tr'));
+  const r1 = Math.min(_vatSelStart.row, _vatSelEnd.row);
+  const r2 = Math.max(_vatSelStart.row, _vatSelEnd.row);
+  const c1 = Math.min(_vatSelStart.col, _vatSelEnd.col);
+  const c2 = Math.max(_vatSelStart.col, _vatSelEnd.col);
+
+  cells.forEach(td => {
+    const tr = td.closest('tr');
+    const rowIdx = allRows.indexOf(tr);
+    const colIdx = Array.from(tr.querySelectorAll('td')).indexOf(td);
+    td.style.background = 'color-mix(in srgb, var(--accent) 18%, rgba(255,255,255,0.85))';
+    // Viền ngoài theo cạnh của selection
+    const bTop    = rowIdx === r1 ? '2px solid var(--accent)' : '';
+    const bBottom = rowIdx === r2 ? '2px solid var(--accent)' : '';
+    const bLeft   = colIdx === c1 ? '2px solid var(--accent)' : '';
+    const bRight  = colIdx === c2 ? '2px solid var(--accent)' : '';
+    if (bTop)    td.style.borderTop    = bTop;
+    if (bBottom) td.style.borderBottom = bBottom;
+    if (bLeft)   td.style.borderLeft   = bLeft;
+    if (bRight)  td.style.borderRight  = bRight;
+  });
 }
 function vatClearHighlight() {
-  document.querySelectorAll('#vatBody td[style*="background"]').forEach(td => td.style.background = '');
+  document.querySelectorAll('#vatBody td').forEach(td => {
+    td.style.background = '';
+    td.style.borderTop = '';
+    td.style.borderBottom = '';
+    td.style.borderLeft = '';
+    td.style.borderRight = '';
+  });
 }
 function vatClearSelectedCells(cells) {
   cells.forEach(td => {
@@ -6133,6 +7172,476 @@ document.addEventListener('click', function(e) {
       <img id="vatFilePreviewImg" src="" alt="" style="display:none;">
     </div>
   </div>
+
+
+
+<script>
+// ============================================================
+// MONTHLY VAT CHART
+// ============================================================
+function vatRenderMonthChart() {
+  const rows = vatLoad();
+  const bars = document.getElementById('vatMonthBars');
+  if (!bars) return;
+
+  // Aggregate by month
+  const monthData = {};
+  rows.forEach(r => {
+    if (!r.ngay) return;
+    const [y, m] = r.ngay.split('-');
+    const key = `${y}-${m}`;
+    if (!monthData[key]) monthData[key] = { tong: 0, tongHT: 0 };
+    monthData[key].tong  += (parseFloat(r.sl)||0)*(parseFloat(r.dongia)||0);
+    monthData[key].tongHT += parseFloat(r.tongt)||0;
+  });
+
+  const keys = Object.keys(monthData).sort();
+  if (!keys.length) {
+    bars.innerHTML = '<div style="opacity:0.3; font-size:0.8rem; padding:20px;">Chưa có dữ liệu để hiển thị biểu đồ tháng.</div>';
+    return;
+  }
+
+  const maxVal = Math.max(...keys.map(k => Math.max(monthData[k].tong, monthData[k].tongHT)), 1);
+  const H = 100; // max bar height px
+
+  bars.innerHTML = keys.map(k => {
+    const { tong, tongHT } = monthData[k];
+    const [y, m] = k.split('-');
+    const h1 = Math.max(4, Math.round((tong / maxVal) * H));
+    const h2 = Math.max(4, Math.round((tongHT / maxVal) * H));
+    return `<div class="vat-month-bar-wrap" title="Tháng ${parseInt(m,10)}/${y}: ${vatFmt(tong)} / TT: ${vatFmt(tongHT)}">
+      <div class="vat-month-bar-val">${(tong/1e6).toFixed(1)}M</div>
+      <div class="vat-month-bar-stack" style="height:${H}px;">
+        <div class="vat-month-bar" style="height:${h1}px; background:var(--accent); opacity:0.85;"></div>
+        ${tongHT > 0 ? `<div class="vat-month-bar" style="height:${h2}px; background:#dc2626; opacity:0.75; border-radius:5px 5px 0 0;"></div>` : ''}
+      </div>
+      <div class="vat-month-bar-label">T${parseInt(m,10)}/${y.slice(2)}</div>
+    </div>`;
+  }).join('');
+}
+
+// Patch vatRender to also update chart
+const _origVatRender = vatRender;
+window.vatRender = function() {
+  _origVatRender.apply(this, arguments);
+  vatRenderMonthChart();
+};
+
+// ============================================================
+// KEYBOARD SHORTCUTS (Ctrl+S, Ctrl+Z, Ctrl+A for VAT)
+// ============================================================
+document.addEventListener('keydown', function(e) {
+  const tag = document.activeElement?.tagName;
+  const inInput = (tag === 'INPUT' || tag === 'TEXTAREA');
+
+  // Ctrl+S — Save / export feedback toast
+  if (e.ctrlKey && e.key.toLowerCase() === 's') {
+    e.preventDefault();
+    // VAT auto-saves, just show toast
+    const page = document.querySelector('.page-content.active-page');
+    if (page && page.id === 'page-vat') {
+      showKbToast('💾 Dữ liệu VAT đã được lưu tự động!');
+      vatSave(vatLoad()); // trigger Firebase sync
+    } else {
+      saveData();
+      showKbToast('💾 Dữ liệu đã được lưu!');
+    }
+    return;
+  }
+
+  // Ctrl+A — Chọn hết checkbox HĐ trong trang VAT
+  if (e.ctrlKey && e.key.toLowerCase() === 'a') {
+    const page = document.querySelector('.page-content.active-page');
+    if (page && page.id === 'page-vat') {
+      const cbs = document.querySelectorAll('.vat-inv-checkbox');
+      if (cbs.length) {
+        e.preventDefault();
+        const allChecked = Array.from(cbs).every(cb => cb.checked);
+        cbs.forEach(cb => cb.checked = !allChecked);
+        // also update group-checkall
+        document.querySelectorAll('.vat-group-checkall').forEach(cb => cb.checked = !allChecked);
+        vatCheckboxChange();
+        showKbToast(allChecked ? '☑️ Đã bỏ chọn tất cả' : '✅ Đã chọn tất cả hóa đơn');
+      }
+    }
+  }
+
+  // Music shortcuts when on music page
+  if (!inInput) {
+    const page = document.querySelector('.page-content.active-page');
+    if (page && page.id === 'page-music') {
+      if (e.key === ' ') { e.preventDefault(); musicTogglePlay(); }
+      if (e.key === 'ArrowRight') musicNext();
+      if (e.key === 'ArrowLeft') musicPrev();
+    }
+  }
+});
+
+function showKbToast(msg) {
+  let t = document.getElementById('kbToast');
+  if (!t) {
+    t = document.createElement('div');
+    t.id = 'kbToast';
+    t.style.cssText = `position:fixed;bottom:82px;left:50%;transform:translateX(-50%) translateY(20px);
+      background:rgba(34,197,94,0.92);color:#000;font-weight:800;font-size:0.82rem;
+      padding:10px 20px;border-radius:30px;z-index:99999;opacity:0;pointer-events:none;
+      transition:all 0.25s cubic-bezier(0.22,1,0.36,1);white-space:nowrap;backdrop-filter:blur(8px);`;
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.style.opacity = '1';
+  t.style.transform = 'translateX(-50%) translateY(0)';
+  clearTimeout(t._timeout);
+  t._timeout = setTimeout(() => {
+    t.style.opacity = '0';
+    t.style.transform = 'translateX(-50%) translateY(20px)';
+  }, 2000);
+}
+
+// ============================================================
+// YOUTUBE MUSIC PLAYER
+// ============================================================
+let musicQueue = [];
+let musicQueueIndex = -1;
+let musicPlaying = false;
+let musicCurrentVideo = null;
+let _miniProgressTimer = null;
+let musicPlaylists = JSON.parse(localStorage.getItem('ao_music_playlists') || '[]');
+
+// YouTube Data API key (public — search results only, no auth needed)
+// Using oEmbed + noembed for metadata without API key
+async function musicSearch() {
+  const q = document.getElementById('musicSearchInput')?.value?.trim();
+  if (!q) return;
+
+  const grid = document.getElementById('musicResultsGrid');
+  const section = document.getElementById('musicResultsSection');
+  if (!grid || !section) return;
+
+  grid.innerHTML = '<div style="opacity:0.4;padding:20px;font-size:0.85rem;">🔍 Đang tìm kiếm...</div>';
+  section.style.display = 'block';
+
+  // Try multiple Invidious instances (CORS-friendly)
+  const INVIDIOUS_HOSTS = [
+    'https://inv.nadeko.net',
+    'https://invidious.nerdvpn.de',
+    'https://invidious.privacyredirect.com',
+    'https://iv.melmac.space',
+  ];
+
+  let data = null;
+  let lastErr = '';
+
+  for (const host of INVIDIOUS_HOSTS) {
+    try {
+      const res = await fetch(`${host}/api/v1/search?q=${encodeURIComponent(q)}&type=video&fields=videoId,title,author,videoThumbnails`, { signal: AbortSignal.timeout(5000) });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      const json = await res.json();
+      if (Array.isArray(json) && json.length) { data = json; break; }
+      throw new Error('no results');
+    } catch(e) { lastErr = e.message; }
+  }
+
+  if (data) {
+    const videos = data.slice(0, 12);
+    musicQueue = videos.map(v => ({
+      id: v.videoId,
+      title: v.title,
+      channel: v.author,
+      thumb: `https://i.ytimg.com/vi/${v.videoId}/mqdefault.jpg`
+    }));
+
+    grid.innerHTML = musicQueue.map((v, i) => `
+      <div class="music-result-card ${musicQueueIndex === i ? 'active' : ''}" onclick="musicPlay(${i})" id="mcard-${i}">
+        <img class="music-result-thumb" src="${v.thumb}" alt="" loading="lazy">
+        <div class="music-result-info">
+          <div class="music-result-title">${escMusicHTML(v.title)}</div>
+          <div class="music-result-channel">${escMusicHTML(v.channel)}</div>
+        </div>
+      </div>
+    `).join('');
+
+    document.getElementById('musicQueueSection').style.display = 'block';
+    musicRenderQueue();
+  } else {
+    // Show manual URL input fallback
+    grid.innerHTML = `<div style="padding:20px;">
+      <div style="opacity:0.6; font-size:0.82rem; line-height:1.8; margin-bottom:16px;">
+        ⚠️ Không thể tìm kiếm tự động từ file local.<br>
+        Hãy <b>copy link YouTube</b> rồi dán vào ô tìm kiếm và nhấn <b>🔗 Dán link</b>!
+      </div>
+      <div style="display:flex; flex-wrap:wrap; gap:8px;">
+        ${['Nhạc Việt Hot', 'Lo-fi chill', 'EDM mix', 'Nhạc không lời', 'V-pop 2025', 'Bolero'].map(s =>
+          `<button onclick="document.getElementById('musicSearchInput').value='${s}';musicSearch();"
+            style="padding:7px 14px;border-radius:10px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);
+            color:var(--text-main);cursor:pointer;font-size:0.78rem;transition:all 0.18s;"
+            onmouseover="this.style.borderColor='var(--accent)';this.style.color='var(--accent)'"
+            onmouseout="this.style.borderColor='rgba(255,255,255,0.12)';this.style.color='var(--text-main)'">${s}</button>`
+        ).join('')}
+      </div>
+    </div>`;
+  }
+}
+
+async function musicOpenURL() {
+  const input = document.getElementById('musicSearchInput');
+  const val = input?.value?.trim() || '';
+  const videoId = extractYTId(val);
+  if (!videoId) {
+    // Show paste hint in UI
+    const grid = document.getElementById('musicResultsGrid');
+    const section = document.getElementById('musicResultsSection');
+    if (grid && section) {
+      section.style.display = 'block';
+      grid.innerHTML = `<div style="padding:16px;opacity:0.65;font-size:0.82rem;line-height:1.8;">
+        ℹ️ Không tìm thấy link YouTube hợp lệ.<br>
+        Định dạng hỗ trợ:<br>
+        <code style="font-size:0.75rem;opacity:0.7;">https://youtube.com/watch?v=xxxxx</code><br>
+        <code style="font-size:0.75rem;opacity:0.7;">https://youtu.be/xxxxx</code><br>
+        <code style="font-size:0.75rem;opacity:0.7;">https://youtube.com/shorts/xxxxx</code>
+      </div>`;
+    }
+    return;
+  }
+  const thumb = `https://i.ytimg.com/vi/${videoId}/mqdefault.jpg`;
+  let title = `YouTube Video (${videoId})`;
+  let channel = 'YouTube';
+
+  // Try noembed for real title
+  try {
+    const r = await fetch(`https://noembed.com/embed?url=https://www.youtube.com/watch?v=${videoId}`, { signal: AbortSignal.timeout(4000) });
+    const d = await r.json();
+    if (d.title) { title = d.title; channel = d.author_name || 'YouTube'; }
+  } catch(e) {}
+
+  const newTrack = { id: videoId, title, channel, thumb };
+  // Check if already in queue
+  const existing = musicQueue.findIndex(t => t.id === videoId);
+  if (existing >= 0) {
+    musicQueueIndex = existing;
+  } else {
+    musicQueue.push(newTrack);
+    musicQueueIndex = musicQueue.length - 1;
+  }
+  musicLoadVideo(newTrack);
+  musicRenderQueue();
+  document.getElementById('musicQueueSection').style.display = 'block';
+  if (input) input.value = '';
+}
+
+function extractYTId(url) {
+  const m = url.match(/(?:v=|youtu\.be\/|embed\/|shorts\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+function musicPlay(idx) {
+  if (idx < 0 || idx >= musicQueue.length) return;
+  musicQueueIndex = idx;
+  musicLoadVideo(musicQueue[idx]);
+  // Highlight active card
+  document.querySelectorAll('.music-result-card').forEach((c, i) => {
+    c.classList.toggle('active', i === idx);
+  });
+}
+
+function musicLoadVideo(track) {
+  musicCurrentVideo = track;
+  musicPlaying = true;
+
+  const section = document.getElementById('musicPlayerSection');
+  const empty = document.getElementById('musicEmptyState');
+  const embedWrap = document.getElementById('musicEmbedWrap');
+
+  if (section && empty && embedWrap) {
+    // Rebuild iframe each time to avoid CORS/embed block on file://
+    embedWrap.innerHTML = '';
+    const ifr = document.createElement('iframe');
+    ifr.id = 'musicIframe';
+    ifr.allow = 'autoplay; encrypted-media; fullscreen';
+    ifr.allowFullscreen = true;
+    ifr.style.cssText = 'width:100%;height:100%;border:none;';
+    // Use privacy-enhanced + enablejsapi + autoplay + no restrictions
+    ifr.src = `https://www.youtube-nocookie.com/embed/${track.id}?autoplay=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(location.href.split('/').slice(0,-1).join('/') || 'null')}&fs=1&modestbranding=1`;
+    embedWrap.appendChild(ifr);
+    section.style.display = 'block';
+    empty.style.display = 'none';
+  }
+
+  // Update now playing info
+  const titleEl = document.getElementById('musicNowTitle');
+  const chEl = document.getElementById('musicNowChannel');
+  if (titleEl) titleEl.textContent = track.title;
+  if (chEl) chEl.textContent = track.channel;
+
+  // Update mini player
+  musicShowMiniPlayer(track);
+}
+
+function musicShowMiniPlayer(track) {
+  const player = document.getElementById('miniMusicPlayer');
+  const thumb = document.getElementById('miniThumb');
+  const title = document.getElementById('miniTitle');
+  const ch = document.getElementById('miniChannel');
+  const btn = document.getElementById('miniPlayPauseBtn');
+  if (!player) return;
+  if (thumb) thumb.src = track.thumb || `https://i.ytimg.com/vi/${track.id}/mqdefault.jpg`;
+  if (thumb) thumb.onerror = function(){ this.src=`https://i.ytimg.com/vi/${track.id}/mqdefault.jpg`; };
+  if (title) title.textContent = track.title;
+  if (ch) ch.textContent = track.channel;
+  if (btn) btn.textContent = '⏸';
+  player.classList.add('visible');
+  document.body.classList.add('has-mini-player');
+  musicPlaying = true;
+  startMiniProgress();
+}
+
+function musicTogglePlay() {
+  const btn = document.getElementById('miniPlayPauseBtn');
+  if (!musicCurrentVideo) return;
+  musicPlaying = !musicPlaying;
+  if (btn) btn.textContent = musicPlaying ? '⏸' : '▶';
+  const iframe = document.getElementById('musicIframe');
+  if (iframe && iframe.contentWindow) {
+    try {
+      iframe.contentWindow.postMessage(JSON.stringify({
+        event: 'command',
+        func: musicPlaying ? 'playVideo' : 'pauseVideo',
+        args: []
+      }), '*');
+    } catch(e) {}
+  }
+}
+
+function musicNext() {
+  if (musicQueue.length === 0) return;
+  const next = (musicQueueIndex + 1) % musicQueue.length;
+  musicPlay(next);
+}
+
+function musicPrev() {
+  if (musicQueue.length === 0) return;
+  const prev = (musicQueueIndex - 1 + musicQueue.length) % musicQueue.length;
+  musicPlay(prev);
+}
+
+function musicClose() {
+  const player = document.getElementById('miniMusicPlayer');
+  if (player) player.classList.remove('visible');
+  document.body.classList.remove('has-mini-player');
+  const embedWrap = document.getElementById('musicEmbedWrap');
+  if (embedWrap) embedWrap.innerHTML = '<iframe id="musicIframe" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="width:100%;height:100%;border:none;" src="about:blank"></iframe>';
+  musicPlaying = false;
+  musicCurrentVideo = null;
+  clearInterval(_miniProgressTimer);
+  const section = document.getElementById('musicPlayerSection');
+  const empty = document.getElementById('musicEmptyState');
+  if (section) section.style.display = 'none';
+  if (empty) empty.style.display = 'block';
+}
+
+function startMiniProgress() {
+  clearInterval(_miniProgressTimer);
+  let progress = 0;
+  _miniProgressTimer = setInterval(() => {
+    if (!musicPlaying) return;
+    progress = Math.min(progress + 0.15, 100);
+    const bar = document.getElementById('miniProgressBar');
+    if (bar) bar.style.width = progress + '%';
+    if (progress >= 100) { clearInterval(_miniProgressTimer); musicNext(); }
+  }, 900);
+}
+
+function miniSeek(e) {
+  const bar = e.currentTarget;
+  const rect = bar.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  const barFill = document.getElementById('miniProgressBar');
+  if (barFill) barFill.style.width = (pct * 100) + '%';
+}
+
+function musicRenderQueue() {
+  const el = document.getElementById('musicQueueList');
+  if (!el || !musicQueue.length) return;
+  el.innerHTML = musicQueue.map((t, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:10px;
+      background:${i===musicQueueIndex?'rgba(34,197,94,0.1)':'rgba(255,255,255,0.03)'};
+      border:1px solid ${i===musicQueueIndex?'var(--accent)':'rgba(255,255,255,0.06)'};
+      cursor:pointer;transition:all 0.18s;margin-bottom:6px;"
+      onclick="musicPlay(${i})"
+      onmouseover="this.style.background='rgba(255,255,255,0.07)'"
+      onmouseout="this.style.background='${i===musicQueueIndex?'rgba(34,197,94,0.1)':'rgba(255,255,255,0.03)'}'">
+      <img src="${t.thumb}" style="width:40px;height:28px;object-fit:cover;border-radius:6px;flex-shrink:0;"
+        onerror="this.src='https://i.ytimg.com/vi/${t.id}/mqdefault.jpg'">
+      <div style="flex:1;min-width:0;">
+        <div style="font-size:0.78rem;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+          color:${i===musicQueueIndex?'var(--accent)':'inherit'};">${escMusicHTML(t.title)}</div>
+        <div style="font-size:0.66rem;opacity:0.45;">${escMusicHTML(t.channel)}</div>
+      </div>
+      <button onclick="event.stopPropagation();musicQueue.splice(${i},1);if(musicQueueIndex>=musicQueue.length)musicQueueIndex=musicQueue.length-1;musicRenderQueue();"
+        style="background:rgba(255,80,80,0.15);border:none;color:#f87171;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:0.75rem;flex-shrink:0;">✕</button>
+    </div>
+  `).join('');
+  document.getElementById('musicPlaylistsSection').style.display = musicPlaylists.length ? 'block' : 'none';
+  musicRenderPlaylists();
+}
+
+function musicSavePlaylist() {
+  const nameEl = document.getElementById('musicQueueNameInput');
+  const name = nameEl?.value?.trim() || ('Playlist ' + (musicPlaylists.length+1));
+  if (!musicQueue.length) { alert('Chưa có bài nào trong danh sách!'); return; }
+  musicPlaylists.push({ name, tracks: JSON.parse(JSON.stringify(musicQueue)) });
+  localStorage.setItem('ao_music_playlists', JSON.stringify(musicPlaylists));
+  if (nameEl) nameEl.value = '';
+  musicRenderPlaylists();
+  showKbToast('✅ Đã lưu playlist: ' + name);
+}
+
+function musicRenderPlaylists() {
+  const el = document.getElementById('musicPlaylistsList');
+  const sec = document.getElementById('musicPlaylistsSection');
+  if (!el || !sec) return;
+  if (!musicPlaylists.length) { sec.style.display = 'none'; return; }
+  sec.style.display = 'block';
+  el.innerHTML = musicPlaylists.map((pl, i) => `
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;">
+      <span style="font-size:1rem;">🎶</span>
+      <div style="flex:1;min-width:0;">
+        <div style="font-weight:700;font-size:0.82rem;">${escMusicHTML(pl.name)}</div>
+        <div style="font-size:0.68rem;opacity:0.45;">${pl.tracks.length} bài</div>
+      </div>
+      <button onclick="musicLoadPlaylist(${i})" style="background:rgba(34,197,94,0.15);border:1px solid var(--accent);
+        color:var(--accent);padding:5px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">▶ Phát</button>
+      <button onclick="musicPlaylists.splice(${i},1);localStorage.setItem('ao_music_playlists',JSON.stringify(musicPlaylists));musicRenderPlaylists();"
+        style="background:rgba(255,80,80,0.12);border:none;color:#f87171;width:28px;height:28px;border-radius:8px;cursor:pointer;">🗑️</button>
+    </div>
+  `).join('');
+}
+
+function musicLoadPlaylist(i) {
+  const pl = musicPlaylists[i];
+  if (!pl) return;
+  musicQueue = JSON.parse(JSON.stringify(pl.tracks));
+  musicQueueIndex = 0;
+  musicPlay(0);
+  musicRenderQueue();
+  document.getElementById('musicQueueSection').style.display = 'block';
+  showKbToast('▶ Đang phát: ' + pl.name);
+}
+
+function escMusicHTML(str) {
+  return String(str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// Run chart on initial load
+window.addEventListener('load', () => {
+  setTimeout(vatRenderMonthChart, 100);
+  musicRenderPlaylists();
+  if (musicPlaylists.length) {
+    document.getElementById('musicPlaylistsSection').style.display = 'block';
+  }
+});
+</script>
 
 </body>
 </html>

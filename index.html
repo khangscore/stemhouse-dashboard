@@ -2779,54 +2779,143 @@ body.light-mode .vat-table thead th {
       white-space: nowrap;
     }
 
-    /* ===== MINI MUSIC PLAYER ===== */
-    #miniMusicPlayer {
+    /* ===== BUBBLE MUSIC PLAYER ===== */
+    /* Floating bubble button */
+    #musicBubbleBtn {
       position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: 68px;
-      background: rgba(13, 5, 32, 0.92);
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
-      border-top: 1px solid rgba(255,255,255,0.1);
-      z-index: 9998;
+      bottom: 162px;
+      right: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(13,5,32,0.85);
+      border: none;
+      cursor: pointer;
+      z-index: 3001;
       display: flex;
       align-items: center;
-      padding: 0 20px 0 110px;
-      gap: 16px;
-      box-shadow: 0 -6px 30px rgba(0,0,0,0.4);
-      transform: translateY(100%);
-      transition: transform 0.38s cubic-bezier(0.22,1,0.36,1);
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
+      -webkit-tap-highlight-color: transparent;
     }
-    #miniMusicPlayer.visible { transform: translateY(0); }
-    body.has-mini-player { padding-bottom: 68px; }
+    #musicBubbleBtn:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(0,0,0,0.45); }
+    #musicBubbleBtn.playing { background: var(--accent); }
+    #musicBubbleBtn.playing .bubble-icon { color: #000; }
 
-    .mini-player-thumb {
-      width: 44px;
-      height: 44px;
-      border-radius: 8px;
-      object-fit: cover;
-      background: rgba(255,255,255,0.1);
-      flex-shrink: 0;
-      border: 1px solid rgba(255,255,255,0.1);
+    /* SVG progress ring */
+    #musicBubbleBtn svg {
+      position: absolute;
+      inset: -4px;
+      width: calc(100% + 8px);
+      height: calc(100% + 8px);
+      transform: rotate(-90deg);
+      pointer-events: none;
     }
-    .mini-player-info {
-      flex: 1;
-      min-width: 0;
-      overflow: hidden;
+    #progressRingTrack {
+      fill: none;
+      stroke: rgba(255,255,255,0.1);
+      stroke-width: 3.5;
     }
-    .mini-player-title {
-      font-weight: 700;
-      font-size: 0.82rem;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      color: #fff;
+    #progressRingFill {
+      fill: none;
+      stroke: var(--accent);
+      stroke-width: 3.5;
+      stroke-linecap: round;
+      stroke-dasharray: 175.9; /* 2*pi*28 */
+      stroke-dashoffset: 175.9;
+      transition: stroke-dashoffset 0.9s linear;
     }
-    .mini-player-channel {
+    #musicBubbleBtn.playing #progressRingFill { stroke: #000; }
+    .bubble-icon { position: relative; z-index: 1; font-size: 1.4rem; pointer-events: none; }
+
+    /* Bubble notes animation */
+    @keyframes bubbleNote {
+      0%   { opacity:0; transform: translateY(0) scale(0.5); }
+      30%  { opacity:1; }
+      100% { opacity:0; transform: translateY(-36px) scale(1.1) rotate(20deg); }
+    }
+    .bubble-note {
+      position: absolute;
       font-size: 0.7rem;
-      opacity: 0.5;
+      pointer-events: none;
+      animation: bubbleNote 1.6s ease-out infinite;
+    }
+    .bubble-note:nth-child(1) { top: 2px;  right: 6px;  animation-delay: 0s; }
+    .bubble-note:nth-child(2) { top: 8px;  right: -2px; animation-delay: 0.6s; font-size: 0.55rem; }
+    .bubble-note:nth-child(3) { top: 0px;  right: 14px; animation-delay: 1.1s; font-size: 0.5rem; }
+
+    /* Mini popup card */
+    #miniMusicPlayer {
+      position: fixed;
+      bottom: 230px;
+      right: 22px;
+      width: 290px;
+      background: linear-gradient(160deg, rgba(20,10,45,0.97), rgba(13,5,32,0.98));
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 22px;
+      z-index: 3000;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.05);
+      transform: scale(0.7) translateY(30px);
+      transform-origin: bottom right;
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.28s cubic-bezier(0.34,1.56,0.64,1), opacity 0.22s ease;
+      overflow: hidden;
+    }
+    #miniMusicPlayer.visible {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+    body.has-mini-player { /* no padding change needed anymore */ }
+
+    /* Thumbnail header */
+    .mini-thumb-wrap {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 16/9;
+      background: #000;
+      overflow: hidden;
+    }
+    .mini-player-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0.75;
+    }
+    .mini-thumb-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 40%, rgba(13,5,32,0.95) 100%);
+    }
+    .mini-thumb-title {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      right: 12px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      line-height: 1.3;
+      color: #fff;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Controls area */
+    .mini-controls-area {
+      padding: 12px 14px 14px;
+    }
+    .mini-channel-text {
+      font-size: 0.68rem;
+      opacity: 0.45;
+      margin-bottom: 10px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -2834,30 +2923,26 @@ body.light-mode .vat-table thead th {
     .mini-player-controls {
       display: flex;
       align-items: center;
-      gap: 10px;
-      flex-shrink: 0;
+      justify-content: center;
+      gap: 8px;
+      margin-bottom: 10px;
     }
     .mini-ctrl-btn {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       background: rgba(255,255,255,0.08);
-      border: 1px solid rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.1);
       color: #fff;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1rem;
+      font-size: 0.9rem;
       transition: all 0.18s;
       flex-shrink: 0;
     }
-    .mini-ctrl-btn:hover {
-      background: var(--accent);
-      color: #000;
-      border-color: var(--accent);
-      box-shadow: 0 0 12px rgba(34,197,94,0.4);
-    }
+    .mini-ctrl-btn:hover { background: rgba(255,255,255,0.18); transform: scale(1.08); }
     .mini-ctrl-btn.play-pause {
       width: 42px;
       height: 42px;
@@ -2865,44 +2950,45 @@ body.light-mode .vat-table thead th {
       background: var(--accent);
       color: #000;
       border-color: var(--accent);
+      box-shadow: 0 4px 14px rgba(34,197,94,0.4);
     }
-    .mini-ctrl-btn.play-pause:hover {
-      transform: scale(1.08);
-      box-shadow: 0 0 18px rgba(34,197,94,0.5);
-    }
+    .mini-ctrl-btn.play-pause:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(34,197,94,0.55); }
+
+    /* Slim progress bar */
     .mini-player-progress {
-      flex: 1;
-      max-width: 200px;
+      width: 100%;
       height: 3px;
-      background: rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.1);
       border-radius: 3px;
       cursor: pointer;
       position: relative;
-      flex-shrink: 0;
+      margin-bottom: 8px;
     }
     .mini-player-progress-bar {
       height: 100%;
-      background: var(--accent);
+      background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #fff));
       border-radius: 3px;
       width: 0%;
-      transition: width 0.5s linear;
+      transition: width 0.9s linear;
       pointer-events: none;
     }
-    .mini-player-go {
-      font-size: 0.7rem;
-      opacity: 0.45;
-      cursor: pointer;
-      white-space: nowrap;
-      flex-shrink: 0;
-      padding: 4px 8px;
+    .mini-footer-btns {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+    .mini-footer-btn {
+      font-size: 0.68rem;
+      padding: 4px 10px;
       border-radius: 8px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text-main);
+      cursor: pointer;
       transition: all 0.15s;
+      opacity: 0.65;
     }
-    .mini-player-go:hover {
-      opacity: 1;
-      background: rgba(255,255,255,0.08);
-      color: var(--accent);
-    }
+    .mini-footer-btn:hover { opacity: 1; background: rgba(255,255,255,0.12); border-color: var(--accent); color: var(--accent); }
 
     /* ===== MUSIC PAGE ===== */
     #page-music { padding: 0; }
@@ -3511,23 +3597,40 @@ body.light-mode .vat-table thead th {
     </div>
   </div>
 
-  <!-- MINI PLAYER (fixed bottom) -->
+  <!-- BUBBLE MUSIC BUTTON -->
+  <button id="musicBubbleBtn" onclick="toggleMiniPlayer()" title="Mini Player">
+    <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <circle id="progressRingTrack" cx="32" cy="32" r="28"/>
+      <circle id="progressRingFill"  cx="32" cy="32" r="28"/>
+    </svg>
+    <span class="bubble-icon">🎵</span>
+  </button>
+
+  <!-- MINI PLAYER POPUP (bubble popup) -->
   <div id="miniMusicPlayer">
-    <img class="mini-player-thumb" id="miniThumb" src="" alt="">
-    <div class="mini-player-info">
-      <div class="mini-player-title" id="miniTitle">Chưa phát bài nào</div>
-      <div class="mini-player-channel" id="miniChannel">—</div>
+    <!-- Thumbnail header -->
+    <div class="mini-thumb-wrap">
+      <img class="mini-player-thumb" id="miniThumb" src="" alt=""
+        onerror="this.style.display='none'">
+      <div class="mini-thumb-overlay"></div>
+      <div class="mini-thumb-title" id="miniTitle">Chưa phát bài nào</div>
     </div>
-    <div class="mini-player-controls">
-      <button class="mini-ctrl-btn" onclick="musicPrev()" title="Trước">⏮</button>
-      <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" onclick="musicTogglePlay()" title="Phát/Dừng">▶</button>
-      <button class="mini-ctrl-btn" onclick="musicNext()" title="Tiếp">⏭</button>
+    <!-- Controls -->
+    <div class="mini-controls-area">
+      <div class="mini-channel-text" id="miniChannel">—</div>
+      <div class="mini-player-controls">
+        <button class="mini-ctrl-btn" onclick="musicPrev()" title="Trước">⏮</button>
+        <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" onclick="musicTogglePlay()" title="Phát/Dừng">▶</button>
+        <button class="mini-ctrl-btn" onclick="musicNext()" title="Tiếp">⏭</button>
+      </div>
+      <div class="mini-player-progress" onclick="miniSeek(event)">
+        <div class="mini-player-progress-bar" id="miniProgressBar"></div>
+      </div>
+      <div class="mini-footer-btns">
+        <button class="mini-footer-btn" onclick="switchPage('music');toggleMiniPlayer()">🎵 Mở trang nhạc</button>
+        <button class="mini-footer-btn" onclick="musicClose()">✕ Đóng</button>
+      </div>
     </div>
-    <div class="mini-player-progress" onclick="miniSeek(event)" title="Tiến độ bài">
-      <div class="mini-player-progress-bar" id="miniProgressBar"></div>
-    </div>
-    <button class="mini-player-go" onclick="switchPage('music')" title="Mở trang nhạc">🎵 Mở player</button>
-    <button class="mini-ctrl-btn" onclick="musicClose()" title="Đóng" style="font-size:0.8rem; width:28px; height:28px; opacity:0.5;">✕</button>
   </div>
 
   <!-- MODALS -->
@@ -7478,28 +7581,54 @@ function musicLoadVideo(track) {
 }
 
 function musicShowMiniPlayer(track) {
-  const player = document.getElementById('miniMusicPlayer');
   const thumb = document.getElementById('miniThumb');
   const title = document.getElementById('miniTitle');
   const ch = document.getElementById('miniChannel');
   const btn = document.getElementById('miniPlayPauseBtn');
-  if (!player) return;
-  if (thumb) thumb.src = track.thumb || `https://i.ytimg.com/vi/${track.id}/mqdefault.jpg`;
-  if (thumb) thumb.onerror = function(){ this.src=`https://i.ytimg.com/vi/${track.id}/mqdefault.jpg`; };
+  const bubbleBtn = document.getElementById('musicBubbleBtn');
+
+  if (thumb) {
+    const imgSrc = track.thumb || `https://i.ytimg.com/vi/${track.id}/mqdefault.jpg`;
+    thumb.src = imgSrc;
+    thumb.style.display = 'block';
+  }
   if (title) title.textContent = track.title;
   if (ch) ch.textContent = track.channel;
   if (btn) btn.textContent = '⏸';
-  player.classList.add('visible');
-  document.body.classList.add('has-mini-player');
+  if (bubbleBtn) {
+    bubbleBtn.classList.add('playing');
+    bubbleBtn.querySelector('.bubble-icon').textContent = '🎵';
+    // Add floating notes if not already there
+    if (!bubbleBtn.querySelector('.bubble-note')) {
+      ['♪','♫','♩'].forEach(n => {
+        const s = document.createElement('span');
+        s.className = 'bubble-note';
+        s.textContent = n;
+        bubbleBtn.appendChild(s);
+      });
+    }
+  }
   musicPlaying = true;
+  document.body.classList.add('has-mini-player');
   startMiniProgress();
+  // Auto-open popup
+  const player = document.getElementById('miniMusicPlayer');
+  if (player) player.classList.add('visible');
+}
+
+function toggleMiniPlayer() {
+  const player = document.getElementById('miniMusicPlayer');
+  if (!player) return;
+  player.classList.toggle('visible');
 }
 
 function musicTogglePlay() {
   const btn = document.getElementById('miniPlayPauseBtn');
+  const bubbleBtn = document.getElementById('musicBubbleBtn');
   if (!musicCurrentVideo) return;
   musicPlaying = !musicPlaying;
   if (btn) btn.textContent = musicPlaying ? '⏸' : '▶';
+  if (bubbleBtn) bubbleBtn.classList.toggle('playing', musicPlaying);
   const iframe = document.getElementById('musicIframe');
   if (iframe && iframe.contentWindow) {
     try {
@@ -7528,26 +7657,48 @@ function musicClose() {
   const player = document.getElementById('miniMusicPlayer');
   if (player) player.classList.remove('visible');
   document.body.classList.remove('has-mini-player');
+  const bubbleBtn = document.getElementById('musicBubbleBtn');
+  if (bubbleBtn) {
+    bubbleBtn.classList.remove('playing');
+    bubbleBtn.querySelector('.bubble-icon').textContent = '🎵';
+    bubbleBtn.querySelectorAll('.bubble-note').forEach(n => n.remove());
+  }
   const embedWrap = document.getElementById('musicEmbedWrap');
   if (embedWrap) embedWrap.innerHTML = '<iframe id="musicIframe" allow="autoplay; encrypted-media; fullscreen" allowfullscreen style="width:100%;height:100%;border:none;" src="about:blank"></iframe>';
   musicPlaying = false;
   musicCurrentVideo = null;
   clearInterval(_miniProgressTimer);
+  // Reset ring
+  const ring = document.getElementById('progressRingFill');
+  if (ring) ring.style.strokeDashoffset = '175.9';
   const section = document.getElementById('musicPlayerSection');
   const empty = document.getElementById('musicEmptyState');
   if (section) section.style.display = 'none';
   if (empty) empty.style.display = 'block';
+  const btn = document.getElementById('miniPlayPauseBtn');
+  if (btn) btn.textContent = '▶';
 }
 
 function startMiniProgress() {
   clearInterval(_miniProgressTimer);
   let progress = 0;
+  const CIRCUMFERENCE = 175.9; // 2 * Math.PI * 28
   _miniProgressTimer = setInterval(() => {
     if (!musicPlaying) return;
     progress = Math.min(progress + 0.15, 100);
+    // Update slim bar
     const bar = document.getElementById('miniProgressBar');
     if (bar) bar.style.width = progress + '%';
-    if (progress >= 100) { clearInterval(_miniProgressTimer); musicNext(); }
+    // Update ring
+    const ring = document.getElementById('progressRingFill');
+    if (ring) {
+      const offset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+      ring.style.strokeDashoffset = offset;
+    }
+    if (progress >= 100) {
+      clearInterval(_miniProgressTimer);
+      setTimeout(musicNext, 600);
+    }
   }, 900);
 }
 
@@ -7638,8 +7789,19 @@ window.addEventListener('load', () => {
   setTimeout(vatRenderMonthChart, 100);
   musicRenderPlaylists();
   if (musicPlaylists.length) {
-    document.getElementById('musicPlaylistsSection').style.display = 'block';
+    const sec = document.getElementById('musicPlaylistsSection');
+    if (sec) sec.style.display = 'block';
   }
+
+  // Close mini player popup when clicking outside
+  document.addEventListener('click', function(e) {
+    const popup = document.getElementById('miniMusicPlayer');
+    const bubbleBtn = document.getElementById('musicBubbleBtn');
+    if (!popup || !bubbleBtn) return;
+    if (!popup.contains(e.target) && !bubbleBtn.contains(e.target)) {
+      popup.classList.remove('visible');
+    }
+  }, true);
 });
 </script>
 

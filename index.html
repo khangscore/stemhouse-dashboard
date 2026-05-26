@@ -2961,37 +2961,66 @@ body.light-mode .vat-table thead th {
       margin-bottom: 10px;
     }
     .mini-ctrl-btn {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.08);
+      background: rgba(255,255,255,0.07);
       border: 1px solid rgba(255,255,255,0.1);
-      color: #fff;
+      color: rgba(255,255,255,0.85);
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.9rem;
-      transition: all 0.18s;
+      transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .mini-ctrl-btn svg {
+      width: 16px;
+      height: 16px;
+      display: block;
+      pointer-events: none;
       flex-shrink: 0;
     }
-    .mini-ctrl-btn:hover { background: rgba(255,255,255,0.18); transform: scale(1.08); }
+    .mini-ctrl-btn:hover {
+      background: rgba(255,255,255,0.16);
+      color: #fff;
+      transform: scale(1.12);
+      border-color: rgba(255,255,255,0.22);
+    }
     .mini-ctrl-btn.play-pause {
-      width: 42px;
-      height: 42px;
-      font-size: 1.1rem;
+      width: 46px;
+      height: 46px;
       background: var(--accent);
       color: #000;
-      border-color: var(--accent);
-      box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 50%, transparent);
+      border: none;
+      box-shadow:
+        0 4px 16px color-mix(in srgb, var(--accent) 55%, transparent),
+        0 0 0 0 color-mix(in srgb, var(--accent) 35%, transparent);
+      transition: all 0.18s cubic-bezier(0.34,1.56,0.64,1);
     }
-    .mini-ctrl-btn.play-pause:hover { transform: scale(1.1); box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 65%, transparent); }
+    .mini-ctrl-btn.play-pause svg {
+      width: 22px;
+      height: 22px;
+    }
+    /* Shift play icon visually right 1px to center optically */
+    .mini-ctrl-btn.play-pause svg.icon-play {
+      transform: translateX(1.5px);
+    }
+    .mini-ctrl-btn.play-pause:hover {
+      transform: scale(1.1);
+      box-shadow:
+        0 6px 22px color-mix(in srgb, var(--accent) 70%, transparent),
+        0 0 0 6px color-mix(in srgb, var(--accent) 18%, transparent);
+      background: color-mix(in srgb, var(--accent) 88%, white);
+    }
     .mini-ctrl-btn.loop-active {
-      background: color-mix(in srgb, var(--accent) 25%, rgba(255,255,255,0.08));
-      border-color: var(--accent);
+      background: color-mix(in srgb, var(--accent) 22%, rgba(255,255,255,0.07));
+      border-color: color-mix(in srgb, var(--accent) 70%, transparent);
       color: var(--accent);
-      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+      box-shadow: 0 0 10px color-mix(in srgb, var(--accent) 35%, transparent);
     }
+    .mini-ctrl-btn.loop-active svg { filter: drop-shadow(0 0 3px currentColor); }
 
 
     /* Slim progress bar */
@@ -4009,10 +4038,33 @@ body.light-mode .vat-table thead th {
       <div class="mini-channel-text" id="miniChannel">—</div>
 
       <div class="mini-player-controls">
-        <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicPrev()" title="Trước">⏮</button>
-        <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" title="Phát/Dừng" onclick="event.stopPropagation();musicTogglePlay()">▶</button>
-        <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicNext()" title="Tiếp">⏭</button>
-        <button class="mini-ctrl-btn" id="miniLoopBtn" onclick="event.stopPropagation();musicToggleLoop()" title="Lặp bài">🔁</button>
+        <!-- Nút LÙI -->
+        <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicPrev()" title="Bài trước">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M6 6a1 1 0 0 1 1 1v4.615l9.384-5.417A1 1 0 0 1 18 7v10a1 1 0 0 1-1.516.857L7 12.385V17a1 1 0 1 1-2 0V7a1 1 0 0 1 1-1z"/>
+          </svg>
+        </button>
+
+        <!-- Nút PLAY / PAUSE -->
+        <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" title="Phát / Dừng" onclick="event.stopPropagation();musicTogglePlay()">
+          <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 5.143v13.714A1 1 0 0 0 9.61 19.77l10.857-6.857a1 1 0 0 0 0-1.714L9.61 4.23A1 1 0 0 0 8 5.143z"/>
+          </svg>
+        </button>
+
+        <!-- Nút TIẾP THEO -->
+        <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicNext()" title="Bài tiếp">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M18 6a1 1 0 0 0-1 1v4.615L7.616 6.198A1 1 0 0 0 6 7v10a1 1 0 0 0 1.616.802L17 11.385V17a1 1 0 1 0 2 0V7a1 1 0 0 0-1-1z"/>
+          </svg>
+        </button>
+
+        <!-- Nút LẶP LẠI -->
+        <button class="mini-ctrl-btn" id="miniLoopBtn" onclick="event.stopPropagation();musicToggleLoop()" title="Lặp bài">
+          <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+            <path d="M17.5 5H6A4 4 0 0 0 2 9v.75a.75.75 0 0 0 1.5 0V9a2.5 2.5 0 0 1 2.5-2.5h11.5v2a.5.5 0 0 0 .8.4l3-2.5a.5.5 0 0 0 0-.8l-3-2.5a.5.5 0 0 0-.8.4V5zm-11 14H18a4 4 0 0 0 4-4v-.75a.75.75 0 0 0-1.5 0V15a2.5 2.5 0 0 1-2.5 2.5H6.5v-2a.5.5 0 0 0-.8-.4l-3 2.5a.5.5 0 0 0 0 .8l3 2.5a.5.5 0 0 0 .8-.4V19z"/>
+          </svg>
+        </button>
       </div>
       <div class="mini-player-progress" onclick="miniSeek(event)">
         <div class="mini-player-progress-bar" id="miniProgressBar"></div>
@@ -7805,6 +7857,10 @@ let _miniProgressTimer = null;
 let musicPlaylists = JSON.parse(localStorage.getItem('ao_music_playlists') || '[]');
 let musicLoop = false;
 
+// ===== SVG ICONS cho nút Play / Pause =====
+const _SVG_PLAY  = `<svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;pointer-events:none;transform:translateX(1.5px)"><path d="M8 5.143v13.714A1 1 0 0 0 9.61 19.77l10.857-6.857a1 1 0 0 0 0-1.714L9.61 4.23A1 1 0 0 0 8 5.143z"/></svg>`;
+const _SVG_PAUSE = `<svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="width:22px;height:22px;display:block;pointer-events:none"><rect x="5" y="4" width="4" height="16" rx="1.5"/><rect x="15" y="4" width="4" height="16" rx="1.5"/></svg>`;
+
 // ===== LOOP TOGGLE =====
 function musicToggleLoop() {
   musicLoop = !musicLoop;
@@ -7907,7 +7963,7 @@ function musicClose() {
   const bar = document.getElementById('miniProgressBar');
   if (bar) bar.style.width = '0%';
   const btn = document.getElementById('miniPlayPauseBtn');
-  if (btn) btn.textContent = '▶';
+  if (btn) btn.innerHTML = _SVG_PLAY;
 
   ytCurrentId = null;
   window._ytCurrentTrack = null;
@@ -7984,7 +8040,7 @@ window.addEventListener('message', function(e) {
 
 function _syncMiniPlayBtn(isPlaying) {
   const btn = document.getElementById('miniPlayPauseBtn');
-  if (btn) btn.textContent = isPlaying ? '⏸' : '▶';
+  if (btn) btn.innerHTML = isPlaying ? _SVG_PAUSE : _SVG_PLAY;
   const bubbleBtn = document.getElementById('musicBubbleBtn');
   if (bubbleBtn) bubbleBtn.classList.toggle('playing', isPlaying);
 }
@@ -8183,7 +8239,7 @@ function ytPlayVideo(id, title, channel, thumb) {
 
   // Set play button to pause (since it's now playing)
   const playBtn = document.getElementById('miniPlayPauseBtn');
-  if (playBtn) playBtn.textContent = '⏸';
+  if (playBtn) playBtn.innerHTML = _SVG_PAUSE;
 
   // Start progress ring
   startMiniProgress();

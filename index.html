@@ -2997,32 +2997,7 @@ body.light-mode .vat-table thead th {
       color: var(--accent);
       box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
     }
-    /* Source switcher */
-    .mini-source-row {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 8px;
-      flex-wrap: wrap;
-    }
-    .mini-source-btn {
-      font-size: 0.65rem;
-      padding: 3px 9px;
-      border-radius: 20px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.12);
-      color: rgba(255,255,255,0.5);
-      cursor: pointer;
-      font-weight: 700;
-      transition: all 0.18s;
-      white-space: nowrap;
-    }
-    .mini-source-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
-    .mini-source-btn.active {
-      background: color-mix(in srgb, var(--accent) 20%, transparent);
-      border-color: var(--accent);
-      color: var(--accent);
-    }
+
 
     /* Slim progress bar */
     .mini-player-progress {
@@ -3068,23 +3043,7 @@ body.light-mode .vat-table thead th {
       padding-bottom: 40px;
     }
 
-    /* Tiêu đề trang Âm nhạc */
-    .music-page-title {
-      text-align: center;
-      padding: 22px 0 16px;
-    }
-    .music-page-title h1 {
-      font-size: 3.2rem;
-      font-weight: 800;
-      letter-spacing: -2px;
-      line-height: 1.1;
-      margin: 0 0 6px;
-    }
-    .music-page-title p {
-      opacity: 0.5;
-      font-size: 0.88rem;
-      margin: 0;
-    }
+
 
     /* ========== YOUTUBE-LIKE SHELL ==========*/
     .ytlike-shell {
@@ -3913,8 +3872,8 @@ body.light-mode .vat-table thead th {
   <!-- ===== MUSIC PAGE — YouTube-like UI ===== -->
   <div id="page-music" class="page-content">
 
-    <!-- Tiêu đề trang giống các tab khác -->
-    <div class="music-page-title">
+    <!-- Tiêu đề trang giống Dashboard -->
+    <div class="header-group">
       <h1>🎵 MU DỊC</h1>
       <p>Tìm và phát nhạc từ YouTube ngay trong dashboard</p>
     </div>
@@ -4054,16 +4013,11 @@ body.light-mode .vat-table thead th {
     <!-- Controls -->
     <div class="mini-controls-area">
       <div class="mini-channel-text" id="miniChannel">—</div>
-      <!-- Source switcher row -->
-      <div class="mini-source-row">
-        <span style="font-size:0.65rem;opacity:0.5;font-weight:700;letter-spacing:0.05em;">NGUỒN:</span>
-        <button class="mini-source-btn active" id="srcBtnYT" onclick="musicSetSource('youtube')" title="YouTube">▶ YouTube</button>
-        <button class="mini-source-btn" id="srcBtnSC" onclick="musicSetSource('soundcloud')" title="SoundCloud">☁ SoundCloud</button>
-      </div>
+
       <div class="mini-player-controls">
-        <button class="mini-ctrl-btn" onclick="musicPrev()" title="Trước">⏮</button>
+        <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicPrev()" title="Trước">⏮</button>
         <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" title="Phát/Dừng" onclick="event.stopPropagation();musicTogglePlay()">▶</button>
-        <button class="mini-ctrl-btn" onclick="musicNext()" title="Tiếp">⏭</button>
+        <button class="mini-ctrl-btn" onclick="event.stopPropagation();musicNext()" title="Tiếp">⏭</button>
         <button class="mini-ctrl-btn" id="miniLoopBtn" onclick="musicToggleLoop()" title="Lặp bài">🔁</button>
       </div>
       <div class="mini-player-progress" onclick="miniSeek(event)">
@@ -7855,7 +7809,6 @@ let musicPlaying = false;
 let musicCurrentVideo = null;
 let _miniProgressTimer = null;
 let musicPlaylists = JSON.parse(localStorage.getItem('ao_music_playlists') || '[]');
-let musicSource = 'youtube'; // 'youtube' | 'soundcloud'
 let musicLoop = false;
 
 // ===== LOOP TOGGLE =====
@@ -7869,28 +7822,8 @@ function musicToggleLoop() {
   showKbToast(musicLoop ? '🔁 Đang lặp lại bài này' : '➡️ Tắt lặp');
 }
 
-// ===== SOURCE SWITCHER =====
-function musicSetSource(src) {
-  musicSource = src;
-  document.getElementById('srcBtnYT')?.classList.toggle('active', src === 'youtube');
-  document.getElementById('srcBtnSC')?.classList.toggle('active', src === 'soundcloud');
-  // Update search placeholder
-  const inp = document.getElementById('musicSearchInput');
-  if (inp) {
-    if (src === 'soundcloud') {
-      inp.placeholder = '🔍 Tìm bài hát trên SoundCloud hoặc dán link SC...';
-    } else {
-      inp.placeholder = '🔍 Tìm bài hát, nghệ sĩ, playlist...';
-    }
-  }
-  showKbToast(src === 'soundcloud' ? '☁ Đã chuyển sang SoundCloud' : '▶ Đã chuyển sang YouTube');
-}
 
-function extractSCUrl(val) {
-  // If it's a soundcloud URL, return it. Else return null.
-  if (/soundcloud\.com\//i.test(val)) return val;
-  return null;
-}
+
 
 // ============================================================
 // MINI PLAYER FUNCTIONS (integrated with YouTube engine)

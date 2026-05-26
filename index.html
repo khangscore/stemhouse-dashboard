@@ -2780,6 +2780,25 @@ body.light-mode .vat-table thead th {
     }
 
     /* ===== BUBBLE MUSIC PLAYER ===== */
+    /* Breathing glow animation - sáng rồi tối theo màu chủ đạo */
+    @keyframes bubbleBreath {
+      0%   { box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent) 40%, transparent),  0 4px 18px rgba(0,0,0,0.35); transform: scale(1); }
+      50%  { box-shadow: 0 0 28px 10px color-mix(in srgb, var(--accent) 90%, transparent), 0 0 50px 16px color-mix(in srgb, var(--accent) 55%, transparent), 0 6px 24px rgba(0,0,0,0.45); transform: scale(1.06); }
+      100% { box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent) 40%, transparent),  0 4px 18px rgba(0,0,0,0.35); transform: scale(1); }
+    }
+    @keyframes bubbleIdleGlow {
+      0%   { box-shadow: 0 0 6px 1px rgba(255,255,255,0.12), 0 4px 18px rgba(0,0,0,0.35); }
+      50%  { box-shadow: 0 0 14px 4px rgba(255,255,255,0.22), 0 4px 18px rgba(0,0,0,0.35); }
+      100% { box-shadow: 0 0 6px 1px rgba(255,255,255,0.12), 0 4px 18px rgba(0,0,0,0.35); }
+    }
+    /* Bounce animation cho icon bên trong */
+    @keyframes iconBounce {
+      0%,100% { transform: translateY(0) scale(1) rotate(0deg); }
+      20%      { transform: translateY(-6px) scale(1.18) rotate(-8deg); }
+      40%      { transform: translateY(2px) scale(0.92) rotate(5deg); }
+      60%      { transform: translateY(-3px) scale(1.1) rotate(-4deg); }
+      80%      { transform: translateY(1px) scale(0.97) rotate(2deg); }
+    }
     /* Floating bubble button */
     #musicBubbleBtn {
       position: fixed;
@@ -2789,7 +2808,7 @@ body.light-mode .vat-table thead th {
       height: 56px;
       border-radius: 50%;
       background: rgba(13,5,32,0.85);
-      border: none;
+      border: 2px solid rgba(255,255,255,0.15);
       cursor: pointer;
       z-index: 3001;
       display: flex;
@@ -2797,12 +2816,17 @@ body.light-mode .vat-table thead th {
       justify-content: center;
       font-size: 1.3rem;
       box-shadow: 0 4px 18px rgba(0,0,0,0.35);
-      transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s;
+      transition: border-color 0.3s ease, background 0.3s ease;
+      animation: bubbleIdleGlow 3s ease-in-out infinite;
       -webkit-tap-highlight-color: transparent;
     }
-    #musicBubbleBtn:hover { transform: scale(1.1); box-shadow: 0 6px 24px rgba(0,0,0,0.45); }
-    #musicBubbleBtn.playing { background: var(--accent); }
-    #musicBubbleBtn.playing .bubble-icon { color: #000; }
+    #musicBubbleBtn:hover { transform: scale(1.12) !important; filter: brightness(1.15); }
+    #musicBubbleBtn.playing {
+      background: color-mix(in srgb, var(--accent) 22%, rgba(13,5,32,0.9));
+      border-color: var(--accent);
+      animation: bubbleBreath 2.4s ease-in-out infinite;
+    }
+    #musicBubbleBtn.playing .bubble-icon { color: #fff; }
 
     /* SVG progress ring */
     #musicBubbleBtn svg {
@@ -2820,15 +2844,27 @@ body.light-mode .vat-table thead th {
     }
     #progressRingFill {
       fill: none;
-      stroke: var(--accent);
+      /* Màu đối lập với accent: dùng white mix để tương phản */
+      stroke: #ffffff;
       stroke-width: 3.5;
       stroke-linecap: round;
-      stroke-dasharray: 175.9; /* 2*pi*28 */
+      stroke-dasharray: 175.9;
       stroke-dashoffset: 175.9;
       transition: stroke-dashoffset 0.9s linear;
+      filter: drop-shadow(0 0 3px rgba(255,255,255,0.8));
     }
-    #musicBubbleBtn.playing #progressRingFill { stroke: #000; }
-    .bubble-icon { position: relative; z-index: 1; font-size: 1.4rem; pointer-events: none; }
+    /* Icon nhún nhảy khi đang phát */
+    .bubble-icon {
+      position: relative;
+      z-index: 1;
+      font-size: 1.4rem;
+      pointer-events: none;
+      display: inline-block;
+      transition: color 0.3s ease;
+    }
+    #musicBubbleBtn.playing .bubble-icon {
+      animation: iconBounce 1.2s cubic-bezier(0.36, 0.07, 0.19, 0.97) infinite;
+    }
 
     /* Bubble notes animation */
     @keyframes bubbleNote {
@@ -2950,9 +2986,41 @@ body.light-mode .vat-table thead th {
       background: var(--accent);
       color: #000;
       border-color: var(--accent);
-      box-shadow: 0 4px 14px rgba(34,197,94,0.4);
+      box-shadow: 0 4px 14px color-mix(in srgb, var(--accent) 50%, transparent);
     }
-    .mini-ctrl-btn.play-pause:hover { transform: scale(1.1); box-shadow: 0 6px 20px rgba(34,197,94,0.55); }
+    .mini-ctrl-btn.play-pause:hover { transform: scale(1.1); box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 65%, transparent); }
+    .mini-ctrl-btn.loop-active {
+      background: color-mix(in srgb, var(--accent) 25%, rgba(255,255,255,0.08));
+      border-color: var(--accent);
+      color: var(--accent);
+      box-shadow: 0 0 8px color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    /* Source switcher */
+    .mini-source-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+    }
+    .mini-source-btn {
+      font-size: 0.65rem;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.12);
+      color: rgba(255,255,255,0.5);
+      cursor: pointer;
+      font-weight: 700;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .mini-source-btn:hover { background: rgba(255,255,255,0.12); color: #fff; }
+    .mini-source-btn.active {
+      background: color-mix(in srgb, var(--accent) 20%, transparent);
+      border-color: var(--accent);
+      color: var(--accent);
+    }
 
     /* Slim progress bar */
     .mini-player-progress {
@@ -3618,10 +3686,17 @@ body.light-mode .vat-table thead th {
     <!-- Controls -->
     <div class="mini-controls-area">
       <div class="mini-channel-text" id="miniChannel">—</div>
+      <!-- Source switcher row -->
+      <div class="mini-source-row">
+        <span style="font-size:0.65rem;opacity:0.5;font-weight:700;letter-spacing:0.05em;">NGUỒN:</span>
+        <button class="mini-source-btn active" id="srcBtnYT" onclick="musicSetSource('youtube')" title="YouTube">▶ YouTube</button>
+        <button class="mini-source-btn" id="srcBtnSC" onclick="musicSetSource('soundcloud')" title="SoundCloud">☁ SoundCloud</button>
+      </div>
       <div class="mini-player-controls">
         <button class="mini-ctrl-btn" onclick="musicPrev()" title="Trước">⏮</button>
-        <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" onclick="musicTogglePlay()" title="Phát/Dừng">▶</button>
+        <button class="mini-ctrl-btn play-pause" id="miniPlayPauseBtn" title="Phát/Dừng" onclick="event.stopPropagation();musicTogglePlay()">▶</button>
         <button class="mini-ctrl-btn" onclick="musicNext()" title="Tiếp">⏭</button>
+        <button class="mini-ctrl-btn" id="miniLoopBtn" onclick="musicToggleLoop()" title="Lặp bài">🔁</button>
       </div>
       <div class="mini-player-progress" onclick="miniSeek(event)">
         <div class="mini-player-progress-bar" id="miniProgressBar"></div>
@@ -7410,6 +7485,42 @@ let musicPlaying = false;
 let musicCurrentVideo = null;
 let _miniProgressTimer = null;
 let musicPlaylists = JSON.parse(localStorage.getItem('ao_music_playlists') || '[]');
+let musicSource = 'youtube'; // 'youtube' | 'soundcloud'
+let musicLoop = false;
+
+// ===== LOOP TOGGLE =====
+function musicToggleLoop() {
+  musicLoop = !musicLoop;
+  const btn = document.getElementById('miniLoopBtn');
+  if (btn) {
+    btn.classList.toggle('loop-active', musicLoop);
+    btn.title = musicLoop ? 'Đang lặp lại bài này' : 'Lặp bài';
+  }
+  showKbToast(musicLoop ? '🔁 Đang lặp lại bài này' : '➡️ Tắt lặp');
+}
+
+// ===== SOURCE SWITCHER =====
+function musicSetSource(src) {
+  musicSource = src;
+  document.getElementById('srcBtnYT')?.classList.toggle('active', src === 'youtube');
+  document.getElementById('srcBtnSC')?.classList.toggle('active', src === 'soundcloud');
+  // Update search placeholder
+  const inp = document.getElementById('musicSearchInput');
+  if (inp) {
+    if (src === 'soundcloud') {
+      inp.placeholder = '🔍 Tìm bài hát trên SoundCloud hoặc dán link SC...';
+    } else {
+      inp.placeholder = '🔍 Tìm bài hát, nghệ sĩ, playlist...';
+    }
+  }
+  showKbToast(src === 'soundcloud' ? '☁ Đã chuyển sang SoundCloud' : '▶ Đã chuyển sang YouTube');
+}
+
+function extractSCUrl(val) {
+  // If it's a soundcloud URL, return it. Else return null.
+  if (/soundcloud\.com\//i.test(val)) return val;
+  return null;
+}
 
 // YouTube Data API key (public — search results only, no auth needed)
 // Using oEmbed + noembed for metadata without API key
@@ -7423,6 +7534,24 @@ async function musicSearch() {
 
   grid.innerHTML = '<div style="opacity:0.4;padding:20px;font-size:0.85rem;">🔍 Đang tìm kiếm...</div>';
   section.style.display = 'block';
+
+  // SoundCloud mode: redirect to SoundCloud search page via embed hint
+  if (musicSource === 'soundcloud') {
+    grid.innerHTML = `<div style="padding:16px;">
+      <div style="opacity:0.7;font-size:0.85rem;line-height:1.8;margin-bottom:14px;">
+        ☁️ <b>Tìm kiếm SoundCloud</b><br>
+        SoundCloud không hỗ trợ API tìm kiếm miễn phí từ browser.<br>
+        Hãy dán trực tiếp link bài hát SoundCloud vào ô tìm kiếm và nhấn 🔗 Dán link!
+      </div>
+      <a href="https://soundcloud.com/search?q=${encodeURIComponent(q)}" target="_blank" rel="noopener"
+        style="display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:12px;
+        background:var(--accent);color:#000;font-weight:800;font-size:0.85rem;text-decoration:none;transition:all 0.18s;"
+        onmouseover="this.style.opacity='0.85'" onmouseout="this.style.opacity='1'">
+        ☁ Tìm "${escMusicHTML(q)}" trên SoundCloud
+      </a>
+    </div>`;
+    return;
+  }
 
   // Try multiple Invidious instances (CORS-friendly)
   const INVIDIOUS_HOSTS = [
@@ -7489,19 +7618,39 @@ async function musicSearch() {
 async function musicOpenURL() {
   const input = document.getElementById('musicSearchInput');
   const val = input?.value?.trim() || '';
+
+  // Check SoundCloud first
+  const scUrl = extractSCUrl(val);
+  if (scUrl) {
+    let title = 'SoundCloud Track';
+    let channel = 'SoundCloud';
+    try {
+      const r = await fetch(`https://soundcloud.com/oembed?format=json&url=${encodeURIComponent(scUrl)}`, { signal: AbortSignal.timeout(4000) });
+      const d = await r.json();
+      if (d.title) { title = d.title; channel = d.author_name || 'SoundCloud'; }
+    } catch(e) {}
+    const newTrack = { id: 'sc_' + Date.now(), scUrl, title, channel, thumb: '', source: 'soundcloud' };
+    musicQueue.push(newTrack);
+    musicQueueIndex = musicQueue.length - 1;
+    musicLoadVideo(newTrack);
+    musicRenderQueue();
+    document.getElementById('musicQueueSection').style.display = 'block';
+    if (input) input.value = '';
+    return;
+  }
+
   const videoId = extractYTId(val);
   if (!videoId) {
-    // Show paste hint in UI
     const grid = document.getElementById('musicResultsGrid');
     const section = document.getElementById('musicResultsSection');
     if (grid && section) {
       section.style.display = 'block';
       grid.innerHTML = `<div style="padding:16px;opacity:0.65;font-size:0.82rem;line-height:1.8;">
-        ℹ️ Không tìm thấy link YouTube hợp lệ.<br>
-        Định dạng hỗ trợ:<br>
+        ℹ️ Không tìm thấy link YouTube hoặc SoundCloud hợp lệ.<br>
+        Định dạng YouTube:<br>
         <code style="font-size:0.75rem;opacity:0.7;">https://youtube.com/watch?v=xxxxx</code><br>
-        <code style="font-size:0.75rem;opacity:0.7;">https://youtu.be/xxxxx</code><br>
-        <code style="font-size:0.75rem;opacity:0.7;">https://youtube.com/shorts/xxxxx</code>
+        Định dạng SoundCloud:<br>
+        <code style="font-size:0.75rem;opacity:0.7;">https://soundcloud.com/artist/track</code>
       </div>`;
     }
     return;
@@ -7556,15 +7705,20 @@ function musicLoadVideo(track) {
   const embedWrap = document.getElementById('musicEmbedWrap');
 
   if (section && empty && embedWrap) {
-    // Rebuild iframe each time to avoid CORS/embed block on file://
     embedWrap.innerHTML = '';
     const ifr = document.createElement('iframe');
     ifr.id = 'musicIframe';
     ifr.allow = 'autoplay; encrypted-media; fullscreen';
     ifr.allowFullscreen = true;
     ifr.style.cssText = 'width:100%;height:100%;border:none;';
-    // Use privacy-enhanced + enablejsapi + autoplay + no restrictions
-    ifr.src = `https://www.youtube-nocookie.com/embed/${track.id}?autoplay=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(location.href.split('/').slice(0,-1).join('/') || 'null')}&fs=1&modestbranding=1`;
+
+    if (track.source === 'soundcloud' || (track.scUrl)) {
+      // SoundCloud embed
+      ifr.src = `https://w.soundcloud.com/player/?url=${encodeURIComponent(track.scUrl)}&color=%23${(getComputedStyle(document.documentElement).getPropertyValue('--accent')||'#22c55e').trim().replace('#','')}&auto_play=true&hide_related=false&show_comments=false&show_user=true&show_reposts=false&show_teaser=false`;
+    } else {
+      // YouTube embed
+      ifr.src = `https://www.youtube-nocookie.com/embed/${track.id}?autoplay=1&rel=0&enablejsapi=1&origin=${encodeURIComponent(location.href.split('/').slice(0,-1).join('/') || 'null')}&fs=1&modestbranding=1${musicLoop ? '&loop=1&playlist=' + track.id : ''}`;
+    }
     embedWrap.appendChild(ifr);
     section.style.display = 'block';
     empty.style.display = 'none';
@@ -7629,20 +7783,34 @@ function musicTogglePlay() {
   musicPlaying = !musicPlaying;
   if (btn) btn.textContent = musicPlaying ? '⏸' : '▶';
   if (bubbleBtn) bubbleBtn.classList.toggle('playing', musicPlaying);
+  // Update bubble icon bounce
+  const bubbleIcon = bubbleBtn?.querySelector('.bubble-icon');
+  if (bubbleIcon) {
+    if (musicPlaying) {
+      bubbleIcon.style.animation = '';
+    }
+  }
   const iframe = document.getElementById('musicIframe');
   if (iframe && iframe.contentWindow) {
     try {
-      iframe.contentWindow.postMessage(JSON.stringify({
-        event: 'command',
-        func: musicPlaying ? 'playVideo' : 'pauseVideo',
-        args: []
-      }), '*');
+      if (musicSource === 'youtube') {
+        iframe.contentWindow.postMessage(JSON.stringify({
+          event: 'command',
+          func: musicPlaying ? 'playVideo' : 'pauseVideo',
+          args: []
+        }), '*');
+      }
     } catch(e) {}
   }
 }
 
 function musicNext() {
   if (musicQueue.length === 0) return;
+  if (musicLoop && musicCurrentVideo) {
+    // Replay current track
+    musicLoadVideo(musicCurrentVideo);
+    return;
+  }
   const next = (musicQueueIndex + 1) % musicQueue.length;
   musicPlay(next);
 }

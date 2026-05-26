@@ -3061,17 +3061,39 @@ body.light-mode .vat-table thead th {
     .mini-footer-btn:hover { opacity: 1; background: rgba(255,255,255,0.12); border-color: var(--accent); color: var(--accent); }
 
     /* ===== MUSIC PAGE ===== */
-    #page-music { padding: 0; }
+    #page-music {
+      padding: 0;
+      margin-left: 110px;
+      margin-right: 20px;
+      padding-bottom: 40px;
+    }
 
-    /* ========== YOUTUBE-LIKE SHELL ========== */
+    /* Tiêu đề trang Âm nhạc */
+    .music-page-title {
+      text-align: center;
+      padding: 22px 0 16px;
+    }
+    .music-page-title h1 {
+      font-size: 3.2rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      margin: 0 0 6px;
+    }
+    .music-page-title p {
+      opacity: 0.5;
+      font-size: 0.88rem;
+      margin: 0;
+    }
+
+    /* ========== YOUTUBE-LIKE SHELL ==========*/
     .ytlike-shell {
       display: flex;
       flex-direction: column;
-      height: 100%;
-      min-height: calc(100vh - 40px);
       background: rgba(10,6,25,0.7);
       border-radius: 20px;
       overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.07);
     }
 
     /* TOP BAR */
@@ -3165,11 +3187,9 @@ body.light-mode .vat-table thead th {
     /* MAIN 2-COL LAYOUT */
     .ytlike-main {
       display: grid;
-      grid-template-columns: minmax(0,1.6fr) minmax(280px,380px);
+      grid-template-columns: minmax(0,1.6fr) minmax(260px,360px);
       gap: 0;
-      flex: 1;
-      overflow: hidden;
-      min-height: calc(100vh - 160px);
+      min-height: calc(100vh - 260px);
     }
 
     /* LEFT: player column */
@@ -3892,6 +3912,13 @@ body.light-mode .vat-table thead th {
 
   <!-- ===== MUSIC PAGE — YouTube-like UI ===== -->
   <div id="page-music" class="page-content">
+
+    <!-- Tiêu đề trang giống các tab khác -->
+    <div class="music-page-title">
+      <h1>🎵 MU DỊC</h1>
+      <p>Tìm và phát nhạc từ YouTube ngay trong dashboard</p>
+    </div>
+
     <div class="ytlike-shell">
 
       <!-- TOP BAR -->

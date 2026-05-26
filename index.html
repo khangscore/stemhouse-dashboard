@@ -3061,21 +3061,55 @@ body.light-mode .vat-table thead th {
 
     /* ===== MUSIC PAGE ===== */
     #page-music {
-      padding: 18px 20px 40px;
+      padding: 0 20px 40px;
       margin-left: 110px;
       margin-right: 20px;
     }
 
 
 
+    /* ===== MUSIC PAGE TITLE — sát trần giống các tab khác ===== */
+    .music-page-title {
+      padding: 18px 0 10px;
+      text-align: center;
+    }
+    .music-page-title h1 {
+      font-size: 4rem;
+      letter-spacing: -3px;
+      margin: 0;
+    }
+    .music-page-title p {
+      margin-top: 6px;
+      opacity: 0.55;
+      font-size: 0.92rem;
+    }
+
+    /* ===== STICKY SEARCH HEADER ===== */
+    .ytlike-sticky-header {
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      background: rgba(8,4,20,0.88);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.09);
+      border-bottom: none;
+      border-radius: 20px 20px 0 0;
+      overflow: hidden;
+      /* Subtle glow when stuck */
+      box-shadow: 0 4px 24px rgba(0,0,0,0.45);
+      transition: box-shadow 0.2s ease;
+    }
+
     /* ========== YOUTUBE-LIKE SHELL ==========*/
     .ytlike-shell {
       display: flex;
       flex-direction: column;
       background: rgba(10,6,25,0.7);
-      border-radius: 20px;
+      border-radius: 0 0 20px 20px;
       overflow: hidden;
       border: 1px solid rgba(255,255,255,0.07);
+      border-top: none;
     }
 
     /* TOP BAR */
@@ -3895,13 +3929,14 @@ body.light-mode .vat-table thead th {
   <!-- ===== MUSIC PAGE — YouTube-like UI ===== -->
   <div id="page-music" class="page-content">
 
-    <!-- Tiêu đề trang giống Dashboard -->
-    <div class="header-group">
+    <!-- Tiêu đề sát trần giống Dashboard / Excel / VAT -->
+    <div class="music-page-title">
       <h1>🎵 MU DỊC</h1>
       <p>Tìm và phát nhạc từ YouTube ngay trong dashboard</p>
     </div>
 
-    <div class="ytlike-shell">
+    <!-- ===== STICKY: Search bar + Category chips ===== -->
+    <div class="ytlike-sticky-header" id="ytStickyHeader">
 
       <!-- TOP BAR -->
       <div class="ytlike-topbar">
@@ -3938,7 +3973,9 @@ body.light-mode .vat-table thead th {
         <button class="ytlike-chip" onclick="ytChipSelect(this,'nhạc thiếu nhi')">Thiếu nhi</button>
       </div>
 
-      <!-- MAIN AREA -->
+    </div><!-- end .ytlike-sticky-header -->
+
+    <div class="ytlike-shell">
       <div class="ytlike-main">
 
         <!-- LEFT: Player + Info -->
@@ -3948,6 +3985,9 @@ body.light-mode .vat-table thead th {
             <div class="ytlike-player-placeholder" id="ytPlayerPlaceholder">
               <div style="font-size:3rem;margin-bottom:12px;">▶</div>
               <div style="font-size:0.95rem;opacity:0.6;">Chọn một video để xem</div>
+              <div style="margin-top:14px;display:inline-flex;align-items:center;gap:6px;padding:5px 12px;border-radius:20px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);font-size:0.72rem;color:rgba(34,197,94,0.85);">
+                🛡️ Chế độ Privacy · Giảm quảng cáo theo dõi
+              </div>
             </div>
             <iframe id="ytPlayerIframe" allow="autoplay; encrypted-media; fullscreen; picture-in-picture"
               allowfullscreen src="about:blank"
@@ -8201,7 +8241,7 @@ function ytPlayVideo(id, title, channel, thumb) {
   const iframe = document.getElementById('ytPlayerIframe');
   const placeholder = document.getElementById('ytPlayerPlaceholder');
   if (iframe) {
-    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1`;
+    iframe.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1&iv_load_policy=3&disablekb=0`;
     iframe.style.display = 'block';
   }
   if (placeholder) placeholder.style.display = 'none';

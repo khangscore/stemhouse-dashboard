@@ -2780,7 +2780,38 @@ body.light-mode .vat-table thead th {
     }
 
     /* ===== BUBBLE MUSIC PLAYER ===== */
-    /* Breathing glow animation - sáng rồi tối theo màu chủ đạo */
+    /* Bubble button: ẩn mặc định, chỉ hiện khi đang phát */
+    #musicBubbleBtn {
+      position: fixed;
+      bottom: 162px;
+      right: 30px;
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      background: rgba(13,5,32,0.85);
+      border: 2px solid rgba(255,255,255,0.15);
+      cursor: pointer;
+      z-index: 3001;
+      display: none; /* ẩn mặc định */
+      align-items: center;
+      justify-content: center;
+      font-size: 1.3rem;
+      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
+      transition: border-color 0.3s ease, background 0.3s ease;
+      animation: bubbleIdleGlow 3s ease-in-out infinite;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* Khi có bài đang phát: hiện nút */
+    #musicBubbleBtn.visible {
+      display: flex;
+    }
+    #musicBubbleBtn:hover { transform: scale(1.12) !important; filter: brightness(1.15); }
+    #musicBubbleBtn.playing {
+      background: color-mix(in srgb, var(--accent) 22%, rgba(13,5,32,0.9));
+      border-color: var(--accent);
+      animation: bubbleBreath 2.4s ease-in-out infinite;
+    }
+    #musicBubbleBtn.playing .bubble-icon { color: #fff; }
     @keyframes bubbleBreath {
       0%   { box-shadow: 0 0 8px 2px color-mix(in srgb, var(--accent) 40%, transparent),  0 4px 18px rgba(0,0,0,0.35); transform: scale(1); }
       50%  { box-shadow: 0 0 28px 10px color-mix(in srgb, var(--accent) 90%, transparent), 0 0 50px 16px color-mix(in srgb, var(--accent) 55%, transparent), 0 6px 24px rgba(0,0,0,0.45); transform: scale(1.06); }
@@ -2799,35 +2830,6 @@ body.light-mode .vat-table thead th {
       60%      { transform: translateY(-3px) scale(1.1) rotate(-4deg); }
       80%      { transform: translateY(1px) scale(0.97) rotate(2deg); }
     }
-    /* Floating bubble button */
-    #musicBubbleBtn {
-      position: fixed;
-      bottom: 162px;
-      right: 30px;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      background: rgba(13,5,32,0.85);
-      border: 2px solid rgba(255,255,255,0.15);
-      cursor: pointer;
-      z-index: 3001;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.3rem;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.35);
-      transition: border-color 0.3s ease, background 0.3s ease;
-      animation: bubbleIdleGlow 3s ease-in-out infinite;
-      -webkit-tap-highlight-color: transparent;
-    }
-    #musicBubbleBtn:hover { transform: scale(1.12) !important; filter: brightness(1.15); }
-    #musicBubbleBtn.playing {
-      background: color-mix(in srgb, var(--accent) 22%, rgba(13,5,32,0.9));
-      border-color: var(--accent);
-      animation: bubbleBreath 2.4s ease-in-out infinite;
-    }
-    #musicBubbleBtn.playing .bubble-icon { color: #fff; }
-
     /* SVG progress ring */
     #musicBubbleBtn svg {
       position: absolute;
@@ -3060,10 +3062,65 @@ body.light-mode .vat-table thead th {
 
     /* ===== MUSIC PAGE ===== */
     #page-music { padding: 0; }
-    .music-page-wrap {
-      max-width: 960px;
+    /* Two-column layout */
+    .music-layout {
+      display: grid;
+      grid-template-columns: 1fr 300px;
+      gap: 24px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 24px 20px;
+      padding: 0 20px 60px;
+      align-items: start;
+    }
+    .music-main-col {
+      min-width: 0;
+    }
+    /* RIGHT: Saved playlist panel */
+    .music-playlist-panel {
+      position: sticky;
+      top: 16px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 22px;
+      backdrop-filter: blur(14px);
+      overflow: hidden;
+      animation: pageSlideIn 0.32s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+    .music-playlist-panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px 12px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      color: var(--accent);
+      opacity: 0.85;
+      text-transform: uppercase;
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .music-playlist-count {
+      background: var(--accent);
+      color: #000;
+      font-size: 0.65rem;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 20px;
+      min-width: 20px;
+      text-align: center;
+    }
+    .music-playlist-panel-list {
+      padding: 10px 12px;
+      max-height: calc(100vh - 200px);
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(255,255,255,0.1) transparent;
+    }
+    .music-playlist-panel-list::-webkit-scrollbar { width: 4px; }
+    .music-playlist-panel-list::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 4px; }
+    .music-playlist-panel-empty {
+      padding: 28px 18px;
+      text-align: center;
     }
     .music-search-bar {
       display: flex;
@@ -3608,61 +3665,78 @@ body.light-mode .vat-table thead th {
   </div>
 
 
+
   <!-- ===== MUSIC PAGE ===== -->
   <div id="page-music" class="page-content">
-    <div class="music-page-wrap">
-      <h2 style="font-size:1.8rem; font-weight:900; letter-spacing:-1px; margin-bottom:6px;">🎵 Âm nhạc</h2>
-      <p style="opacity:0.4; font-size:0.82rem; margin-bottom:22px;">Tìm và phát nhạc từ YouTube ngay trong dashboard</p>
-
-      <!-- Search -->
-      <div class="music-search-bar">
-        <input class="music-search-input" id="musicSearchInput" type="text"
-          placeholder="🔍 Tìm bài hát, nghệ sĩ, playlist..."
-          onkeydown="if(event.key==='Enter') musicSearch()">
-        <button class="music-search-btn" onclick="musicSearch()">🔍 Tìm</button>
-        <button class="music-search-btn" style="background:rgba(255,255,255,0.1); color:var(--text-main);" onclick="musicOpenURL()">🔗 Dán link</button>
-      </div>
-
-      <!-- Now playing embed -->
-      <div id="musicPlayerSection" style="display:none;">
-        <div class="music-now-info">
-          <div class="music-now-title" id="musicNowTitle">—</div>
-          <div class="music-now-channel" id="musicNowChannel">—</div>
-        </div>
-        <div class="music-player-embed" id="musicEmbedWrap">
-          <iframe id="musicIframe" allow="autoplay; encrypted-media" allowfullscreen
-            src="about:blank"></iframe>
-        </div>
-      </div>
-
-      <!-- Empty state -->
-      <div class="music-empty-state" id="musicEmptyState">
-        <div class="music-empty-icon">🎧</div>
-        <div class="music-empty-text">Tìm một bài hát để bắt đầu nghe nhạc<br>hoặc dán thẳng link YouTube vào đây</div>
-      </div>
-
-      <!-- Results -->
-      <div id="musicResultsSection" style="display:none;">
-        <div class="music-queue-title" style="margin-top:24px;">KẾT QUẢ TÌM KIẾM</div>
-        <div class="music-results-grid" id="musicResultsGrid"></div>
-      </div>
-
-      <!-- Queue / Playlist -->
-      <div class="music-queue-section" id="musicQueueSection" style="display:none;">
-        <div class="music-queue-title">DANH SÁCH PHÁT</div>
-        <div class="music-playlist-wrap">
-          <input class="music-playlist-input" id="musicQueueNameInput" placeholder="Tên playlist mới...">
-          <button class="music-search-btn" style="padding:10px 16px; font-size:0.82rem;" onclick="musicSavePlaylist()">💾 Lưu playlist</button>
-        </div>
-        <div id="musicQueueList"></div>
-      </div>
-
-      <!-- Saved playlists -->
-      <div id="musicPlaylistsSection" style="display:none; margin-top:24px;">
-        <div class="music-queue-title">PLAYLIST ĐÃ LƯU</div>
-        <div id="musicPlaylistsList"></div>
-      </div>
+    <!-- Header giống các trang khác: căn giữa, nằm trên cao -->
+    <div class="header-group">
+      <h1>🎵 Âm nhạc</h1>
+      <p style="opacity:0.6;">Tìm và phát nhạc từ YouTube / SoundCloud ngay trong dashboard</p>
     </div>
+
+    <!-- Two-column layout: main content left, saved playlists right -->
+    <div class="music-layout">
+
+      <!-- LEFT COLUMN: search, player, results, queue -->
+      <div class="music-main-col">
+        <!-- Search -->
+        <div class="music-search-bar">
+          <input class="music-search-input" id="musicSearchInput" type="text"
+            placeholder="🔍 Tìm bài hát, nghệ sĩ, playlist..."
+            onkeydown="if(event.key==='Enter') musicSearch()">
+          <button class="music-search-btn" onclick="musicSearch()">🔍 Tìm</button>
+          <button class="music-search-btn" style="background:rgba(255,255,255,0.1); color:var(--text-main);" onclick="musicOpenURL()">🔗 Dán link</button>
+        </div>
+
+        <!-- Now playing embed -->
+        <div id="musicPlayerSection" style="display:none;">
+          <div class="music-now-info">
+            <div class="music-now-title" id="musicNowTitle">—</div>
+            <div class="music-now-channel" id="musicNowChannel">—</div>
+          </div>
+          <div class="music-player-embed" id="musicEmbedWrap">
+            <iframe id="musicIframe" allow="autoplay; encrypted-media" allowfullscreen
+              src="about:blank"></iframe>
+          </div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="music-empty-state" id="musicEmptyState">
+          <div class="music-empty-icon">🎧</div>
+          <div class="music-empty-text">Tìm một bài hát để bắt đầu nghe nhạc<br>hoặc dán thẳng link YouTube / SoundCloud vào đây</div>
+        </div>
+
+        <!-- Results -->
+        <div id="musicResultsSection" style="display:none;">
+          <div class="music-queue-title" style="margin-top:24px;">KẾT QUẢ TÌM KIẾM</div>
+          <div class="music-results-grid" id="musicResultsGrid"></div>
+        </div>
+
+        <!-- Queue -->
+        <div class="music-queue-section" id="musicQueueSection" style="display:none;">
+          <div class="music-queue-title">DANH SÁCH PHÁT</div>
+          <div class="music-playlist-wrap">
+            <input class="music-playlist-input" id="musicQueueNameInput" placeholder="Tên playlist mới...">
+            <button class="music-search-btn" style="padding:10px 16px; font-size:0.82rem;" onclick="musicSavePlaylist()">💾 Lưu playlist</button>
+          </div>
+          <div id="musicQueueList"></div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: saved playlists panel -->
+      <div class="music-playlist-panel" id="musicPlaylistsSection" style="display:none;">
+        <div class="music-playlist-panel-header">
+          <span>🎶 PLAYLIST ĐÃ LƯU</span>
+          <span class="music-playlist-count" id="musicPlaylistCount">0</span>
+        </div>
+        <div id="musicPlaylistsList" class="music-playlist-panel-list"></div>
+        <div class="music-playlist-panel-empty" id="musicPlaylistEmpty">
+          <div style="font-size:2rem;margin-bottom:8px;">📂</div>
+          <div style="font-size:0.78rem;opacity:0.5;line-height:1.6;">Chưa có playlist nào.<br>Lưu queue hiện tại để bắt đầu!</div>
+        </div>
+      </div>
+
+    </div><!-- end .music-layout -->
   </div>
 
   <!-- BUBBLE MUSIC BUTTON -->
@@ -4134,6 +4208,8 @@ function saveDataDebounced() {
         currentActive.classList.remove('page-leaving');
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page','page-leaving'));
         targetPage.classList.add('active-page');
+        // Render playlists panel when entering music page
+        if (pageId === 'music') setTimeout(musicRenderPlaylists, 50);
       }, 180);
     }
     function escapeHTML(str) {
@@ -7750,9 +7826,8 @@ function musicShowMiniPlayer(track) {
   if (ch) ch.textContent = track.channel;
   if (btn) btn.textContent = '⏸';
   if (bubbleBtn) {
-    bubbleBtn.classList.add('playing');
+    bubbleBtn.classList.add('playing', 'visible'); // hiện nút
     bubbleBtn.querySelector('.bubble-icon').textContent = '🎵';
-    // Add floating notes if not already there
     if (!bubbleBtn.querySelector('.bubble-note')) {
       ['♪','♫','♩'].forEach(n => {
         const s = document.createElement('span');
@@ -7827,7 +7902,7 @@ function musicClose() {
   document.body.classList.remove('has-mini-player');
   const bubbleBtn = document.getElementById('musicBubbleBtn');
   if (bubbleBtn) {
-    bubbleBtn.classList.remove('playing');
+    bubbleBtn.classList.remove('playing', 'visible'); // ẩn nút khi đóng
     bubbleBtn.querySelector('.bubble-icon').textContent = '🎵';
     bubbleBtn.querySelectorAll('.bubble-note').forEach(n => n.remove());
   }
@@ -7900,7 +7975,6 @@ function musicRenderQueue() {
         style="background:rgba(255,80,80,0.15);border:none;color:#f87171;width:24px;height:24px;border-radius:6px;cursor:pointer;font-size:0.75rem;flex-shrink:0;">✕</button>
     </div>
   `).join('');
-  document.getElementById('musicPlaylistsSection').style.display = musicPlaylists.length ? 'block' : 'none';
   musicRenderPlaylists();
 }
 
@@ -7918,21 +7992,42 @@ function musicSavePlaylist() {
 function musicRenderPlaylists() {
   const el = document.getElementById('musicPlaylistsList');
   const sec = document.getElementById('musicPlaylistsSection');
+  const countEl = document.getElementById('musicPlaylistCount');
+  const emptyEl = document.getElementById('musicPlaylistEmpty');
   if (!el || !sec) return;
-  if (!musicPlaylists.length) { sec.style.display = 'none'; return; }
+
+  // Luôn hiện panel nếu đang ở trang nhạc (dù rỗng)
   sec.style.display = 'block';
+  if (countEl) countEl.textContent = musicPlaylists.length;
+
+  if (!musicPlaylists.length) {
+    el.innerHTML = '';
+    if (emptyEl) emptyEl.style.display = 'block';
+    return;
+  }
+  if (emptyEl) emptyEl.style.display = 'none';
+
   el.innerHTML = musicPlaylists.map((pl, i) => `
-    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:12px;
-      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);margin-bottom:8px;">
-      <span style="font-size:1rem;">🎶</span>
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);margin-bottom:8px;
+      transition:all 0.18s;cursor:pointer;"
+      onclick="musicLoadPlaylist(${i})"
+      onmouseover="this.style.background='rgba(255,255,255,0.08)';this.style.borderColor='var(--accent)'"
+      onmouseout="this.style.background='rgba(255,255,255,0.04)';this.style.borderColor='rgba(255,255,255,0.07)'">
+      <div style="width:36px;height:36px;border-radius:10px;background:color-mix(in srgb,var(--accent) 18%,transparent);
+        border:1px solid color-mix(in srgb,var(--accent) 35%,transparent);display:flex;align-items:center;justify-content:center;
+        font-size:1rem;flex-shrink:0;">🎶</div>
       <div style="flex:1;min-width:0;">
-        <div style="font-weight:700;font-size:0.82rem;">${escMusicHTML(pl.name)}</div>
-        <div style="font-size:0.68rem;opacity:0.45;">${pl.tracks.length} bài</div>
+        <div style="font-weight:700;font-size:0.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${escMusicHTML(pl.name)}</div>
+        <div style="font-size:0.66rem;opacity:0.4;margin-top:1px;">${pl.tracks.length} bài</div>
       </div>
-      <button onclick="musicLoadPlaylist(${i})" style="background:rgba(34,197,94,0.15);border:1px solid var(--accent);
-        color:var(--accent);padding:5px 12px;border-radius:8px;cursor:pointer;font-size:0.75rem;font-weight:700;">▶ Phát</button>
-      <button onclick="musicPlaylists.splice(${i},1);localStorage.setItem('ao_music_playlists',JSON.stringify(musicPlaylists));musicRenderPlaylists();"
-        style="background:rgba(255,80,80,0.12);border:none;color:#f87171;width:28px;height:28px;border-radius:8px;cursor:pointer;">🗑️</button>
+      <div style="display:flex;flex-direction:column;gap:4px;flex-shrink:0;">
+        <button onclick="event.stopPropagation();musicLoadPlaylist(${i})"
+          style="background:color-mix(in srgb,var(--accent) 18%,transparent);border:1px solid var(--accent);
+          color:var(--accent);padding:3px 8px;border-radius:7px;cursor:pointer;font-size:0.65rem;font-weight:800;">▶</button>
+        <button onclick="event.stopPropagation();musicPlaylists.splice(${i},1);localStorage.setItem('ao_music_playlists',JSON.stringify(musicPlaylists));musicRenderPlaylists();"
+          style="background:rgba(255,80,80,0.12);border:none;color:#f87171;width:100%;height:20px;border-radius:7px;cursor:pointer;font-size:0.65rem;">✕</button>
+      </div>
     </div>
   `).join('');
 }

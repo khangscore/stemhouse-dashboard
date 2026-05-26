@@ -7893,8 +7893,115 @@ function extractSCUrl(val) {
 }
 
 // ============================================================
-// YOUTUBE-LIKE ENGINE
+// MINI PLAYER FUNCTIONS (integrated with YouTube engine)
 // ============================================================
+function toggleMiniPlayer() {
+  const popup = document.getElementById('miniMusicPlayer');
+  if (!popup) return;
+  popup.classList.toggle('visible');
+}
+
+function musicTogglePlay() {
+  // Toggle play/pause on the YouTube iframe in the main page
+  const iframe = document.getElementById('ytPlayerIframe');
+  const btn = document.getElementById('miniPlayPauseBtn');
+  if (!iframe || iframe.src === 'about:blank') return;
+
+  // We use postMessage to control the YouTube iframe
+  const isPlaying = btn && btn.textContent === '⏸';
+  if (isPlaying) {
+    iframe.contentWindow?.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+    if (btn) btn.textContent = '▶';
+    const bubbleBtn = document.getElementById('musicBubbleBtn');
+    if (bubbleBtn) bubbleBtn.classList.remove('playing');
+    clearInterval(_miniProgressTimer);
+  } else {
+    iframe.contentWindow?.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+    if (btn) btn.textContent = '⏸';
+    const bubbleBtn = document.getElementById('musicBubbleBtn');
+    if (bubbleBtn) bubbleBtn.classList.add('playing');
+    startMiniProgress();
+  }
+}
+
+function musicNext() {
+  if (!ytQueue.length) return;
+  const next = (ytQueueIdx + 1) % ytQueue.length;
+  ytPlayFromQueue(next);
+}
+
+function musicPrev() {
+  if (!ytQueue.length) return;
+  const prev = (ytQueueIdx - 1 + ytQueue.length) % ytQueue.length;
+  ytPlayFromQueue(prev);
+}
+
+function musicClose() {
+  // Stop the player
+  const iframe = document.getElementById('ytPlayerIframe');
+  const placeholder = document.getElementById('ytPlayerPlaceholder');
+  if (iframe) {
+    iframe.src = 'about:blank';
+    iframe.style.display = 'none';
+  }
+  if (placeholder) placeholder.style.display = 'flex';
+
+  // Hide now info
+  const nowInfo = document.getElementById('ytNowInfo');
+  if (nowInfo) nowInfo.style.display = 'none';
+
+  // Hide mini player popup
+  const popup = document.getElementById('miniMusicPlayer');
+  if (popup) popup.classList.remove('visible');
+
+  // Hide bubble button
+  const bubbleBtn = document.getElementById('musicBubbleBtn');
+  if (bubbleBtn) {
+    bubbleBtn.classList.remove('playing', 'visible');
+    const icon = bubbleBtn.querySelector('.bubble-icon');
+    if (icon) icon.textContent = '🎵';
+  }
+
+  // Reset progress
+  clearInterval(_miniProgressTimer);
+  const ring = document.getElementById('progressRingFill');
+  if (ring) ring.style.strokeDashoffset = '175.9';
+  const bar = document.getElementById('miniProgressBar');
+  if (bar) bar.style.width = '0%';
+  const btn = document.getElementById('miniPlayPauseBtn');
+  if (btn) btn.textContent = '▶';
+
+  ytCurrentId = null;
+  window._ytCurrentTrack = null;
+
+  // Reset active card
+  document.querySelectorAll('.ytlike-video-card').forEach(c => c.classList.remove('active'));
+}
+
+function startMiniProgress() {
+  clearInterval(_miniProgressTimer);
+  let progress = 0;
+  const CIRCUMFERENCE = 175.9;
+  _miniProgressTimer = setInterval(() => {
+    progress = Math.min(progress + 0.12, 100);
+    const bar = document.getElementById('miniProgressBar');
+    if (bar) bar.style.width = progress + '%';
+    const ring = document.getElementById('progressRingFill');
+    if (ring) ring.style.strokeDashoffset = CIRCUMFERENCE - (progress / 100) * CIRCUMFERENCE;
+    if (progress >= 100) {
+      clearInterval(_miniProgressTimer);
+      setTimeout(musicNext, 600);
+    }
+  }, 900);
+}
+
+function miniSeek(e) {
+  const bar = e.currentTarget;
+  const rect = bar.getBoundingClientRect();
+  const pct = (e.clientX - rect.left) / rect.width;
+  const barFill = document.getElementById('miniProgressBar');
+  if (barFill) barFill.style.width = (pct * 100) + '%';
+}
 const YT_API_KEY = 'AIzaSyDYwY8DrgVrGDWCqxgs1XAerL-x4PgdOt0';
 let ytQueue = [];
 let ytQueueIdx = -1;
@@ -7994,16 +8101,17 @@ function ytRenderGrid(items, append) {
 
 function ytPlayVideo(id, title, channel, thumb) {
   ytCurrentId = id;
-  // Update iframe
+
+  // Update iframe in main page
   const iframe = document.getElementById('ytPlayerIframe');
   const placeholder = document.getElementById('ytPlayerPlaceholder');
   if (iframe) {
-    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&fs=1`;
+    iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0&modestbranding=1&fs=1&enablejsapi=1`;
     iframe.style.display = 'block';
   }
   if (placeholder) placeholder.style.display = 'none';
 
-  // Update now info
+  // Update now info panel
   const nowInfo = document.getElementById('ytNowInfo');
   if (nowInfo) nowInfo.style.display = 'block';
   const titleEl = document.getElementById('ytNowTitle');
@@ -8011,26 +8119,35 @@ function ytPlayVideo(id, title, channel, thumb) {
   if (titleEl) titleEl.textContent = title;
   if (metaEl) metaEl.textContent = channel;
 
-  // Update active card
+  // Update active card highlight
   document.querySelectorAll('.ytlike-video-card').forEach(c => c.classList.remove('active'));
-  const cards = document.querySelectorAll('.ytlike-video-card');
-  cards.forEach(c => { if (c.onclick && c.onclick.toString().includes(id)) c.classList.add('active'); });
+  document.querySelectorAll('.ytlike-video-card').forEach(c => {
+    if (c.getAttribute('onclick') && c.getAttribute('onclick').includes(id)) c.classList.add('active');
+  });
 
-  // Also update mini player bubble
+  // Store current track
+  window._ytCurrentTrack = { id, title, channel, thumb };
+
+  // ---- Sync mini player ----
   const bubbleBtn = document.getElementById('musicBubbleBtn');
   if (bubbleBtn) {
     bubbleBtn.classList.add('visible', 'playing');
     const icon = bubbleBtn.querySelector('.bubble-icon');
     if (icon) icon.textContent = '🎵';
   }
-  // Update mini player
+
+  // Update mini player info
   const miniTitle = document.getElementById('miniTitle');
   if (miniTitle) miniTitle.textContent = title;
   const miniThumb = document.getElementById('miniThumb');
-  if (miniThumb) { miniThumb.src = thumb; miniThumb.style.display = 'block'; }
+  if (miniThumb) { miniThumb.src = thumb || `https://i.ytimg.com/vi/${id}/mqdefault.jpg`; miniThumb.style.display = 'block'; }
 
-  // Store for queue
-  window._ytCurrentTrack = { id, title, channel, thumb };
+  // Set play button to pause (since it's now playing)
+  const playBtn = document.getElementById('miniPlayPauseBtn');
+  if (playBtn) playBtn.textContent = '⏸';
+
+  // Start progress ring
+  startMiniProgress();
 }
 
 function ytAddToQueue() {

@@ -333,6 +333,19 @@
   border-color: var(--accent);
 }
 
+/* ===== ĐƯỜNG KẺ NGANG TRÊN CÙNG ===== */
+.top-divider-line {
+  position: fixed;
+  top: 30px;
+  left: calc(10px + var(--sidebar-collapsed-width)); /* cạnh phải sidebar khi thu nhỏ */
+  right: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.35);
+  opacity: 0; /* tắc kè: vô hình hoàn toàn */
+  z-index: 1998;
+  pointer-events: none;
+}
+
 /* bg overlay for custom bg */
 body.has-custom-bg {
   background-image: none !important;
@@ -677,14 +690,138 @@ body.has-custom-bg::after {
       position: relative;
     }
 
+    /* Wrapper căn giữa, sát mép trên */
     .header-group {
       text-align: center;
-      margin-bottom: 40px;
+      margin-bottom: 28px;
+      margin-top: -33px; /* -18px gốc - 15px dịch lên */
+      margin-left: -20px;
+      margin-right: -20px;
+      /* Trong suốt — background nằm ở ::before giả để ko kéo full width */
+      background: transparent;
+      position: relative;
+      z-index: 10;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* Banner thực sự: co lại ôm chữ, bo 2 góc dưới */
+    .header-group h1,
+    .header-group .home-clock {
+      display: inline-block;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 75%, white) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 80%, #000) 100%);
+      padding: 8px 36px 16px;
+      border-radius: 0 0 22px 22px;
+      margin: 0;
+      color: #000;
+      /* Viền mờ hơn để bóng nổi bật */
+      border: 3px solid rgba(0,0,0,0.3);
+      border-top: none;
+      /* Hiệu ứng nút nổi 3D — xuống + phải */
+      box-shadow:
+        5px 0 0 0 color-mix(in srgb, var(--accent) 40%, #000),
+        8px 0 0 0 rgba(0,0,0,0.38),
+        0 6px 0 0 color-mix(in srgb, var(--accent) 40%, #000),
+        0 10px 0 0 rgba(0,0,0,0.38),
+        5px 6px 0 0 color-mix(in srgb, var(--accent) 35%, #000),
+        8px 10px 0 0 rgba(0,0,0,0.32),
+        8px 18px 24px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset -1px 0 0 rgba(255,255,255,0.12);
     }
 
     .header-group h1 {
-      font-size: 4rem;
-      letter-spacing: -3px;
+      font-size: 3.2rem;
+      letter-spacing: -2px;
+    }
+
+    /* Ẩn tất cả subtitle/p bằng CSS — KHÔNG xóa HTML */
+    .header-group p {
+      display: none;
+    }
+
+    /* Home page: ẩn liveDate bằng CSS, giữ nguyên element trong DOM */
+    .header-group .home-date {
+      display: none;
+    }
+
+    .header-group .home-clock {
+      font-size: 2.6rem;
+      letter-spacing: -2px;
+    }
+
+
+
+    /* ===== BANNER HEIGHT VAR — dùng cho tất cả sticky bên dưới ===== */
+    :root {
+      --banner-h: 58px;   /* chiều cao banner lúc to */
+      --banner-h-sm: 36px; /* chiều cao banner lúc thu nhỏ */
+    }
+
+
+    /* ===== STICKY CONTENT FOLLOWS BANNER ===== */
+    .excel-toolbar,
+    .vat-sticky-top,
+    .ytlike-sticky-header {
+      transition: top 0.42s cubic-bezier(0.34, 1.2, 0.64, 1);
+    }
+
+    /* Khi banner thu nhỏ → toolbar nhảy lên sát banner luôn (cùng timing với banner) */
+    body.banner-scrolled .excel-toolbar {
+      top: calc(var(--banner-h-sm) + 4px) !important;
+    }
+    body.banner-scrolled .vat-sticky-top {
+      top: var(--banner-h-sm) !important;
+    }
+    body.banner-scrolled .ytlike-sticky-header {
+      top: var(--banner-h-sm) !important;
+    }
+    /* ===== SCROLL SHRINK BANNER ===== */
+    .header-group h1,
+    .header-group .home-clock,
+    .music-page-title h1 {
+      transition:
+        font-size 0.42s cubic-bezier(0.34, 1.2, 0.64, 1),
+        padding   0.42s cubic-bezier(0.34, 1.2, 0.64, 1),
+        box-shadow 0.42s ease,
+        transform 0.42s cubic-bezier(0.34, 1.2, 0.64, 1);
+      transform-origin: top center;
+      will-change: font-size, padding, transform;
+    }
+
+    /* State khi đã scroll — thêm class "scrolled" vào body */
+    body.banner-scrolled .header-group h1,
+    body.banner-scrolled .music-page-title h1,
+    body.banner-scrolled .header-group .home-clock {
+      font-size: 1.15rem !important;
+      letter-spacing: -0.5px !important;
+      padding: 5px 22px 9px !important;
+      border-radius: 0 0 14px 14px !important;
+      border: 2px solid rgba(0,0,0,0.25) !important;
+      border-top: none !important;
+      box-shadow:
+        3px 0 0 0 color-mix(in srgb, var(--accent) 38%, #000),
+        5px 0 0 0 rgba(0,0,0,0.3),
+        0 4px 0 0 color-mix(in srgb, var(--accent) 38%, #000),
+        0 6px 0 0 rgba(0,0,0,0.3),
+        3px 4px 0 0 color-mix(in srgb, var(--accent) 32%, #000),
+        5px 6px 0 0 rgba(0,0,0,0.25),
+        5px 10px 14px rgba(0,0,0,0.38),
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset -1px 0 0 rgba(255,255,255,0.12) !important;
+    }
+
+    /* Wrapper cũng transition để margin co lại + sticky freeze */
+    .header-group,
+    .music-page-title {
+      transition: margin-bottom 0.42s cubic-bezier(0.34, 1.2, 0.64, 1);
+      position: sticky;
+      top: 0;
+      z-index: 200;
+    }
+    body.banner-scrolled .header-group,
+    body.banner-scrolled .music-page-title {
+      margin-bottom: 12px !important;
     }
 
     .grid {
@@ -824,6 +961,8 @@ body.has-custom-bg::after {
 
     /* Ẩn container khi đang ở trang VAT (page-vat nằm ngoài container) */
     body.vat-active .container { display: none; }
+    /* Ẩn container khi đang ở trang Music (page-music nằm ngoài container) */
+    body.music-active .container { display: none; }
     /* Ẩn page-vat khi không active */
     #page-vat { display: none; }
     #page-vat.active-page {
@@ -1471,14 +1610,14 @@ body.has-custom-bg::after {
   align-items:center;
   gap:12px;
   flex-wrap:wrap;
-  background:var(--card-bg);
-  border:1px solid var(--card-border);
+  background: color-mix(in srgb, var(--accent) 14%, #0d0520);
+  border:1px solid var(--accent);
   border-radius:22px;
   padding:16px;
-  backdrop-filter:blur(10px);
   position:sticky;
-  top:12px;
+  top: calc(var(--banner-h-cur, var(--banner-h)) + 4px);
   z-index:100;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.5), 0 0 18px color-mix(in srgb, var(--accent) 22%, transparent);
 }
 
 .excel-toolbar-left{
@@ -1518,6 +1657,7 @@ body.has-custom-bg::after {
   backdrop-filter:blur(14px);
   overflow:hidden;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04);
+
 }
 
 .excel-table-wrap{
@@ -1554,7 +1694,7 @@ body.has-custom-bg::after {
 
 .excel-table th{
   position:sticky;
-  top:0;
+  top: var(--banner-h);
   z-index:5;
   background: #f0f0f0;
   font-size:0.9rem;
@@ -1612,6 +1752,11 @@ body.has-custom-bg::after {
 
 body.light-mode .excel-table{
   background: #ffffff;
+}
+
+body.light-mode .excel-toolbar{
+  background: color-mix(in srgb, var(--accent) 12%, #e8edf2);
+  border-color: var(--accent);
 }
 
 body.light-mode .excel-table th{
@@ -2042,7 +2187,7 @@ p {
 /* Sticky top zone: toolbar + summary frozen together */
 .vat-sticky-top {
   position: sticky;
-  top: 0;
+  top: var(--banner-h-cur, var(--banner-h));
   z-index: 50;
   background: transparent;
   padding: 0;
@@ -2051,7 +2196,7 @@ p {
 }
 body.light-mode .vat-sticky-top { background: transparent; }
 
-/* Toolbar — inside a rounded bordered frame */
+/* Toolbar — standalone sticky row */
 .vat-toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -2060,8 +2205,7 @@ body.light-mode .vat-sticky-top { background: transparent; }
   padding: 12px 16px;
   background: color-mix(in srgb, var(--accent) 12%, #111827);
   border: 2px solid var(--accent);
-  border-bottom: none;
-  border-radius: 14px 14px 0 0;
+  border-radius: 14px;
   margin-bottom: 0;
 }
 body.light-mode .vat-toolbar {
@@ -2121,7 +2265,7 @@ body.light-mode .vat-toolbar {
   box-shadow: 0 0 16px rgba(239,68,68,0.45);
 }
 
-/* Summary bar — middle band */
+/* Summary bar — below toolbar, scrolls with content */
 .vat-summary-bar {
   display: flex;
   flex-wrap: wrap;
@@ -2129,14 +2273,12 @@ body.light-mode .vat-toolbar {
   margin: 0;
   padding: 10px 16px;
   background: color-mix(in srgb, var(--accent) 10%, #111827);
-  border-left: 2px solid var(--accent);
-  border-right: 2px solid var(--accent);
-  border-top: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  border-bottom: none;
+  border-top: 2px solid color-mix(in srgb, var(--accent) 50%, transparent);
   border-radius: 0;
+
 }
 body.light-mode .vat-summary-bar {
-  background: color-mix(in srgb, var(--accent) 10%, #fff);
+  background: color-mix(in srgb, var(--accent) 10%, #e8edf2);
 }
 .vat-summary-chip {
   padding: 6px 20px 6px 0;
@@ -2160,14 +2302,15 @@ body.light-mode .vat-summary-chip { color: #1e293b; }
   font-size: 1.05rem;
 }
 
-/* Table wrap — connected to summary bar above */
+/* Table wrap */
 .vat-table-wrap {
   overflow: auto;
-  border-radius: 0 0 14px 14px;
+  border-radius: 14px;
   border: 2px solid var(--accent);
-  border-top: none;
   background: #ffffff;
   box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+  /* Giới hạn chiều cao để thead sticky hoạt động đúng trong container */
+  max-height: calc(100vh - var(--banner-h) - 120px);
 }
 
 .vat-table {
@@ -2178,7 +2321,7 @@ body.light-mode .vat-summary-chip { color: #1e293b; }
   table-layout: fixed;
 }
 
-/* Freeze header row */
+/* Freeze header row — sticky trong vat-table-wrap (overflow:auto container) */
 .vat-table thead th {
   position: sticky;
   top: 0;
@@ -3070,31 +3213,54 @@ body.light-mode .vat-table thead th {
 
     /* ===== MUSIC PAGE TITLE — sát trần giống các tab khác ===== */
     .music-page-title {
-      padding: 18px 0 10px;
       text-align: center;
+      margin-bottom: 20px;
+      margin-top: -15px;
+      margin-left: -20px;
+      margin-right: -20px;
+      background: transparent;
+      /* position: sticky được kế thừa từ CSS chung — KHÔNG override ở đây */
+      z-index: 200;
+      display: flex;
+      justify-content: center;
     }
     .music-page-title h1 {
-      font-size: 4rem;
-      letter-spacing: -3px;
+      display: inline-block;
+      background: linear-gradient(160deg, color-mix(in srgb, var(--accent) 75%, white) 0%, var(--accent) 55%, color-mix(in srgb, var(--accent) 80%, #000) 100%);
+      padding: 8px 36px 16px;
+      border-radius: 0 0 22px 22px;
+      font-size: 3.2rem;
+      letter-spacing: -2px;
       margin: 0;
+      color: #000;
+      border: 3px solid rgba(0,0,0,0.3);
+      border-top: none;
+      box-shadow:
+        5px 0 0 0 color-mix(in srgb, var(--accent) 40%, #000),
+        8px 0 0 0 rgba(0,0,0,0.38),
+        0 6px 0 0 color-mix(in srgb, var(--accent) 40%, #000),
+        0 10px 0 0 rgba(0,0,0,0.38),
+        5px 6px 0 0 color-mix(in srgb, var(--accent) 35%, #000),
+        8px 10px 0 0 rgba(0,0,0,0.32),
+        8px 18px 24px rgba(0,0,0,0.45),
+        inset 0 1px 0 rgba(255,255,255,0.4),
+        inset -1px 0 0 rgba(255,255,255,0.12);
     }
+    /* Ẩn subtitle bằng CSS — KHÔNG xóa HTML */
     .music-page-title p {
-      margin-top: 6px;
-      opacity: 0.55;
-      font-size: 0.92rem;
+      display: none;
     }
 
     /* ===== STICKY SEARCH HEADER ===== */
     .ytlike-sticky-header {
       position: sticky;
-      top: 0;
+      top: var(--banner-h-cur, var(--banner-h));
       z-index: 500;
       background: rgba(8,4,20,0.88);
       backdrop-filter: blur(22px);
       -webkit-backdrop-filter: blur(22px);
       border: 1px solid rgba(255,255,255,0.09);
-      border-bottom: none;
-      border-radius: 20px 20px 0 0;
+      border-radius: 20px;
       overflow: hidden;
       /* Subtle glow when stuck */
       box-shadow: 0 4px 24px rgba(0,0,0,0.45);
@@ -3630,6 +3796,9 @@ body.light-mode .vat-table thead th {
   <!-- Overlay blur khi sidebar mở rộng -->
   <div class="sidebar-blur-overlay" id="sidebarBlurOverlay"></div>
 
+  <!-- Đường kẻ trắng ngang top:30px, bắt đầu từ cạnh phải sidebar -->
+  <div class="top-divider-line"></div>
+
   <div class="container">
     <div id="page-home" class="page-content active-page">
   <div class="header-group">
@@ -3851,13 +4020,14 @@ body.light-mode .vat-table thead th {
       <button class="vat-btn primary" onclick="vatExportPDF()">&#x1F4CC; Xuất PDF</button>
     </div>
 
-    <!-- Summary chips (inside sticky zone) -->
+    </div><!-- end .vat-sticky-top -->
+
+    <!-- Summary bar — scroll tự do, có đường kẻ phân cách -->
     <div class="vat-summary-bar">
       <div class="vat-summary-chip">TỔNG DÒNG: <span id="vatCount">0</span></div>
       <div class="vat-summary-chip">TỔNG GIÁ: <span id="vatSumTong">0 đ</span></div>
       <div class="vat-summary-chip">TỔNG GIÁ TT: <span id="vatSumTongHT" class="vat-ht-val">0 đ</span></div>
     </div>
-    </div><!-- end .vat-sticky-top -->
 
     <!-- Table -->
     <div class="vat-table-wrap">
@@ -3958,8 +4128,10 @@ body.light-mode .vat-table thead th {
         <button class="ytlike-paste-btn" onclick="ytPasteLink()">🔗 Dán link</button>
       </div>
 
-      <!-- CATEGORY CHIPS -->
-      <div class="ytlike-chips" id="ytChips">
+    </div><!-- end .ytlike-sticky-header -->
+
+    <!-- CATEGORY CHIPS — scrolls with content, not frozen -->
+    <div class="ytlike-chips" id="ytChips">
         <button class="ytlike-chip active" onclick="ytChipSelect(this,'')">Tất cả</button>
         <button class="ytlike-chip" onclick="ytChipSelect(this,'nhạc việt')">Nhạc Việt</button>
         <button class="ytlike-chip" onclick="ytChipSelect(this,'âm nhạc')">Âm nhạc</button>
@@ -3972,8 +4144,6 @@ body.light-mode .vat-table thead th {
         <button class="ytlike-chip" onclick="ytChipSelect(this,'nhạc EDM')">EDM</button>
         <button class="ytlike-chip" onclick="ytChipSelect(this,'nhạc thiếu nhi')">Thiếu nhi</button>
       </div>
-
-    </div><!-- end .ytlike-sticky-header -->
 
     <div class="ytlike-shell">
       <div class="ytlike-main">
@@ -4526,6 +4696,13 @@ function saveDataDebounced() {
         document.body.classList.add('vat-active');
       } else {
         document.body.classList.remove('vat-active');
+      }
+
+      // Handle music-active body class
+      if (pageId === 'music') {
+        document.body.classList.add('music-active');
+      } else {
+        document.body.classList.remove('music-active');
       }
 
       if (!currentActive || currentActive === targetPage) {
@@ -8435,5 +8612,191 @@ window.addEventListener('load', () => {
 });
 </script>
 
+
+  <script>
+  // ===== SCROLL SHRINK BANNER =====
+  (function() {
+    const THRESHOLD = 30; // px scroll trước khi thu nhỏ
+    let ticking = false;
+    let lastScrollY = -1;
+
+    function updateBannerVar(scrolled) {
+      // Đo banner
+      const banners = document.querySelectorAll(
+        '.header-group h1, .header-group .home-clock, .music-page-title h1'
+      );
+      if (banners.length > 0) {
+        const h = banners[0].getBoundingClientRect().height;
+        if (h > 0) {
+          document.documentElement.style.setProperty('--banner-h', h + 'px');
+          document.documentElement.style.setProperty('--banner-h-cur', h + 'px');
+        }
+      } else {
+        document.documentElement.style.setProperty('--banner-h', scrolled ? 'var(--banner-h-sm)' : '58px');
+      }
+      // Đo vat-sticky-top (chỉ toolbar, không gồm summary)
+      const vatSticky = document.querySelector('.vat-sticky-top');
+      if (vatSticky) {
+        const bh = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--banner-h')) || 58;
+        const sh = vatSticky.getBoundingClientRect().height;
+        if (sh > 0) document.documentElement.style.setProperty('--vat-thead-top', (bh + sh) + 'px');
+      }
+    }
+
+    // Track animation frame cho việc đo banner liên tục
+    let trackingRaf = null;
+
+    function trackBannerHeight() {
+      // Đo chiều cao banner thực tế mỗi frame trong suốt transition (~420ms)
+      const TRACK_DURATION = 460;
+      const start = performance.now();
+      if (trackingRaf) cancelAnimationFrame(trackingRaf);
+      function loop(now) {
+        const banner = document.querySelector(
+          '.header-group h1, .header-group .home-clock, .music-page-title h1'
+        );
+        if (banner) {
+          const h = banner.getBoundingClientRect().height;
+          if (h > 0) {
+            document.documentElement.style.setProperty('--banner-h-cur', h + 'px');
+          }
+        }
+        if (now - start < TRACK_DURATION) {
+          trackingRaf = requestAnimationFrame(loop);
+        } else {
+          trackingRaf = null;
+          updateBannerVar(document.body.classList.contains('banner-scrolled'));
+        }
+      }
+      trackingRaf = requestAnimationFrame(loop);
+    }
+
+    function onScroll() {
+      if (!ticking) {
+        requestAnimationFrame(() => {
+          const scrollY = window.scrollY || document.documentElement.scrollTop;
+          if (scrollY === lastScrollY) { ticking = false; return; }
+          lastScrollY = scrollY;
+          const scrolled = scrollY > THRESHOLD;
+          const wasScrolled = document.body.classList.contains('banner-scrolled');
+          if (scrolled !== wasScrolled) {
+            // Trạng thái thay đổi → toggle class và bắt đầu theo dõi chiều cao
+            if (scrolled) document.body.classList.add('banner-scrolled');
+            else document.body.classList.remove('banner-scrolled');
+            trackBannerHeight();
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    // Reset khi chuyển trang
+    const _orig = window.switchPage;
+    if (typeof _orig === 'function') {
+      window.switchPage = function(pageId) {
+        _orig(pageId);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+        document.body.classList.remove('banner-scrolled');
+        const lh = getBannerLargeH();
+        document.documentElement.style.setProperty('--banner-h-cur', lh + 'px');
+        setTimeout(() => updateBannerVar(false), 50);
+      };
+    }
+
+    // Đo lần đầu sau khi trang load
+    window.addEventListener('load', () => setTimeout(() => updateBannerVar(false), 100));
+  })();
+  </script>
+
+
+  <script>
+  // ===== TOOLBAR FADE OVERLAY =====
+  // Tạo dải gradient cố định ngay dưới toolbar để "nuốt" nội dung scroll lên
+  (function() {
+    const FADE_H = 40; // chiều cao vùng fade (px)
+
+    // Tạo overlay element
+    const overlay = document.createElement('div');
+    overlay.id = 'toolbarFadeOverlay';
+    overlay.style.cssText = `
+      position: fixed;
+      left: 110px;
+      right: 0;
+      height: ${FADE_H}px;
+      pointer-events: none;
+      z-index: 99;
+      opacity: 0;
+      transition: opacity 0.22s ease, top 0.42s cubic-bezier(0.34, 1.2, 0.64, 1);
+    `;
+    document.body.appendChild(overlay);
+
+    // Các trang có toolbar freeze
+    const TOOLBAR_PAGES = {
+      'page-excel':   { selector: '.excel-toolbar',       hasFade: true },
+      'page-vat':     { selector: '.vat-sticky-top',      hasFade: true },
+      'page-music':   { selector: '.ytlike-sticky-header',hasFade: true },
+    };
+
+    function getBgColor() {
+      // Lấy màu nền trang để gradient fade đúng màu
+      const lightMode = document.body.classList.contains('light-mode');
+      return lightMode ? 'rgb(248,250,252)' : 'rgb(13,5,32)';
+    }
+
+    function updateOverlay() {
+      // Tìm trang đang active
+      const activePage = document.querySelector('.page-content.active-page');
+      if (!activePage) { overlay.style.opacity = '0'; return; }
+
+      const pageId = activePage.id;
+      const pageConf = TOOLBAR_PAGES[pageId];
+
+      if (!pageConf) { overlay.style.opacity = '0'; return; }
+
+      // Lấy toolbar đang sticky
+      const toolbar = document.querySelector(pageConf.selector);
+      if (!toolbar) { overlay.style.opacity = '0'; return; }
+
+      const rect = toolbar.getBoundingClientRect();
+      const toolbarBottom = rect.bottom;
+
+      // Đặt overlay ngay dưới toolbar
+      overlay.style.top = toolbarBottom + 'px';
+
+      // Gradient từ nền đặc → trong suốt
+      const bg = getBgColor();
+      overlay.style.background = `linear-gradient(to bottom, ${bg} 0%, transparent 100%)`;
+
+      // Chỉ hiện khi đã scroll (có nội dung phía dưới toolbar)
+      const scrolled = window.scrollY > 10;
+      overlay.style.opacity = scrolled ? '1' : '0';
+    }
+
+    // Cập nhật khi scroll
+    window.addEventListener('scroll', updateOverlay, { passive: true });
+
+    // Cập nhật khi resize
+    window.addEventListener('resize', updateOverlay);
+
+    // Cập nhật khi chuyển trang
+    const _origSwitch = window.switchPage;
+    if (typeof _origSwitch === 'function') {
+      window.switchPage = function(pageId) {
+        _origSwitch(pageId);
+        setTimeout(updateOverlay, 50);
+        setTimeout(updateOverlay, 480); // sau khi banner animation xong
+      };
+    }
+
+    // Cập nhật khi banner thu nhỏ/mở rộng
+    const observer = new MutationObserver(updateOverlay);
+    observer.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+    window.addEventListener('load', () => setTimeout(updateOverlay, 150));
+  })();
+  </script>
 </body>
 </html>

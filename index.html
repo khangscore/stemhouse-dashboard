@@ -6013,16 +6013,16 @@ body.banner-scrolled .chat-page-title h1 {
 /* Shell layout */
 .chat-shell {
   display: flex;
-  height: calc(100vh - 220px);
+  height: calc(100vh - 250px);
   min-height: 420px;
-  margin: 0 0 20px;
+  margin: 18px 0 20px;
   overflow: hidden;
   background: var(--bg, #0d0520);
   border-radius: 18px;
   border: 1.5px solid rgba(255,255,255,0.07);
 }
 body.sidebar-bottom .chat-shell {
-  height: calc(100vh - 260px);
+  height: calc(100vh - 290px);
 }
 
 /* LEFT PANEL */
@@ -6299,10 +6299,10 @@ body.sidebar-bottom .chat-shell {
 .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
 /* Message bubbles */
-.chat-msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+.chat-msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; width: 100%; }
 .chat-msg-row.mine { flex-direction: row-reverse; }
 .chat-msg-bubble {
-  max-width: 65%;
+  max-width: 68%;
   min-width: 0;
   padding: 10px 14px;
   border-radius: 18px;
@@ -14553,7 +14553,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
       row.innerHTML = `
         ${!isMine ? `<div class="chat-msg-mini-avatar">${initials}</div>` : ''}
-        <div style="display:flex;flex-direction:column;align-items:${isMine?'flex-end':'flex-start'};gap:2px;">
+        <div style="display:flex;flex-direction:column;align-items:${isMine?'flex-end':'flex-start'};gap:2px;flex:1;min-width:0;max-width:calc(100% - 34px);">
           <div class="chat-msg-bubble">${textHtml}</div>
           <span class="chat-msg-time">${timeStr}</span>
         </div>
@@ -14691,7 +14691,7 @@ document.addEventListener('DOMContentLoaded', function() {
           const msg = child.val();
           const isMine = msg.sender === chatMyUid;
           const div = document.createElement('div');
-          div.style.cssText = `display:flex;justify-content:${isMine?'flex-end':'flex-start'};margin-bottom:4px;`;
+          div.style.cssText = `display:flex;justify-content:${isMine?'flex-end':'flex-start'};margin-bottom:4px;width:100%;`;
           const bubble = document.createElement('div');
           bubble.style.cssText = `max-width:75%;padding:7px 10px;border-radius:14px;font-size:0.78rem;word-break:break-word;line-height:1.4;${isMine?'background:var(--accent);color:#000;':'background:rgba(255,255,255,0.09);'}`;
           bubble.textContent = msg.text;

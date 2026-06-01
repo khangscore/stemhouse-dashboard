@@ -5938,36 +5938,88 @@ body.sidebar-right #page-pdf {
 
 /* ===== CHÁT CHÍT PAGE ===== */
 .chat-page-title {
-  position: relative;
   text-align: center;
-  padding: 40px 20px 28px;
-  background: linear-gradient(160deg, rgba(var(--accent-rgb,34,197,94),0.12) 0%, transparent 60%);
-  border-bottom: 1px solid rgba(255,255,255,0.06);
   margin-bottom: 0;
+  margin-top: -15px;
+  margin-left: -20px;
+  margin-right: -20px;
+  background: transparent;
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  transition: margin-bottom 0.5s var(--ios-spring, cubic-bezier(0.22,1,0.36,1));
+  position: sticky;
+  top: 0;
 }
 .chat-page-title h1 {
-  font-family: 'ChakraPetch-BoldItalic', sans-serif;
-  font-size: clamp(1.6rem, 4vw, 2.6rem);
-  margin: 0 0 6px;
-  color: var(--accent);
-  letter-spacing: 0.04em;
-}
-.chat-page-title p {
-  font-size: 0.88rem;
-  opacity: 0.5;
+  display: inline-block;
+  background: linear-gradient(160deg,
+    rgba(255,255,255,0.38) 0%,
+    color-mix(in srgb, var(--accent) 75%, white) 8%,
+    var(--accent) 48%,
+    color-mix(in srgb, var(--accent) 72%, #000) 78%,
+    color-mix(in srgb, var(--accent) 52%, #000) 100%
+  );
+  padding: 8px 36px 16px;
+  border-radius: 0 0 30px 30px;
+  font-size: 3.2rem;
+  letter-spacing: -2px;
   margin: 0;
+  color: #000;
+  border: 3px solid rgba(0,0,0,0.3);
+  border-top: none;
+  transform-origin: top center;
+  will-change: transform, opacity;
+  transition:
+    transform  0.52s var(--ios-spring-out, cubic-bezier(0.22,1,0.36,1)),
+    opacity    0.38s var(--ios-spring, cubic-bezier(0.22,1,0.36,1)),
+    box-shadow 0.42s var(--ios-spring, cubic-bezier(0.22,1,0.36,1));
+  box-shadow:
+    5px 0 0 0 color-mix(in srgb, var(--accent) 40%, #000),
+    8px 0 0 0 rgba(0,0,0,0.38),
+    0 6px 0 0 color-mix(in srgb, var(--accent) 40%, #000),
+    0 10px 0 0 rgba(0,0,0,0.38),
+    5px 6px 0 0 color-mix(in srgb, var(--accent) 35%, #000),
+    8px 10px 0 0 rgba(0,0,0,0.32),
+    8px 18px 24px rgba(0,0,0,0.45),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset -1px 0 0 rgba(255,255,255,0.12),
+    0 0 8px 3px color-mix(in srgb, var(--accent) 100%, transparent),
+    0 0 20px 6px color-mix(in srgb, var(--accent) 80%, transparent),
+    0 0 45px 12px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 90px 20px color-mix(in srgb, var(--accent) 28%, transparent);
 }
-body.banner-scrolled .chat-page-title h1 { font-size: 1.1rem; }
-body.banner-scrolled .chat-page-title { padding: 14px 20px; }
+.chat-page-title p { display: none; }
+body.banner-scrolled .chat-page-title { margin-bottom: 4px !important; }
+body.banner-scrolled .chat-page-title h1 {
+  transform: scaleX(0.27) scaleY(0.28) translateY(-5px) !important;
+  opacity: 0.92 !important;
+  box-shadow:
+    3px 0 0 0 color-mix(in srgb, var(--accent) 38%, #000),
+    5px 0 0 0 rgba(0,0,0,0.3),
+    0 4px 0 0 color-mix(in srgb, var(--accent) 38%, #000),
+    0 6px 0 0 rgba(0,0,0,0.3),
+    3px 4px 0 0 color-mix(in srgb, var(--accent) 32%, #000),
+    5px 6px 0 0 rgba(0,0,0,0.25),
+    5px 10px 14px rgba(0,0,0,0.38),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset -1px 0 0 rgba(255,255,255,0.12),
+    0 0 8px 3px color-mix(in srgb, var(--accent) 100%, transparent),
+    0 0 20px 6px color-mix(in srgb, var(--accent) 80%, transparent),
+    0 0 45px 12px color-mix(in srgb, var(--accent) 55%, transparent),
+    0 0 90px 20px color-mix(in srgb, var(--accent) 28%, transparent) !important;
+}
 
 /* Shell layout */
 .chat-shell {
   display: flex;
   height: calc(100vh - 220px);
   min-height: 420px;
-  margin: 0;
+  margin: 0 0 20px;
   overflow: hidden;
   background: var(--bg, #0d0520);
+  border-radius: 18px;
+  border: 1.5px solid rgba(255,255,255,0.07);
 }
 body.sidebar-bottom .chat-shell {
   height: calc(100vh - 260px);
@@ -6247,15 +6299,18 @@ body.sidebar-bottom .chat-shell {
 .chat-messages::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
 
 /* Message bubbles */
-.chat-msg-row { display: flex; align-items: flex-end; gap: 8px; }
+.chat-msg-row { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
 .chat-msg-row.mine { flex-direction: row-reverse; }
 .chat-msg-bubble {
   max-width: 65%;
+  min-width: 0;
   padding: 10px 14px;
   border-radius: 18px;
   font-size: 0.88rem;
   line-height: 1.5;
   word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-wrap;
   position: relative;
   animation: msgPop 0.22s cubic-bezier(0.34,1.56,0.64,1) both;
 }

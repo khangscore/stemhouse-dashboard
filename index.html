@@ -3141,8 +3141,9 @@ body.light-mode .calendar-inner-wrap {
   flex-direction: column;
 }
 .calendar-top-shell{
-  position: relative;
-  z-index: 50; /* FIX: đảm bảo dropdown tháng/năm nổi lên trên calendar-grid bên dưới */
+  position: sticky;
+  top: var(--banner-h-cur, var(--banner-h));
+  z-index: 500; /* FIX: đảm bảo dropdown tháng/năm nổi lên trên calendar-grid bên dưới, và khung luôn nổi trên nội dung khi freeze cuộn */
   background:
     linear-gradient(155deg,
       rgba(255,255,255,0.30) 0%,
@@ -3217,8 +3218,9 @@ body.light-mode .calendar-inner-wrap {
    thay vì nằm trong .header-group (không còn bị clone vào banner bar)
 ========================= */
 .page-toolbar-shell{
-  position: relative;
-  z-index: 5;
+  position: sticky;
+  top: var(--banner-h-cur, var(--banner-h));
+  z-index: 500;
   background:
     linear-gradient(155deg,
       rgba(255,255,255,0.30) 0%,

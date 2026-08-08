@@ -3982,6 +3982,64 @@ body.light-mode .dropdown-item:hover{
   gap:10px;
 }
 
+/* ===== FREEZE PANES (giống Excel) =====
+   Cell được freeze dùng position:sticky với left/top tính bằng JS (px cộng dồn thực tế
+   theo width/height từng cột/dòng, vì các cột/dòng có thể bị resize khác nhau).
+   z-index phân lớp: vùng giao (góc trên-trái, freeze cả cột lẫn dòng) cao nhất,
+   rồi tới freeze-row (thead + các dòng ghim), rồi freeze-col, để nội dung cuộn qua
+   luôn "chui" xuống dưới lớp nền đặc của vùng freeze chứ không đè lên. */
+.excel-table th.tkb-frozen-col{
+  position:sticky !important;
+  z-index:7;
+  /* nền header giữ nguyên #f0f0f0 từ rule .excel-table th gốc, không override ở đây */
+}
+.excel-table td.tkb-frozen-col{
+  position:sticky !important;
+  z-index:7;
+  background:#ffffff; /* nền đặc mặc định cho cột dữ liệu freeze — để nội dung cuộn qua bị che hẳn */
+}
+.excel-table td.row-header.tkb-frozen-col,
+.excel-table td.tkb-tool-col.tkb-frozen-col{
+  background:#f5f5f5; /* cột # và 🧩 giữ tông xám như header, giống Excel */
+}
+.excel-table th.tkb-frozen-row{
+  position:sticky !important;
+  z-index:8;
+}
+.excel-table td.tkb-frozen-row{
+  position:sticky !important;
+  z-index:6;
+  background:#ffffff;
+}
+.excel-table th.tkb-frozen-row.tkb-frozen-col,
+.excel-table td.tkb-frozen-row.tkb-frozen-col{
+  z-index:9;
+}
+body.light-mode .excel-table td.tkb-frozen-col{
+  background:#ffffff;
+}
+body.light-mode .excel-table td.row-header.tkb-frozen-col,
+body.light-mode .excel-table td.tkb-tool-col.tkb-frozen-col{
+  background:#f5f5f5;
+}
+body.light-mode .excel-table td.tkb-frozen-row{
+  background:#ffffff;
+}
+.excel-table th.tkb-freeze-edge-col{
+  box-shadow: inset -2px 0 0 var(--accent, #22c55e);
+}
+.excel-table td.tkb-freeze-edge-col{
+  box-shadow: inset -2px 0 0 var(--accent, #22c55e);
+}
+.excel-table tr.tkb-freeze-edge-row th,
+.excel-table tr.tkb-freeze-edge-row td{
+  box-shadow: inset 0 -2px 0 var(--accent, #22c55e);
+}
+.excel-table tr.tkb-freeze-edge-row th.tkb-freeze-edge-col,
+.excel-table tr.tkb-freeze-edge-row td.tkb-freeze-edge-col{
+  box-shadow: inset -2px -2px 0 var(--accent, #22c55e);
+}
+
 .excel-badge{
   padding:8px 12px;
   border-radius:999px;
@@ -4007,6 +4065,7 @@ body.light-mode .dropdown-item:hover{
   overflow:auto;
   border-radius:var(--global-radius);
   border:4px solid #000 !important;
+  position:relative; /* anchor cho 2 thanh kéo freeze (absolute) */
 }
 
 body.light-mode .excel-table-wrap{
@@ -4054,9 +4113,8 @@ body.light-mode .excel-shell{
 }
 
 .excel-table th.row-head{
-  position:sticky;
-  left:0;
-  z-index:6;
+  /* position:sticky mặc định đã bỏ — giờ do hệ thống Freeze Panes (JS) điều khiển
+     qua class .tkb-frozen-col, để tôn trọng lựa chọn "Không freeze" của người dùng */
   min-width:56px;
   width:56px;
   background: #f0f0f0;
@@ -4297,8 +4355,6 @@ body.light-mode .tkb-day-column{
   background:#ef4444;
 }
 .tkb-material-hover-preview{
-  --tkb-preview-w: min(60vw, 640px);
-  --tkb-preview-h: min(80vh, 720px);
   position:fixed;
   top:50%;
   left:50%;
@@ -4311,17 +4367,15 @@ body.light-mode .tkb-day-column{
   border:2px solid var(--accent, #22c55e);
   border-radius:12px;
   box-shadow:0 10px 40px rgba(0,0,0,0.55);
-  max-width:var(--tkb-preview-w);
-  max-height:var(--tkb-preview-h);
   overflow:hidden;
   box-sizing:border-box;
+  /* width/height (px) được set động bằng JS dựa trên window.innerWidth/innerHeight
+     (đơn vị px thực, không phụ thuộc browser zoom) và tỉ lệ ngang/dọc của ảnh */
 }
 .tkb-material-hover-preview img{
   display:block;
-  max-width:calc(var(--tkb-preview-w) - 12px);
-  max-height:calc(var(--tkb-preview-h) - 12px);
-  width:auto;
-  height:auto;
+  width:100%;
+  height:100%;
   border-radius:8px;
   object-fit:contain;
 }
@@ -4524,12 +4578,11 @@ p {
     .col-header {
   position: relative;
 }
-.excel-table th.row-head{
-  position:sticky;
-}
 .excel-table th.row-head,
 .excel-table th.tkb-tool-col{
-  position: relative;
+  /* Không ép position:relative nữa — để .tkb-frozen-col (JS) toàn quyền set
+     position:sticky khi các cột này được freeze. position:sticky vẫn là
+     containing block hợp lệ cho .col-resizer (absolute) bên trong. */
 }
 
 .col-resizer {
@@ -4588,6 +4641,39 @@ p {
 }
 .excel-container::-webkit-scrollbar {
   height: 10px;
+}
+
+/* ===== THANH KÉO FREEZE CỘT (giống Excel) =====
+   1 vạch xám mờ nằm đè lên bảng, kéo được để đổi vị trí freeze cột.
+   Dùng position:absolute bên trong .excel-table-wrap (anchor), toạ độ left
+   được JS cập nhật liên tục để luôn bám đúng vị trí ranh giới cột đang freeze
+   trên bảng, kể cả khi đang cuộn. */
+.tkb-freeze-handle{
+  position:absolute;
+  z-index:50;
+  background: rgba(148,163,184,0.55); /* xám mờ (slate) mặc định, thay cho xanh accent */
+  pointer-events:auto;
+}
+.tkb-freeze-handle-col{
+  top:0;
+  width:3px;
+  height:100%;
+  cursor:col-resize;
+  transition: background 0.12s ease;
+}
+.tkb-freeze-handle:hover,
+.tkb-freeze-handle.dragging{
+  background: #ffd23f;
+  box-shadow: 0 0 8px rgba(255,210,63,0.7);
+}
+.tkb-freeze-handle-col::before{
+  content:'';
+  position:absolute;
+  top:0; bottom:0;
+  left:-5px; right:-5px; /* vùng bắt chuột rộng hơn vạch để dễ cầm kéo */
+}
+.tkb-freeze-handle.tkb-freeze-off{
+  opacity:0.35;
 }
     
 /* ===== LOGIN SCREEN ===== */
@@ -15589,6 +15675,7 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
         <button class="btn excel-btn" onclick="addRow()">➕ Dòng</button>
         <button class="btn excel-btn" onclick="addColumn()">➕ Cột</button>
         <button class="btn excel-btn" onclick="try{ tkbSyncMaterialsPanel(); }catch(e){ console.error('Lỗi Tổng hợp học cụ:', e); alert('Lỗi: ' + e.message); }" style="font-weight:800;">🧩 Tổng hợp học cụ</button>
+        <button class="btn excel-btn" onclick="tkbResetFreezePanes()" title="Đưa thanh freeze về vị trí mặc định (cột 🧩, dòng tiêu đề)">📌 Reset Freeze</button>
       </div>
       <div class="excel-toolbar-right">
         <span class="excel-badge">Auto Save</span>
@@ -15602,10 +15689,11 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   <div class="tkb-split">
     <div class="tkb-left">
       <div class="excel-wrap">
-          <div class="excel-table-wrap">
-            <div class="excel-container">
+          <div class="excel-table-wrap" id="excelTableWrap">
+            <div class="excel-container" id="excelContainer">
       <table class="excel-table tkb-table" id="excelTable"></table>
     </div>
+      <div class="tkb-freeze-handle tkb-freeze-handle-col" id="tkbFreezeHandleCol" title="Kéo để freeze cột"></div>
           </div>
       </div>
     </div>
@@ -21838,11 +21926,51 @@ function tkbDeleteMaterialImage(rowKey, idx) {
     return previewEl;
   }
 
+  // Kích thước khung preview tính bằng px thực (window.innerWidth/innerHeight),
+  // KHÔNG dùng vw/vh — vw/vh bị browser zoom (vd 50%) bóp nhỏ theo layout viewport,
+  // khiến ảnh phóng to hiện ra nhỏ hơn hẳn so với lúc zoom 100%.
+  // window.innerWidth/innerHeight luôn là số px thực người dùng đang thấy trên màn hình,
+  // nên khung sẽ giữ đúng kích thước hiển thị dù zoom trình duyệt ở mức nào.
+  function computePreviewSize(anchorImg) {
+    const natW = anchorImg.naturalWidth || anchorImg.width || 1;
+    const natH = anchorImg.naturalHeight || anchorImg.height || 1;
+    const isLandscape = natW >= natH;
+
+    // Ảnh ngang: khung to hẳn ra. Ảnh dọc: chỉ to thêm một chút.
+    const maxWRatio = isLandscape ? 0.86 : 0.46;
+    const maxHRatio = isLandscape ? 0.90 : 0.86;
+    const maxWCap   = isLandscape ? 1180 : 620;
+    const maxHCap   = isLandscape ? 880  : 800;
+
+    let maxW = Math.min(window.innerWidth  * maxWRatio, maxWCap);
+    let maxH = Math.min(window.innerHeight * maxHRatio, maxHCap);
+
+    // Co khung theo đúng tỉ lệ ảnh để không méo và không thừa khoảng trắng
+    const scale = Math.min(maxW / natW, maxH / natH);
+    let w = natW * scale;
+    let h = natH * scale;
+
+    return { w, h };
+  }
+
   function showPreview(anchorImg) {
     currentAnchorImg = anchorImg;
     const el = getPreviewEl();
     const previewImg = el.querySelector('img');
     if (previewImg.src !== anchorImg.src) previewImg.src = anchorImg.src;
+
+    function applySize() {
+      const { w, h } = computePreviewSize(anchorImg);
+      el.style.width  = w + 'px';
+      el.style.height = h + 'px';
+    }
+
+    if (anchorImg.complete && anchorImg.naturalWidth > 0) {
+      applySize();
+    } else {
+      // Ảnh chưa load xong (naturalWidth chưa có) → chờ load rồi mới tính size
+      previewImg.onload = applySize;
+    }
     el.style.display = 'block'; // vị trí đã cố định giữa màn hình bằng CSS (top/left/transform)
   }
 
@@ -22092,6 +22220,7 @@ let excelRows = 100; // 👉 số hàng
     html += '</tbody>';
     table.innerHTML = html;
     initResize();
+    tkbApplyFreezePanes();
   }
 
  function updateCell(cell) {
@@ -22650,6 +22779,10 @@ function initResize() {
             cell.style.maxWidth = newWidth + 'px';
           }
         });
+
+        // Cột freeze bị resize (hoặc cột phía trước cột freeze) làm lệch offset "left"
+        // cộng dồn của các cột freeze phía sau -> tính lại ngay để không bị chồng lấn.
+        tkbRefreshFreezeAfterResize();
       }
 
       function onUp() {
@@ -22658,6 +22791,7 @@ function initResize() {
         document.body.style.userSelect = '';
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
+        tkbRefreshFreezeAfterResize();
       }
 
       document.addEventListener('mousemove', onMove);
@@ -22687,6 +22821,7 @@ function initResize() {
       function onMove(ev) {
         const newHeight = Math.max(EXCEL_MIN_ROW_HEIGHT, startHeight + (ev.clientY - startY));
         tr.style.height = newHeight + 'px';
+        tkbRefreshFreezeAfterResize();
       }
 
       function onUp() {
@@ -22695,6 +22830,7 @@ function initResize() {
         document.body.style.userSelect = '';
         document.removeEventListener('mousemove', onMove);
         document.removeEventListener('mouseup', onUp);
+        tkbRefreshFreezeAfterResize();
       }
 
       document.addEventListener('mousemove', onMove);
@@ -22705,7 +22841,222 @@ function initResize() {
     });
   });
 }
-  function addColumn() {
+/* =========================================================================
+   FREEZE PANES — freeze cột/dòng tuỳ ý bằng cách CẦM KÉO 2 thanh trực quan,
+   giống hệt thao tác "Freeze Panes" trong Excel/Google Sheets.
+   State: tkbFreezeColIdx = số cột bị freeze tính từ trái, gồm cả cột # và 🧩
+          (0 = không freeze, 1 = freeze tới cột #, 2 = freeze tới cột 🧩,
+           3 = freeze tới cột #+🧩+A, ...)
+          tkbFreezeRowIdx = số dòng dữ liệu bị freeze thêm (0 = chỉ header).
+   Kéo thanh dọc/ngang sẽ "snap" về đúng ranh giới cột/dòng gần nhất (giống
+   Excel thật — Excel cũng chỉ freeze được đúng theo ranh giới ô, không lửng lơ).
+========================================================================= */
+let tkbFreezeColIdx = 2; // mặc định: freeze tới cột 🧩 (cột # + cột 🧩)
+let tkbFreezeRowIdx = 0; // mặc định: chỉ freeze dòng tiêu đề (header)
+
+function tkbApplyFreezePanes() {
+  const table = document.getElementById('excelTable');
+  if (!table) return;
+  const theadRow = table.querySelector('thead tr');
+  const bodyRows = table.querySelectorAll('tbody tr');
+  if (!theadRow) return;
+
+  const headCells = Array.from(theadRow.children); // [#, 🧩, A, B, C, ...]
+
+  // ----- Dọn sạch style/class freeze cũ trước khi tính lại -----
+  table.querySelectorAll('.tkb-frozen-col').forEach(el => {
+    el.classList.remove('tkb-frozen-col');
+    el.style.left = '';
+  });
+  table.querySelectorAll('.tkb-frozen-row').forEach(el => {
+    el.classList.remove('tkb-frozen-row');
+    el.style.top = '';
+  });
+  table.querySelectorAll('.tkb-freeze-edge-col').forEach(el => el.classList.remove('tkb-freeze-edge-col'));
+  table.querySelectorAll('.tkb-freeze-edge-row').forEach(el => el.classList.remove('tkb-freeze-edge-row'));
+
+  // ===== FREEZE CỘT (trái) =====
+  // Cộng dồn width thực tế (px) từng cột đã freeze để tính "left" cho cột kế tiếp.
+  let colFreezeWidth = 0; // tổng bề rộng vùng freeze cột — dùng để đặt thanh kéo dọc
+  if (tkbFreezeColIdx > 0) {
+    let acc = 0;
+    for (let i = 0; i < tkbFreezeColIdx && i < headCells.length; i++) {
+      const th = headCells[i];
+      th.classList.add('tkb-frozen-col');
+      th.style.left = acc + 'px';
+      if (i === tkbFreezeColIdx - 1) th.classList.add('tkb-freeze-edge-col');
+
+      bodyRows.forEach(tr => {
+        const cell = tr.children[i];
+        if (!cell) return;
+        cell.classList.add('tkb-frozen-col');
+        cell.style.left = acc + 'px';
+        if (i === tkbFreezeColIdx - 1) cell.classList.add('tkb-freeze-edge-col');
+      });
+
+      acc += th.getBoundingClientRect().width;
+    }
+    colFreezeWidth = acc;
+  }
+
+  // ===== FREEZE DÒNG (trên) =====
+  // Header (thead) luôn sticky top:0 sẵn (CSS .excel-table th). Nếu người dùng
+  // freeze thêm N dòng dữ liệu, các dòng đó sticky ngay dưới header, offset top
+  // cộng dồn theo height thực tế của header + các dòng freeze trước đó.
+  const headerHeight = theadRow.getBoundingClientRect().height;
+  headCells.forEach(th => th.style.top = '0px'); // đảm bảo header luôn đúng vị trí
+
+  let rowFreezeHeight = headerHeight; // tổng chiều cao vùng freeze dòng — dùng để đặt thanh kéo ngang
+  if (tkbFreezeRowIdx > 0) {
+    let accTop = headerHeight;
+    for (let r = 0; r < tkbFreezeRowIdx && r < bodyRows.length; r++) {
+      const tr = bodyRows[r];
+      const cells = Array.from(tr.children);
+      cells.forEach(td => {
+        td.classList.add('tkb-frozen-row');
+        td.style.top = accTop + 'px';
+      });
+      if (r === tkbFreezeRowIdx - 1) tr.classList.add('tkb-freeze-edge-row');
+      accTop += tr.getBoundingClientRect().height;
+    }
+    rowFreezeHeight = accTop;
+  }
+
+  tkbPositionFreezeHandles(colFreezeWidth, rowFreezeHeight);
+}
+
+// Freeze cột cần re-tính offset mỗi khi user kéo resize cột hoặc dòng, vì width/height
+// px thay đổi làm lệch toàn bộ "left"/"top" cộng dồn của các cột/dòng phía sau.
+function tkbRefreshFreezeAfterResize() {
+  tkbApplyFreezePanes();
+}
+
+function tkbResetFreezePanes() {
+  tkbFreezeColIdx = 2;
+  tkbFreezeRowIdx = 0;
+  tkbApplyFreezePanes();
+}
+
+/* ----- Đặt thanh kéo freeze cột đúng vị trí ranh giới hiện tại -----
+   (Chỉ còn thanh dọc — freeze dòng vẫn hoạt động ngầm ở mức "luôn freeze dòng
+   tiêu đề", nhưng không còn thanh kéo ngang cho người dùng chỉnh nữa.) */
+function tkbPositionFreezeHandles(colFreezeWidth, rowFreezeHeight) {
+  const handleCol = document.getElementById('tkbFreezeHandleCol');
+  const table = document.getElementById('excelTable');
+  if (!handleCol || !table) return;
+
+  const container = document.getElementById('excelContainer');
+  const wrap = document.getElementById('excelTableWrap');
+  if (!container || !wrap) return;
+
+  // container nằm trong wrap (cùng offsetParent), lệch nhau đúng bằng offsetTop/offsetLeft của container
+  const baseLeft = container.offsetLeft;
+  const baseTop = container.offsetTop;
+
+  const tableRect = table.getBoundingClientRect();
+  const tableHeightPx = tableRect.height;
+
+  handleCol.style.left = (baseLeft + colFreezeWidth - 1.5) + 'px';
+  handleCol.style.top = baseTop + 'px';
+  handleCol.style.height = tableHeightPx + 'px';
+  handleCol.classList.toggle('tkb-freeze-off', tkbFreezeColIdx === 0);
+}
+
+/* ----- Kéo thanh dọc: đổi số cột freeze, snap theo ranh giới cột ----- */
+(function initFreezeColDrag() {
+  const handle = document.getElementById('tkbFreezeHandleCol');
+  const wrap = document.getElementById('excelTableWrap');
+  if (!handle || !wrap) return;
+
+  handle.addEventListener('mousedown', function (e) {
+    e.preventDefault();
+    e.stopPropagation();
+    handle.classList.add('dragging');
+    document.body.style.cursor = 'col-resize';
+    document.body.style.userSelect = 'none';
+
+    function onMove(ev) {
+      const table = document.getElementById('excelTable');
+      if (!table) return;
+      const theadRow = table.querySelector('thead tr');
+      if (!theadRow) return;
+      const headCells = Array.from(theadRow.children);
+
+      // Tìm ranh giới cột gần vị trí chuột nhất (so theo toạ độ màn hình thực, viewport)
+      let bestIdx = 0;
+      let bestDist = Infinity;
+      // idx 0 = "không freeze" (ranh giới ở mép trái cột đầu tiên)
+      const firstLeft = headCells[0] ? headCells[0].getBoundingClientRect().left : 0;
+      let dist0 = Math.abs(ev.clientX - firstLeft);
+      if (dist0 < bestDist) { bestDist = dist0; bestIdx = 0; }
+
+      headCells.forEach((th, i) => {
+        const r = th.getBoundingClientRect();
+        const boundaryX = r.right; // ranh giới NGAY SAU cột i -> freeze i+1 cột
+        const dist = Math.abs(ev.clientX - boundaryX);
+        if (dist < bestDist) { bestDist = dist; bestIdx = i + 1; }
+      });
+
+      if (bestIdx !== tkbFreezeColIdx) {
+        tkbFreezeColIdx = bestIdx;
+        tkbApplyFreezePanes();
+      }
+    }
+
+    function onUp() {
+      handle.classList.remove('dragging');
+      document.body.style.cursor = 'default';
+      document.body.style.userSelect = '';
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      tkbApplyFreezePanes();
+    }
+
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  });
+})();
+
+/* ----- Kéo thanh ngang: đổi số dòng freeze, snap theo ranh giới dòng -----
+   ĐÃ TẮT theo yêu cầu — chỉ giữ lại thanh kéo freeze CỘT. tkbFreezeRowIdx vẫn
+   giữ nguyên giá trị mặc định 0 (freeze dòng tiêu đề) và không còn cách nào
+   để người dùng chỉnh tay qua UI kéo thả nữa. */
+
+// Bảng cuộn ngang/dọc -> thanh kéo freeze cột (absolute trong scroll box) tự cuộn
+// theo nội dung đúng như 1 ô bình thường, KHÔNG cần bù scrollLeft/scrollTop thủ
+// công. Nhưng vẫn cần re-run khi resize cửa sổ (đổi layout responsive có thể
+// làm lệch offsetLeft/offsetTop).
+window.addEventListener('resize', function () {
+  if (document.getElementById('excelTable')) tkbApplyFreezePanes();
+});
+
+// Trang Thời Khóa Biểu (#page-excel) bị display:none khi chưa được chọn trong
+// sidebar. Lúc trang ẩn, getBoundingClientRect() của mọi ô trả về toàn 0, nên
+// nếu tkbApplyFreezePanes() lỡ chạy trong lúc đó (vd. window.onload) thì thanh
+// freeze sẽ bị định vị sai (kẹt ở góc, gần như biến mất) — chỉ đúng lại khi có
+// hành động khác (resize cột) vô tình kích hoạt tính lại. Theo dõi thời điểm
+// trang được kích hoạt (class "active-page" xuất hiện) để tự tính lại đúng lúc.
+(function watchExcelPageActivation() {
+  const pageEl = document.getElementById('page-excel');
+  if (!pageEl || typeof MutationObserver === 'undefined') return;
+
+  const observer = new MutationObserver(function (mutations) {
+    for (const m of mutations) {
+      if (m.attributeName === 'class' && pageEl.classList.contains('active-page')) {
+        // Đợi 2 khung hình để layout/animation chuyển trang ổn định rồi mới đo
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            if (document.getElementById('excelTable')) tkbApplyFreezePanes();
+          });
+        });
+        break;
+      }
+    }
+  });
+  observer.observe(pageEl, { attributes: true, attributeFilter: ['class'] });
+})();
+
+function addColumn() {
   const nextIndex = excelCols.length;
   const newCol = generateCols(nextIndex + 1)[nextIndex];
   excelCols.push(newCol);

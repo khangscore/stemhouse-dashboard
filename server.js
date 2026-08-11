@@ -34,45 +34,63 @@ app.post('/api/baobai', async (req, res) => {
 
   const userText = messages[0].content;
 
-  try {
-    const upstream = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`,
-      {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          system_instruction: system ? { parts: [{ text: system }] } : undefined,
-          contents: [
-            { role: 'user', parts: [{ text: userText }] }
-          ],
-          generationConfig: { maxOutputTokens: 1000 }
-        })
+  // Danh sách model thử lần lượt — nếu Google ngừng hỗ trợ 1 model (lỗi 404),
+  // server sẽ tự động thử model kế tiếp mà không cần sửa code.
+  const MODELS_TO_TRY = [
+    'gemini-2.5-flash-lite',
+    'gemini-2.5-flash',
+    'gemini-flash-latest',
+    'gemini-2.0-flash'
+  ];
+
+  let lastError = null;
+
+  for (const model of MODELS_TO_TRY) {
+    try {
+      const upstream = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${API_KEY}`,
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            system_instruction: system ? { parts: [{ text: system }] } : undefined,
+            contents: [
+              { role: 'user', parts: [{ text: userText }] }
+            ],
+            generationConfig: { maxOutputTokens: 1000 }
+          })
+        }
+      );
+
+      const data = await upstream.json();
+
+      if (!upstream.ok) {
+        lastError = (data && data.error && data.error.message) || `Lỗi từ Gemini API (${upstream.status})`;
+        // Nếu model này không còn tồn tại (404) hoặc bị chặn (403) -> thử model kế tiếp.
+        // Nếu là lỗi khác (VD 429 hết quota) -> vẫn thử model khác vì mỗi model có quota riêng.
+        continue;
       }
-    );
 
-    const data = await upstream.json();
+      const candidate = data.candidates && data.candidates[0];
+      const text = candidate && candidate.content && candidate.content.parts
+        ? candidate.content.parts.map(p => p.text || '').join('')
+        : '';
 
-    if (!upstream.ok) {
-      const msg = (data && data.error && data.error.message) || `Lỗi từ Gemini API (${upstream.status})`;
-      return res.status(upstream.status).json({ error: msg });
+      if (!text) {
+        lastError = 'Gemini không trả về nội dung. Có thể nội dung bị chặn bởi bộ lọc an toàn.';
+        continue;
+      }
+
+      // Thành công — trả kết quả về, dùng đúng định dạng cũ để khớp với 153.html
+      return res.json({ content: [{ type: 'text', text }] });
+    } catch (err) {
+      lastError = 'Không kết nối được tới Gemini API từ server.';
+      console.error(`Lỗi khi gọi model ${model}:`, err);
     }
-
-    // Chuyển định dạng trả về của Gemini sang định dạng { content: [{ type: 'text', text: ... }] }
-    // để khớp với phần code cũ trong 153.html (không cần sửa gì thêm ở HTML).
-    const candidate = data.candidates && data.candidates[0];
-    const text = candidate && candidate.content && candidate.content.parts
-      ? candidate.content.parts.map(p => p.text || '').join('')
-      : '';
-
-    if (!text) {
-      return res.status(502).json({ error: 'Gemini không trả về nội dung. Có thể nội dung bị chặn bởi bộ lọc an toàn.' });
-    }
-
-    return res.json({ content: [{ type: 'text', text }] });
-  } catch (err) {
-    console.error('Lỗi khi gọi Gemini API:', err);
-    return res.status(502).json({ error: 'Không kết nối được tới Gemini API từ server.' });
   }
+
+  // Nếu tất cả model đều thất bại
+  return res.status(502).json({ error: lastError || 'Tất cả các model AI đều không phản hồi được.' });
 });
 
 app.listen(PORT, () => {

@@ -37,9 +37,9 @@ app.post('/api/baobai', async (req, res) => {
   // Danh sách model thử lần lượt — nếu Google ngừng hỗ trợ 1 model (lỗi 404),
   // server sẽ tự động thử model kế tiếp mà không cần sửa code.
   const MODELS_TO_TRY = [
-    'gemini-2.5-flash-lite',
     'gemini-2.5-flash',
     'gemini-flash-latest',
+    'gemini-2.5-flash-lite',
     'gemini-2.0-flash'
   ];
 

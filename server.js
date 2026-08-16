@@ -57,7 +57,7 @@ app.post('/api/baobai', async (req, res) => {
             contents: [
               { role: 'user', parts: [{ text: userText }] }
             ],
-            generationConfig: { maxOutputTokens: 1000 }
+            generationConfig: { maxOutputTokens: 2000 }
           })
         }
       );

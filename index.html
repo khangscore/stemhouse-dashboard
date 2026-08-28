@@ -3943,6 +3943,10 @@ body.light-mode .dropdown-item:hover{
   display:flex;
   flex-direction:column;
   gap:6px;
+  position:relative; /* anchor cho nút "Xoá hết" (.tkb-corner-clear-btn)
+                         nằm NGOÀI .excel-table-wrap, đè lên góc viền trên-
+                         phải — đặt ở đây (thay vì trong table-wrap có
+                         overflow:auto) để không bị cắt mất khi cuộn */
 }
 
 .excel-toolbar{
@@ -4068,6 +4072,9 @@ body.light-mode .excel-table td.tkb-frozen-row{
   border-radius:var(--global-radius);
   border:4px solid #000 !important;
   position:relative; /* anchor cho 2 thanh kéo freeze (absolute) */
+  z-index:2; /* cao hơn .tkb-corner-clear-btn (z-index:1) để khung "che"
+                đúng 1/3 dưới của nút Xoá hết đè lên viền, thay vì nút che
+                khung */
 }
 
 body.light-mode .excel-table-wrap{
@@ -4123,33 +4130,126 @@ body.light-mode .excel-shell{
   position:relative;
 }
 
-/* Nút "Xoá hết" đặt ngay tại ô góc # của bảng TKB, thay vì trên banner —
-   để nó luôn nằm sát bảng, dễ thấy, và không bị hệ thống clone banner
-   (#banner-content-slot) làm mất tác dụng. */
+/* Nút "Xoá hết" của bảng TKB — nằm NGOÀI khung .excel-table-wrap, ở góc
+   phải phía trên. Anchor là .excel-wrap (cha trực tiếp, position:relative),
+   KHÔNG phải .excel-table-wrap, vì wrap đó có overflow:auto sẽ cắt mất
+   phần nút nhô ra ngoài.
+   top:-22px = nút nhích lên trên khung, chỉ khoảng 1/3 chiều cao dưới của
+   nút (~11px trong tổng ~33px chiều cao) còn nằm chồng xuống vùng khung.
+   z-index CỐ Ý thấp hơn khung (.excel-table-wrap / .tkb-materials-sticky-
+   wrap có z-index:2, nút chỉ z-index:1) để ở phần chồng lấn đó, khung vẽ
+   ĐÈ LÊN nút — tạo đúng hiệu ứng "nút chui 1/3 xuống dưới lớp khung",
+   không phải nút che khung.
+   Thiết kế: bo góc 12px (khớp phong cách bo góc mềm của theme), viền đen
+   3px tường minh, gradient đỏ nhẹ cho có chiều sâu thay vì màu phẳng,
+   icon 🗑️ và chữ "Xoá hết" đưa vào qua ::before/::after để HTML gọn
+   (button rỗng, chỉ đổi qua onclick/title là dùng lại được). */
+/* Hàng chứa 2 nút góc trên khung Học cụ cần soạn: checkbox "Tắt Preview" +
+   nút "Xoá hết". Cả hàng dùng chung 1 position:absolute (thay vì mỗi nút
+   tự tính "right" riêng dễ lệch/chồng nhau khi đổi nội dung) — bên trong
+   là flex nên 2 nút tự xếp cạnh nhau, khoảng cách luôn đúng dù độ rộng
+   thay đổi. .tkb-corner-clear-btn khi đứng TRONG hàng này bị ép về
+   position:static (ghi đè phần absolute gốc chỉ dùng khi đứng một mình ở
+   bảng TKB bên trái) để tham gia layout flex bình thường. */
+.tkb-materials-btn-row{
+  position:absolute;
+  top:-22px;
+  right:16px;
+  z-index:1;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.tkb-materials-btn-row .tkb-corner-clear-btn{
+  position:static;
+  top:auto;
+  right:auto;
+}
+.tkb-preview-toggle-btn{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:7px 14px;
+  border:3px solid #000;
+  background:linear-gradient(180deg, #f3f4f6, #d1d5db);
+  color:#1e293b;
+  font-size:0.8rem;
+  font-weight:700;
+  letter-spacing:0.2px;
+  line-height:1;
+  border-radius:12px;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,0.25);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+  user-select:none;
+}
+.tkb-preview-toggle-btn input[type="checkbox"]{
+  width:15px;
+  height:15px;
+  margin:0;
+  accent-color:#374151;
+  cursor:pointer;
+  transform:translateY(-4px); /* nhích lên cùng mức với chữ "Tắt Preview"
+    bên cạnh (span, cũng -4px) để 2 nội dung ngang hàng nhau */
+}
+.tkb-preview-toggle-btn span{
+  display:inline-block;
+  transform:translateY(-4px); /* nhích chữ lên 4px, đồng bộ style với nút
+    "Xoá hết" cạnh bên (xem .tkb-corner-clear-btn::after) */
+}
+.tkb-preview-toggle-btn:hover{
+  background:linear-gradient(180deg, #ffffff, #e5e7eb);
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.3);
+}
+.tkb-preview-toggle-btn:has(input:checked){
+  background:linear-gradient(180deg, #86efac, #4ade80);
+  color:#052e12;
+}
+
 .tkb-corner-clear-btn{
+  position:absolute;
+  top:-22px;
+  right:16px;
+  z-index:1;
   display:flex;
   align-items:center;
   justify-content:center;
-  width:100%;
-  height:100%;
-  min-height:28px;
-  padding:0;
-  border:none;
-  background:transparent;
-  font-size:1rem;
+  gap:6px;
+  padding:7px 16px;
+  border:3px solid #000;
+  background:linear-gradient(180deg, #f87171, #ef4444);
+  color:#fff;
+  font-size:0.82rem;
+  font-weight:700;
+  letter-spacing:0.2px;
   line-height:1;
+  border-radius:12px;
   cursor:pointer;
-  color:#374151;
-  border-radius:4px;
-  transition: background 0.15s, transform 0.15s, color 0.15s;
+  box-shadow:0 3px 8px rgba(0,0,0,0.3);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.tkb-corner-clear-btn::before{
+  content:"🗑️";
+  display:inline-block;
+  font-size:0.85rem;
+  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
+  transform:translateY(-4px); /* nội dung (icon) nhích lên 4px so với tâm
+    nút — chỉ dịch nội dung, không đổi vị trí/kích thước khung nút thật */
+}
+.tkb-corner-clear-btn::after{
+  content:"Xoá hết";
+  display:inline-block;
+  transform:translateY(-4px); /* nội dung (chữ) nhích lên 4px, đồng bộ với icon */
 }
 .tkb-corner-clear-btn:hover{
-  background:#ef4444;
-  color:#fff;
-  transform:scale(1.12);
+  background:linear-gradient(180deg, #fca5a5, #dc2626);
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.35);
 }
 .tkb-corner-clear-btn:active{
-  transform:scale(0.96);
+  transform:translateY(0);
+  box-shadow:0 2px 5px rgba(0,0,0,0.25);
 }
 
 .excel-table td.row-index{
@@ -4249,27 +4349,48 @@ body.light-mode .excel-table td.row-index{
   accent-color: var(--accent);
 }
 
+.tkb-materials-anchor{
+  position:relative; /* anchor CỐ ĐỊNH (relative tường minh, không phụ
+    thuộc hành vi containing-block ngầm của sticky) cho nút "Xoá hết"
+    (.tkb-corner-clear-btn) nằm NGOÀI .tkb-materials-panel — vì panel có
+    overflow:auto sẽ cắt mất phần nút nhô ra ngoài nếu đặt trực tiếp trong
+    đó, và position:sticky của wrapper bên trong không đảm bảo luôn được
+    trình duyệt coi là containing block hợp lệ trong mọi tình huống
+    (animation/will-change trên ancestor có thể vô hiệu hoá sticky). */
+  width:100%;
+}
+.tkb-materials-sticky-wrap{
+  position:sticky;
+  top: calc(var(--banner-h-cur, var(--banner-h)) + 60px);
+  z-index:2; /* cao hơn .tkb-corner-clear-btn (z-index:1) để khung Học cụ
+                "che" đúng 1/3 dưới của nút Xoá hết đè lên viền, thay vì
+                nút che khung */
+}
 .tkb-materials-panel{
   width:100%;
-  background:var(--card-bg);
+  /* Nền trắng cố định giống hệt bảng TKB bên trái (.excel-table dùng
+     #ffffff), không đổi theo theme nữa — trước đây dùng var(--card-bg)
+     (tím/đen tối theo theme). Vì nền không còn tối, màu chữ mặc định kế
+     thừa var(--text-main) (trắng ở dark mode) cũng được ép cứng sang màu
+     tối bên dưới để không bị chìm mất trên nền trắng. */
+  background:#d9d9d9;
+  color:#1e293b;
   border:4px solid var(--accent) !important;
   border-radius:var(--global-radius);
   padding:14px;
-  backdrop-filter:blur(14px);
   display:flex;
   flex-direction:column;
   gap:12px;
   max-height: 82vh;
   overflow:auto;
-  position:sticky;
-  top: calc(var(--banner-h-cur, var(--banner-h)) + 60px);
 }
 .tkb-materials-empty{
-  opacity:0.55;
+  opacity:0.6;
   text-align:center;
   padding:30px 10px;
   font-size:0.88rem;
   line-height:1.6;
+  color:#1e293b;
 }
 .tkb-day-columns{
   display:flex;
@@ -4284,8 +4405,8 @@ body.light-mode .excel-table td.row-index{
   display:flex;
   flex-direction:column;
   gap:10px;
-  background:rgba(255,255,255,0.02);
-  border:1px solid var(--card-border);
+  background:#f7f7f8;
+  border:3px solid #000;
   border-radius:var(--global-radius);
   padding:10px;
 }
@@ -4296,17 +4417,15 @@ body.light-mode .excel-table td.row-index{
   padding:6px 8px;
   border-radius: calc(var(--global-radius) - 4px);
   background: color-mix(in srgb, var(--accent) 30%, transparent);
+  color:#1e293b;
   position:sticky;
   top:0;
   z-index:2;
 }
-body.light-mode .tkb-day-column{
-  background: rgba(0,0,0,0.02);
-}
 .tkb-material-block{
-  border:2px solid var(--card-border);
+  border:2px solid #d0d0d0;
   border-radius:var(--global-radius);
-  background:rgba(255,255,255,0.03);
+  background:#ffffff;
   overflow:visible;
   position:relative;
 }
@@ -4501,7 +4620,8 @@ body.light-mode .tkb-day-column{
   justify-content:space-between;
   gap:8px;
   padding:8px 46px 8px 12px; /* chừa lề phải 46px để không bị nút "+" đè lên chữ/số ảnh */
-  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  background: color-mix(in srgb, var(--accent) 20%, white);
+  color:#1e293b;
   font-weight:800;
   font-size:0.85rem;
 }
@@ -4532,18 +4652,18 @@ body.light-mode .tkb-day-column{
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .tkb-material-dropzone-hint{
-  opacity:0.45;
+  opacity:0.5;
   font-size:0.78rem;
   text-align:center;
   padding:14px 6px;
-  border:2px dashed var(--card-border);
+  border:2px dashed #c0c0c0;
   border-radius: calc(var(--global-radius) - 4px);
   user-select:none;
 }
 .tkb-material-img-wrap{
   position:relative;
   border-radius: calc(var(--global-radius) - 4px);
-  border:1px solid var(--card-border);
+  border:1px solid #d0d0d0;
   overflow:visible;
 }
 .tkb-material-img-wrap img{
@@ -4694,12 +4814,10 @@ body.light-mode .tkb-day-column{
   font-weight:800;
   font-size:0.95rem;
 }
-body.light-mode .tkb-material-block{
-  background: rgba(0,0,0,0.02);
-}
-body.light-mode .tkb-material-head{
-  background: color-mix(in srgb, var(--accent) 20%, white);
-}
+/* Panel Học cụ cần soạn giờ luôn nền trắng cố định (giống bảng TKB bên
+   trái), không còn đổi theo theme nữa — các rule light-mode riêng cho
+   .tkb-material-block/.tkb-material-head trước đây đã được gộp thẳng vào
+   rule gốc của mỗi class (không cần định nghĩa lại theo mode nữa). */
 
 /* =========================
    BUTTON DEPTH / PRESS FX
@@ -4855,7 +4973,7 @@ p {
 }
 
 /* Hàng chứa h1 "Thời Khóa Biểu" (giữ nguyên bố cục cũ, nút Xoá hết đã
-   chuyển sang nằm tại ô góc # của bảng — xem .tkb-corner-clear-btn) */
+   chuyển ra ngoài khung bảng, góc phải phía trên — xem .tkb-corner-clear-btn) */
 .tkb-title-row{
   display:flex;
   align-items:center;
@@ -16232,11 +16350,6 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   <div class="page-toolbar-shell" id="toolbarShell-excel" style="margin-left:auto;margin-right:auto;">
     <div class="excel-toolbar" style="width:auto;">
       <div class="excel-toolbar-left">
-        <button class="btn excel-btn" onclick="exportCSV()">📤 Export Excel</button>
-        <label class="btn excel-btn" style="margin-top:0;">
-          📥 Import CSV
-          <input type="file" id="csvImport" accept=".csv" style="display:none;">
-        </label>
         <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
         <button class="btn excel-btn" onclick="addRow()">➕ Dòng</button>
         <button class="btn excel-btn" onclick="addColumn()">➕ Cột</button>
@@ -16254,6 +16367,7 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   <div class="tkb-split">
     <div class="tkb-left">
       <div class="excel-wrap">
+          <button type="button" class="tkb-corner-clear-btn" onclick="clearSheet()" title="Xoá hết dữ liệu bảng TKB"></button>
           <div class="excel-table-wrap" id="excelTableWrap">
             <div class="excel-container" id="excelContainer">
       <table class="excel-table tkb-table" id="excelTable"></table>
@@ -16263,13 +16377,23 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
       </div>
     </div>
     <div class="tkb-right">
-      <div class="tkb-materials-panel" id="tkbMaterialsPanel">
-        <div class="tkb-materials-toolbar">
-          <div class="tkb-materials-toolbar-title">🧩 Học cụ cần soạn</div>
-          <button class="btn excel-btn" style="margin-top:0;" onclick="tkbClearAllMaterials()">🗑️ Xoá hết</button>
+      <div class="tkb-materials-anchor">
+        <div class="tkb-materials-btn-row">
+          <label class="tkb-preview-toggle-btn" title="Tick để tắt tạm thời chế độ rê chuột/bấm phóng to ảnh">
+            <input type="checkbox" id="tkbPreviewToggleCheckbox" onchange="tkbTogglePreview(this.checked)">
+            <span>Tắt Preview</span>
+          </label>
+          <button type="button" class="tkb-corner-clear-btn" onclick="tkbClearAllMaterials()" title="Xoá hết học cụ và ảnh đã dán"></button>
         </div>
-        <div id="tkbMaterialsList">
-          <div class="tkb-materials-empty">Tick cột 🧩 ở bảng bên trái cho lớp cần soạn học cụ,<br>rồi bấm <b>"Tổng hợp học cụ"</b> để tạo khung dán ảnh ở đây.</div>
+        <div class="tkb-materials-sticky-wrap">
+          <div class="tkb-materials-panel" id="tkbMaterialsPanel">
+            <div class="tkb-materials-toolbar">
+              <div class="tkb-materials-toolbar-title">🧩 Học cụ cần soạn</div>
+            </div>
+            <div id="tkbMaterialsList">
+              <div class="tkb-materials-empty">Tick cột 🧩 ở bảng bên trái cho lớp cần soạn học cụ,<br>rồi bấm <b>"Tổng hợp học cụ"</b> để tạo khung dán ảnh ở đây.</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -22736,6 +22860,22 @@ function tkbUpdateNote(rowKey, value, btnEl) {
    - Bấm/chạm (click): GHIM preview lại — không tự đóng nữa, có nút ✕ và nền
      tối phía sau để đóng chủ động. Đây là cách hoạt động chắc chắn trên cả
      màn hình cảm ứng/trackpad (không có sự kiện hover) lẫn desktop. */
+// Công tắc "Tắt Preview" — bật/tắt tạm thời toàn bộ chế độ rê chuột/bấm để
+// phóng to ảnh học cụ. Checkbox đặt cạnh nút "🗑️ Xoá hết", ở góc trên khung
+// Học cụ cần soạn. Biến đặt ở phạm vi global (ngoài IIFE preview bên dưới)
+// vì checkbox trong HTML cần gọi tới được qua onchange.
+let tkbPreviewDisabled = localStorage.getItem('ao_tkb_preview_disabled') === '1';
+function tkbTogglePreview(checked) {
+  tkbPreviewDisabled = checked;
+  localStorage.setItem('ao_tkb_preview_disabled', checked ? '1' : '0');
+}
+// Đồng bộ trạng thái tick của checkbox với giá trị đã lưu, ngay khi DOM sẵn
+// sàng (không thể set "checked" tĩnh trong HTML vì giá trị đến từ
+// localStorage, chỉ đọc được bằng JS lúc chạy).
+document.addEventListener('DOMContentLoaded', () => {
+  const cb = document.getElementById('tkbPreviewToggleCheckbox');
+  if (cb) cb.checked = tkbPreviewDisabled;
+});
 (function () {
   let previewEl = null;
   let overlayEl = null;
@@ -22905,6 +23045,7 @@ function tkbUpdateNote(rowKey, value, btnEl) {
   }
 
   document.addEventListener('mouseover', function (e) {
+    if (tkbPreviewDisabled) return; // công tắc "Tắt Preview" đang bật
     if (isPinned) return; // đang ghim thì bỏ qua hover, tránh xung đột ảnh
     const img = e.target.closest('.tkb-material-img-wrap img');
     if (!img) return;
@@ -22925,6 +23066,7 @@ function tkbUpdateNote(rowKey, value, btnEl) {
   // muốn). preventDefault + stopImmediatePropagation chặn triệt để mọi hành vi
   // mặc định/khác đi kèm (mở link, submit form, v.v.) khi bấm vào ảnh học cụ.
   document.addEventListener('click', function (e) {
+    if (tkbPreviewDisabled) return; // công tắc "Tắt Preview" đang bật
     const img = e.target.closest('.tkb-material-img-wrap img');
     if (!img) return;
     e.preventDefault();
@@ -22935,7 +23077,7 @@ function tkbUpdateNote(rowKey, value, btnEl) {
 })();
 
 function tkbClearAllMaterials() {
-  tkbConfirmAction('Xoá ảnh và ghi chú nha ní?', () => {
+  tkbConfirmAction('Xoá toàn bộ khung học cụ và ảnh đã dán nha ní? (Không xoá dữ liệu TKB bên trái)', () => {
     tkbMaterialsData = {};
     tkbMaterialFlags = {};
     tkbNoteOpenRowKeys.clear();
@@ -23108,10 +23250,7 @@ let excelRows = 100; // 👉 số hàng
     if (!table) return;
 
     let html = `<thead><tr>
-<th class="row-head">
-  <button type="button" class="tkb-corner-clear-btn" onclick="clearSheet()" title="Xoá hết dữ liệu bảng TKB">🗑️</button>
-  <div class="col-resizer" data-fixed-col="row-head"></div>
-</th>
+<th class="row-head">#<div class="col-resizer" data-fixed-col="row-head"></div></th>
 <th class="col-header tkb-tool-col" title="Cần soạn học cụ">🧩<div class="col-resizer" data-fixed-col="tkb-tool-col"></div></th>
 `;
     excelCols.forEach(col => {
@@ -23216,7 +23355,7 @@ let excelRows = 100; // 👉 số hàng
 }
 
   function clearSheet() {
-    tkbConfirmAction('Xoá dữ liệu sheet á ní?', () => {
+    tkbConfirmAction('Xoá toàn bộ dữ liệu sheet này nha ní? (Kèm luôn các dấu tick 🧩)', () => {
       excelData = {};
       localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
       // Ghi lên Firebase (debounced)
@@ -23325,12 +23464,6 @@ newData[key] = {
     return result;
   }
 
-  document.addEventListener('change', (e) => {
-    if (e.target && e.target.id === 'csvImport') {
-      const file = e.target.files[0];
-      if (file) importCSVFile(file);
-    }
-  });
 <!-- ===== PASTE MULTI CELL (fixed) ===== -->
 
 document.addEventListener('paste', function (e) {

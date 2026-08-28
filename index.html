@@ -4368,14 +4368,17 @@ body.light-mode .excel-table td.row-index{
 }
 .tkb-materials-panel{
   width:100%;
-  /* Nền trắng cố định giống hệt bảng TKB bên trái (.excel-table dùng
-     #ffffff), không đổi theo theme nữa — trước đây dùng var(--card-bg)
-     (tím/đen tối theo theme). Vì nền không còn tối, màu chữ mặc định kế
-     thừa var(--text-main) (trắng ở dark mode) cũng được ép cứng sang màu
-     tối bên dưới để không bị chìm mất trên nền trắng. */
-  background:#d9d9d9;
-  color:#1e293b;
-  border:4px solid var(--accent) !important;
+  /* Nền ĐEN TỐI cố định — các khung Thứ/lớp bên trong (.tkb-day-column,
+     .tkb-material-block) vẫn giữ nền trắng riêng như cũ, không đổi theo.
+     Vì nền panel giờ tối, màu chữ mặc định kế thừa từ đây (dùng bởi
+     .tkb-materials-empty, .tkb-materials-toolbar-title...) được đổi sang
+     sáng để không bị chìm mất.
+     Nền sáng hơn 1 chút (#2b2b2b thay vì #1a1a1a) để viền đen 3px của
+     .tkb-day-column (khung "Thứ") nổi rõ lên trên nền, thay vì gần như
+     hòa lẫn vào nhau khi cả 2 đều đen sậm. */
+  background:#2b2b2b;
+  color:#f1f1f1;
+  border:10px solid var(--accent) !important;
   border-radius:var(--global-radius);
   padding:14px;
   display:flex;
@@ -4385,12 +4388,12 @@ body.light-mode .excel-table td.row-index{
   overflow:auto;
 }
 .tkb-materials-empty{
-  opacity:0.6;
+  opacity:0.65;
   text-align:center;
   padding:30px 10px;
   font-size:0.88rem;
   line-height:1.6;
-  color:#1e293b;
+  color:#f1f1f1;
 }
 .tkb-day-columns{
   display:flex;
@@ -4814,10 +4817,10 @@ body.light-mode .excel-table td.row-index{
   font-weight:800;
   font-size:0.95rem;
 }
-/* Panel Học cụ cần soạn giờ luôn nền trắng cố định (giống bảng TKB bên
-   trái), không còn đổi theo theme nữa — các rule light-mode riêng cho
-   .tkb-material-block/.tkb-material-head trước đây đã được gộp thẳng vào
-   rule gốc của mỗi class (không cần định nghĩa lại theo mode nữa). */
+/* Các khung Thứ (.tkb-day-column) và khung lớp (.tkb-material-block) bên
+   trong panel VẪN giữ nền trắng cố định riêng (không đổi theo theme, và
+   không đổi theo màu nền đen của panel cha ở trên) — chỉ nền panel ngoài
+   cùng là đen tối, các khung con bên trong vẫn trắng như trước. */
 
 /* =========================
    BUTTON DEPTH / PRESS FX

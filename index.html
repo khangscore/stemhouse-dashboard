@@ -4340,11 +4340,11 @@ body.light-mode .excel-table td.row-index{
 .tkb-table td.tkb-tool-col{
   min-width:38px !important;
   width:38px !important;
-  cursor:default !important;
+  cursor:pointer !important; /* cả ô là vùng bấm được, không chỉ riêng checkbox nhỏ bên trong */
 }
 .tkb-material-checkbox{
-  width:18px;
-  height:18px;
+  width:22px;
+  height:22px;
   cursor:pointer;
   accent-color: var(--accent);
 }
@@ -4378,7 +4378,7 @@ body.light-mode .excel-table td.row-index{
      hòa lẫn vào nhau khi cả 2 đều đen sậm. */
   background:#2b2b2b;
   color:#f1f1f1;
-  border:10px solid var(--accent) !important;
+  border:7px solid var(--accent) !important;
   border-radius:var(--global-radius);
   padding:14px;
   display:flex;
@@ -4419,8 +4419,11 @@ body.light-mode .excel-table td.row-index{
   text-align:center;
   padding:6px 8px;
   border-radius: calc(var(--global-radius) - 4px);
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
-  color:#1e293b;
+  /* Nền SOLID, đậm hơn màu chủ đạo (thay vì mix 30% mờ nhạt như trước) để
+     nổi bật rõ ràng, dễ phân biệt với các khung/ô còn lại trong panel. */
+  background: color-mix(in srgb, var(--accent) 75%, black);
+  color:#ffffff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.25);
   position:sticky;
   top:0;
   z-index:2;
@@ -4655,13 +4658,14 @@ body.light-mode .excel-table td.row-index{
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
 .tkb-material-dropzone-hint{
-  opacity:0.5;
+  opacity:0.85;
   font-size:0.78rem;
   text-align:center;
   padding:14px 6px;
   border:2px dashed #c0c0c0;
   border-radius: calc(var(--global-radius) - 4px);
   user-select:none;
+  color:#6b7280 !important;
 }
 .tkb-material-img-wrap{
   position:relative;
@@ -5109,7 +5113,15 @@ p {
   content:'';
   position:absolute;
   top:0; bottom:0;
-  left:-5px; right:-5px; /* vùng bắt chuột rộng hơn vạch để dễ cầm kéo */
+  left:0; right:-4px; /* vùng bắt chuột rộng hơn vạch 3px để dễ cầm kéo. TRƯỚC ĐÂY
+    mở rộng cả 2 bên (±5px, sau đó ±2px) — nhưng đo thực tế cho thấy checkbox cột
+    🧩 chiếm gần trọn bề rộng ô (37px/38px) và vạch handle (đứng đúng ranh giới
+    phải của cột freeze) đã chồng sẵn ~2.5px lên checkbox NGAY CẢ KHÔNG có phần mở
+    rộng này — nên mọi px mở rộng về bên TRÁI đều lấn thêm vào checkbox và chặn
+    click ở đó trên suốt chiều cao bảng. Chỉ mở rộng sang PHẢI (ra khoảng trống đầu
+    cột dữ liệu kế tiếp, nơi không có phần tử tương tác nào) để giữ vùng kéo dễ
+    bấm mà không che thêm checkbox. Phần lõi 2.5px handle vẫn đè lên checkbox —
+    xem thêm điều chỉnh left ở .tkb-freeze-handle-col bên dưới. */
 }
 .tkb-freeze-handle.tkb-freeze-off{
   opacity:0.35;
@@ -22520,6 +22532,18 @@ function tkbSaveMaterialsDebounced(delay = 500) {
   }, delay);
 }
 
+// Bấm bất kỳ đâu trong ô cột 🧩 đều tick/bỏ tick được, không chỉ riêng ô
+// vuông nhỏ của checkbox — mở rộng vùng bấm cho dễ thao tác hơn.
+// Nếu bấm TRÚNG chính checkbox: để trình duyệt tự xử lý native (không can
+// thiệp gì thêm) để tránh toggle 2 lần / xung đột.
+function tkbHandleToolColClick(evt, td) {
+  if (evt.target && evt.target.classList && evt.target.classList.contains('tkb-material-checkbox')) return;
+  const cb = td.querySelector('.tkb-material-checkbox');
+  if (!cb) return;
+  cb.checked = !cb.checked;
+  cb.dispatchEvent(new Event('change', { bubbles:true }));
+}
+
 function tkbToggleMaterialFlag(row, checked) {
   if (checked) {
     tkbMaterialFlags[row] = true;
@@ -22584,9 +22608,14 @@ function tkbSyncMaterialsPanel() {
 
   const dayKeys = Object.keys(groups).sort((a, b) => (weekdayOrder[a] || 99) - (weekdayOrder[b] || 99));
 
+  // Nhãn đầy đủ hiển thị trên khung Thứ (T2 -> Thứ 2, ...) — data-day vẫn
+  // giữ nguyên dạng viết tắt (T2, T3...) để không ảnh hưởng logic khác.
+  const weekdayFullLabel = { T2:'Thứ 2', T3:'Thứ 3', T4:'Thứ 4', T5:'Thứ 5', T6:'Thứ 6', T7:'Thứ 7', CN:'Chủ Nhật' };
+
   let html = '<div class="tkb-day-columns">';
   dayKeys.forEach(dayKey => {
-    html += `<div class="tkb-day-column" data-day="${dayKey}"><div class="tkb-day-column-head">${dayKey}</div>`;
+    const dayLabel = weekdayFullLabel[dayKey] || dayKey;
+    html += `<div class="tkb-day-column" data-day="${dayKey}"><div class="tkb-day-column-head">${dayLabel}</div>`;
 
     groups[dayKey].forEach(row => {
       const rowKey = `row_${row}`;
@@ -23276,7 +23305,7 @@ let excelRows = 100; // 👉 số hàng
 `;
       const isChecked = !!tkbMaterialFlags[row];
       html += `
-<td class="tkb-tool-col">
+<td class="tkb-tool-col" onclick="tkbHandleToolColClick(event, this)">
   <input type="checkbox" class="tkb-material-checkbox" data-row="${row}" ${isChecked ? 'checked' : ''} onchange="tkbToggleMaterialFlag(${row}, this.checked)" title="Cần soạn học cụ">
 </td>
 `;
@@ -24043,7 +24072,15 @@ function tkbPositionFreezeHandles(colFreezeWidth, rowFreezeHeight) {
   const tableRect = table.getBoundingClientRect();
   const tableHeightPx = tableRect.height;
 
-  handleCol.style.left = (baseLeft + colFreezeWidth - 1.5) + 'px';
+  // Vạch handle (3px) được đặt lệch +1px so với đúng tâm ranh giới cột
+  // (colFreezeWidth), tức "-0.5" thay vì "-1.5" như cũ. Lý do: checkbox
+  // trong ô cuối cùng bị freeze (cột 🧩) chiếm gần trọn bề rộng ô (37px/38px,
+  // do accent-color + kích thước native của input checkbox lớn hơn 22px khai
+  // trong CSS), nên đặt đúng tâm ranh giới khiến vạch (và vùng bắt chuột mở
+  // rộng ::before) đè lên rìa phải checkbox, chặn click ở đó trên suốt chiều
+  // cao bảng. Dịch nhẹ sang phải để vạch nằm gọn trong khoảng trống đầu ô của
+  // cột dữ liệu kế tiếp thay vì đè lên nội dung tương tác của cột freeze.
+  handleCol.style.left = (baseLeft + colFreezeWidth - 0.5) + 'px';
   handleCol.style.top = baseTop + 'px';
   handleCol.style.height = tableHeightPx + 'px';
   handleCol.classList.toggle('tkb-freeze-off', tkbFreezeColIdx === 0);

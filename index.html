@@ -176,7 +176,6 @@
 /* ── Containers / panels ── */
 .settings-unified-card,
 .card,
-.aiforge-panel,
 .chill-panel,
 .kanban-col,
 .kanban-card,
@@ -530,7 +529,6 @@
     body.light-mode .btn:not(.btn-confirm):not(.btn-cancel):not(.excel-btn):not(.vat-btn):not(.dash-btn):not(.ytlike-paste-btn),
     body.light-mode .pdf-action-btn:not(#iloveWorkspace .pdf-action-btn),
     body.light-mode .vat-inv-action-btn,
-    body.light-mode .af-action-btn,
     body.light-mode .ytlike-action-btn {
       background: rgba(255,255,255,0.55) !important;
       border-color: rgba(0,0,0,0.14) !important;
@@ -630,16 +628,6 @@
       background: rgba(255,255,255,0.52) !important;
       border-color: rgba(0,0,0,0.08) !important;
       color: #475569 !important;
-    }
-
-    /* AI FORGE */
-    body.light-mode .aiforge-panel,
-    body.light-mode .af-chat-box,
-    body.light-mode .af-message,
-    body.light-mode .af-input-row {
-      background: rgba(255,255,255,0.52) !important;
-      border-color: #000 !important;
-      color: #0f172a !important;
     }
 
     /* TINIT / mini apps */
@@ -807,50 +795,6 @@
       backdrop-filter: blur(14px) !important;
     }
 
-    /* ── AI FORGE ── */
-    body.light-mode .aiforge-panel {
-      background: rgba(255,255,255,0.55) !important;
-      border-color: #000 !important;
-    }
-    body.light-mode .af-cat-btn {
-      background: rgba(255,255,255,0.50) !important;
-      border-color: rgba(0,0,0,0.10) !important;
-      color: #1e293b !important;
-    }
-    body.light-mode .af-cat-btn:hover {
-      background: rgba(255,255,255,0.80) !important;
-    }
-    body.light-mode .af-input,
-    body.light-mode .af-select,
-    body.light-mode .af-textarea {
-      background: rgba(255,255,255,0.70) !important;
-      border-color: rgba(0,0,0,0.14) !important;
-      color: #0f172a !important;
-    }
-    body.light-mode .af-select option { background: #fff; color: #0f172a; }
-    body.light-mode .af-platform-chip {
-      background: rgba(255,255,255,0.55) !important;
-      border-color: rgba(0,0,0,0.12) !important;
-      color: #1e293b !important;
-    }
-    body.light-mode .af-output-box {
-      background: rgba(255,255,255,0.65) !important;
-      border-color: rgba(0,0,0,0.10) !important;
-      color: #0f172a !important;
-    }
-    body.light-mode .af-saved-item {
-      background: rgba(255,255,255,0.55) !important;
-      border-color: rgba(0,0,0,0.08) !important;
-    }
-    body.light-mode .af-saved-item:hover {
-      background: rgba(255,255,255,0.80) !important;
-    }
-    body.light-mode .af-action-btn {
-      background: rgba(255,255,255,0.55) !important;
-      border-color: rgba(0,0,0,0.12) !important;
-      color: #1e293b !important;
-    }
-
     /* ── MUSIC / MIU DỊT (YouTube-like) ── */
     body.light-mode .ytlike-shell {
       background: rgba(255,255,255,0.60) !important;
@@ -901,41 +845,6 @@
     }
 
     /* Chat dark — không override background khung, giữ trong suốt như gốc */
-
-    /* AI Forge dark — nền tối rõ glassmorphism */
-    body:not(.light-mode) .aiforge-panel {
-      background: rgba(0,0,0,0.40) !important;
-      border-color: #000 !important;
-      backdrop-filter: blur(16px) !important;
-    }
-    body:not(.light-mode) .af-cat-btn {
-      background: rgba(0,0,0,0.30) !important;
-      border-color: rgba(255,255,255,0.10) !important;
-    }
-    body:not(.light-mode) .af-cat-btn:hover {
-      background: rgba(255,255,255,0.10) !important;
-    }
-    body:not(.light-mode) .af-input,
-    body:not(.light-mode) .af-select,
-    body:not(.light-mode) .af-textarea {
-      background: rgba(0,0,0,0.35) !important;
-      border-color: rgba(255,255,255,0.12) !important;
-    }
-    body:not(.light-mode) .af-output-box {
-      background: rgba(0,0,0,0.45) !important;
-      border-color: rgba(255,255,255,0.12) !important;
-    }
-    body:not(.light-mode) .af-saved-item {
-      background: rgba(0,0,0,0.28) !important;
-      border-color: rgba(255,255,255,0.10) !important;
-    }
-    body:not(.light-mode) .af-saved-item:hover {
-      background: rgba(255,255,255,0.08) !important;
-    }
-    body:not(.light-mode) .af-platform-chip {
-      background: rgba(0,0,0,0.30) !important;
-      border-color: rgba(255,255,255,0.14) !important;
-    }
 
     /* Kanban dark — nền tối rõ glassmorphism */
     body:not(.light-mode) .kanban-col {
@@ -2641,7 +2550,7 @@ body.has-custom-bg::after {
 
     /* Khi banner-enter: tất cả content bên dưới header trượt từ dưới lên
        Dùng :not(.header-group) để bỏ qua banner — áp dụng cho mọi div content */
-    .banner-enter > *:not([class*="header-group"]):not([class*="page-title"]):not(.aiforge-header):not(.chill-page-title):not(.pt-clothesline-rope):not(.pt-clothesline-area):not(.calendar-box):not(.page-toolbar-shell) {
+    .banner-enter > *:not([class*="header-group"]):not([class*="page-title"]):not(.chill-page-title):not(.pt-clothesline-rope):not(.pt-clothesline-area):not(.calendar-box):not(.page-toolbar-shell) {
       animation: contentRiseIn 0.48s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
       animation-delay: 0.09s;
     }
@@ -2723,7 +2632,6 @@ body.has-custom-bg::after {
     ===================================================================== */
     .banner-enter .header-group,
     .banner-enter [class*="page-title"],
-    .banner-enter .aiforge-header,
     .banner-enter .chill-page-title {
       animation: barDropIn 0.68s cubic-bezier(0.0, 0.0, 0.2, 1) both !important;
       overflow: visible !important;
@@ -2739,8 +2647,6 @@ body.has-custom-bg::after {
     body.chat-active .container { display: none; }
     /* Ẩn container khi đang ở trang Tịn Ít */
     body.tinit-active .container { display: none; }
-    /* Ẩn container khi đang ở trang AI Forge */
-    body.aiforge-active .container { display: none; }
     /* Ẩn container khi đang ở trang Chill Zone */
     body.chill-active .container { display: none; }
     /* Ẩn container khi đang ở trang Kanban */
@@ -3982,6 +3888,58 @@ body.light-mode .dropdown-item:hover{
   white-space:nowrap;
 }
 
+/* ===== Nút "Tổng hợp học cụ" — hiệu ứng bạc óng ánh (metallic silver + shine sweep) ===== */
+.excel-btn.tkb-silver-btn{
+  position:relative;
+  overflow:hidden;
+  color:#2a2a2a !important;
+  border:1px solid #b9bcc2 !important;
+  background:linear-gradient(135deg,
+    #f4f5f7 0%,
+    #d7dae0 18%,
+    #f8f9fb 32%,
+    #bfc3ca 48%,
+    #eef0f3 62%,
+    #c7cbd2 80%,
+    #f4f5f7 100%);
+  background-size:220% 220%;
+  animation:tkbSilverShift 4.5s ease-in-out infinite;
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 -1px 2px rgba(0,0,0,0.15) inset,
+    0 2px 6px rgba(0,0,0,0.25);
+  text-shadow:0 1px 0 rgba(255,255,255,0.6);
+}
+.excel-btn.tkb-silver-btn::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:-60%;
+  width:40%;
+  height:100%;
+  background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
+  transform:skewX(-20deg);
+  animation:tkbSilverSweep 2.8s ease-in-out infinite;
+  pointer-events:none;
+}
+.excel-btn.tkb-silver-btn:hover{
+  filter:brightness(1.08);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 -1px 2px rgba(0,0,0,0.15) inset,
+    0 3px 10px rgba(0,0,0,0.3);
+}
+@keyframes tkbSilverShift{
+  0%{ background-position:0% 50%; }
+  50%{ background-position:100% 50%; }
+  100%{ background-position:0% 50%; }
+}
+@keyframes tkbSilverSweep{
+  0%{ left:-60%; }
+  55%{ left:130%; }
+  100%{ left:130%; }
+}
+
 .excel-toolbar-right{
   display:flex;
   align-items:center;
@@ -4155,15 +4113,177 @@ body.light-mode .excel-shell{
   position:absolute;
   top:-22px;
   right:16px;
-  z-index:1;
+  z-index:1; /* THẤP HƠN .tkb-materials-sticky-wrap (z-index:2) một cách CỐ Ý
+    -> khung panel bên dưới đè lên đúng phần dưới của các nút, tạo hiệu ứng
+    "nút gắn vào viền" (nửa trên nhô ra ngoài, nửa dưới bị viền che) giống
+    hệt "Xoá hết"/"Tắt Preview" gốc, thay vì nút nổi lơ lửng hẳn phía trên
+    khung. Dropdown "Học cụ đã lưu" vẫn nổi lên trên cùng bình thường khi mở
+    vì menu của nó dùng position:fixed + z-index riêng rất cao, không phụ
+    thuộc z-index của hàng nút này. */
   display:flex;
   align-items:center;
   gap:8px;
+  flex-wrap:wrap;
+  justify-content:flex-end;
 }
 .tkb-materials-btn-row .tkb-corner-clear-btn{
   position:static;
   top:auto;
   right:auto;
+}
+
+/* ===== "Quay lại" — tách riêng, neo mép TRÁI của khung học cụ ===== */
+.tkb-restore-btn{
+  position:absolute;
+  top:-22px;
+  left:16px;
+  z-index:1; /* xem giải thích ở .tkb-materials-btn-row phía trên */
+}
+
+/* ===== Lưu học cụ / Học cụ đã lưu / Quay lại =====
+   Dùng chung "ngôn ngữ" thiết kế với nút "Tắt Preview" / "Xoá hết" đã có
+   sẵn: pill viền đen 3px, nhích nội dung lên -4px, nhô 1 phần đè lên viền
+   trên của khung panel bên dưới (không tách thành thanh riêng nổi lập).
+   KHÔNG dùng class .btn/.excel-btn (dễ bị style ngoài đè padding/height),
+   nút được style độc lập 100% giống hệt .tkb-corner-clear-btn. */
+.tkb-save-materials-btn,
+.tkb-saved-dropdown-btn,
+.tkb-restore-btn{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:6px;
+  width:auto;
+  margin:0;
+  padding:7px 16px;
+  border:3px solid #000;
+  border-radius:12px;
+  font-size:0.82rem;
+  font-weight:700;
+  letter-spacing:0.2px;
+  line-height:1;
+  white-space:nowrap;
+  cursor:pointer;
+  box-shadow:0 3px 8px rgba(0,0,0,0.3);
+  transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.tkb-save-materials-btn > *,
+.tkb-saved-dropdown-btn > *,
+.tkb-restore-btn > *{
+  transform:translateY(-3px); /* -5px trước đó, giảm thêm 2px theo yêu cầu */
+}
+.tkb-save-materials-btn{
+  background:linear-gradient(180deg, #93c5fd, #3b82f6);
+  color:#0b1f4d;
+}
+.tkb-save-materials-btn:hover{
+  background:linear-gradient(180deg, #bfdbfe, #60a5fa);
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.3);
+}
+.tkb-save-materials-btn:active,
+.tkb-saved-dropdown-btn:active,
+.tkb-restore-btn:active{
+  transform:translateY(0);
+  box-shadow:0 2px 5px rgba(0,0,0,0.25);
+}
+.tkb-saved-dropdown-wrap{
+  position:relative;
+  display:inline-flex;
+}
+.tkb-saved-dropdown-btn{
+  background:linear-gradient(180deg, #fde68a, #f59e0b);
+  color:#3a2500;
+}
+.tkb-saved-dropdown-btn:hover{
+  background:linear-gradient(180deg, #fef3c7, #fbbf24);
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.3);
+}
+.tkb-dropdown-caret{
+  font-size:0.7rem;
+  transition:transform 0.15s;
+}
+.tkb-saved-dropdown-wrap.open .tkb-dropdown-caret{
+  transform:translateY(-3px) rotate(180deg); /* giữ nguyên độ nhích lên
+    (translateY) đồng thời xoay mũi tên khi mở, tránh mất 1 trong 2 hiệu
+    ứng do transform của rule sau ghi đè hoàn toàn rule trước */
+}
+.tkb-saved-dropdown-menu{
+  display:none;
+  position:fixed;
+  min-width:240px;
+  max-width:340px;
+  max-height:320px;
+  overflow-y:auto;
+  background:#1f2430;
+  border:3px solid #000;
+  border-radius:12px;
+  box-shadow:0 8px 22px rgba(0,0,0,0.5);
+  z-index:99999;
+  padding:6px;
+}
+.tkb-saved-dropdown-menu.open{
+  display:block; /* dùng class .open TRÊN CHÍNH menu (đặt bằng JS) thay vì
+    ".tkb-saved-dropdown-wrap.open .tkb-saved-dropdown-menu" — vì menu bị
+    "di tản" (appendChild) ra document.body khi mở nên không còn là hậu duệ
+    DOM của wrap nữa, descendant selector cũ sẽ không bao giờ khớp được. */
+}
+.tkb-saved-dropdown-empty{
+  padding:10px 8px;
+  font-size:0.78rem;
+  opacity:0.7;
+  text-align:center;
+  color:#fff;
+}
+.tkb-saved-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:6px;
+  padding:7px 8px;
+  border-radius:8px;
+  cursor:pointer;
+  color:#fff;
+  font-size:0.78rem;
+  font-weight:600;
+}
+.tkb-saved-item:hover{
+  background:rgba(245,158,11,0.25);
+}
+.tkb-saved-item-name{
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.tkb-saved-item-date{
+  font-size:0.68rem;
+  opacity:0.65;
+  font-weight:400;
+  white-space:nowrap;
+}
+.tkb-saved-item-delete{
+  background:none;
+  border:none;
+  color:#f87171;
+  cursor:pointer;
+  font-size:0.85rem;
+  padding:2px 5px;
+  border-radius:6px;
+  line-height:1;
+}
+.tkb-saved-item-delete:hover{
+  background:rgba(248,113,113,0.2);
+}
+.tkb-restore-btn{
+  background:linear-gradient(180deg, #fca5a5, #ef4444);
+  color:#3a0000;
+}
+.tkb-restore-btn:hover{
+  background:linear-gradient(180deg, #fecaca, #f87171);
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.3);
 }
 .tkb-preview-toggle-btn{
   display:flex;
@@ -4316,6 +4436,11 @@ body.light-mode .excel-table td.row-index{
   display:flex;
   gap:16px;
   align-items:flex-start;
+  /* Nút thu/mở toolbar (.toolbar-collapse-btn) nằm đè xuống 22px bên dưới
+     khung toolbar (position:absolute; bottom:-22px). Cộng thêm 25px theo
+     yêu cầu để nội dung 2 khung lớn (TKB + học cụ) cách MÉP DƯỚI của nút
+     đó đúng 25px, chứ không phải cách mép dưới khung toolbar 25px. */
+  margin-top: 47px;
 }
 .tkb-left, .tkb-right{
   min-width:0;
@@ -4657,6 +4782,15 @@ body.light-mode .excel-table td.row-index{
 .tkb-material-dropzone.dragover{
   background: color-mix(in srgb, var(--accent) 10%, transparent);
 }
+/* Đang kéo 1 ảnh học cụ (nội bộ hoặc từ khung của lớp khác) tới trên khung
+   này, còn chưa thả xuống -> highlight bằng viền nét đứt xanh khác màu để
+   phân biệt rõ với .dragover (thả FILE ảnh mới từ ngoài máy vào). */
+.tkb-material-dropzone.tkb-drop-accept{
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  outline: 2px dashed var(--accent, #22c55e);
+  outline-offset: -2px;
+  border-radius: calc(var(--global-radius) - 4px);
+}
 .tkb-material-dropzone-hint{
   opacity:0.85;
   font-size:0.78rem;
@@ -4679,6 +4813,8 @@ body.light-mode .excel-table td.row-index{
   height:auto;
   cursor:zoom-in;
   border-radius: calc(var(--global-radius) - 4px);
+  -webkit-user-drag:none;
+  user-select:none;
 }
 .tkb-material-img-del{
   position:absolute;
@@ -4701,6 +4837,191 @@ body.light-mode .excel-table td.row-index{
 }
 .tkb-material-img-del:hover{
   background:#ef4444;
+}
+.tkb-material-img-order{
+  position:absolute;
+  top:6px;
+  left:6px;
+  min-width:20px;
+  height:20px;
+  padding:0 5px;
+  border-radius:999px;
+  background:rgba(17,24,39,0.75);
+  color:#fff;
+  font-size:0.68rem;
+  font-weight:700;
+  line-height:20px;
+  text-align:center;
+  z-index:5;
+  pointer-events:none;
+  user-select:none;
+}
+/* Kéo-thả sắp xếp lại thứ tự ảnh trong 1 khung học cụ */
+.tkb-material-img-wrap{
+  cursor:grab;
+  transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+}
+.tkb-material-img-wrap.tkb-img-dragging{
+  opacity:0.4;
+  cursor:grabbing;
+}
+.tkb-material-img-wrap.tkb-img-drop-before{
+  box-shadow: 0 -3px 0 0 var(--accent, #22c55e) inset, 0 0 0 2px var(--accent, #22c55e);
+  transform: translateY(4px);
+}
+.tkb-material-img-wrap.tkb-img-drop-after{
+  box-shadow: 0 3px 0 0 var(--accent, #22c55e) inset, 0 0 0 2px var(--accent, #22c55e);
+  transform: translateY(-4px);
+}
+
+/* ===== Modal "Xem tổng quan" học cụ — lưới thumbnail toàn bộ lớp ===== */
+.tkb-overview-box{
+  max-width: 1100px !important;
+  width: 92vw;
+  max-height: 86vh;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  padding: 20px 22px !important;
+}
+.tkb-overview-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:14px;
+  flex-shrink:0;
+}
+.tkb-overview-header h2{
+  margin:0;
+  font-size:1.1rem;
+}
+.tkb-overview-close{
+  width:32px;
+  height:32px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,0.15);
+  background:rgba(255,255,255,0.06);
+  color:#e8eaed;
+  cursor:pointer;
+  font-size:0.95rem;
+  flex-shrink:0;
+}
+.tkb-overview-close:hover{
+  background:rgba(239,68,68,0.85);
+  border-color:transparent;
+}
+.tkb-overview-body{
+  overflow-y:auto;
+  padding-right:6px;
+}
+.tkb-overview-empty{
+  opacity:0.7;
+  text-align:center;
+  padding:40px 10px;
+}
+.tkb-overview-day-group{
+  margin-bottom:22px;
+}
+.tkb-overview-day-title{
+  font-weight:800;
+  font-size:0.95rem;
+  margin-bottom:10px;
+  padding-bottom:6px;
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  opacity:0.9;
+}
+/* Các lớp CÙNG một ngày xếp NGANG cạnh nhau (flex-wrap), mỗi lớp là 1 "thẻ"
+   rộng vừa đủ theo số ảnh của chính nó — thay vì mỗi lớp chiếm trọn 1 hàng
+   dọc như trước (khiến lớp chỉ có 1-2 ảnh để lại khoảng trống rất lớn bên
+   phải). Lớp nào nhiều ảnh thì thẻ tự rộng ra hơn (max-width chặn lại để
+   không chiếm quá nửa khung khi chỉ có 1 lớp trong ngày). */
+.tkb-overview-day-classes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  align-items:flex-start;
+}
+.tkb-overview-class-block{
+  flex: 0 1 auto;
+  min-width:150px;
+  max-width:100%;
+}
+.tkb-overview-class-head{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  font-size:0.82rem;
+  font-weight:700;
+  opacity:0.85;
+  margin-bottom:8px;
+}
+.tkb-overview-class-head .tkb-overview-count{
+  font-weight:600;
+  opacity:0.7;
+  font-size:0.75rem;
+}
+/* Lưới thumbnail BÊN TRONG 1 lớp: không dùng auto-fill kéo giãn hết chiều
+   rộng còn lại nữa (đó là nguyên nhân gây khoảng trống to bên phải) — giờ
+   ảnh xếp thành hàng ngang với kích thước cố định, hết ảnh thì thẻ dừng lại
+   đúng ở đó, KHÔNG kéo giãn ra thêm. */
+.tkb-overview-grid{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  max-width: 420px;
+}
+.tkb-overview-thumb-wrap{
+  position:relative;
+  border-radius:calc(var(--global-radius) - 6px);
+  overflow:hidden;
+  border:1px solid rgba(255,255,255,0.12);
+  width:120px;
+  height:120px;
+  flex-shrink:0;
+  cursor:zoom-in;
+  background:rgba(255,255,255,0.03);
+}
+.tkb-overview-thumb-wrap img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+  transition: transform 0.15s ease;
+}
+.tkb-overview-thumb-wrap:hover img{
+  transform: scale(1.06);
+}
+.tkb-overview-thumb-wrap .tkb-overview-thumb-idx{
+  position:absolute;
+  bottom:4px;
+  right:4px;
+  min-width:18px;
+  height:18px;
+  padding:0 4px;
+  border-radius:999px;
+  background:rgba(0,0,0,0.65);
+  color:#fff;
+  font-size:0.65rem;
+  font-weight:700;
+  line-height:18px;
+  text-align:center;
+}
+.tkb-overview-class-empty{
+  font-size:0.78rem;
+  opacity:0.55;
+  font-style:italic;
+  padding:6px 2px;
+  width:120px;
+}
+@media (max-width: 640px){
+  .tkb-overview-thumb-wrap{
+    width:88px;
+    height:88px;
+  }
+  .tkb-overview-class-empty{
+    width:88px;
+  }
 }
 .tkb-material-hover-preview{
   position:fixed;
@@ -14468,6 +14789,128 @@ body.sidebar-bottom.banner-scrolled .header-group .home-clock {
     0 3px 8px color-mix(in srgb, var(--accent) 20%, transparent);
 }
 
+/* ===== Nút "Xoá Sheet" — màu đỏ cảnh báo (đè lên gradient xanh mặc định
+   của .btn.excel-btn ở trên bằng selector cụ thể hơn + !important) ===== */
+.btn.excel-btn.tkb-danger-btn {
+  background: linear-gradient(160deg,
+    rgba(255,255,255,0.38) 0%,
+    #f87171 8%,
+    #dc2626 48%,
+    #b91c1c 78%,
+    #7f1d1d 100%
+  ) !important;
+  color: #fff !important;
+  box-shadow:
+    0 3px 8px rgba(0,0,0,0.35),
+    inset 0 1px 0 rgba(255,255,255,0.4),
+    inset -1px 0 0 rgba(255,255,255,0.12) !important;
+}
+.btn.excel-btn.tkb-danger-btn:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.35) !important;
+  filter: brightness(1.06);
+}
+.btn.excel-btn.tkb-danger-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 1px 4px rgba(0,0,0,0.3) !important;
+}
+
+/* ===== Nút "Tổng hợp học cụ" — hiệu ứng bạc bóng kim loại thật (đè lên
+   gradient xanh mặc định của .btn.excel-btn ở trên bằng selector cụ thể
+   hơn + !important, vì rule .tkb-silver-btn gốc định nghĩa sớm hơn trong
+   file không có !important nên bị gradient xanh của .btn.excel-btn đè mất).
+   Gradient đi từ trắng sáng ở góc trên-trái xuống xám tối ở góc dưới-phải
+   để tạo cảm giác khối kim loại 3D có nguồn sáng chiếu từ một phía (giống
+   thìa/muỗng bạc thật), thay vì chỉ loang lổ sáng-tối đều màu như trước. */
+.btn.excel-btn.tkb-silver-btn {
+  color: transparent !important;
+  background-clip: padding-box !important;
+  border: 2px solid #6d7278 !important;
+  background: linear-gradient(90deg,
+    #ffffff 0%,
+    #f6f7f9 8%,
+    #d5d8dd 18%,
+    #aeb2b9 30%,
+    #82868e 44%,
+    #5c5f64 58%,
+    #3a3c40 74%,
+    #1e1f21 100%
+  ) !important;
+  background-size: 220% 220% !important;
+  animation: tkbSilverShift 4.5s ease-in-out infinite !important;
+  text-shadow: none !important;
+  box-shadow:
+    0 3px 8px rgba(0,0,0,0.4),
+    inset 0 2px 0 rgba(255,255,255,0.95),
+    inset -1px 0 0 rgba(255,255,255,0.3),
+    inset 0 -3px 5px rgba(0,0,0,0.4) !important;
+}
+/* Chữ dùng gradient NGƯỢC với nền (tối ở trái -> sáng ở phải) để luôn tương
+   phản tốt với nền bên dưới nó (nền sáng ở trái thì chữ tối, nền tối ở phải
+   thì chữ sáng). Đặt trên 1 lớp span riêng vẽ đè lên trên nút bằng
+   background-clip: text, vì .btn.excel-btn::before đã dùng cho quầng bóng
+   loáng nên không thể dùng chung cho chữ. */
+.btn.excel-btn.tkb-silver-btn .tkb-silver-btn-label {
+  position: relative;
+  z-index: 2;
+  background: linear-gradient(90deg,
+    #1e1f21 0%,
+    #3a3c40 20%,
+    #6a6e74 40%,
+    #a4a8ae 58%,
+    #d8dade 76%,
+    #ffffff 100%
+  );
+  background-size: 220% 220%;
+  animation: tkbSilverShift 4.5s ease-in-out infinite;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 800;
+}
+.btn.excel-btn.tkb-silver-btn::before {
+  /* Vệt hắt sáng mềm, lan toả (thay vì 1 vệt cứng skew) để trông giống ánh
+     sáng bấy loang trên bề mặt kim loại cong thật, không như tia sáng nhân
+     tạo quét ngang. Dùng radial-gradient bầu dục mờ dần ra mọi hướng, đặt
+     lệch về phía trên-trái nơi ánh sáng "hắt" vào mạnh nhất — làm to, sáng
+     và nét hơn nữa để rõ chất "bóng loáng" bên nửa trái của nút. */
+  content: "";
+  width: 95% !important;
+  height: 130% !important;
+  left: -22% !important;
+  top: -22% !important;
+  border-radius: 50% !important;
+  background: radial-gradient(ellipse at 26% 26%,
+    rgba(255,255,255,1) 0%,
+    rgba(255,255,255,0.85) 18%,
+    rgba(255,255,255,0.4) 38%,
+    rgba(255,255,255,0.1) 58%,
+    transparent 75%
+  ) !important;
+  transform: none;
+  animation: tkbSilverGlow 4.5s ease-in-out infinite;
+  mix-blend-mode: overlay;
+  filter: blur(0.5px);
+}
+.btn.excel-btn.tkb-silver-btn:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.1);
+  box-shadow:
+    0 6px 14px rgba(0,0,0,0.3) !important;
+}
+.btn.excel-btn.tkb-silver-btn:active {
+  transform: translateY(1px);
+  box-shadow:
+    0 1px 4px rgba(0,0,0,0.3) !important;
+}
+@keyframes tkbSilverGlow {
+  0%, 100% { opacity: 0.75; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.06); }
+}
+
+
 /* --- Danger variant (xoá tất cả) --- */
 .vat-btn.danger {
   background: #dc2626 !important;
@@ -14877,239 +15320,6 @@ body.sidebar-bottom.banner-scrolled .header-group .home-clock {
   .pdf-tool-btn { font-size: 0.68rem !important; }
   .pdf-tool-btn span { font-size: 0.68rem !important; }
 }
-
-/* ═══════════════════════════════════════════════════
-   AI FORGE PAGE
-═══════════════════════════════════════════════════ */
-#page-aiforge { display: none; }
-#page-aiforge.active-page {
-  display: block;
-  padding: 62px 20px 60px;
-  min-height: 100vh;
-  animation: pageFadeIn 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-/* ⚑ aiforge-header — đồng bộ pattern sticky với chat/tinit/pdf/music outer-page titles */
-.aiforge-header {
-  text-align: center;
-  margin-bottom: 24px;
-  margin-top: 0;
-  margin-left: -120px;
-  margin-right: 0;
-  padding-right: 20px;
-  background: transparent;
-  z-index: 200;
-  display: flex;
-  justify-content: flex-start;
-  position: sticky !important;
-  top: 0;
-  pointer-events: none;
-}
-/* Đảm bảo h1 vẫn click được khi pointer-events tắt trên wrapper */
-.aiforge-header h1 { pointer-events: auto; }
-/* banner-scrolled shrink — đồng bộ với tinit/chat */
-body.banner-scrolled .aiforge-header { margin-bottom: 4px !important; }
-body.banner-scrolled .aiforge-header h1 {
-  transform: scaleX(0.27) scaleY(0.28) translateY(-5px) !important;
-  opacity: 0.92 !important;
-}
-.aiforge-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr 340px;
-  gap: 20px;
-  align-items: start;
-}
-@media(max-width:1100px){
-  .aiforge-layout { grid-template-columns: 1fr 1fr; }
-  .aiforge-col-right { grid-column: 1 / -1; }
-}
-@media(max-width:700px){
-  .aiforge-layout { grid-template-columns: 1fr; }
-}
-.aiforge-panel {
-  background: rgba(255,255,255,0.05);
-  border: 3px solid #000;
-  border-radius: var(--global-radius);
-  padding: 18px;
-  backdrop-filter: blur(12px);
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-.aiforge-panel-title {
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: var(--accent);
-  opacity: 0.8;
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.af-cat-btn {
-  width: 100%;
-  padding: 10px 12px;
-  border-radius: var(--global-radius);
-  border: 1.5px solid rgba(255,255,255,0.08);
-  background: rgba(255,255,255,0.04);
-  color: var(--text-main);
-  font-size: 0.85rem;
-  font-weight: 500;
-  cursor: pointer;
-  text-align: left;
-  transition: all 0.18s ease;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-  position: relative;
-}
-.af-cat-btn * { pointer-events: none; }
-.af-cat-btn:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.2); }
-.af-cat-btn.active {
-  background: color-mix(in srgb, var(--accent) 18%, transparent);
-  border-color: var(--accent);
-  color: #fff;
-  box-shadow: 0 0 12px color-mix(in srgb, var(--accent) 25%, transparent);
-}
-.af-cat-icon { font-size: 1.1rem; flex-shrink: 0; }
-.af-form-group { margin-bottom: 14px; }
-.af-form-label {
-  font-size: 0.78rem;
-  font-weight: 600;
-  opacity: 0.7;
-  margin-bottom: 6px;
-  display: block;
-}
-.af-input, .af-select, .af-textarea {
-  width: 100%;
-  background: rgba(0,0,0,0.3);
-  border: 1.5px solid rgba(255,255,255,0.1);
-  border-radius: var(--global-radius);
-  padding: 9px 12px;
-  color: var(--text-main);
-  font-size: 0.86rem;
-  outline: none;
-  transition: border-color 0.18s;
-  font-family: "Inter", sans-serif;
-}
-.af-input:focus, .af-select:focus, .af-textarea:focus {
-  border-color: var(--accent);
-}
-.af-textarea { resize: vertical; min-height: 80px; }
-.af-select option { background: #1a0d35; }
-.af-platform-row {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 16px;
-  flex-wrap: wrap;
-}
-.af-platform-chip {
-  padding: 6px 14px;
-  border-radius: var(--global-radius);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.05);
-  color: var(--text-main);
-  font-size: 0.78rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s;
-}
-.af-platform-chip:hover { border-color: rgba(255,255,255,0.3); }
-.af-platform-chip.active {
-  background: color-mix(in srgb, var(--accent) 22%, transparent);
-  border-color: var(--accent);
-  color: #fff;
-}
-.af-generate-btn {
-  width: 100%;
-  padding: 13px;
-  border-radius: var(--global-radius);
-  border: none;
-  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 70%, #7c3aed));
-  color: #000;
-  font-weight: 800;
-  font-size: 0.95rem;
-  cursor: pointer;
-  transition: all 0.22s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 20px color-mix(in srgb, var(--accent) 30%, transparent);
-}
-.af-generate-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 28px color-mix(in srgb, var(--accent) 45%, transparent); }
-.af-output-box {
-  background: rgba(0,0,0,0.35);
-  border: 1.5px solid rgba(255,255,255,0.1);
-  border-radius: var(--global-radius);
-  padding: 16px;
-  min-height: 200px;
-  font-size: 0.88rem;
-  line-height: 1.7;
-  color: rgba(255,255,255,0.88);
-  white-space: pre-wrap;
-  font-family: "Inter", monospace;
-  position: relative;
-}
-.af-output-placeholder {
-  opacity: 0.3;
-  font-style: italic;
-  font-size: 0.85rem;
-}
-.af-output-actions {
-  display: flex;
-  gap: 8px;
-  margin-top: 12px;
-  flex-wrap: wrap;
-}
-.af-action-btn {
-  padding: 8px 16px;
-  border-radius: var(--global-radius);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.06);
-  color: var(--text-main);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.18s;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.af-action-btn:hover { background: rgba(255,255,255,0.12); border-color: var(--accent); }
-.af-char-count {
-  font-size: 0.72rem;
-  opacity: 0.4;
-  text-align: right;
-  margin-top: 6px;
-}
-.af-saved-list { max-height: 280px; overflow-y: auto; }
-.af-saved-item {
-  padding: 10px 12px;
-  border-radius: var(--global-radius);
-  border: 1px solid rgba(255,255,255,0.07);
-  background: rgba(255,255,255,0.03);
-  margin-bottom: 8px;
-  cursor: pointer;
-  transition: all 0.15s;
-  position: relative;
-}
-.af-saved-item:hover { background: rgba(255,255,255,0.07); border-color: rgba(255,255,255,0.15); }
-.af-saved-item-title { font-size: 0.82rem; font-weight: 600; margin-bottom: 3px; }
-.af-saved-item-preview { font-size: 0.76rem; opacity: 0.45; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.af-saved-empty { font-size: 0.82rem; opacity: 0.35; text-align: center; padding: 20px 0; font-style: italic; }
-.af-del-btn {
-  position: absolute; top: 8px; right: 8px;
-  background: none; border: none; color: #f87171; font-size: 0.9rem;
-  cursor: pointer; opacity: 0; transition: opacity 0.15s;
-}
-.af-saved-item:hover .af-del-btn { opacity: 1; }
-.af-typing { animation: afTypingBlink 0.8s steps(1) infinite; }
-@keyframes afTypingBlink { 0%,100%{opacity:1} 50%{opacity:0} }
-.af-pulse-ring {
-  animation: afPulse 1.8s ease-in-out infinite;
-}
-@keyframes afPulse { 0%,100%{box-shadow:0 0 0 0 color-mix(in srgb, var(--accent) 40%, transparent)} 50%{box-shadow:0 0 0 8px transparent} }
 
 /* ═══════════════════════════════════════════════════
    CHILL ZONE PAGE
@@ -16265,7 +16475,6 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
 <div class="nav-item" draggable="true" data-page="pdf" onclick="switchPage('pdf')"><span class="nav-icon">🛠️</span><span class="nav-text">PDF hư hỏng</span></div>
 <div class="nav-item" draggable="true" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span class="nav-text">Chát Chít</span></div>
 <div class="nav-item" draggable="true" data-page="tinit" onclick="switchPage('tinit')"><span class="nav-icon" id="tiniNavIcon">📱</span><span class="nav-text">Tịn Ít</span></div>
-<div class="nav-item" draggable="true" data-page="aiforge" onclick="switchPage('aiforge')"><span class="nav-icon">🤖</span><span class="nav-text">AI Forge</span></div>
 <div class="nav-item" draggable="true" data-page="chill" onclick="switchPage('chill')"><span class="nav-icon">🌌</span><span class="nav-text">Chill Zone</span></div>
 <div class="nav-item" draggable="true" data-page="kanban" onclick="switchPage('kanban')"><span class="nav-icon">📋</span><span class="nav-text">Kanban</span></div>
 <div class="nav-item" draggable="true" data-page="notes" onclick="switchPage('notes')"><span class="nav-icon">📌</span><span class="nav-text">Notes</span></div>
@@ -16365,11 +16574,11 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   <div class="page-toolbar-shell" id="toolbarShell-excel" style="margin-left:auto;margin-right:auto;">
     <div class="excel-toolbar" style="width:auto;">
       <div class="excel-toolbar-left">
-        <button class="btn excel-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
+        <button class="btn excel-btn tkb-danger-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
         <button class="btn excel-btn" onclick="addRow()">➕ Dòng</button>
         <button class="btn excel-btn" onclick="addColumn()">➕ Cột</button>
-        <button class="btn excel-btn" onclick="try{ tkbSyncMaterialsPanel(); }catch(e){ console.error('Lỗi Tổng hợp học cụ:', e); alert('Lỗi: ' + e.message); }" style="font-weight:800;">🧩 Tổng hợp học cụ</button>
         <button class="btn excel-btn" onclick="tkbResetFreezePanes()" title="Đưa thanh freeze về vị trí mặc định (cột 🧩, dòng tiêu đề)">📌 Reset Freeze</button>
+        <button class="btn excel-btn tkb-silver-btn" onclick="try{ tkbSyncMaterialsPanel(); }catch(e){ console.error('Lỗi Tổng hợp học cụ:', e); alert('Lỗi: ' + e.message); }" style="font-weight:800;justify-content:center;"><span class="tkb-silver-btn-label">Tổng hợp học cụ</span></button>
       </div>
       <div class="excel-toolbar-right">
       </div>
@@ -16393,11 +16602,18 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
     </div>
     <div class="tkb-right">
       <div class="tkb-materials-anchor">
+        <button type="button" class="tkb-restore-btn" id="tkbRestoreBtn" onclick="tkbRestoreCurrentDraft()" title="Quay lại học cụ đang soạn dở dang" style="display:none;"><span>↩️ Quay lại</span></button>
         <div class="tkb-materials-btn-row">
-          <label class="tkb-preview-toggle-btn" title="Tick để tắt tạm thời chế độ rê chuột/bấm phóng to ảnh">
+          <label class="tkb-preview-toggle-btn" title="Tick để tắt tạm thời chế độ rê chuột TỰ ĐỘNG phóng to ảnh (bấm click vào ảnh vẫn phóng to bình thường)">
             <input type="checkbox" id="tkbPreviewToggleCheckbox" onchange="tkbTogglePreview(this.checked)">
             <span>Tắt Preview</span>
           </label>
+          <button type="button" class="tkb-save-materials-btn" onclick="tkbSaveMaterialsSnapshot()" title="Lưu lại toàn bộ ảnh, ghi chú, nội dung học cụ hiện tại"><span>💾 Lưu học cụ</span></button>
+          <button type="button" class="tkb-save-materials-btn" onclick="tkbOpenOverviewGrid()" title="Xem toàn bộ ảnh học cụ đã dán của tất cả các lớp trong 1 lưới"><span>🖼️ Xem tổng quan</span></button>
+          <div class="tkb-saved-dropdown-wrap">
+            <button type="button" class="tkb-saved-dropdown-btn" id="tkbSavedDropdownBtn" onclick="tkbToggleSavedDropdown(event)" title="Xem lại các học cụ đã lưu trước đó"><span>📂 Học cụ đã lưu</span> <span class="tkb-dropdown-caret">▾</span></button>
+            <div class="tkb-saved-dropdown-menu" id="tkbSavedDropdownMenu"></div>
+          </div>
           <button type="button" class="tkb-corner-clear-btn" onclick="tkbClearAllMaterials()" title="Xoá hết học cụ và ảnh đã dán"></button>
         </div>
         <div class="tkb-materials-sticky-wrap">
@@ -18695,75 +18911,6 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
     </div>
     </div><!-- end page-tinit -->
 
-  <!-- ===== AI FORGE PAGE ===== -->
-  <div id="page-aiforge" class="page-content outer-page">
-    <div class="header-group aiforge-header">
-      <h1>🤖 AI Forge</h1>
-    </div>
-
-    <div class="aiforge-layout">
-      <!-- COL LEFT: Category -->
-      <div class="aiforge-panel">
-        <div class="aiforge-panel-title">⚡ Chọn loại task</div>
-        <div id="afCatList"></div>
-      </div>
-
-      <!-- COL MID: Form + Output -->
-      <div>
-        <!-- Platform selector -->
-        <div class="aiforge-panel" style="margin-bottom:16px;">
-          <div class="aiforge-panel-title">🚀 Nền tảng AI</div>
-          <div class="af-platform-row" id="afPlatformRow">
-            <button class="af-platform-chip active" data-platform="Claude">🟠 Claude</button>
-            <button class="af-platform-chip" data-platform="ChatGPT">🟢 ChatGPT</button>
-            <button class="af-platform-chip" data-platform="Gemini">🔵 Gemini</button>
-            <button class="af-platform-chip" data-platform="Universal">🌐 Universal</button>
-          </div>
-        </div>
-
-        <!-- Dynamic form -->
-        <div class="aiforge-panel" style="margin-bottom:16px;">
-          <div class="aiforge-panel-title">✏️ Điền thông tin</div>
-          <div id="afForm"></div>
-          <button class="af-generate-btn af-pulse-ring" id="afGenBtn" onclick="afGenerate()">
-            <span id="afGenBtnIcon">✨</span>
-            <span id="afGenBtnText">Tạo Prompt</span>
-          </button>
-        </div>
-
-        <!-- Output -->
-        <div class="aiforge-panel">
-          <div class="aiforge-panel-title">📋 Prompt được tạo</div>
-          <div class="af-output-box" id="afOutput">
-            <span class="af-output-placeholder">Prompt sẽ xuất hiện ở đây sau khi bạn nhấn "Tạo Prompt"...</span>
-          </div>
-          <div class="af-char-count" id="afCharCount">0 ký tự</div>
-          <div class="af-output-actions" id="afOutputActions" style="display:none;">
-            <button class="af-action-btn" onclick="afCopy()">📋 Sao chép</button>
-            <button class="af-action-btn" onclick="afSave()">💾 Lưu lại</button>
-            <button class="af-action-btn" onclick="afDownload()">⬇️ Tải .txt</button>
-            <button class="af-action-btn" onclick="afClear()">🗑️ Xóa</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- COL RIGHT: Saved prompts -->
-      <div class="aiforge-col-right">
-        <div class="aiforge-panel">
-          <div class="aiforge-panel-title">⭐ Prompt đã lưu</div>
-          <div class="af-saved-list" id="afSavedList">
-            <div class="af-saved-empty">Chưa có prompt nào được lưu</div>
-          </div>
-        </div>
-
-        <!-- Tips -->
-        <div class="aiforge-panel" style="margin-top:16px;">
-          <div class="aiforge-panel-title">💡 Mẹo dùng AI</div>
-          <div id="afTipBox" style="font-size:0.83rem; line-height:1.7; opacity:0.7;"></div>
-        </div>
-      </div>
-    </div>
-  </div><!-- end page-aiforge -->
 
   <!-- ===== CHILL ZONE PAGE ===== -->
   <div id="page-chill" class="page-content outer-page">
@@ -20758,6 +20905,19 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
     </div>
   </div>
 
+  <!-- Modal "Xem tổng quan" học cụ — lưới thumbnail toàn bộ ảnh đã dán của
+       TẤT CẢ các lớp đang tick 🧩, để kiểm tra nhanh trước khi in/xuất mà
+       không phải cuộn qua từng khung riêng lẻ bên panel phải. -->
+  <div class="modal-overlay" id="tkbOverviewModal" onclick="if(event.target===this) tkbCloseOverviewGrid()">
+    <div class="modal-box tkb-overview-box">
+      <div class="tkb-overview-header">
+        <h2>🖼️ Tổng quan học cụ đã dán</h2>
+        <button type="button" class="tkb-overview-close" onclick="tkbCloseOverviewGrid()" title="Đóng">✕</button>
+      </div>
+      <div class="tkb-overview-body" id="tkbOverviewBody"></div>
+    </div>
+  </div>
+
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🤪</div>
   <div class="bg-changer-btn" onclick="openBgChanger()" title="Đổi hình nền">✏️</div>
 
@@ -21211,7 +21371,7 @@ function saveDataDebounced() {
       // Body class cho các outer-page: REMOVE trì hoãn theo page-leaving (220ms)
       // để tránh container flash trong khi trang cũ đang fade out
       const _leavingOuterClasses = [];
-      ['music','pdf','chat','tinit','aiforge','chill','kanban','picstools','notes','baobai'].forEach(id => {
+      ['music','pdf','chat','tinit','chill','kanban','picstools','notes','baobai'].forEach(id => {
         if (document.body.classList.contains(id + '-active') && pageId !== id) {
           _leavingOuterClasses.push(id + '-active');
         }
@@ -21228,7 +21388,6 @@ function saveDataDebounced() {
         if (pageId === 'pdf')   document.body.classList.add('pdf-active');
         if (pageId === 'chat')  document.body.classList.add('chat-active');
         if (pageId === 'tinit') document.body.classList.add('tinit-active');
-        if (pageId === 'aiforge') document.body.classList.add('aiforge-active');
         if (pageId === 'chill') {
           document.body.classList.add('chill-active');
           setTimeout(() => { if (window.chillInitCanvas) window.chillInitCanvas(); }, 100);
@@ -21253,7 +21412,7 @@ function saveDataDebounced() {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page','page-leaving'));
 
         const hg = targetPage.querySelector('.header-group');
-        const isOuterPage = ['music','pdf','chat','tinit','aiforge','chill','kanban'].includes(pageId);
+        const isOuterPage = ['music','pdf','chat','tinit','chill','kanban'].includes(pageId);
 
         // header-group gốc đã display:none, không cần ẩn thêm
 
@@ -21262,7 +21421,6 @@ function saveDataDebounced() {
         if (pageId === 'pdf')   document.body.classList.add('pdf-active');
         if (pageId === 'chat')  document.body.classList.add('chat-active');
         if (pageId === 'tinit') document.body.classList.add('tinit-active');
-        if (pageId === 'aiforge') document.body.classList.add('aiforge-active');
         if (pageId === 'chill') {
           document.body.classList.add('chill-active');
           setTimeout(() => { if (window.chillInitCanvas) window.chillInitCanvas(); }, 100);
@@ -21288,7 +21446,6 @@ function saveDataDebounced() {
                 Array.from(targetPage.children).forEach(child => {
                   if (!child.classList.contains('header-group') &&
                       !child.className.includes('page-title') &&
-                      !child.classList.contains('aiforge-header') &&
                       !child.classList.contains('chill-page-title') &&
                       !child.classList.contains('page-toolbar-shell')) {
                     child.animate([
@@ -22520,11 +22677,18 @@ let tkbMaterialFlags = safeJSONParse('ao_tkb_flags_v1', {});
 let tkbMaterialsData = safeJSONParse('ao_tkb_materials_v1', {});
 
 function tkbSaveFlags() {
+  // Xem lý do chặn ghi đè trong tkbSaveMaterialsDebounced() ở trên —
+  // áp dụng tương tự cho danh sách dòng đang tick 🧩.
+  if (typeof _tkbViewingSavedId !== 'undefined' && _tkbViewingSavedId) return;
   localStorage.setItem('ao_tkb_flags_v1', JSON.stringify(tkbMaterialFlags));
   fbWrite('shared/tkbFlags', tkbMaterialFlags);
 }
 
 function tkbSaveMaterialsDebounced(delay = 500) {
+  // Đang XEM một bản học cụ đã lưu trước đó (chỉ xem, không phải bản soạn dở
+  // thật) -> KHÔNG được ghi đè lên 'ao_tkb_materials_v1', kẻo bản soạn dở
+  // thật (đang cất tạm ở _tkbDraftBackup) bị mất khi F5 lại trang.
+  if (typeof _tkbViewingSavedId !== 'undefined' && _tkbViewingSavedId) return;
   localStorage.setItem('ao_tkb_materials_v1', JSON.stringify(tkbMaterialsData));
   clearTimeout(window._tkbMatTimer);
   window._tkbMatTimer = setTimeout(() => {
@@ -22651,16 +22815,22 @@ function tkbSyncMaterialsPanel() {
   </div>
   <div class="tkb-material-dropzone" tabindex="0" data-rowkey="${rowKey}"
        onpaste="tkbHandleMaterialPaste(event, '${rowKey}')"
-       ondragover="event.preventDefault(); this.classList.add('dragover');"
-       ondragleave="this.classList.remove('dragover');"
+       ondragover="tkbHandleMaterialDropzoneDragover(event, this)"
+       ondragleave="tkbHandleMaterialDropzoneDragleave(event, this)"
        ondrop="tkbHandleMaterialDrop(event, '${rowKey}')">
     ${count ? block.images.map((src, idx) => `
-    <div class="tkb-material-img-wrap">
-      <img src="${src}" alt="Học cụ ${title}"
+    <div class="tkb-material-img-wrap" draggable="true" data-idx="${idx}"
+         ondragstart="tkbHandleImgDragStart(event, '${rowKey}', ${idx})"
+         ondragend="tkbHandleImgDragEnd(event)"
+         ondragover="tkbHandleImgDragOver(event, this)"
+         ondragleave="tkbHandleImgDragLeave(event, this)"
+         ondrop="tkbHandleImgDrop(event, '${rowKey}', ${idx})">
+      <span class="tkb-material-img-order">${idx + 1}</span>
+      <img src="${src}" alt="Học cụ ${title}" draggable="false"
            data-title="${title}" data-note="${escapeHTML(note)}">
       <button class="tkb-material-img-del" onclick="tkbDeleteMaterialImage('${rowKey}', ${idx})" title="Xoá ảnh">✕</button>
     </div>`).join('') : ''}
-    <div class="tkb-material-dropzone-hint">📋 Bấm vào đây rồi Ctrl+V để dán ảnh học cụ (có thể dán nhiều lần)</div>
+    <div class="tkb-material-dropzone-hint">📋 Bấm vào đây rồi Ctrl+V để dán ảnh học cụ (có thể dán nhiều lần, kéo-thả ảnh để sắp xếp lại thứ tự)</div>
   </div>
 </div>`;
     });
@@ -22748,9 +22918,41 @@ function tkbHandleMaterialPaste(e, rowKey) {
   if (handled) e.preventDefault();
 }
 
+function tkbHandleMaterialDropzoneDragover(e, dropzoneEl) {
+  e.preventDefault();
+  // Kéo ảnh NỘI BỘ (đang sắp xếp/di chuyển ảnh học cụ, không phải thả file
+  // mới từ ngoài Windows/Explorer vào) -> tô khung bằng màu "sẽ nhận ảnh
+  // này" (class riêng .tkb-drop-accept) để phân biệt với việc thả FILE ảnh
+  // mới từ bên ngoài (dùng class 'dragover' gốc, màu khác).
+  if (tkbDragState) {
+    dropzoneEl.classList.add('tkb-drop-accept');
+  } else {
+    dropzoneEl.classList.add('dragover');
+  }
+}
+
+function tkbHandleMaterialDropzoneDragleave(e, dropzoneEl) {
+  // Chỉ bỏ highlight khi con trỏ THỰC SỰ rời khỏi dropzone (không phải chỉ
+  // đi từ phần tử con này sang phần tử con khác vẫn nằm trong dropzone).
+  if (dropzoneEl.contains(e.relatedTarget)) return;
+  dropzoneEl.classList.remove('dragover', 'tkb-drop-accept');
+}
+
 function tkbHandleMaterialDrop(e, rowKey) {
   e.preventDefault();
-  e.currentTarget.classList.remove('dragover');
+  const dropzoneEl = e.currentTarget;
+  dropzoneEl.classList.remove('dragover', 'tkb-drop-accept');
+
+  // Đang kéo ẢNH HỌC CỤ NỘI BỘ (từ khung này hoặc khung khác) và thả vào
+  // VÙNG TRỐNG của dropzone (không trúng đúng 1 ảnh cụ thể nào, việc đó đã
+  // được tkbHandleImgDrop xử lý riêng và dừng sự kiện lại trước khi nổi bọt
+  // tới đây) -> hiểu là "thả vào cuối danh sách ảnh của khung này".
+  if (tkbDragState) {
+    tkbMoveMaterialImage(tkbDragState.rowKey, tkbDragState.fromIdx, rowKey, null);
+    tkbDragState = null;
+    return;
+  }
+
   const files = e.dataTransfer?.files;
   if (!files || !files.length) return;
   for (const file of files) {
@@ -22760,12 +22962,159 @@ function tkbHandleMaterialDrop(e, rowKey) {
   }
 }
 
-function tkbDeleteMaterialImage(rowKey, idx) {
-  if (!tkbMaterialsData[rowKey] || !Array.isArray(tkbMaterialsData[rowKey].images)) return;
-  tkbMaterialsData[rowKey].images.splice(idx, 1);
+// ===== Kéo-thả ảnh học cụ: sắp xếp lại thứ tự trong 1 khung, HOẶC chuyển
+// ảnh sang khung của lớp khác =====
+// tkbDragState lưu lại ảnh đang được kéo (rowKey + vị trí gốc) trong suốt
+// thao tác kéo, dùng để: (1) phân biệt "đang kéo ảnh nội bộ" với "đang thả
+// file mới từ ngoài" ở tkbHandleMaterialDrop/Dragover phía trên, và (2) biết
+// cần lấy đúng ảnh nào ra khỏi khung gốc khi thả xuống.
+let tkbDragState = null;
+
+function tkbHandleImgDragStart(e, rowKey, idx) {
+  tkbDragState = { rowKey, fromIdx: idx };
+  e.dataTransfer.effectAllowed = 'move';
+  // Một số trình duyệt yêu cầu phải setData thì dragstart mới "chạy thật"
+  try { e.dataTransfer.setData('text/plain', String(idx)); } catch (err) {}
+  // Thêm class ở lần vẽ tiếp theo để ảnh gốc vẫn hiện bình thường trong
+  // đúng khung hình đầu tiên của thao tác kéo (tránh ảnh bị mờ ngay tức
+  // khắc trước khi trình duyệt kịp chụp "ảnh ma" theo con trỏ chuột).
+  requestAnimationFrame(() => {
+    e.currentTarget.classList.add('tkb-img-dragging');
+  });
+}
+
+function tkbHandleImgDragEnd(e) {
+  e.currentTarget.classList.remove('tkb-img-dragging');
+  document.querySelectorAll('.tkb-img-drop-before, .tkb-img-drop-after')
+    .forEach(el => el.classList.remove('tkb-img-drop-before', 'tkb-img-drop-after'));
+  document.querySelectorAll('.tkb-material-dropzone.dragover, .tkb-material-dropzone.tkb-drop-accept')
+    .forEach(el => el.classList.remove('dragover', 'tkb-drop-accept'));
+  tkbDragState = null;
+}
+
+function tkbHandleImgDragOver(e, wrapEl) {
+  if (!tkbDragState) return; // không phải đang kéo ảnh nội bộ -> bỏ qua
+  e.preventDefault();
+  e.stopPropagation(); // chặn nổi bọt lên dropzone cha để không double-highlight
+  // Ảnh mới thả vào TRƯỚC hay SAU ảnh đang rê qua, tuỳ vị trí con trỏ đang
+  // ở nửa trên hay nửa dưới của ảnh đó (khung xếp theo cột dọc).
+  const rect = wrapEl.getBoundingClientRect();
+  const isAfter = (e.clientY - rect.top) > rect.height / 2;
+  wrapEl.classList.toggle('tkb-img-drop-before', !isAfter);
+  wrapEl.classList.toggle('tkb-img-drop-after', isAfter);
+}
+
+function tkbHandleImgDragLeave(e, wrapEl) {
+  if (!tkbDragState) return;
+  wrapEl.classList.remove('tkb-img-drop-before', 'tkb-img-drop-after');
+}
+
+function tkbHandleImgDrop(e, rowKey, targetIdx) {
+  if (!tkbDragState) return;
+  e.preventDefault();
+  e.stopPropagation();
+  const wrapEl = e.currentTarget;
+  const isAfter = wrapEl.classList.contains('tkb-img-drop-after');
+  wrapEl.classList.remove('tkb-img-drop-before', 'tkb-img-drop-after');
+
+  const { rowKey: fromRowKey, fromIdx } = tkbDragState;
+  tkbDragState = null; // reset trước, tránh double-fire nếu drop bắn 2 lần
+
+  let insertAt = targetIdx + (isAfter ? 1 : 0);
+  tkbMoveMaterialImage(fromRowKey, fromIdx, rowKey, insertAt);
+}
+
+// Di chuyển 1 ảnh từ khung `fromRowKey` (vị trí `fromIdx`) sang khung
+// `toRowKey` tại vị trí `toIdx` (null = nối vào cuối danh sách). Dùng chung
+// cho cả 2 trường hợp: sắp xếp trong CÙNG 1 khung, và chuyển ảnh SANG khung
+// của lớp khác — vì về bản chất đều là "cắt ảnh ra khỏi mảng nguồn rồi chèn
+// vào mảng đích", chỉ khác nhau khi mảng nguồn/đích là cùng 1 mảng hay không.
+function tkbMoveMaterialImage(fromRowKey, fromIdx, toRowKey, toIdx) {
+  if (!tkbMaterialsData[fromRowKey] || !Array.isArray(tkbMaterialsData[fromRowKey].images)) return;
+  const fromImages = tkbMaterialsData[fromRowKey].images;
+  if (fromIdx < 0 || fromIdx >= fromImages.length) return;
+
+  if (!tkbMaterialsData[toRowKey] || typeof tkbMaterialsData[toRowKey] !== 'object') {
+    tkbMaterialsData[toRowKey] = { title: toRowKey, images: [] };
+  }
+  if (!Array.isArray(tkbMaterialsData[toRowKey].images)) {
+    tkbMaterialsData[toRowKey].images = [];
+  }
+  const toImages = tkbMaterialsData[toRowKey].images;
+
+  const sameBlock = fromRowKey === toRowKey;
+  if (sameBlock && toIdx !== null && fromIdx === toIdx) return; // thả đúng chỗ cũ -> không đổi gì
+
+  const [moved] = fromImages.splice(fromIdx, 1);
+
+  let insertAt = (toIdx === null) ? toImages.length : toIdx;
+  // Nếu cùng 1 khung, sau khi cắt phần tử gốc ra thì các chỉ số phía sau nó
+  // bị lùi lại 1 -> phải bù lại để chèn đúng vị trí mong muốn.
+  if (sameBlock && fromIdx < insertAt) insertAt -= 1;
+  insertAt = Math.max(0, Math.min(insertAt, toImages.length));
+
+  toImages.splice(insertAt, 0, moved);
   tkbSaveMaterialsDebounced();
   tkbSyncMaterialsPanel();
 }
+
+// ===== Ctrl+Z hoàn tác xoá ảnh học cụ =====
+// Ngăn xếp lưu lại ảnh vừa bị xoá (rowKey, index gốc, dữ liệu ảnh) để có thể
+// chèn lại đúng vị trí cũ khi người dùng bấm Ctrl+Z. Giới hạn số bước hoàn
+// tác để tránh phình bộ nhớ nếu người dùng xoá rất nhiều ảnh liên tiếp.
+let tkbDeleteImageUndoStack = [];
+const TKB_UNDO_STACK_LIMIT = 30;
+
+function tkbDeleteMaterialImage(rowKey, idx) {
+  if (!tkbMaterialsData[rowKey] || !Array.isArray(tkbMaterialsData[rowKey].images)) return;
+  const removed = tkbMaterialsData[rowKey].images.splice(idx, 1)[0];
+  if (removed !== undefined) {
+    tkbDeleteImageUndoStack.push({ rowKey, idx, dataUrl: removed });
+    if (tkbDeleteImageUndoStack.length > TKB_UNDO_STACK_LIMIT) {
+      tkbDeleteImageUndoStack.shift();
+    }
+  }
+  tkbSaveMaterialsDebounced();
+  tkbSyncMaterialsPanel();
+}
+
+// Hoàn tác lần xoá ảnh gần nhất (nếu có). Chèn lại ảnh đúng vị trí cũ trong
+// mảng images (nếu vị trí cũ vẫn còn hợp lệ) hoặc nối vào cuối nếu khung đó
+// đã thay đổi nhiều kể từ lúc xoá.
+function tkbUndoDeleteMaterialImage() {
+  const last = tkbDeleteImageUndoStack.pop();
+  if (!last) return false;
+  const { rowKey, idx, dataUrl } = last;
+  if (!tkbMaterialsData[rowKey] || typeof tkbMaterialsData[rowKey] !== 'object') {
+    tkbMaterialsData[rowKey] = { title: rowKey, images: [] };
+  }
+  if (!Array.isArray(tkbMaterialsData[rowKey].images)) {
+    tkbMaterialsData[rowKey].images = [];
+  }
+  const images = tkbMaterialsData[rowKey].images;
+  const insertAt = Math.min(idx, images.length);
+  images.splice(insertAt, 0, dataUrl);
+  tkbSaveMaterialsDebounced();
+  tkbSyncMaterialsPanel();
+  return true;
+}
+
+// Lắng nghe Ctrl+Z (hoặc Cmd+Z trên Mac) trên toàn trang để hoàn tác thao tác
+// xoá ảnh học cụ gần nhất. Bỏ qua khi người dùng đang gõ trong 1 ô nhập liệu
+// thật (input/textarea/contenteditable) để không phá vỡ undo mặc định của
+// trình duyệt trong các ô đó (vd đang gõ ghi chú thì Ctrl+Z phải undo chữ,
+// không phải undo ảnh).
+document.addEventListener('keydown', function (e) {
+  const key = (e.key || '').toLowerCase();
+  const isUndoCombo = (e.ctrlKey || e.metaKey) && !e.shiftKey && key === 'z';
+  if (!isUndoCombo) return;
+  const tag = (e.target && e.target.tagName || '').toLowerCase();
+  const isRealInput = tag === 'textarea' || tag === 'input' || (e.target && e.target.isContentEditable);
+  if (isRealInput) return;
+  if (!tkbDeleteImageUndoStack.length) return;
+  e.preventDefault();
+  tkbUndoDeleteMaterialImage();
+});
 
 // ===== Ghi chú: khung xổ NGAY BÊN TRONG chính khối (accordion inline) =====
 // Trước đây khung ghi chú là 1 popover position:fixed dùng chung, được JS
@@ -22788,6 +23137,31 @@ function tkbDeleteMaterialImage(rowKey, idx) {
 // Set thay vì 1 biến duy nhất. Mỗi khối chỉ đóng khi tự bấm lại đúng nút của
 // chính nó, không bị đóng "ăn theo" khi người dùng mở ghi chú ở khối khác.
 let tkbNoteOpenRowKeys = new Set();
+
+// ===== FIX: bấm phím CÁCH khi đang gõ ghi chú làm khung "Học cụ cần soạn"
+// bị cuộn ngang về card đầu tiên =====
+// Nguyên nhân: .tkb-material-dropzone (khung dán ảnh) có tabindex="0" nên
+// CÓ THỂ nhận focus bàn phím. Nếu focus đang thực sự nằm ở dropzone đó (ví
+// dụ do mới bấm vào đó để dán ảnh trước khi mở ghi chú, hoặc do timing của
+// hiệu ứng mở/đóng ô ghi chú), phím Space trên 1 phần tử tabindex không
+// phải input/textarea sẽ bị trình duyệt hiểu là "cuộn trang xuống", và vì
+// khung .tkb-day-columns cuộn NGANG (overflow-x:auto) nên nó cuộn về đầu.
+// Cách chặn triệt để, không phụ thuộc việc dò đúng nguyên nhân timing:
+// nếu phím Space được bấm mà mục tiêu KHÔNG PHẢI 1 ô nhập liệu thật (input/
+// textarea/contenteditable), và mục tiêu đó nằm trong panel học cụ, thì
+// chặn hành vi cuộn mặc định — không ảnh hưởng gì đến việc gõ Space trong
+// textarea ghi chú thật (target lúc đó CHÍNH LÀ textarea nên điều kiện dưới
+// không khớp, Space vẫn gõ ra ký tự bình thường).
+document.addEventListener('keydown', function (e) {
+  if (e.key !== ' ' && e.code !== 'Space') return;
+  const panel = document.getElementById('tkbMaterialsPanel');
+  if (!panel || !panel.contains(e.target)) return;
+  const tag = (e.target.tagName || '').toLowerCase();
+  const isRealInput = tag === 'textarea' || tag === 'input' || e.target.isContentEditable;
+  if (!isRealInput) {
+    e.preventDefault();
+  }
+}, true);
 
 function tkbCloseNote(rowKey) {
   if (!rowKey || !tkbNoteOpenRowKeys.has(rowKey)) return;
@@ -22813,7 +23187,7 @@ function tkbToggleNote(rowKey, btnEl) {
   tkbNoteOpenRowKeys.add(rowKey);
   btnEl.classList.add('open');
   if (inline) inline.classList.add('open');
-  if (box) setTimeout(() => box.focus(), 260);
+  if (box) setTimeout(() => box.focus({ preventScroll: true }), 260);
 
   // Ẩn ngay khung preview hover (nếu đang hiện từ trước khi bấm), để không
   // bị chồng lên khung nhập ghi chú vừa mở.
@@ -23098,7 +23472,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // muốn). preventDefault + stopImmediatePropagation chặn triệt để mọi hành vi
   // mặc định/khác đi kèm (mở link, submit form, v.v.) khi bấm vào ảnh học cụ.
   document.addEventListener('click', function (e) {
-    if (tkbPreviewDisabled) return; // công tắc "Tắt Preview" đang bật
+    // LƯU Ý: cố ý KHÔNG kiểm tra tkbPreviewDisabled ở đây. Công tắc "Tắt
+    // Preview" chỉ nhằm tắt việc TỰ ĐỘNG phóng to khi rê chuột qua ảnh (xem
+    // listener mouseover bên trên) — còn khi người dùng chủ động BẤM vào
+    // ảnh thì luôn phóng to toàn ảnh, dù công tắc đang bật hay tắt.
     const img = e.target.closest('.tkb-material-img-wrap img');
     if (!img) return;
     e.preventDefault();
@@ -23107,6 +23484,85 @@ document.addEventListener('DOMContentLoaded', () => {
     pinPreview(img);
   }, true);
 })();
+
+// ===== Modal "Xem tổng quan" học cụ: lưới thumbnail toàn bộ ảnh đã dán của
+// TẤT CẢ các lớp đang tick 🧩, gom theo Thứ rồi theo lớp, để kiểm tra nhanh
+// trước khi in/xuất mà không phải cuộn qua từng khung một bên panel phải.
+// Dùng LẠI đúng class ".tkb-material-img-wrap img" cho từng thumbnail nên
+// toàn bộ cơ chế hover/click phóng to ảnh (IIFE phía trên) tự động hoạt
+// động luôn trên modal này mà không cần viết thêm code phóng to riêng.
+function tkbOpenOverviewGrid() {
+  const modal = document.getElementById('tkbOverviewModal');
+  const body = document.getElementById('tkbOverviewBody');
+  if (!modal || !body) return;
+
+  const rows = Object.keys(tkbMaterialFlags).map(n => parseInt(n)).filter(n => tkbMaterialFlags[n]);
+  if (!rows.length) {
+    body.innerHTML = '<div class="tkb-overview-empty">Chưa có lớp nào được tick 🧩 học cụ cả.<br>Tick cột 🧩 ở bảng TKB rồi bấm "Tổng hợp học cụ" trước nha.</div>';
+    showModalSmooth(modal);
+    return;
+  }
+
+  const weekdayOrder = { T2:1, T3:2, T4:3, T5:4, T6:5, T7:6, CN:7 };
+  const weekdayFullLabel = { T2:'Thứ 2', T3:'Thứ 3', T4:'Thứ 4', T5:'Thứ 5', T6:'Thứ 6', T7:'Thứ 7', CN:'Chủ Nhật' };
+  rows.sort((a, b) => {
+    const wa = weekdayOrder[tkbGetWeekdayLabel(a)] || 99;
+    const wb = weekdayOrder[tkbGetWeekdayLabel(b)] || 99;
+    if (wa !== wb) return wa - wb;
+    return a - b;
+  });
+
+  const groups = {};
+  rows.forEach(row => {
+    const wLabel = tkbGetWeekdayLabel(row);
+    if (!groups[wLabel]) groups[wLabel] = [];
+    groups[wLabel].push(row);
+  });
+  const dayKeys = Object.keys(groups).sort((a, b) => (weekdayOrder[a] || 99) - (weekdayOrder[b] || 99));
+
+  let totalImages = 0;
+  let html = '';
+  dayKeys.forEach(dayKey => {
+    const dayLabel = weekdayFullLabel[dayKey] || dayKey;
+    html += `<div class="tkb-overview-day-group"><div class="tkb-overview-day-title">${dayLabel}</div><div class="tkb-overview-day-classes">`;
+
+    groups[dayKey].forEach(row => {
+      const rowKey = `row_${row}`;
+      const title = tkbBuildBlockTitle(row);
+      const block = tkbMaterialsData[rowKey];
+      const images = (block && Array.isArray(block.images)) ? block.images : [];
+      const note = (block && block.note) || '';
+      totalImages += images.length;
+
+      html += `<div class="tkb-overview-class-block" data-rowkey="${rowKey}">
+        <div class="tkb-overview-class-head"><span>${title}</span><span class="tkb-overview-count">${images.length} ảnh</span></div>`;
+
+      if (images.length) {
+        html += `<div class="tkb-overview-grid">${images.map((src, idx) => `
+          <div class="tkb-material-img-wrap tkb-overview-thumb-wrap">
+            <img src="${src}" alt="Học cụ ${title}" data-title="${title}" data-note="${escapeHTML(note)}">
+            <span class="tkb-overview-thumb-idx">${idx + 1}</span>
+          </div>`).join('')}</div>`;
+      } else {
+        html += `<div class="tkb-overview-class-empty">Chưa dán ảnh nào cho lớp này.</div>`;
+      }
+      html += `</div>`;
+    });
+
+    html += `</div></div>`;
+  });
+
+  if (!totalImages) {
+    html = '<div class="tkb-overview-empty">Các lớp đã tick 🧩 nhưng chưa lớp nào có ảnh học cụ cả.<br>Dán ảnh vào khung bên phải rồi quay lại xem tổng quan nha.</div>' + html;
+  }
+
+  body.innerHTML = html;
+  showModalSmooth(modal);
+}
+
+function tkbCloseOverviewGrid() {
+  hideModalSmooth(document.getElementById('tkbOverviewModal'));
+}
 
 function tkbClearAllMaterials() {
   tkbConfirmAction('Xoá toàn bộ khung học cụ và ảnh đã dán nha ní? (Không xoá dữ liệu TKB bên trái)', () => {
@@ -23118,6 +23574,243 @@ function tkbClearAllMaterials() {
     document.querySelectorAll('.tkb-material-checkbox').forEach(cb => cb.checked = false);
     tkbSyncMaterialsPanel();
   });
+}
+
+/* ============================================================
+   ✨ LƯU HỌC CỤ / XEM LẠI HỌC CỤ ĐÃ LƯU / QUAY LẠI BẢN ĐANG SOẠN
+   - Snapshot gồm: tkbMaterialsData (ảnh + ghi chú từng khung) và
+     tkbMaterialFlags (dòng nào đang được tick 🧩), đủ để tái tạo lại
+     y nguyên toàn bộ khung "Học cụ cần soạn" bên phải khi xem lại.
+   - Danh sách bản lưu nằm trong localStorage riêng, không đụng tới
+     'ao_tkb_materials_v1' (bản đang soạn dở hiện tại).
+   - Khi bấm 1 bản lưu trong dropdown: state hiện tại được cất tạm vào
+     bộ nhớ RAM (window._tkbDraftBackup), rồi bản lưu được nạp đè lên
+     để xem. Bấm "↩️ Quay lại" sẽ khôi phục đúng bản đang soạn dở đó.
+   ============================================================ */
+const TKB_SAVED_MATERIALS_KEY = 'ao_tkb_saved_materials_list_v1';
+let _tkbDraftBackup = null; // { materialsData, materialFlags } của bản đang soạn dở, cất tạm khi đang xem bản lưu
+let _tkbViewingSavedId = null; // id bản lưu đang xem, null = đang ở bản soạn dở bình thường
+
+function tkbGetSavedMaterialsList() {
+  return safeJSONParse(TKB_SAVED_MATERIALS_KEY, []);
+}
+function tkbSetSavedMaterialsList(list) {
+  localStorage.setItem(TKB_SAVED_MATERIALS_KEY, JSON.stringify(list));
+}
+
+// Lưu snapshot học cụ hiện tại (ảnh + ghi chú + các dòng đang tick) thành 1 bản có tên
+function tkbSaveMaterialsSnapshot() {
+  if (_tkbViewingSavedId) {
+    showToast && showToast('Đang xem bản lưu cũ — bấm "↩️ Quay lại" trước khi lưu bản mới nha', 'info');
+    return;
+  }
+  if (!tkbMaterialsData || !Object.keys(tkbMaterialsData).length) {
+    showToast ? showToast('Chưa có học cụ nào để lưu', 'info') : alert('Chưa có học cụ nào để lưu');
+    return;
+  }
+  const defaultName = 'Học cụ ' + new Date().toLocaleDateString('vi-VN');
+  const name = prompt('Đặt tên cho bản lưu học cụ này:', defaultName);
+  if (name === null) return; // bấm Cancel
+  const finalName = name.trim() || defaultName;
+
+  const list = tkbGetSavedMaterialsList();
+  const snapshot = {
+    id: 'tkbsnap_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+    name: finalName,
+    savedAt: Date.now(),
+    materialsData: JSON.parse(JSON.stringify(tkbMaterialsData)),
+    materialFlags: JSON.parse(JSON.stringify(tkbMaterialFlags))
+  };
+  list.unshift(snapshot);
+  tkbSetSavedMaterialsList(list);
+  showToast ? showToast('Đã lưu học cụ: ' + finalName, 'success') : alert('Đã lưu học cụ: ' + finalName);
+  tkbRenderSavedDropdownMenu();
+}
+
+function tkbFormatSavedDate(ts) {
+  try {
+    const d = new Date(ts);
+    return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour:'2-digit', minute:'2-digit' });
+  } catch (e) { return ''; }
+}
+
+function tkbRenderSavedDropdownMenu() {
+  const menu = document.getElementById('tkbSavedDropdownMenu');
+  if (!menu) return;
+  const list = tkbGetSavedMaterialsList();
+  if (!list.length) {
+    menu.innerHTML = '<div class="tkb-saved-dropdown-empty">Chưa có học cụ nào được lưu</div>';
+    return;
+  }
+  menu.innerHTML = '';
+  list.forEach(snap => {
+    const item = document.createElement('div');
+    item.className = 'tkb-saved-item';
+    item.title = 'Xem lại bản: ' + snap.name;
+
+    const nameEl = document.createElement('span');
+    nameEl.className = 'tkb-saved-item-name';
+    nameEl.textContent = (snap.id === _tkbViewingSavedId ? '👁️ ' : '') + snap.name;
+
+    const dateEl = document.createElement('span');
+    dateEl.className = 'tkb-saved-item-date';
+    dateEl.textContent = tkbFormatSavedDate(snap.savedAt);
+
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'tkb-saved-item-delete';
+    delBtn.textContent = '✕';
+    delBtn.title = 'Xoá bản lưu này';
+    delBtn.onclick = (e) => {
+      e.stopPropagation();
+      tkbDeleteSavedSnapshot(snap.id);
+    };
+
+    item.appendChild(nameEl);
+    item.appendChild(dateEl);
+    item.appendChild(delBtn);
+    item.onclick = () => tkbViewSavedSnapshot(snap.id);
+    menu.appendChild(item);
+  });
+}
+
+function tkbDeleteSavedSnapshot(id) {
+  tkbConfirmAction('Xoá bản học cụ đã lưu này?', () => {
+    let list = tkbGetSavedMaterialsList();
+    list = list.filter(s => s.id !== id);
+    tkbSetSavedMaterialsList(list);
+    if (_tkbViewingSavedId === id) {
+      tkbRestoreCurrentDraft();
+    }
+    tkbRenderSavedDropdownMenu();
+  });
+}
+
+function tkbToggleSavedDropdown(evt) {
+  if (evt) evt.stopPropagation();
+  const wrap = document.querySelector('.tkb-saved-dropdown-wrap');
+  const menu = document.getElementById('tkbSavedDropdownMenu');
+  const btn = document.getElementById('tkbSavedDropdownBtn');
+  if (!wrap || !menu || !btn) return;
+  const willOpen = !wrap.classList.contains('open');
+
+  if (willOpen) {
+    tkbRenderSavedDropdownMenu();
+    // QUAN TRỌNG: menu dùng position:fixed, nhưng 1 ancestor xa của nó
+    // (.page-content) có "will-change" -> theo spec CSS, will-change trên
+    // BẤT KỲ property nào cũng tự tạo containing block cho các con cháu
+    // position:fixed, y hệt như đã đặt transform/filter. Hệ quả: menu bị
+    // định vị theo toạ độ của .page-content thay vì toàn màn hình, làm nó
+    // lệch/khuất sau khung panel dù z-index rất cao.
+    // -> Cách chắc chắn nhất: "di tản" (portal) hẳn menu ra document.body
+    // ngay trước khi mở, thoát khỏi containing block bất thường đó. Đóng
+    // lại thì trả nó về đúng chỗ cũ trong DOM (xem phần đóng bên dưới) để
+    // không ảnh hưởng gì tới cấu trúc panel khi render lại.
+    if (menu.parentElement !== document.body) {
+      menu._tkbOriginalParent = wrap; // nhớ chỗ cũ để trả lại khi đóng
+      document.body.appendChild(menu);
+    }
+    const r = btn.getBoundingClientRect();
+    menu.style.top = (r.bottom + 8) + 'px';
+    let left = r.right - menu.offsetWidth;
+    if (left < 8) left = 8; // tránh tràn ra ngoài mép trái màn hình
+    menu.style.left = left + 'px';
+  }
+
+  wrap.classList.toggle('open', willOpen);
+  menu.classList.toggle('open', willOpen); // xem lý do ở CSS .tkb-saved-dropdown-menu.open
+
+  if (willOpen) {
+    // offsetWidth ở trên đo TRƯỚC khi menu kịp render nội dung mới lần
+    // đầu (display:none -> block) nên tính lại left 1 lần nữa sau khi
+    // đã hiện, cho chính xác.
+    requestAnimationFrame(() => {
+      const r2 = btn.getBoundingClientRect();
+      let left2 = r2.right - menu.offsetWidth;
+      if (left2 < 8) left2 = 8;
+      menu.style.left = left2 + 'px';
+    });
+  } else if (menu._tkbOriginalParent && menu.parentElement === document.body) {
+    // Đóng lại -> trả menu về đúng vị trí gốc trong .tkb-saved-dropdown-wrap
+    menu._tkbOriginalParent.appendChild(menu);
+  }
+}
+document.addEventListener('click', (e) => {
+  const wrap = document.querySelector('.tkb-saved-dropdown-wrap');
+  const menu = document.getElementById('tkbSavedDropdownMenu');
+  if (!wrap || !wrap.classList.contains('open')) return;
+  // Menu có thể đang nằm trong document.body (đã portal ra ngoài) nên
+  // không thể chỉ dựa vào wrap.contains(e.target) như trước — phải kiểm
+  // tra thêm menu.contains(e.target).
+  const clickedInsideWrap = wrap.contains(e.target);
+  const clickedInsideMenu = menu && menu.contains(e.target);
+  if (!clickedInsideWrap && !clickedInsideMenu) {
+    tkbToggleSavedDropdown(); // dùng chung hàm để menu được trả về đúng chỗ cũ
+  }
+});
+window.addEventListener('scroll', () => {
+  const wrap = document.querySelector('.tkb-saved-dropdown-wrap');
+  if (wrap && wrap.classList.contains('open')) tkbToggleSavedDropdown();
+}, true);
+
+// Nạp 1 bản lưu để XEM LẠI — ghi đè tạm lên khung học cụ hiện tại,
+// bản đang soạn dở được cất vào _tkbDraftBackup để khôi phục sau.
+function tkbViewSavedSnapshot(id) {
+  const list = tkbGetSavedMaterialsList();
+  const snap = list.find(s => s.id === id);
+  if (!snap) return;
+
+  // Nếu đang xem 1 bản lưu khác rồi thì không cất đè backup của bản soạn dở gốc —
+  // chỉ cất backup khi đang thực sự ở bản soạn dở (draft) ban đầu.
+  if (!_tkbViewingSavedId) {
+    _tkbDraftBackup = {
+      materialsData: JSON.parse(JSON.stringify(tkbMaterialsData)),
+      materialFlags: JSON.parse(JSON.stringify(tkbMaterialFlags))
+    };
+  }
+
+  tkbMaterialsData = JSON.parse(JSON.stringify(snap.materialsData || {}));
+  tkbMaterialFlags = JSON.parse(JSON.stringify(snap.materialFlags || {}));
+  _tkbViewingSavedId = id;
+
+  // Đồng bộ checkbox 🧩 trên bảng trái theo đúng flags của bản lưu
+  document.querySelectorAll('.tkb-material-checkbox').forEach(cb => {
+    const row = cb.getAttribute('data-row') || cb.dataset.row;
+    cb.checked = !!tkbMaterialFlags[row];
+  });
+
+  tkbSyncMaterialsPanel();
+
+  const restoreBtn = document.getElementById('tkbRestoreBtn');
+  if (restoreBtn) restoreBtn.style.display = '';
+
+  const wrap = document.querySelector('.tkb-saved-dropdown-wrap');
+  if (wrap) wrap.classList.remove('open');
+
+  showToast && showToast('Đang xem: ' + snap.name + ' (chỉ xem, chưa lưu đè)', 'info');
+}
+
+// Quay lại đúng bản đang soạn dở trước khi bấm xem học cụ đã lưu
+function tkbRestoreCurrentDraft() {
+  if (!_tkbViewingSavedId) return; // không đang xem bản lưu nào thì thôi
+  if (_tkbDraftBackup) {
+    tkbMaterialsData = JSON.parse(JSON.stringify(_tkbDraftBackup.materialsData || {}));
+    tkbMaterialFlags = JSON.parse(JSON.stringify(_tkbDraftBackup.materialFlags || {}));
+  }
+  _tkbViewingSavedId = null;
+  _tkbDraftBackup = null;
+
+  document.querySelectorAll('.tkb-material-checkbox').forEach(cb => {
+    const row = cb.getAttribute('data-row') || cb.dataset.row;
+    cb.checked = !!tkbMaterialFlags[row];
+  });
+
+  tkbSyncMaterialsPanel();
+
+  const restoreBtn = document.getElementById('tkbRestoreBtn');
+  if (restoreBtn) restoreBtn.style.display = 'none';
+
+  showToast && showToast('Đã quay lại bản đang soạn dở', 'success');
 }
 
 let rowHeights = {};
@@ -35508,401 +36201,6 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<!-- ===== AI FORGE SCRIPT ===== -->
-<script>
-(function(){
-  /* ─── DATA ─── */
-  const AF_CATEGORIES = [
-    { id:'email', icon:'📧', label:'Email Công Việc', color:'#3b82f6',
-      fields:[
-        {key:'subject', label:'Chủ đề email', type:'text', placeholder:'Thảo luận hợp đồng Q3 2026...'},
-        {key:'recipient', label:'Người nhận (vị trí)', type:'text', placeholder:'Giám đốc kinh doanh...'},
-        {key:'tone', label:'Giọng văn', type:'select', options:['Chuyên nghiệp','Thân thiện','Thuyết phục','Khẩn cấp','Cảm ơn']},
-        {key:'goal', label:'Mục tiêu email', type:'text', placeholder:'Xin duyệt ngân sách, đặt lịch họp...'},
-        {key:'length', label:'Độ dài', type:'select', options:['Ngắn gọn (100-150 từ)','Trung bình (200-300 từ)','Chi tiết (400+ từ)']},
-      ]
-    },
-    { id:'code', icon:'💻', label:'Review Code', color:'#22c55e',
-      fields:[
-        {key:'lang', label:'Ngôn ngữ lập trình', type:'text', placeholder:'Python, JavaScript, Go...'},
-        {key:'task', label:'Mô tả code cần làm gì', type:'textarea', placeholder:'Hàm sắp xếp danh sách sản phẩm theo giá...'},
-        {key:'constraints', label:'Ràng buộc / yêu cầu', type:'text', placeholder:'Hiệu suất O(n log n), không dùng thư viện ngoài...'},
-        {key:'style', label:'Style output', type:'select', options:['Clean Code','Performance first','Beginner-friendly','Production-ready']},
-      ]
-    },
-    { id:'report', icon:'📊', label:'Báo Cáo / Phân Tích', color:'#f59e0b',
-      fields:[
-        {key:'topic', label:'Chủ đề báo cáo', type:'text', placeholder:'Hiệu quả chiến dịch marketing tháng 5...'},
-        {key:'audience', label:'Đối tượng đọc', type:'text', placeholder:'Ban giám đốc, nhà đầu tư...'},
-        {key:'data', label:'Dữ liệu có sẵn', type:'textarea', placeholder:'Doanh thu tăng 15%, 2.3k khách hàng mới...'},
-        {key:'format', label:'Định dạng', type:'select', options:['Tóm tắt điều hành','Phân tích chi tiết','Bullet points','Slide deck outline']},
-      ]
-    },
-    { id:'social', icon:'📱', label:'Social Media', color:'#ec4899',
-      fields:[
-        {key:'platform', label:'Nền tảng', type:'select', options:['Facebook','Instagram','LinkedIn','TikTok','Twitter/X']},
-        {key:'product', label:'Sản phẩm / dịch vụ', type:'text', placeholder:'Khóa học Excel online...'},
-        {key:'goal', label:'Mục tiêu bài đăng', type:'select', options:['Tăng nhận diện thương hiệu','Tạo ra lead','Viral','Bán hàng trực tiếp','Tương tác cộng đồng']},
-        {key:'vibe', label:'Cảm xúc muốn truyền tải', type:'text', placeholder:'Hứng khởi, tin tưởng, vui vẻ...'},
-        {key:'cta', label:'Call to Action', type:'text', placeholder:'Đăng ký ngay, Liên hệ tư vấn...'},
-      ]
-    },
-    { id:'meeting', icon:'🤝', label:'Tóm Tắt Cuộc Họp', color:'#8b5cf6',
-      fields:[
-        {key:'attendees', label:'Người tham gia', type:'text', placeholder:'Trưởng phòng KD, Dev lead, PM...'},
-        {key:'agenda', label:'Nội dung đã thảo luận', type:'textarea', placeholder:'Roadmap Q3, bug nghiêm trọng, ngân sách...'},
-        {key:'decisions', label:'Quyết định đã đưa ra', type:'textarea', placeholder:'Ưu tiên tính năng X, deadline 30/6...'},
-        {key:'format', label:'Định dạng output', type:'select', options:['Meeting minutes','Action items list','Executive summary','Follow-up email']},
-      ]
-    },
-    { id:'creative', icon:'🎨', label:'Viết Sáng Tạo', color:'#f97316',
-      fields:[
-        {key:'type', label:'Loại nội dung', type:'select', options:['Blog post','Truyện ngắn','Kịch bản video','Slogan','Landing page copy','Podcast script']},
-        {key:'theme', label:'Chủ đề / ý tưởng', type:'text', placeholder:'Tương lai AI trong giáo dục...'},
-        {key:'style', label:'Phong cách viết', type:'text', placeholder:'Thú vị, storytelling, số liệu thực tế...'},
-        {key:'wordcount', label:'Độ dài mong muốn', type:'text', placeholder:'500 từ, 3 phút đọc...'},
-      ]
-    },
-    { id:'translate', icon:'🌐', label:'Dịch & Chỉnh Văn', color:'#06b6d4',
-      fields:[
-        {key:'from', label:'Từ ngôn ngữ', type:'select', options:['Tiếng Việt','English','中文','日本語','한국어','Français','Deutsch']},
-        {key:'to', label:'Sang ngôn ngữ', type:'select', options:['English','Tiếng Việt','中文','日本語','한국어','Français','Deutsch']},
-        {key:'content', label:'Nội dung cần dịch / chỉnh', type:'textarea', placeholder:'Dán văn bản vào đây...'},
-        {key:'register', label:'Phong cách ngôn ngữ', type:'select', options:['Formal/Trang trọng','Casual/Thân thiện','Technical/Kỹ thuật','Marketing','Academic']},
-      ]
-    },
-    { id:'debug', icon:'🔍', label:'Debug & Giải Thích', color:'#ef4444',
-      fields:[
-        {key:'error', label:'Mô tả lỗi / vấn đề', type:'textarea', placeholder:'TypeError: Cannot read property of undefined tại dòng 45...'},
-        {key:'context', label:'Ngữ cảnh hệ thống', type:'text', placeholder:'React 18, Node.js backend, PostgreSQL...'},
-        {key:'tried', label:'Đã thử những gì', type:'text', placeholder:'Kiểm tra null, restart server...'},
-        {key:'output', label:'Muốn nhận output gì', type:'select', options:['Giải thích nguyên nhân + fix','Code fix hoàn chỉnh','Step-by-step debug guide','Root cause analysis']},
-      ]
-    },
-  ];
-
-  const AF_TIPS = [
-    '💡 Càng cụ thể → prompt càng chất. Đừng ngại điền nhiều chi tiết!',
-    '🎯 Chỉ định rõ đối tượng đọc để AI điều chỉnh giọng văn phù hợp.',
-    '📐 Thêm ví dụ vào context để AI hiểu đúng format bạn muốn.',
-    '🔄 Sau khi nhận kết quả, bạn có thể yêu cầu AI "viết lại theo phong cách..." để tinh chỉnh.',
-    '⚡ Dùng prompt "Chain of Thought" khi cần phân tích phức tạp: thêm "Hãy suy nghĩ từng bước..."',
-    '🌐 Universal prompt hoạt động tốt trên mọi AI, trong khi prompt riêng từng platform tận dụng được điểm mạnh đặc thù.',
-    '💾 Lưu lại những prompt hay! Bạn có thể tái sử dụng và tùy chỉnh nhanh cho lần sau.',
-    '🎭 Role-play rất hiệu quả: "Bạn là chuyên gia X với 10 năm kinh nghiệm, hãy..."',
-  ];
-
-  const AF_TEMPLATES = {
-    email: (f,plat) => `Bạn là một trợ lý viết email chuyên nghiệp cấp cao.
-
-Nhiệm vụ: Viết một email ${f.tone?.toLowerCase() || 'chuyên nghiệp'} ${f.goal ? 'với mục tiêu ' + f.goal : ''}.
-
-Thông tin:
-• Chủ đề: ${f.subject || 'N/A'}
-• Người nhận: ${f.recipient || 'N/A'}
-• Giọng văn: ${f.tone || 'Chuyên nghiệp'}
-• Độ dài: ${f.length || 'Trung bình'}
-
-Yêu cầu:
-- Dòng tiêu đề hấp dẫn, rõ ràng
-- Mở đầu ấn tượng, không sáo rỗng
-- Nội dung tập trung vào mục tiêu chính
-- Kết thúc với call-to-action rõ ràng
-- Định dạng chuyên nghiệp, dễ đọc
-${plat === 'Claude' ? '\nHãy đưa ra 1 phiên bản chính và 1 phiên bản thay thế ngắn hơn.' : ''}`,
-
-    code: (f,plat) => `Bạn là một senior software engineer với 10+ năm kinh nghiệm.
-
-Ngôn ngữ: ${f.lang || 'không xác định'}
-Yêu cầu: ${f.task || 'N/A'}
-Ràng buộc: ${f.constraints || 'Không có'}
-Style: ${f.style || 'Clean Code'}
-
-Hãy cung cấp:
-1. Code hoàn chỉnh, có comment giải thích
-2. Phân tích độ phức tạp (time & space complexity)
-3. Ít nhất 2 test cases
-4. Các edge cases cần chú ý
-${plat !== 'Universal' ? `\nOptimized cho ${plat}: sử dụng format code block chuẩn.` : ''}`,
-
-    report: (f,plat) => `Vai trò: Chuyên gia phân tích dữ liệu và tư vấn kinh doanh.
-
-Nhiệm vụ: Tạo ${f.format || 'báo cáo phân tích'} về "${f.topic || 'chủ đề được cung cấp'}".
-
-Đối tượng đọc: ${f.audience || 'Ban lãnh đạo'}
-Dữ liệu đầu vào: ${f.data || 'Sẽ được cung cấp'}
-
-Yêu cầu output:
-- Tóm tắt điều hành (3-5 câu key takeaways)
-- Phân tích chi tiết với số liệu cụ thể
-- Insight và xu hướng chính
-- Khuyến nghị hành động (prioritized)
-- Rủi ro cần theo dõi
-Ngôn ngữ: Tiếng Việt, súc tích, dùng bullet points và headers rõ ràng.`,
-
-    social: (f,plat) => `Bạn là social media strategist giàu kinh nghiệm tại Việt Nam.
-
-Nền tảng: ${f.platform || 'Facebook'}
-Sản phẩm/Dịch vụ: ${f.product || 'N/A'}
-Mục tiêu: ${f.goal || 'Tăng nhận diện thương hiệu'}
-Cảm xúc muốn truyền: ${f.vibe || 'Hứng khởi'}
-CTA: ${f.cta || 'N/A'}
-
-Tạo cho tôi:
-1. 3 phiên bản caption khác nhau (ngắn / trung / dài)
-2. Hashtag phù hợp (10-15 cái)
-3. Hook mở đầu viral
-4. Gợi ý visual/hình ảnh đi kèm
-Tone: Tự nhiên, phù hợp văn hóa người Việt, không quá formal.`,
-
-    meeting: (f,plat) => `Bạn là trợ lý quản lý dự án chuyên nghiệp.
-
-Nhiệm vụ: Tạo ${f.format || 'meeting minutes'} từ thông tin cuộc họp.
-
-Người tham gia: ${f.attendees || 'N/A'}
-Nội dung thảo luận: ${f.agenda || 'N/A'}
-Quyết định đưa ra: ${f.decisions || 'N/A'}
-
-Yêu cầu:
-- Tóm tắt rõ ràng, có cấu trúc
-- Action items với owner và deadline cụ thể
-- Next steps và follow-up cần thiết
-- Format dễ chia sẻ qua email
-Ngôn ngữ: Tiếng Việt chuyên nghiệp.`,
-
-    creative: (f,plat) => `Bạn là một creative writer tài năng với phong cách độc đáo.
-
-Loại nội dung: ${f.type || 'Blog post'}
-Chủ đề: ${f.theme || 'N/A'}
-Phong cách: ${f.style || 'Thú vị, engaging'}
-Độ dài: ${f.wordcount || '500 từ'}
-
-Viết nội dung với:
-- Hook mở đầu cực kỳ cuốn hút (đừng bắt đầu bằng "Trong thế giới hiện đại...")
-- Cấu trúc narrative rõ ràng
-- Ví dụ thực tế, số liệu nếu có
-- Kết thúc đọng lại, có ý nghĩa
-- Giọng văn: ${f.style || 'Conversational nhưng insightful'}`,
-
-    translate: (f,plat) => `Bạn là một dịch giả chuyên nghiệp với chứng chỉ quốc tế.
-
-Yêu cầu: Dịch từ ${f.from || 'Tiếng Việt'} sang ${f.to || 'English'}
-Phong cách: ${f.register || 'Formal/Trang trọng'}
-
-Nội dung cần dịch:
-"""
-${f.content || '[Dán nội dung vào đây]'}
-"""
-
-Hãy:
-1. Bản dịch chính xác, tự nhiên (không dịch máy)
-2. Giữ nguyên tone và ý nghĩa gốc
-3. Chú thích nếu có từ văn hóa đặc thù cần giải thích
-4. Gợi ý cách diễn đạt thay thế nếu có`,
-
-    debug: (f,plat) => `Bạn là senior developer kiêm debugging expert.
-
-Vấn đề: ${f.error || 'N/A'}
-Môi trường: ${f.context || 'N/A'}
-Đã thử: ${f.tried || 'Chưa thử gì'}
-Mong muốn: ${f.output || 'Giải thích nguyên nhân + fix'}
-
-Phân tích theo:
-1. Root Cause Analysis — tại sao lỗi xảy ra
-2. Fix ngay lập tức (quick fix)
-3. Fix đúng nghĩa (proper fix, long-term)
-4. Cách phòng ngừa tương lai
-5. Code snippet hoàn chỉnh nếu cần
-Hãy giải thích rõ ràng để developer mọi cấp có thể hiểu.`,
-  };
-
-  let afCurrentCat = 'email';
-  let afCurrentPlatform = 'Claude';
-  let afSaved = JSON.parse(localStorage.getItem('af_saved') || '[]');
-
-  function afInit() {
-    // Render categories
-    const catList = document.getElementById('afCatList');
-    if (!catList) return;
-    catList.innerHTML = AF_CATEGORIES.map(c => `
-      <button class="af-cat-btn ${c.id===afCurrentCat?'active':''}" data-id="${c.id}" onclick="afSelectCat('${c.id}')">
-        <span class="af-cat-icon">${c.icon}</span>
-        <span>${c.label}</span>
-      </button>`).join('');
-
-    // Platform chips
-    document.getElementById('afPlatformRow')?.querySelectorAll('.af-platform-chip').forEach(btn => {
-      btn.addEventListener('click', function(){
-        document.querySelectorAll('.af-platform-chip').forEach(b => b.classList.remove('active'));
-        this.classList.add('active');
-        afCurrentPlatform = this.dataset.platform;
-      });
-    });
-
-    afRenderForm();
-    afRenderSaved();
-    afShowTip();
-  }
-
-  window.afSelectCat = function(id) {
-    afCurrentCat = id;
-    document.querySelectorAll('.af-cat-btn').forEach(b => b.classList.toggle('active', b.dataset.id === id));
-    afRenderForm();
-  };
-
-  function afRenderForm() {
-    const cat = AF_CATEGORIES.find(c => c.id === afCurrentCat);
-    if (!cat) return;
-    const form = document.getElementById('afForm');
-    if (!form) return;
-    form.innerHTML = cat.fields.map(f => `
-      <div class="af-form-group">
-        <label class="af-form-label">${f.label}</label>
-        ${f.type === 'textarea'
-          ? `<textarea class="af-textarea" id="af_${f.key}" placeholder="${f.placeholder||''}"></textarea>`
-          : f.type === 'select'
-          ? `<select class="af-select" id="af_${f.key}"><option value="">— Chọn —</option>${(f.options||[]).map(o=>`<option>${o}</option>`).join('')}</select>`
-          : `<input type="text" class="af-input" id="af_${f.key}" placeholder="${f.placeholder||''}">`
-        }
-      </div>`).join('');
-  }
-
-  window.afGenerate = function() {
-    const cat = AF_CATEGORIES.find(c => c.id === afCurrentCat);
-    if (!cat) return;
-    const values = {};
-    cat.fields.forEach(f => { values[f.key] = document.getElementById('af_'+f.key)?.value.trim() || ''; });
-
-    const template = AF_TEMPLATES[afCurrentCat];
-    if (!template) return;
-    const prompt = template(values, afCurrentPlatform);
-
-    const btn = document.getElementById('afGenBtn');
-    const btnText = document.getElementById('afGenBtnText');
-    const output = document.getElementById('afOutput');
-
-    btn.disabled = true;
-    btnText.textContent = 'Đang tạo...';
-
-    // Typewriter effect
-    output.innerHTML = '';
-    let i = 0;
-    const cursor = document.createElement('span');
-    cursor.className = 'af-typing';
-    cursor.textContent = '|';
-    output.appendChild(cursor);
-
-    const interval = setInterval(() => {
-      if (i < prompt.length) {
-        const char = document.createTextNode(prompt[i]);
-        output.insertBefore(char, cursor);
-        i++;
-      } else {
-        clearInterval(interval);
-        cursor.remove();
-        btn.disabled = false;
-        btnText.textContent = 'Tạo lại';
-        document.getElementById('afOutputActions').style.display = 'flex';
-        document.getElementById('afCharCount').textContent = prompt.length + ' ký tự';
-        afShowTip();
-      }
-    }, 6);
-  };
-
-  window.afCopy = function() {
-    const text = document.getElementById('afOutput')?.innerText;
-    if (!text || text.includes('xuất hiện ở đây')) return;
-    navigator.clipboard.writeText(text).then(() => {
-      if (window.showToast) window.showToast('📋 Đã sao chép prompt!', 'success', 1800);
-    });
-  };
-
-  window.afSave = function() {
-    const text = document.getElementById('afOutput')?.innerText;
-    if (!text || text.includes('xuất hiện ở đây')) return;
-    const cat = AF_CATEGORIES.find(c => c.id === afCurrentCat);
-    const item = { id: Date.now(), cat: cat?.label || '', platform: afCurrentPlatform, text, date: new Date().toLocaleDateString('vi-VN') };
-    afSaved.unshift(item);
-    if (afSaved.length > 20) afSaved.pop();
-    localStorage.setItem('af_saved', JSON.stringify(afSaved));
-    afRenderSaved();
-    if (window.showToast) window.showToast('💾 Đã lưu prompt!', 'success', 1800);
-  };
-
-  window.afDownload = function() {
-    const text = document.getElementById('afOutput')?.innerText;
-    if (!text || text.includes('xuất hiện ở đây')) return;
-    const blob = new Blob([text], {type:'text/plain'});
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = `prompt_${afCurrentCat}_${Date.now()}.txt`;
-    a.click();
-    URL.revokeObjectURL(a.href);
-  };
-
-  window.afClear = function() {
-    const output = document.getElementById('afOutput');
-    if (output) output.innerHTML = '<span class="af-output-placeholder">Prompt sẽ xuất hiện ở đây sau khi bạn nhấn "Tạo Prompt"...</span>';
-    document.getElementById('afOutputActions').style.display = 'none';
-    document.getElementById('afCharCount').textContent = '0 ký tự';
-    const btnText = document.getElementById('afGenBtnText');
-    if(btnText) btnText.textContent = 'Tạo Prompt';
-  };
-
-  function afRenderSaved() {
-    const list = document.getElementById('afSavedList');
-    if (!list) return;
-    if (!afSaved.length) {
-      list.innerHTML = '<div class="af-saved-empty">Chưa có prompt nào được lưu</div>';
-      return;
-    }
-    list.innerHTML = afSaved.map((item,i) => `
-      <div class="af-saved-item" onclick="afLoadSaved(${i})">
-        <button class="af-del-btn" onclick="event.stopPropagation();afDeleteSaved(${i})">✕</button>
-        <div class="af-saved-item-title">${item.cat} · ${item.platform} · ${item.date}</div>
-        <div class="af-saved-item-preview">${item.text.substring(0,80)}...</div>
-      </div>`).join('');
-  }
-
-  window.afLoadSaved = function(i) {
-    const item = afSaved[i];
-    if (!item) return;
-    const output = document.getElementById('afOutput');
-    if (output) {
-      output.innerHTML = '';
-      output.textContent = item.text;
-      document.getElementById('afOutputActions').style.display = 'flex';
-      document.getElementById('afCharCount').textContent = item.text.length + ' ký tự';
-    }
-  };
-
-  window.afDeleteSaved = function(i) {
-    afSaved.splice(i, 1);
-    localStorage.setItem('af_saved', JSON.stringify(afSaved));
-    afRenderSaved();
-  };
-
-  function afShowTip() {
-    const box = document.getElementById('afTipBox');
-    if (!box) return;
-    const tip = AF_TIPS[Math.floor(Math.random() * AF_TIPS.length)];
-    box.style.opacity = '0';
-    setTimeout(() => { box.textContent = tip; box.style.transition = 'opacity 0.5s'; box.style.opacity = '1'; }, 200);
-  }
-
-  // Init when DOM ready
-  document.addEventListener('DOMContentLoaded', afInit);
-  // Also init if page is switched to
-  const _afOrigSwitch = window.switchPage;
-  if (_afOrigSwitch) {
-    const _wrapped = window.switchPage;
-    window.switchPage = function(pageId) {
-      _wrapped(pageId);
-      if (pageId === 'aiforge') setTimeout(afInit, 50);
-    };
-  }
-})();
-</script>
 
 <!-- ===== CHILL ZONE SCRIPT ===== -->
 <script>

@@ -3888,58 +3888,6 @@ body.light-mode .dropdown-item:hover{
   white-space:nowrap;
 }
 
-/* ===== Nút "Tổng hợp học cụ" — hiệu ứng bạc óng ánh (metallic silver + shine sweep) ===== */
-.excel-btn.tkb-silver-btn{
-  position:relative;
-  overflow:hidden;
-  color:#2a2a2a !important;
-  border:1px solid #b9bcc2 !important;
-  background:linear-gradient(135deg,
-    #f4f5f7 0%,
-    #d7dae0 18%,
-    #f8f9fb 32%,
-    #bfc3ca 48%,
-    #eef0f3 62%,
-    #c7cbd2 80%,
-    #f4f5f7 100%);
-  background-size:220% 220%;
-  animation:tkbSilverShift 4.5s ease-in-out infinite;
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 -1px 2px rgba(0,0,0,0.15) inset,
-    0 2px 6px rgba(0,0,0,0.25);
-  text-shadow:0 1px 0 rgba(255,255,255,0.6);
-}
-.excel-btn.tkb-silver-btn::before{
-  content:"";
-  position:absolute;
-  top:0;
-  left:-60%;
-  width:40%;
-  height:100%;
-  background:linear-gradient(120deg, transparent 0%, rgba(255,255,255,0.85) 50%, transparent 100%);
-  transform:skewX(-20deg);
-  animation:tkbSilverSweep 2.8s ease-in-out infinite;
-  pointer-events:none;
-}
-.excel-btn.tkb-silver-btn:hover{
-  filter:brightness(1.08);
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 -1px 2px rgba(0,0,0,0.15) inset,
-    0 3px 10px rgba(0,0,0,0.3);
-}
-@keyframes tkbSilverShift{
-  0%{ background-position:0% 50%; }
-  50%{ background-position:100% 50%; }
-  100%{ background-position:0% 50%; }
-}
-@keyframes tkbSilverSweep{
-  0%{ left:-60%; }
-  55%{ left:130%; }
-  100%{ left:130%; }
-}
-
 .excel-toolbar-right{
   display:flex;
   align-items:center;
@@ -4035,6 +3983,22 @@ body.light-mode .excel-table td.tkb-frozen-row{
                 khung */
 }
 
+/* Track thanh cuộn của bảng TKB phải màu TRẮNG ĐẶC (không dùng nền trong
+   suốt/tối của rule global ::-webkit-scrollbar-track ở trên) — vì
+   .excel-table-wrap có z-index cao hơn nút "Xoá hết"/"Auto Check" ở góc
+   trên (cố ý để khung che đúng 1/3 dưới của các nút đó), nếu track scroll
+   trong suốt thì phần nút bị che sẽ LỘ RA đằng sau track thay vì bị che
+   kín như khung bảng trắng xung quanh. */
+.excel-table-wrap::-webkit-scrollbar-track{
+  background:#fff;
+}
+.excel-table-wrap::-webkit-scrollbar-thumb{
+  border:1px solid rgba(0,0,0,0.15);
+}
+.excel-table-wrap::-webkit-scrollbar-corner{
+  background:#fff;
+}
+
 body.light-mode .excel-table-wrap{
   border:4px solid #000 !important;
 }
@@ -4113,6 +4077,8 @@ body.light-mode .excel-shell{
   position:absolute;
   top:-22px;
   right:16px;
+  left:16px; /* thêm left để tính được max-width khả dụng thật sự của hàng,
+    thay vì chỉ neo theo right — giúp nowrap co nhỏ đúng theo khung cha */
   z-index:1; /* THẤP HƠN .tkb-materials-sticky-wrap (z-index:2) một cách CỐ Ý
     -> khung panel bên dưới đè lên đúng phần dưới của các nút, tạo hiệu ứng
     "nút gắn vào viền" (nửa trên nhô ra ngoài, nửa dưới bị viền che) giống
@@ -4122,11 +4088,36 @@ body.light-mode .excel-shell{
     thuộc z-index của hàng nút này. */
   display:flex;
   align-items:center;
-  gap:8px;
-  flex-wrap:wrap;
+  gap:clamp(3px, 0.8vw, 8px);
+  flex-wrap:nowrap; /* KHÔNG xuống dòng — nếu không đủ chỗ, các nút con tự
+    co nhỏ (clamp trong .tkb-corner-clear-btn) thay vì wrap xuống dòng dưới
+    rồi bị bảng/khung khác che mất khi zoom trình duyệt cao. */
   justify-content:flex-end;
+  overflow:visible;
 }
 .tkb-materials-btn-row .tkb-corner-clear-btn{
+  position:static;
+  top:auto;
+  right:auto;
+}
+
+/* Hàng chứa 2 nút góc trên khung TKB bên TRÁI: "Tổng hợp học cụ" (bạc) +
+   "Xoá hết" (đỏ) — cùng cơ chế với .tkb-materials-btn-row phía trên, để 2
+   nút tự xếp cạnh nhau bằng flex thay vì mỗi nút tự canh "right" riêng. */
+.tkb-left-btn-row{
+  position:absolute;
+  top:-22px;
+  right:16px;
+  left:16px; /* xem giải thích ở .tkb-materials-btn-row phía trên */
+  z-index:1; /* xem giải thích z-index ở .tkb-materials-btn-row phía trên */
+  display:flex;
+  align-items:center;
+  gap:clamp(3px, 0.8vw, 8px);
+  flex-wrap:nowrap;
+  justify-content:flex-end;
+  overflow:visible;
+}
+.tkb-left-btn-row .tkb-corner-clear-btn{
   position:static;
   top:auto;
   right:auto;
@@ -4336,11 +4327,15 @@ body.light-mode .excel-shell{
   align-items:center;
   justify-content:center;
   gap:6px;
-  padding:7px 16px;
+  /* padding/font co giãn theo không gian còn lại (clamp) thay vì cố định,
+     để khi trình duyệt zoom cao (>=100%) và hàng nút không đủ chỗ, các
+     nút tự THU NHỎ lại thay vì tràn/xuống dòng/bị che khuất. min-width:0
+     + flex-shrink cho phép nút co nhỏ hơn kích thước nội dung mặc định. */
+  padding:clamp(4px, 0.6vw, 7px) clamp(8px, 1.4vw, 16px);
   border:3px solid #000;
   background:linear-gradient(180deg, #f87171, #ef4444);
   color:#fff;
-  font-size:0.82rem;
+  font-size:clamp(0.62rem, 1vw, 0.82rem);
   font-weight:700;
   letter-spacing:0.2px;
   line-height:1;
@@ -4348,19 +4343,98 @@ body.light-mode .excel-shell{
   cursor:pointer;
   box-shadow:0 3px 8px rgba(0,0,0,0.3);
   transition: background 0.15s, transform 0.15s, box-shadow 0.15s;
-}
-.tkb-corner-clear-btn::before{
-  content:"🗑️";
-  display:inline-block;
-  font-size:0.85rem;
-  filter: drop-shadow(0 1px 1px rgba(0,0,0,0.2));
-  transform:translateY(-4px); /* nội dung (icon) nhích lên 4px so với tâm
-    nút — chỉ dịch nội dung, không đổi vị trí/kích thước khung nút thật */
+  flex-shrink:1;
+  min-width:0;
+  white-space:nowrap;
 }
 .tkb-corner-clear-btn::after{
   content:"Xoá hết";
   display:inline-block;
   transform:translateY(-4px); /* nội dung (chữ) nhích lên 4px, đồng bộ với icon */
+}
+/* Nút "Tổng hợp học cụ" — dời từ toolbar trên xuống nằm kế nút "Xoá hết"
+   của bảng TKB bên trái, dùng chung hình dạng/kích thước với
+   .tkb-corner-clear-btn (viền đen 3px, bo góc 12px, pill). Màu BẠC kim
+   loại tĩnh: sáng ở bên TRÁI, tối dần sang bên PHẢI (linear-gradient
+   90deg, không animation, không vệt sáng quét ngang). */
+.tkb-corner-sync-btn{
+  position:relative;
+  color:#2a2a2a;
+  border-color:#6d7278;
+  background:linear-gradient(90deg,
+    #ffffff 0%,
+    #eef0f3 25%,
+    #c7cbd2 50%,
+    #9599a0 75%,
+    #6d7278 100%);
+  text-shadow:0 1px 0 rgba(255,255,255,0.6);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 -1px 2px rgba(0,0,0,0.15) inset,
+    0 3px 8px rgba(0,0,0,0.3);
+}
+.tkb-corner-sync-btn::after{
+  content:"Tổng hợp học cụ";
+  display:inline-block;
+  position:relative;
+  z-index:1;
+  transform:translateY(-4px);
+}
+.tkb-corner-sync-btn:hover{
+  filter:brightness(1.08);
+  transform:translateY(-2px);
+  box-shadow:
+    0 1px 0 rgba(255,255,255,0.9) inset,
+    0 -1px 2px rgba(0,0,0,0.15) inset,
+    0 5px 12px rgba(0,0,0,0.35);
+}
+/* Nút "Auto Check" — tự động tick 🧩 các lớp khớp mã đã thiết lập trước.
+   Dùng chung hình dạng/kích thước .tkb-corner-clear-btn, màu XANH DƯƠNG để
+   phân biệt rõ với đỏ (xoá) và bạc (tổng hợp). Gộp sẵn bánh răng ⚙️ ngay
+   BÊN TRONG nút (không còn là nút rời cạnh bên) — 2 <span> con chia làm 2
+   vùng bấm riêng trong cùng 1 pill: bấm chữ "Auto Check" -> chạy auto
+   check; bấm bánh răng -> mở cấu hình mã lớp (event.stopPropagation() ở
+   gear để không bấm luôn cả auto check khi chỉ định mở cấu hình). */
+.tkb-corner-autocheck-btn{
+  background:linear-gradient(180deg, #93c5fd, #2563eb);
+  color:#eff6ff;
+  padding-right:clamp(4px, 0.5vw, 8px); /* padding phải hẹp hơn để gear nằm sát mép trong */
+  gap:clamp(4px, 0.8vw, 8px);
+}
+.tkb-corner-autocheck-btn::after{
+  content:none; /* huỷ nội dung "Xoá hết" kế thừa từ .tkb-corner-clear-btn —
+    nút này giờ dùng 2 <span> con thật (.tkb-autocheck-run-zone/-gear-zone)
+    để hiển thị chữ, không cần/không được dùng ::after nữa */
+}
+.tkb-autocheck-run-zone{
+  display:inline-block;
+  transform:translateY(-4px); /* đồng bộ nhích lên như ::after của các nút pill khác */
+  cursor:pointer;
+}
+.tkb-autocheck-gear-zone{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  width:clamp(16px, 1.6vw, 22px);
+  height:clamp(16px, 1.6vw, 22px);
+  border-radius:50%;
+  border:2px solid rgba(0,0,0,0.55);
+  background:linear-gradient(180deg, #e5e7eb, #9ca3af);
+  font-size:clamp(0.55rem, 0.9vw, 0.75rem);
+  line-height:1;
+  cursor:pointer;
+  transition:transform .15s ease, box-shadow .15s ease;
+  box-shadow:0 2px 5px rgba(0,0,0,0.3);
+}
+.tkb-autocheck-gear-zone:hover{
+  transform:rotate(25deg);
+  box-shadow:0 3px 7px rgba(0,0,0,0.35);
+}
+.tkb-corner-autocheck-btn:hover{
+  background:linear-gradient(180deg, #bfdbfe, #1d4ed8);
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.35);
 }
 .tkb-corner-clear-btn:hover{
   background:linear-gradient(180deg, #fca5a5, #dc2626);
@@ -4919,6 +4993,96 @@ body.light-mode .excel-table td.row-index{
   opacity:0.7;
   text-align:center;
   padding:40px 10px;
+}
+/* ===== Modal cấu hình mã lớp cho Auto Check ===== */
+.tkb-autocheck-box{
+  max-width:520px !important;
+  width:92vw;
+  text-align:left;
+  padding:20px 22px !important;
+}
+.tkb-autocheck-hint{
+  font-size:0.82rem;
+  opacity:0.75;
+  line-height:1.5;
+  margin:0 0 16px;
+}
+.tkb-autocheck-add-row{
+  display:flex;
+  gap:8px;
+  margin-bottom:16px;
+}
+.tkb-autocheck-input{
+  flex:1;
+  min-width:0;
+  padding:9px 12px;
+  border-radius:8px;
+  border:1px solid rgba(255,255,255,0.18);
+  background:rgba(255,255,255,0.06);
+  color:#e8eaed;
+  font-size:0.9rem;
+  outline:none;
+}
+.tkb-autocheck-input:focus{
+  border-color:#2563eb;
+  background:rgba(255,255,255,0.1);
+}
+.tkb-autocheck-add-btn{
+  flex-shrink:0;
+  padding:9px 16px;
+  border-radius:8px;
+  border:none;
+  background:linear-gradient(180deg, #93c5fd, #2563eb);
+  color:#fff;
+  font-weight:700;
+  font-size:0.85rem;
+  cursor:pointer;
+}
+.tkb-autocheck-add-btn:hover{
+  filter:brightness(1.1);
+}
+.tkb-autocheck-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  max-height:260px;
+  overflow-y:auto;
+}
+.tkb-autocheck-tag{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  padding:6px 8px 6px 12px;
+  border-radius:20px;
+  background:rgba(37,99,235,0.18);
+  border:1px solid rgba(37,99,235,0.4);
+  font-size:0.85rem;
+  font-weight:700;
+  color:#bfdbfe;
+}
+.tkb-autocheck-tag-remove{
+  width:18px;
+  height:18px;
+  border-radius:50%;
+  border:none;
+  background:rgba(255,255,255,0.12);
+  color:#e8eaed;
+  font-size:0.7rem;
+  line-height:1;
+  cursor:pointer;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+}
+.tkb-autocheck-tag-remove:hover{
+  background:#dc2626;
+  color:#fff;
+}
+.tkb-autocheck-empty{
+  opacity:0.6;
+  font-size:0.85rem;
+  padding:10px 2px;
 }
 .tkb-overview-day-group{
   margin-bottom:22px;
@@ -14817,100 +14981,6 @@ body.sidebar-bottom.banner-scrolled .header-group .home-clock {
     0 1px 4px rgba(0,0,0,0.3) !important;
 }
 
-/* ===== Nút "Tổng hợp học cụ" — hiệu ứng bạc bóng kim loại thật (đè lên
-   gradient xanh mặc định của .btn.excel-btn ở trên bằng selector cụ thể
-   hơn + !important, vì rule .tkb-silver-btn gốc định nghĩa sớm hơn trong
-   file không có !important nên bị gradient xanh của .btn.excel-btn đè mất).
-   Gradient đi từ trắng sáng ở góc trên-trái xuống xám tối ở góc dưới-phải
-   để tạo cảm giác khối kim loại 3D có nguồn sáng chiếu từ một phía (giống
-   thìa/muỗng bạc thật), thay vì chỉ loang lổ sáng-tối đều màu như trước. */
-.btn.excel-btn.tkb-silver-btn {
-  color: transparent !important;
-  background-clip: padding-box !important;
-  border: 2px solid #6d7278 !important;
-  background: linear-gradient(90deg,
-    #ffffff 0%,
-    #f6f7f9 8%,
-    #d5d8dd 18%,
-    #aeb2b9 30%,
-    #82868e 44%,
-    #5c5f64 58%,
-    #3a3c40 74%,
-    #1e1f21 100%
-  ) !important;
-  background-size: 220% 220% !important;
-  animation: tkbSilverShift 4.5s ease-in-out infinite !important;
-  text-shadow: none !important;
-  box-shadow:
-    0 3px 8px rgba(0,0,0,0.4),
-    inset 0 2px 0 rgba(255,255,255,0.95),
-    inset -1px 0 0 rgba(255,255,255,0.3),
-    inset 0 -3px 5px rgba(0,0,0,0.4) !important;
-}
-/* Chữ dùng gradient NGƯỢC với nền (tối ở trái -> sáng ở phải) để luôn tương
-   phản tốt với nền bên dưới nó (nền sáng ở trái thì chữ tối, nền tối ở phải
-   thì chữ sáng). Đặt trên 1 lớp span riêng vẽ đè lên trên nút bằng
-   background-clip: text, vì .btn.excel-btn::before đã dùng cho quầng bóng
-   loáng nên không thể dùng chung cho chữ. */
-.btn.excel-btn.tkb-silver-btn .tkb-silver-btn-label {
-  position: relative;
-  z-index: 2;
-  background: linear-gradient(90deg,
-    #1e1f21 0%,
-    #3a3c40 20%,
-    #6a6e74 40%,
-    #a4a8ae 58%,
-    #d8dade 76%,
-    #ffffff 100%
-  );
-  background-size: 220% 220%;
-  animation: tkbSilverShift 4.5s ease-in-out infinite;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  font-weight: 800;
-}
-.btn.excel-btn.tkb-silver-btn::before {
-  /* Vệt hắt sáng mềm, lan toả (thay vì 1 vệt cứng skew) để trông giống ánh
-     sáng bấy loang trên bề mặt kim loại cong thật, không như tia sáng nhân
-     tạo quét ngang. Dùng radial-gradient bầu dục mờ dần ra mọi hướng, đặt
-     lệch về phía trên-trái nơi ánh sáng "hắt" vào mạnh nhất — làm to, sáng
-     và nét hơn nữa để rõ chất "bóng loáng" bên nửa trái của nút. */
-  content: "";
-  width: 95% !important;
-  height: 130% !important;
-  left: -22% !important;
-  top: -22% !important;
-  border-radius: 50% !important;
-  background: radial-gradient(ellipse at 26% 26%,
-    rgba(255,255,255,1) 0%,
-    rgba(255,255,255,0.85) 18%,
-    rgba(255,255,255,0.4) 38%,
-    rgba(255,255,255,0.1) 58%,
-    transparent 75%
-  ) !important;
-  transform: none;
-  animation: tkbSilverGlow 4.5s ease-in-out infinite;
-  mix-blend-mode: overlay;
-  filter: blur(0.5px);
-}
-.btn.excel-btn.tkb-silver-btn:hover {
-  transform: translateY(-3px);
-  filter: brightness(1.1);
-  box-shadow:
-    0 6px 14px rgba(0,0,0,0.3) !important;
-}
-.btn.excel-btn.tkb-silver-btn:active {
-  transform: translateY(1px);
-  box-shadow:
-    0 1px 4px rgba(0,0,0,0.3) !important;
-}
-@keyframes tkbSilverGlow {
-  0%, 100% { opacity: 0.75; transform: scale(1); }
-  50% { opacity: 1; transform: scale(1.06); }
-}
-
-
 /* --- Danger variant (xoá tất cả) --- */
 .vat-btn.danger {
   background: #dc2626 !important;
@@ -16574,11 +16644,10 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   <div class="page-toolbar-shell" id="toolbarShell-excel" style="margin-left:auto;margin-right:auto;">
     <div class="excel-toolbar" style="width:auto;">
       <div class="excel-toolbar-left">
-        <button class="btn excel-btn tkb-danger-btn" onclick="clearSheet()">🧹 Xoá Sheet</button>
-        <button class="btn excel-btn" onclick="addRow()">➕ Dòng</button>
-        <button class="btn excel-btn" onclick="addColumn()">➕ Cột</button>
-        <button class="btn excel-btn" onclick="tkbResetFreezePanes()" title="Đưa thanh freeze về vị trí mặc định (cột 🧩, dòng tiêu đề)">📌 Reset Freeze</button>
-        <button class="btn excel-btn tkb-silver-btn" onclick="try{ tkbSyncMaterialsPanel(); }catch(e){ console.error('Lỗi Tổng hợp học cụ:', e); alert('Lỗi: ' + e.message); }" style="font-weight:800;justify-content:center;"><span class="tkb-silver-btn-label">Tổng hợp học cụ</span></button>
+        <button class="btn excel-btn tkb-danger-btn" onclick="clearSheet()">Xoá Sheet</button>
+        <button class="btn excel-btn" onclick="addRow()">Dòng</button>
+        <button class="btn excel-btn" onclick="addColumn()">Cột</button>
+        <button class="btn excel-btn" onclick="tkbResetFreezePanes()" title="Đưa thanh freeze về vị trí mặc định (cột 🧩, dòng tiêu đề)">Reset Freeze</button>
       </div>
       <div class="excel-toolbar-right">
       </div>
@@ -16591,7 +16660,14 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   <div class="tkb-split">
     <div class="tkb-left">
       <div class="excel-wrap">
-          <button type="button" class="tkb-corner-clear-btn" onclick="clearSheet()" title="Xoá hết dữ liệu bảng TKB"></button>
+          <div class="tkb-left-btn-row">
+            <div type="button" class="tkb-corner-clear-btn tkb-corner-autocheck-btn">
+              <span class="tkb-autocheck-run-zone" onclick="try{ tkbAutoCheck(); }catch(e){ console.error('Lỗi Auto Check:', e); alert('Lỗi: ' + e.message); }" title="Tự động tick 🧩 các lớp khớp mã đã thiết lập">Auto Check</span>
+              <span class="tkb-autocheck-gear-zone" onclick="event.stopPropagation(); tkbOpenAutoCheckConfig();" title="Thiết lập mã lớp cho Auto Check">⚙️</span>
+            </div>
+            <button type="button" class="tkb-corner-clear-btn tkb-corner-sync-btn" onclick="try{ tkbSyncMaterialsPanel(); }catch(e){ console.error('Lỗi Tổng hợp học cụ:', e); alert('Lỗi: ' + e.message); }" title="Tổng hợp học cụ từ các lớp đã tick 🧩"></button>
+            <button type="button" class="tkb-corner-clear-btn" onclick="clearSheet()" title="Xoá hết dữ liệu bảng TKB"></button>
+          </div>
           <div class="excel-table-wrap" id="excelTableWrap">
             <div class="excel-container" id="excelContainer">
       <table class="excel-table tkb-table" id="excelTable"></table>
@@ -16602,16 +16678,16 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
     </div>
     <div class="tkb-right">
       <div class="tkb-materials-anchor">
-        <button type="button" class="tkb-restore-btn" id="tkbRestoreBtn" onclick="tkbRestoreCurrentDraft()" title="Quay lại học cụ đang soạn dở dang" style="display:none;"><span>↩️ Quay lại</span></button>
+        <button type="button" class="tkb-restore-btn" id="tkbRestoreBtn" onclick="tkbRestoreCurrentDraft()" title="Quay lại học cụ đang soạn dở dang" style="display:none;"><span>Quay lại</span></button>
         <div class="tkb-materials-btn-row">
           <label class="tkb-preview-toggle-btn" title="Tick để tắt tạm thời chế độ rê chuột TỰ ĐỘNG phóng to ảnh (bấm click vào ảnh vẫn phóng to bình thường)">
             <input type="checkbox" id="tkbPreviewToggleCheckbox" onchange="tkbTogglePreview(this.checked)">
             <span>Tắt Preview</span>
           </label>
-          <button type="button" class="tkb-save-materials-btn" onclick="tkbSaveMaterialsSnapshot()" title="Lưu lại toàn bộ ảnh, ghi chú, nội dung học cụ hiện tại"><span>💾 Lưu học cụ</span></button>
-          <button type="button" class="tkb-save-materials-btn" onclick="tkbOpenOverviewGrid()" title="Xem toàn bộ ảnh học cụ đã dán của tất cả các lớp trong 1 lưới"><span>🖼️ Xem tổng quan</span></button>
+          <button type="button" class="tkb-save-materials-btn" onclick="tkbSaveMaterialsSnapshot()" title="Lưu lại toàn bộ ảnh, ghi chú, nội dung học cụ hiện tại"><span>Lưu học cụ</span></button>
+          <button type="button" class="tkb-save-materials-btn" onclick="tkbOpenOverviewGrid()" title="Xem toàn bộ ảnh học cụ đã dán của tất cả các lớp trong 1 lưới"><span>Xem tổng quan</span></button>
           <div class="tkb-saved-dropdown-wrap">
-            <button type="button" class="tkb-saved-dropdown-btn" id="tkbSavedDropdownBtn" onclick="tkbToggleSavedDropdown(event)" title="Xem lại các học cụ đã lưu trước đó"><span>📂 Học cụ đã lưu</span> <span class="tkb-dropdown-caret">▾</span></button>
+            <button type="button" class="tkb-saved-dropdown-btn" id="tkbSavedDropdownBtn" onclick="tkbToggleSavedDropdown(event)" title="Xem lại các học cụ đã lưu trước đó"><span>Học cụ đã lưu</span> <span class="tkb-dropdown-caret">▾</span></button>
             <div class="tkb-saved-dropdown-menu" id="tkbSavedDropdownMenu"></div>
           </div>
           <button type="button" class="tkb-corner-clear-btn" onclick="tkbClearAllMaterials()" title="Xoá hết học cụ và ảnh đã dán"></button>
@@ -20918,6 +20994,29 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
     </div>
   </div>
 
+  <!-- Modal cấu hình mã lớp cho nút "Auto Check" — người dùng tự thêm/sửa/xoá
+       các mã tiền tố (VD: ANT, CAPY, GP4...); lớp nào có tên ở cột A bắt đầu
+       bằng 1 trong các mã này sẽ được tự động tick 🧩 khi bấm "Auto Check". -->
+  <div class="modal-overlay" id="tkbAutoCheckModal" onclick="if(event.target===this) tkbCloseAutoCheckConfig()">
+    <div class="modal-box tkb-autocheck-box">
+      <div class="tkb-overview-header">
+        <h2>⚙️ Mã lớp cho Auto Check</h2>
+        <button type="button" class="tkb-overview-close" onclick="tkbCloseAutoCheckConfig()" title="Đóng">✕</button>
+      </div>
+      <p class="tkb-autocheck-hint">Nhập mã lớp (VD: <b>ANT</b>, <b>CAPY</b>, <b>GP4</b>...). Lớp nào có tên ở cột
+        A bắt đầu bằng 1 trong các mã bên dưới sẽ tự động được tick 🧩 khi bấm
+        "Auto Check". VD: mã <b>ANT</b> sẽ khớp cả <b>ANT.26.K1</b> và <b>ANT.26.K2</b>.
+        Riêng các lớp có hậu tố <b>.TA</b> ở cuối (lớp trợ giảng, VD <b>ANT.26.K1.TA</b>)
+        sẽ luôn được bỏ qua, không tự tick.</p>
+      <div class="tkb-autocheck-add-row">
+        <input type="text" id="tkbAutoCheckNewPrefix" class="tkb-autocheck-input"
+               placeholder="Nhập mã lớp mới, VD: ANT" onkeydown="if(event.key==='Enter'){event.preventDefault(); tkbAddAutoCheckPrefix();}">
+        <button type="button" class="tkb-autocheck-add-btn" onclick="tkbAddAutoCheckPrefix()">+ Thêm</button>
+      </div>
+      <div class="tkb-autocheck-list" id="tkbAutoCheckList"></div>
+    </div>
+  </div>
+
   <div class="theme-switch" onclick="toggleTheme()" id="themeBtn">🤪</div>
   <div class="bg-changer-btn" onclick="openBgChanger()" title="Đổi hình nền">✏️</div>
 
@@ -22716,6 +22815,128 @@ function tkbToggleMaterialFlag(row, checked) {
     // dòng bỏ tick thì cũng dọn khung học cụ tương ứng (giữ ảnh phòng khi tick lại? -> giữ lại data, chỉ ẩn khi sync)
   }
   tkbSaveFlags();
+}
+
+// ===== AUTO CHECK (tick nhanh theo mã lớp) =====
+// tkbAutoCheckPrefixes: mảng các mã tiền tố do người dùng tự thiết lập,
+// VD ["ANT", "CAPY", "GP4"] -> lớp nào có tên cột A bắt đầu bằng 1 trong
+// các mã này (VD "ANT.26.K1", "ANT.26.K2") sẽ được tự động tick 🧩.
+let tkbAutoCheckPrefixes = safeJSONParse('ao_tkb_autocheck_prefixes_v1', []);
+
+function tkbSaveAutoCheckPrefixes() {
+  localStorage.setItem('ao_tkb_autocheck_prefixes_v1', JSON.stringify(tkbAutoCheckPrefixes));
+  fbWrite('shared/tkbAutoCheckPrefixes', tkbAutoCheckPrefixes);
+}
+
+// Kiểm tra tên lớp (cột A) có phải lớp "trợ giảng" (TA - teaching
+// assistant) hay không — nhận diện qua hậu tố ".TA" ở cuối tên lớp, VD
+// "ANT.26.K1.TA". Các lớp này sẽ bị Auto Check bỏ qua, không tự tick.
+function tkbIsTAClass(className) {
+  const name = (className || '').toUpperCase().trim();
+  return /\.TA$/.test(name);
+}
+
+// Kiểm tra tên lớp (cột A) có khớp 1 mã tiền tố nào không. Khớp theo
+// "bắt đầu bằng mã", và ký tự ngay sau mã (nếu có) không được là chữ/số,
+// để tránh khớp nhầm (VD mã "ANT" không được khớp nhầm lớp tên "ANTOAN01"
+// nhưng vẫn khớp đúng "ANT.26.K1", "ANT-K2", hay đơn giản "ANT").
+function tkbClassMatchesPrefix(className, prefix) {
+  const name = (className || '').toUpperCase().trim();
+  const p = (prefix || '').toUpperCase().trim();
+  if (!name || !p) return false;
+  if (!name.startsWith(p)) return false;
+  const nextChar = name.charAt(p.length);
+  if (!nextChar) return true; // trùng khớp tuyệt đối
+  return !/[A-Z0-9]/.test(nextChar);
+}
+
+// Quét toàn bộ dòng của bảng TKB, tự động tick 🧩 cho những dòng có tên lớp
+// (cột A) khớp bất kỳ mã nào trong tkbAutoCheckPrefixes, đồng bộ lại
+// checkbox trên giao diện, lưu flags, rồi tổng hợp học cụ luôn cho tiện.
+function tkbAutoCheck() {
+  if (!tkbAutoCheckPrefixes.length) {
+    showToast && showToast('Chưa có mã lớp nào cả — bấm ⚙️ để thêm mã trước nha!', 'info', 3500);
+    tkbOpenAutoCheckConfig();
+    return;
+  }
+
+  let matchedCount = 0;
+  for (let row = 1; row <= excelRows; row++) {
+    const cls = tkbGetCellText('A', row);
+    if (!cls) continue;
+    if (tkbIsTAClass(cls)) continue; // bỏ qua lớp trợ giảng (hậu tố .TA)
+    const matched = tkbAutoCheckPrefixes.some(p => tkbClassMatchesPrefix(cls, p));
+    if (matched) {
+      tkbMaterialFlags[row] = true;
+      matchedCount++;
+    }
+  }
+
+  tkbSaveFlags();
+
+  // Đồng bộ lại toàn bộ checkbox 🧩 đang hiển thị trên bảng theo flags mới
+  document.querySelectorAll('.tkb-material-checkbox').forEach(cb => {
+    const row = cb.getAttribute('data-row') || cb.dataset.row;
+    cb.checked = !!tkbMaterialFlags[row];
+  });
+
+  tkbSyncMaterialsPanel();
+
+  showToast && showToast(matchedCount
+    ? `✅ Đã tự động tick ${matchedCount} lớp khớp mã!`
+    : 'Không tìm thấy lớp nào khớp mã đã thiết lập.', matchedCount ? 'success' : 'info', 3000);
+}
+
+function tkbOpenAutoCheckConfig() {
+  tkbRenderAutoCheckList();
+  const modal = document.getElementById('tkbAutoCheckModal');
+  showModalSmooth(modal);
+  setTimeout(() => {
+    const input = document.getElementById('tkbAutoCheckNewPrefix');
+    if (input) input.focus();
+  }, 50);
+}
+
+function tkbCloseAutoCheckConfig() {
+  hideModalSmooth(document.getElementById('tkbAutoCheckModal'));
+}
+
+function tkbRenderAutoCheckList() {
+  const listEl = document.getElementById('tkbAutoCheckList');
+  if (!listEl) return;
+  if (!tkbAutoCheckPrefixes.length) {
+    listEl.innerHTML = '<div class="tkb-autocheck-empty">Chưa có mã lớp nào. Nhập mã ở ô trên rồi bấm "+ Thêm".</div>';
+    return;
+  }
+  listEl.innerHTML = tkbAutoCheckPrefixes.map((p, idx) => `
+    <div class="tkb-autocheck-tag">
+      <span>${escapeHTML(p)}</span>
+      <button type="button" class="tkb-autocheck-tag-remove" onclick="tkbRemoveAutoCheckPrefix(${idx})" title="Xoá mã này">✕</button>
+    </div>`).join('');
+}
+
+function tkbAddAutoCheckPrefix() {
+  const input = document.getElementById('tkbAutoCheckNewPrefix');
+  if (!input) return;
+  const raw = input.value.toUpperCase().trim();
+  if (!raw) return;
+  const exists = tkbAutoCheckPrefixes.some(p => p.toUpperCase() === raw);
+  if (exists) {
+    showToast && showToast('Mã này đã có trong danh sách rồi.', 'info', 2200);
+    input.value = '';
+    return;
+  }
+  tkbAutoCheckPrefixes.push(raw);
+  tkbSaveAutoCheckPrefixes();
+  tkbRenderAutoCheckList();
+  input.value = '';
+  input.focus();
+}
+
+function tkbRemoveAutoCheckPrefix(idx) {
+  tkbAutoCheckPrefixes.splice(idx, 1);
+  tkbSaveAutoCheckPrefixes();
+  tkbRenderAutoCheckList();
 }
 
 // Lấy giá trị 1 ô text thuần (không html) theo cột-row hiện tại của bảng TKB

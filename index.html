@@ -3991,6 +3991,9 @@ body.light-mode .excel-table td.tkb-frozen-row{
    kín như khung bảng trắng xung quanh. */
 .excel-table-wrap::-webkit-scrollbar-track{
   background:#fff;
+  margin:0; /* huỷ margin:4px kế thừa từ rule global — margin đó để lộ 4px
+    viền nền cha (tím) quanh track, đúng phần cần che kín ở đây */
+  border-radius:0;
 }
 .excel-table-wrap::-webkit-scrollbar-thumb{
   border:1px solid rgba(0,0,0,0.15);
@@ -4094,6 +4097,16 @@ body.light-mode .excel-shell{
     rồi bị bảng/khung khác che mất khi zoom trình duyệt cao. */
   justify-content:flex-end;
   overflow:visible;
+  pointer-events:none; /* container này có "left:16px; right:16px" nên
+    trải DÀI TOÀN BỘ chiều rộng khung, dù các nút con dồn hết về bên phải
+    (justify-content:flex-end) — phần bên TRÁI trống của nó (nơi nút "Quay
+    lại" đứng) vẫn chặn click dù không hiển thị gì ở đó. Tắt pointer-events
+    ở container, bật lại "auto" cho từng nút con bên trong (rule ngay dưới)
+    để chỉ đúng vùng có nút mới nhận click, phần trống thì click xuyên qua
+    được tới nút "Quay lại" nằm bên dưới nó. */
+}
+.tkb-materials-btn-row > *{
+  pointer-events:auto;
 }
 .tkb-materials-btn-row .tkb-corner-clear-btn{
   position:static;
@@ -4128,7 +4141,16 @@ body.light-mode .excel-shell{
   position:absolute;
   top:-22px;
   left:16px;
-  z-index:1; /* xem giải thích ở .tkb-materials-btn-row phía trên */
+  z-index:1; /* THẤP HƠN .tkb-materials-sticky-wrap (z-index:2) — GIỐNG
+    .tkb-corner-clear-btn/.tkb-materials-btn-row, để panel che đúng 1/3
+    dưới của nút cho đẹp (nút "gắn" vào viền khung), không nổi đè hẳn lên
+    trên nội dung ảnh/bảng bên trong khi cuộn. Trước đây nút bị "không bấm
+    được" không phải vì z-index thấp, mà vì .tkb-materials-btn-row (anh em
+    cùng cấp, z-index:1 bằng nhau) có "left:16px; right:16px" nên trải dài
+    toàn bộ chiều rộng và chặn click ở khoảng trống bên trái của nó — đã
+    sửa tận gốc bằng pointer-events ở rule .tkb-materials-btn-row, nên ở
+    đây chỉ cần z-index:1 y hệt kiểu các nút góc khác là đủ, không cần đẩy
+    cao hơn panel nữa. */
 }
 
 /* ===== Lưu học cụ / Học cụ đã lưu / Quay lại =====
@@ -4145,11 +4167,14 @@ body.light-mode .excel-shell{
   justify-content:center;
   gap:6px;
   width:auto;
+  height:35px; /* đồng bộ tuyệt đối với "Tắt Preview" — xem giải thích ở
+    .tkb-preview-toggle-btn */
+  box-sizing:border-box;
   margin:0;
   padding:7px 16px;
   border:3px solid #000;
   border-radius:12px;
-  font-size:0.82rem;
+  font-size:0.8rem; /* đồng bộ tuyệt đối với "Tắt Preview" (was 0.82rem) */
   font-weight:700;
   letter-spacing:0.2px;
   line-height:1;
@@ -4161,14 +4186,14 @@ body.light-mode .excel-shell{
 .tkb-save-materials-btn > *,
 .tkb-saved-dropdown-btn > *,
 .tkb-restore-btn > *{
-  transform:translateY(-3px); /* -5px trước đó, giảm thêm 2px theo yêu cầu */
+  transform:translateY(-4px); /* đồng bộ với "Tắt Preview" (was -3px) */
 }
 .tkb-save-materials-btn{
-  background:linear-gradient(180deg, #93c5fd, #3b82f6);
-  color:#0b1f4d;
+  background:#000;
+  color:#fff;
 }
 .tkb-save-materials-btn:hover{
-  background:linear-gradient(180deg, #bfdbfe, #60a5fa);
+  background:#1f1f1f;
   transform:translateY(-2px);
   box-shadow:0 5px 12px rgba(0,0,0,0.3);
 }
@@ -4183,11 +4208,22 @@ body.light-mode .excel-shell{
   display:inline-flex;
 }
 .tkb-saved-dropdown-btn{
-  background:linear-gradient(180deg, #fde68a, #f59e0b);
-  color:#3a2500;
+  background:#000;
+  color:#fff;
 }
 .tkb-saved-dropdown-btn:hover{
-  background:linear-gradient(180deg, #fef3c7, #fbbf24);
+  background:#1f1f1f;
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.3);
+}
+/* Nút "Quay lại" — màu XANH BIỂN TƯƠI, chữ trắng, riêng biệt với 3 nút
+   nền đen (Lưu học cụ/Xem tổng quan/Học cụ đã lưu) dù dùng chung shape. */
+.tkb-restore-btn{
+  background:#0ea5e9;
+  color:#fff;
+}
+.tkb-restore-btn:hover{
+  background:#38bdf8;
   transform:translateY(-2px);
   box-shadow:0 5px 12px rgba(0,0,0,0.3);
 }
@@ -4267,23 +4303,23 @@ body.light-mode .excel-shell{
 .tkb-saved-item-delete:hover{
   background:rgba(248,113,113,0.2);
 }
-.tkb-restore-btn{
-  background:linear-gradient(180deg, #fca5a5, #ef4444);
-  color:#3a0000;
-}
-.tkb-restore-btn:hover{
-  background:linear-gradient(180deg, #fecaca, #f87171);
-  transform:translateY(-2px);
-  box-shadow:0 5px 12px rgba(0,0,0,0.3);
-}
 .tkb-preview-toggle-btn{
   display:flex;
   align-items:center;
   gap:6px;
+  height:35px; /* CỐ ĐỊNH — chuẩn chiều cao dùng chung cho MỌI nút pill của
+    khu vực này (Xoá hết, Tổng hợp học cụ, Auto Check, Lưu học cụ, Xem
+    tổng quan, Học cụ đã lưu, Quay lại) theo yêu cầu đồng bộ độ cao. Trước
+    đây chiều cao chỉ được quyết định gián tiếp qua padding, nên các nút có
+    phần tử con cao hơn dòng chữ (checkbox 15px ở đây, hoặc bánh răng tròn
+    22px ở nút Auto Check) sẽ bị đẩy cao hơn hẳn — giờ set height tường
+    minh + box-sizing:border-box để border/padding không cộng dồn ra ngoài
+    con số 35px này nữa. */
+  box-sizing:border-box;
   padding:7px 14px;
   border:3px solid #000;
-  background:linear-gradient(180deg, #f3f4f6, #d1d5db);
-  color:#1e293b;
+  background:#000; /* nền ĐEN mặc định khi CHƯA tick (was gradient xám) */
+  color:#fff; /* chữ TRẮNG mặc định khi CHƯA tick (was #1e293b) */
   font-size:0.8rem;
   font-weight:700;
   letter-spacing:0.2px;
@@ -4309,13 +4345,19 @@ body.light-mode .excel-shell{
     "Xoá hết" cạnh bên (xem .tkb-corner-clear-btn::after) */
 }
 .tkb-preview-toggle-btn:hover{
-  background:linear-gradient(180deg, #ffffff, #e5e7eb);
+  background:#1f1f1f;
   transform:translateY(-2px);
   box-shadow:0 5px 12px rgba(0,0,0,0.3);
 }
 .tkb-preview-toggle-btn:has(input:checked){
-  background:linear-gradient(180deg, #86efac, #4ade80);
-  color:#052e12;
+  /* Khi ĐÃ tick: đổi theo màu CHỦ ĐẠO (accent) của app thay vì màu xanh lá
+     cứng cố định — accent thay đổi tuỳ theme người dùng chọn. */
+  background:var(--accent);
+  color:#fff;
+  border-color:#000;
+}
+.tkb-preview-toggle-btn:has(input:checked):hover{
+  filter:brightness(1.1);
 }
 
 .tkb-corner-clear-btn{
@@ -4327,15 +4369,19 @@ body.light-mode .excel-shell{
   align-items:center;
   justify-content:center;
   gap:6px;
-  /* padding/font co giãn theo không gian còn lại (clamp) thay vì cố định,
-     để khi trình duyệt zoom cao (>=100%) và hàng nút không đủ chỗ, các
-     nút tự THU NHỎ lại thay vì tràn/xuống dòng/bị che khuất. min-width:0
-     + flex-shrink cho phép nút co nhỏ hơn kích thước nội dung mặc định. */
-  padding:clamp(4px, 0.6vw, 7px) clamp(8px, 1.4vw, 16px);
+  /* Chiều cao nút CỐ ĐỊNH, bằng hệt "Tắt Preview" (height:35px +
+     box-sizing:border-box) — theo yêu cầu đồng bộ độ cao mọi nút. Trước
+     đây padding/font-size dùng clamp() nên co giãn theo viewport, khiến
+     các nút thấp/cao hơn Tắt Preview tuỳ độ rộng màn hình. Giờ chỉ PADDING
+     NGANG (trái/phải) còn co giãn (clamp) để tránh tràn khi hẹp — height
+     và font-size giữ cố định để chiều cao luôn bằng nhau tuyệt đối. */
+  height:35px;
+  box-sizing:border-box;
+  padding:0 clamp(8px, 1.4vw, 16px);
   border:3px solid #000;
   background:linear-gradient(180deg, #f87171, #ef4444);
   color:#fff;
-  font-size:clamp(0.62rem, 1vw, 0.82rem);
+  font-size:0.8rem;
   font-weight:700;
   letter-spacing:0.2px;
   line-height:1;
@@ -4350,56 +4396,61 @@ body.light-mode .excel-shell{
 .tkb-corner-clear-btn::after{
   content:"Xoá hết";
   display:inline-block;
-  transform:translateY(-4px); /* nội dung (chữ) nhích lên 4px, đồng bộ với icon */
+  line-height:1; /* bỏ dòng cao mặc định kế thừa từ nút cha — nếu không,
+    khối ::after cao hơn nhiều so với chữ thật bên trong, khiến chữ trông
+    như nằm "thấp" hơn nội dung <span> của nút Auto Check dù cùng translateY */
+  transform:translateY(-6px); /* nội dung (chữ) nhích lên 6px (trước là 4px,
+    +2px theo yêu cầu), đồng bộ với icon */
 }
 /* Nút "Tổng hợp học cụ" — dời từ toolbar trên xuống nằm kế nút "Xoá hết"
    của bảng TKB bên trái, dùng chung hình dạng/kích thước với
-   .tkb-corner-clear-btn (viền đen 3px, bo góc 12px, pill). Màu BẠC kim
-   loại tĩnh: sáng ở bên TRÁI, tối dần sang bên PHẢI (linear-gradient
-   90deg, không animation, không vệt sáng quét ngang). */
+   .tkb-corner-clear-btn (viền đen 3px, bo góc 12px, pill). Nền TRẮNG chữ
+   ĐEN — đồng nhất với nút "Auto Check" theo yêu cầu. */
 .tkb-corner-sync-btn{
   position:relative;
-  color:#2a2a2a;
-  border-color:#6d7278;
-  background:linear-gradient(90deg,
-    #ffffff 0%,
-    #eef0f3 25%,
-    #c7cbd2 50%,
-    #9599a0 75%,
-    #6d7278 100%);
-  text-shadow:0 1px 0 rgba(255,255,255,0.6);
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 -1px 2px rgba(0,0,0,0.15) inset,
-    0 3px 8px rgba(0,0,0,0.3);
+  background:#fff;
+  color:#000;
+  border-color:#000;
+  box-shadow:0 3px 8px rgba(0,0,0,0.3);
 }
 .tkb-corner-sync-btn::after{
   content:"Tổng hợp học cụ";
   display:inline-block;
   position:relative;
   z-index:1;
-  transform:translateY(-4px);
+  line-height:1; /* xem giải thích ở .tkb-corner-clear-btn::after phía trên */
+  transform:translateY(-6px); /* +2px so với trước theo yêu cầu (was -4px) */
 }
-.tkb-corner-sync-btn:hover{
-  filter:brightness(1.08);
-  transform:translateY(-2px);
-  box-shadow:
-    0 1px 0 rgba(255,255,255,0.9) inset,
-    0 -1px 2px rgba(0,0,0,0.15) inset,
-    0 5px 12px rgba(0,0,0,0.35);
+.tkb-corner-clear-btn.tkb-corner-sync-btn:hover{
+  background:#fff; /* ghi đè TƯỜNG MINH background-image (gradient đỏ) kế
+    thừa từ .tkb-corner-clear-btn:hover — CSS cascade từng THUỘC TÍNH riêng
+    lẻ, không phải theo rule nguyên khối: dù selector 2-class này có
+    specificity cao hơn tổng thể, nếu bản thân nó không khai báo lại
+    "background" thì property đó vẫn lấy từ rule 1-class (đỏ) vì đó là
+    rule DUY NHẤT khai báo background-image cho hover. Đây là nguyên nhân
+    thật khiến nút vẫn đỏ khi hover dù rule "ghi đè" đã có specificity cao
+    hơn — thiếu khai báo lại chính thuộc tính cần ghi đè. */
+  transform:translateY(-2px); /* chỉ nhô lên, không đổi màu ngoài nền trắng ở trên */
+  box-shadow:0 5px 12px rgba(0,0,0,0.35);
 }
 /* Nút "Auto Check" — tự động tick 🧩 các lớp khớp mã đã thiết lập trước.
-   Dùng chung hình dạng/kích thước .tkb-corner-clear-btn, màu XANH DƯƠNG để
-   phân biệt rõ với đỏ (xoá) và bạc (tổng hợp). Gộp sẵn bánh răng ⚙️ ngay
-   BÊN TRONG nút (không còn là nút rời cạnh bên) — 2 <span> con chia làm 2
-   vùng bấm riêng trong cùng 1 pill: bấm chữ "Auto Check" -> chạy auto
-   check; bấm bánh răng -> mở cấu hình mã lớp (event.stopPropagation() ở
-   gear để không bấm luôn cả auto check khi chỉ định mở cấu hình). */
+   Dùng chung hình dạng/kích thước .tkb-corner-clear-btn. Nền TRẮNG chữ ĐEN
+   — đồng nhất với nút "Tổng hợp học cụ" theo yêu cầu. Gộp sẵn bánh răng ⚙️
+   ngay BÊN TRONG nút (không còn là nút rời cạnh bên) — 2 <span> con chia
+   làm 2 vùng bấm riêng trong cùng 1 pill: bấm chữ "Auto Check" -> chạy
+   auto check; bấm bánh răng -> mở cấu hình mã lớp (event.stopPropagation()
+   ở gear để không bấm luôn cả auto check khi chỉ định mở cấu hình). */
 .tkb-corner-autocheck-btn{
-  background:linear-gradient(180deg, #93c5fd, #2563eb);
-  color:#eff6ff;
+  background:#fff;
+  color:#000;
   padding-right:clamp(4px, 0.5vw, 8px); /* padding phải hẹp hơn để gear nằm sát mép trong */
   gap:clamp(4px, 0.8vw, 8px);
+}
+.tkb-corner-clear-btn.tkb-corner-autocheck-btn:hover{
+  background:#fff; /* ghi đè tường minh background-image kế thừa — xem
+    giải thích ở .tkb-corner-clear-btn.tkb-corner-sync-btn:hover */
+  transform:translateY(-2px);
+  box-shadow:0 5px 12px rgba(0,0,0,0.35);
 }
 .tkb-corner-autocheck-btn::after{
   content:none; /* huỷ nội dung "Xoá hết" kế thừa từ .tkb-corner-clear-btn —
@@ -4408,7 +4459,8 @@ body.light-mode .excel-shell{
 }
 .tkb-autocheck-run-zone{
   display:inline-block;
-  transform:translateY(-4px); /* đồng bộ nhích lên như ::after của các nút pill khác */
+  transform:translateY(-6px); /* +2px so với trước theo yêu cầu (was -4px),
+    đồng bộ nhích lên như ::after của các nút pill khác */
   cursor:pointer;
 }
 .tkb-autocheck-gear-zone{
@@ -4426,15 +4478,13 @@ body.light-mode .excel-shell{
   cursor:pointer;
   transition:transform .15s ease, box-shadow .15s ease;
   box-shadow:0 2px 5px rgba(0,0,0,0.3);
+  transform:translateY(-6px); /* nhích lên đồng bộ với chữ "Auto Check"
+    (.tkb-autocheck-run-zone cũng -6px) để 2 phần ngang hàng nhau */
 }
 .tkb-autocheck-gear-zone:hover{
-  transform:rotate(25deg);
+  transform:translateY(-6px) rotate(25deg); /* giữ nguyên -6px khi hover,
+    chỉ cộng thêm xoay, không được để mất offset rồi tụt xuống lại */
   box-shadow:0 3px 7px rgba(0,0,0,0.35);
-}
-.tkb-corner-autocheck-btn:hover{
-  background:linear-gradient(180deg, #bfdbfe, #1d4ed8);
-  transform:translateY(-2px);
-  box-shadow:0 5px 12px rgba(0,0,0,0.35);
 }
 .tkb-corner-clear-btn:hover{
   background:linear-gradient(180deg, #fca5a5, #dc2626);
@@ -22965,12 +23015,45 @@ function tkbBuildBlockTitle(row) {
 // Quét toàn bộ dòng đã tick 🧩, tạo/giữ lại khung dán ảnh học cụ bên phải,
 // nhóm theo THỨ (T2, T3, T4...) thành từng CỘT riêng nằm cạnh nhau, theo thứ tự T2 → CN
 function tkbSyncMaterialsPanel() {
+  // QUAN TRỌNG: khi đang XEM 1 BẢN LƯU cũ (_tkbViewingSavedId !== null),
+  // các dòng trong tkbMaterialFlags là SỐ THỨ TỰ DÒNG tại thời điểm bản
+  // đó được lưu — bảng TKB hiện tại có thể đã đổi khác (thêm/xoá/sửa
+  // dòng) nên KHÔNG ĐƯỢC đọc lại cột A (lớp) / cột C (thứ) theo row nữa,
+  // vì sẽ đọc nhầm dữ liệu của 1 dòng khác hoặc dòng trống. Trước đây đây
+  // chính là lỗi khiến khung "Học cụ cần soạn" khi xem lại bản lưu hiển
+  // thị thành 1 cột dọc duy nhất trống trơn: title/thứ bị build lại từ
+  // dòng SAI, dồn hết vào nhóm "Khác".
+  // -> Khi xem bản lưu: LUÔN dùng đúng title/dayKey đã có sẵn trong
+  //    tkbMaterialsData[rowKey] (được snapshot copy nguyên lúc lưu), tuyệt
+  //    đối không build lại từ bảng.
+  // -> Khi đang ở bản soạn dở thật (không xem bản lưu): build mới từ bảng
+  //    như cũ, đồng thời lưu luôn dayKey vào block để nếu sau này bản này
+  //    được LƯU THÀNH SNAPSHOT thì xem lại cũng không bị phụ thuộc bảng.
+  const isViewingSaved = !!_tkbViewingSavedId;
+
   const rows = Object.keys(tkbMaterialFlags).map(n => parseInt(n)).filter(n => tkbMaterialFlags[n]);
 
   const weekdayOrder = { T2:1, T3:2, T4:3, T5:4, T6:5, T7:6, CN:7 };
+
+  // Lấy dayKey của 1 dòng: xem bản lưu -> ưu tiên dayKey đã lưu sẵn trong
+  // block (nếu có); bản soạn dở thật (hoặc block chưa từng có dayKey lưu,
+  // trường hợp bản lưu cũ từ trước khi có field này) -> build từ bảng.
+  function resolveDayKey(row) {
+    const rowKey = `row_${row}`;
+    const existing = tkbMaterialsData[rowKey];
+    if (isViewingSaved && existing && existing.dayKey) return existing.dayKey;
+    return tkbGetWeekdayLabel(row);
+  }
+  function resolveTitle(row) {
+    const rowKey = `row_${row}`;
+    const existing = tkbMaterialsData[rowKey];
+    if (isViewingSaved && existing && existing.title) return existing.title;
+    return tkbBuildBlockTitle(row);
+  }
+
   rows.sort((a, b) => {
-    const wa = weekdayOrder[tkbGetWeekdayLabel(a)] || 99;
-    const wb = weekdayOrder[tkbGetWeekdayLabel(b)] || 99;
+    const wa = weekdayOrder[resolveDayKey(a)] || 99;
+    const wb = weekdayOrder[resolveDayKey(b)] || 99;
     if (wa !== wb) return wa - wb;
     return a - b;
   });
@@ -22986,7 +23069,7 @@ function tkbSyncMaterialsPanel() {
   // Gom các dòng vào từng nhóm theo thứ
   const groups = {}; // { 'T2': [row, row, ...], 'T3': [...] }
   rows.forEach(row => {
-    const wLabel = tkbGetWeekdayLabel(row);
+    const wLabel = resolveDayKey(row);
     if (!groups[wLabel]) groups[wLabel] = [];
     groups[wLabel].push(row);
   });
@@ -23004,12 +23087,17 @@ function tkbSyncMaterialsPanel() {
 
     groups[dayKey].forEach(row => {
       const rowKey = `row_${row}`;
-      const title = tkbBuildBlockTitle(row);
-      // giữ ảnh cũ nếu đã có, cập nhật lại title mới nhất
+      const title = resolveTitle(row);
+      // giữ ảnh cũ nếu đã có, cập nhật lại title/dayKey mới nhất — CHỈ khi
+      // KHÔNG phải đang xem bản lưu (xem bản lưu thì giữ nguyên y hệt dữ
+      // liệu đã snapshot, không ghi đè gì cả).
       if (!tkbMaterialsData[rowKey] || typeof tkbMaterialsData[rowKey] !== 'object') {
-        tkbMaterialsData[rowKey] = { title, images: [] };
+        tkbMaterialsData[rowKey] = { title, dayKey, images: [] };
       } else {
-        tkbMaterialsData[rowKey].title = title;
+        if (!isViewingSaved) {
+          tkbMaterialsData[rowKey].title = title;
+          tkbMaterialsData[rowKey].dayKey = dayKey;
+        }
         // Firebase có thể trả về null/undefined/object rỗng thay vì mảng khi không có ảnh -> luôn đảm bảo là mảng
         if (!Array.isArray(tkbMaterialsData[rowKey].images)) {
           tkbMaterialsData[rowKey].images = [];
@@ -24006,7 +24094,23 @@ function tkbViewSavedSnapshot(id) {
   if (restoreBtn) restoreBtn.style.display = '';
 
   const wrap = document.querySelector('.tkb-saved-dropdown-wrap');
+  const menu = document.getElementById('tkbSavedDropdownMenu');
   if (wrap) wrap.classList.remove('open');
+  if (menu) {
+    // QUAN TRỌNG: .tkb-saved-dropdown-menu.open{display:block} được điều
+    // khiển bằng class "open" đặt TRÊN CHÍNH menu (menu bị portal ra
+    // document.body nên không còn là hậu duệ DOM của wrap — xem giải
+    // thích ở tkbToggleSavedDropdown). Trước đây chỉ gỡ "open" trên wrap
+    // mà QUÊN gỡ trên menu -> menu vẫn display:block, vẫn z-index:99999
+    // che kín và CHẶN CLICK toàn bộ phần tử phía dưới nó (kể cả nút "Quay
+    // lại") cho tới khi người dùng bấm ra ngoài để trigger listener đóng
+    // menu riêng. Đây là nguyên nhân chính khiến nút "Quay lại" không bấm
+    // được sau khi chọn xem 1 bản lưu.
+    menu.classList.remove('open');
+    if (menu._tkbOriginalParent && menu.parentElement === document.body) {
+      menu._tkbOriginalParent.appendChild(menu); // trả menu về đúng vị trí gốc trong DOM
+    }
+  }
 
   showToast && showToast('Đang xem: ' + snap.name + ' (chỉ xem, chưa lưu đè)', 'info');
 }
@@ -24235,6 +24339,7 @@ let excelRows = 100; // 👉 số hàng
   class="cell"
   data-cell="${key}"
   oninput="updateCell(this)"
+  onfocus="tkbCellFocusSaveState(this)"
   onmousedown="startSelect(this, event)"
   onmouseover="hoverSelect(this)"
 >
@@ -24252,7 +24357,19 @@ let excelRows = 100; // 👉 số hàng
     tkbApplyFreezePanes();
   }
 
- function updateCell(cell) {
+// Lưu state (undo) đúng 1 LẦN khi người dùng bắt đầu gõ vào 1 ô — dùng sự
+// kiện focus thay vì gọi trong oninput/updateCell, vì oninput bắn liên tục
+// theo TỪNG KÝ TỰ gõ. Đây từng là lỗi khiến Ctrl+Z hoàn toàn không hoạt
+// động với việc gõ chữ vào ô: updateCell() (hàm thực sự được gọi khi gõ)
+// chưa từng gọi saveState() — undoStack luôn rỗng với thao tác gõ chữ.
+// Sự kiện "focus" của trình duyệt tự nhiên chỉ bắn 1 lần khi chuyển sang ô
+// mới (không bắn lại nếu ô đó đã đang được focus), nên gọi saveState() ở
+// đây vừa đủ 1 lần mỗi lượt sửa 1 ô, không cần thêm cờ dirty riêng.
+function tkbCellFocusSaveState(cell) {
+  saveState();
+}
+
+function updateCell(cell) {
 
   const key = cell.dataset.cell;
   const text = cell.innerText.trim();

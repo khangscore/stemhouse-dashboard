@@ -21411,6 +21411,25 @@ let notesData = safeJSONParse('ao_notes_v1', {
       fbVatSaveTimer = setTimeout(() => fbSaveVat(), delay);
     }
 
+    // ---- "Cửa sổ ân hạn" chống race-condition khi bấm các nút "Xoá hết" ----
+    // Vấn đề gốc: các listener on('value') bên dưới lắng nghe realtime, nên
+    // ngay sau khi 1 nút "Xoá hết" ghi rỗng lên Firebase, nếu server còn phát
+    // lại (echo) 1 giá trị CŨ, KHÔNG RỖNG nào đó (do trễ mạng, do 1 tab/thiết
+    // bị khác vẫn đang mở với dữ liệu cũ...) thì listener sẽ tưởng đó là thay
+    // đổi hợp lệ từ nơi khác và ghi ĐÈ ngược lại state local vừa xoá — đây
+    // chính là nguyên nhân dấu tick 🧩 và học cụ cũ "sống lại". Khi 1 nút
+    // "Xoá hết" chạy, nó set cờ tương ứng bên dưới trong 1 khoảng ngắn; nếu
+    // listener nhận được dữ liệu KHÔNG RỖNG trong đúng khoảng đó, nó hiểu đó
+    // là echo của dữ liệu cũ, bỏ qua và ghi rỗng đè lại lên Firebase lần nữa
+    // thay vì chấp nhận.
+    window._tkbClearGuard = { excelData: 0, tkbFlags: 0, tkbMaterials: 0 };
+    function tkbArmClearGuard(key, ms = 4000) {
+      window._tkbClearGuard[key] = Date.now() + ms;
+    }
+    function tkbClearGuardActive(key) {
+      return Date.now() < (window._tkbClearGuard[key] || 0);
+    }
+
     // Bắt đầu lắng nghe realtime
     document.addEventListener('DOMContentLoaded', () => {
       if (!_db) { console.warn('Firebase không khả dụng'); return; }
@@ -21420,6 +21439,14 @@ let notesData = safeJSONParse('ao_notes_v1', {
           const data = snap.val();
           // Nếu null (DB trống) -> chuyển về {}
           const newData = data === null ? {} : data;
+
+          // Đang trong cửa sổ ân hạn sau khi bấm "Xoá hết" và Firebase lại
+          // echo dữ liệu KHÔNG RỖNG -> đây là dữ liệu cũ trễ về, bỏ qua và
+          // ghi rỗng đè lại thay vì chấp nhận nó.
+          if (tkbClearGuardActive('excelData') && Object.keys(newData).length > 0) {
+            try { _db.ref('shared/excelData').set(excelData); } catch (e) {}
+            return;
+          }
 
           // Cập nhật local nếu khác
           if (JSON.stringify(newData) !== JSON.stringify(excelData)) {
@@ -21434,6 +21461,12 @@ let notesData = safeJSONParse('ao_notes_v1', {
         _db.ref('shared/tkbFlags').on('value', snap => {
           const data = snap.val();
           const newFlags = data === null ? {} : data;
+
+          if (tkbClearGuardActive('tkbFlags') && Object.keys(newFlags).length > 0) {
+            try { _db.ref('shared/tkbFlags').set(tkbMaterialFlags); } catch (e) {}
+            return;
+          }
+
           if (JSON.stringify(newFlags) !== JSON.stringify(tkbMaterialFlags)) {
             tkbMaterialFlags = newFlags;
             localStorage.setItem('ao_tkb_flags_v1', JSON.stringify(tkbMaterialFlags));
@@ -21445,6 +21478,12 @@ let notesData = safeJSONParse('ao_notes_v1', {
         _db.ref('shared/tkbMaterials').on('value', snap => {
           const data = snap.val();
           const newMaterials = data === null ? {} : data;
+
+          if (tkbClearGuardActive('tkbMaterials') && Object.keys(newMaterials).length > 0) {
+            try { _db.ref('shared/tkbMaterials').set(tkbMaterialsData); } catch (e) {}
+            return;
+          }
+
           if (JSON.stringify(newMaterials) !== JSON.stringify(tkbMaterialsData)) {
             tkbMaterialsData = newMaterials;
             localStorage.setItem('ao_tkb_materials_v1', JSON.stringify(tkbMaterialsData));
@@ -23001,7 +23040,11 @@ function tkbGetCellText(col, row) {
 function tkbGetWeekdayLabel(row) {
   const weekday = tkbGetCellText('C', row);
   const weekdayMap = { Mon:'T2', Tue:'T3', Wed:'T4', Thu:'T5', Fri:'T6', Sat:'T7', Sun:'CN' };
-  return weekdayMap[weekday] || weekday || 'Khác';
+  // Nhận diện không phân biệt hoa/thường — người dùng có thể gõ "mon",
+  // "MON", "Mon"... đều phải nhận ra cùng 1 thứ, tránh rơi vào nhóm "Khác"
+  // chỉ vì khác cách viết hoa/thường.
+  const normalized = Object.keys(weekdayMap).find(k => k.toLowerCase() === weekday.toLowerCase());
+  return (normalized ? weekdayMap[normalized] : weekdayMap[weekday]) || weekday || 'Khác';
 }
 
 // Sinh tiêu đề block học cụ từ 1 dòng, theo layout mẫu: CLASS ở cột A, WEEKDAY ở cột C
@@ -23092,6 +23135,19 @@ function tkbSyncMaterialsPanel() {
       // KHÔNG phải đang xem bản lưu (xem bản lưu thì giữ nguyên y hệt dữ
       // liệu đã snapshot, không ghi đè gì cả).
       if (!tkbMaterialsData[rowKey] || typeof tkbMaterialsData[rowKey] !== 'object') {
+        tkbMaterialsData[rowKey] = { title, dayKey, images: [] };
+      } else if (!isViewingSaved && tkbMaterialsData[rowKey].title && tkbMaterialsData[rowKey].title !== title) {
+        // QUAN TRỌNG: rowKey chỉ là "row_<số thứ tự dòng>" — nó gắn với VỊ
+        // TRÍ dòng trong bảng, không gắn với LỚP HỌC thực tế. Nếu người
+        // dùng xoá hết bảng trắng rồi nhập nội dung MỚI vào đúng những số
+        // dòng cũ (rất hay gặp vì luôn nhập từ dòng 1 trở đi), tick lại
+        // đúng dòng đó sẽ vô tình "thừa hưởng" ảnh học cụ của LỚP CŨ hoàn
+        // toàn không liên quan, dù lớp/thứ hiện tại đã khác hẳn — đây chính
+        // là bug "tự động tổng hợp sẵn ảnh cũ của lớp trước" đã gặp.
+        // -> Phát hiện bằng cách so title mới build từ bảng (lớp+thứ hiện
+        //    tại) với title đã lưu trong block cũ của đúng rowKey này: nếu
+        //    khác nhau tức là dòng đã đổi sang lớp khác -> coi ảnh cũ là
+        //    của lớp khác, xoá sạch, bắt đầu khung trống cho lớp mới.
         tkbMaterialsData[rowKey] = { title, dayKey, images: [] };
       } else {
         if (!isViewingSaved) {
@@ -23874,11 +23930,48 @@ function tkbCloseOverviewGrid() {
 }
 
 function tkbClearAllMaterials() {
+  // QUAN TRỌNG: nếu đang XEM 1 bản học cụ đã lưu (_tkbViewingSavedId khác
+  // null), tkbMaterialsData/tkbMaterialFlags lúc này chỉ là BẢN COPY TẠM
+  // của bản lưu đó để xem, KHÔNG PHẢI bản đang soạn dở thật (bản soạn dở
+  // thật đang nằm an toàn trong _tkbDraftBackup). Trước đây bấm "Xoá hết"
+  // trong lúc này sẽ set tkbMaterialsData = {} rồi GHI THẲNG LÊN Firebase
+  // 'shared/tkbMaterials' — đúng ra đó là kho của BẢN ĐANG SOẠN DỞ, không
+  // phải kho các bản đã lưu (TKB_SAVED_MATERIALS_KEY) — nên bản lưu đang
+  // xem thực ra chưa hề bị đụng tới (vẫn còn nguyên trong danh sách lưu,
+  // đúng như quan sát "xoá xong vẫn thấy còn"), NHƯNG lại vô tình xoá mất
+  // bản đang soạn dở thật trên Firebase — chỉ "thoát hiểm" tạm thời vì bấm
+  // "Quay lại" ngay sau đó phục hồi từ RAM (_tkbDraftBackup), còn nếu F5
+  // hoặc mở máy khác trước khi quay lại thì bản soạn dở thật đã mất.
+  // -> Khi đang xem 1 bản lưu: "Xoá hết" phải hiểu là XOÁ ĐÚNG BẢN LƯU ĐÓ
+  //    (gọi lại tkbDeleteSavedSnapshot), rồi tự quay về bản soạn dở, thay
+  //    vì đụng vào Firebase của bản soạn dở.
+  if (_tkbViewingSavedId) {
+    tkbDeleteSavedSnapshot(_tkbViewingSavedId);
+    return;
+  }
+
   tkbConfirmAction('Xoá toàn bộ khung học cụ và ảnh đã dán nha ní? (Không xoá dữ liệu TKB bên trái)', () => {
     tkbMaterialsData = {};
     tkbMaterialFlags = {};
     tkbNoteOpenRowKeys.clear();
-    tkbSaveMaterialsDebounced();
+    localStorage.setItem('ao_tkb_materials_v1', JSON.stringify(tkbMaterialsData));
+    if (typeof tkbArmClearGuard === 'function') { tkbArmClearGuard('tkbMaterials'); tkbArmClearGuard('tkbFlags'); }
+    // QUAN TRỌNG: ghi Firebase NGAY LẬP TỨC, không dùng
+    // tkbSaveMaterialsDebounced() (debounce 500ms) như trước. Lý do: listener
+    // _db.ref('shared/tkbMaterials').on('value', ...) lắng nghe realtime —
+    // nếu còn khoảng hở giữa lúc xoá local xong và lúc Firebase THỰC SỰ được
+    // ghi trống, server vẫn còn giữ tkbMaterials CŨ trong khoảng hở đó. Nếu
+    // listener nhận lại được data cũ này (do phát bù mạng, do thiết bị/tab
+    // khác vẫn mở...) nó sẽ ghi ĐÈ ngược tkbMaterialsData cũ vào state vừa
+    // xoá NGAY TRONG LÚC tkbMaterialFlags đang trống — khiến
+    // tkbSyncMaterialsPanel() nhóm nhầm mọi block vào 1 cột dọc duy nhất
+    // (đúng như lỗi "hiện các lớp học cụ thành một hàng dọc" đã gặp). Ghi
+    // Firebase ngay khi xoá giúp loại bỏ khoảng hở đó.
+    clearTimeout(window._tkbMatTimer);
+    if (typeof _db !== 'undefined' && _db) {
+      try { _db.ref('shared/tkbMaterials').set(tkbMaterialsData); }
+      catch (e) { console.warn('FB tkbMaterials write lỗi:', e); }
+    }
     tkbSaveFlags();
     document.querySelectorAll('.tkb-material-checkbox').forEach(cb => cb.checked = false);
     tkbSyncMaterialsPanel();
@@ -24421,8 +24514,23 @@ function updateCell(cell) {
     tkbConfirmAction('Xoá toàn bộ dữ liệu sheet này nha ní? (Kèm luôn các dấu tick 🧩)', () => {
       excelData = {};
       localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
-      // Ghi lên Firebase (debounced)
-      fbSaveWholeSheetDebounced();
+      // QUAN TRỌNG: hủy timer debounce đang chờ (nếu có) rồi ghi Firebase
+      // NGAY LẬP TỨC thay vì debounce. Lý do: listener
+      // _db.ref('shared/excelData').on('value', ...) luôn lắng nghe realtime
+      // — nếu còn 1 khoảng hở giữa lúc xoá local xong và lúc Firebase THỰC
+      // SỰ được ghi trống (debounce 500ms), thì trong khoảng hở đó server
+      // vẫn còn giữ dữ liệu CŨ. Bất kỳ lần Firebase phát lại giá trị cũ đó
+      // (do phát bù, do thiết bị/tab khác vẫn đang mở, hay chỉ đơn giản là
+      // độ trễ mạng) đều khiến listener ghi ĐÈ ngược excelData cũ vào state
+      // vừa xoá, kéo theo renderExcelSheet() vẽ lại các dấu tick 🧩 y hệt
+      // như trước khi xoá. Ghi ngay (không debounce) khi xoá giúp loại bỏ
+      // hẳn khoảng hở đó.
+      clearTimeout(fbSaveTimer);
+      if (typeof tkbArmClearGuard === 'function') { tkbArmClearGuard('excelData'); tkbArmClearGuard('tkbFlags'); }
+      if (typeof _db !== 'undefined' && _db) {
+        try { _db.ref('shared/excelData').set(excelData); }
+        catch (e) { console.warn('FB full write lỗi:', e); }
+      }
 
       // Xoá luôn các dấu tick "Cần soạn học cụ" (cột 🧩) — dữ liệu ảnh/ghi
       // chú đã dán trong tkbMaterialsData vẫn được GIỮ NGUYÊN, phòng khi

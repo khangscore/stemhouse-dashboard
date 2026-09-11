@@ -4336,13 +4336,12 @@ body.light-mode .excel-shell{
   margin:0;
   accent-color:#374151;
   cursor:pointer;
-  transform:translateY(-4px); /* nhích lên cùng mức với chữ "Tắt Preview"
-    bên cạnh (span, cũng -4px) để 2 nội dung ngang hàng nhau */
+  transform:translateY(-4px); /* đồng bộ -4px với "Lưu học cụ" — xem giải
+    thích ở .tkb-corner-clear-btn::after */
 }
 .tkb-preview-toggle-btn span{
   display:inline-block;
-  transform:translateY(-4px); /* nhích chữ lên 4px, đồng bộ style với nút
-    "Xoá hết" cạnh bên (xem .tkb-corner-clear-btn::after) */
+  transform:translateY(-4px); /* đồng bộ -4px — xem .tkb-corner-clear-btn::after */
 }
 .tkb-preview-toggle-btn:hover{
   background:#1f1f1f;
@@ -4399,8 +4398,12 @@ body.light-mode .excel-shell{
   line-height:1; /* bỏ dòng cao mặc định kế thừa từ nút cha — nếu không,
     khối ::after cao hơn nhiều so với chữ thật bên trong, khiến chữ trông
     như nằm "thấp" hơn nội dung <span> của nút Auto Check dù cùng translateY */
-  transform:translateY(-6px); /* nội dung (chữ) nhích lên 6px (trước là 4px,
-    +2px theo yêu cầu), đồng bộ với icon */
+  transform:translateY(-4px); /* ĐỒNG BỘ với mức -4px của "Lưu học cụ"
+    (.tkb-save-materials-btn > *) — đây KHÔNG phải lỗi cần xoá hẳn: với
+    line-height:1 + padding hiện tại, baseline chữ tự nhiên lệch thấp hơn
+    tâm hình học của nút, nên vẫn cần bù lên 1 chút. Mức SAI trước đó là
+    -6px (quá tay, đẩy chữ vượt lên cao hẳn so với tâm) — không phải việc
+    có translateY hay không. */
 }
 /* Nút "Tổng hợp học cụ" — dời từ toolbar trên xuống nằm kế nút "Xoá hết"
    của bảng TKB bên trái, dùng chung hình dạng/kích thước với
@@ -4419,7 +4422,7 @@ body.light-mode .excel-shell{
   position:relative;
   z-index:1;
   line-height:1; /* xem giải thích ở .tkb-corner-clear-btn::after phía trên */
-  transform:translateY(-6px); /* +2px so với trước theo yêu cầu (was -4px) */
+  transform:translateY(-4px); /* đồng bộ -4px — xem .tkb-corner-clear-btn::after */
 }
 .tkb-corner-clear-btn.tkb-corner-sync-btn:hover{
   background:#fff; /* ghi đè TƯỜNG MINH background-image (gradient đỏ) kế
@@ -4459,9 +4462,9 @@ body.light-mode .excel-shell{
 }
 .tkb-autocheck-run-zone{
   display:inline-block;
-  transform:translateY(-6px); /* +2px so với trước theo yêu cầu (was -4px),
-    đồng bộ nhích lên như ::after của các nút pill khác */
   cursor:pointer;
+  transform:translateY(-4px); /* đồng bộ -4px với "Lưu học cụ" — xem giải
+    thích ở .tkb-corner-clear-btn::after */
 }
 .tkb-autocheck-gear-zone{
   display:inline-flex;
@@ -4478,11 +4481,11 @@ body.light-mode .excel-shell{
   cursor:pointer;
   transition:transform .15s ease, box-shadow .15s ease;
   box-shadow:0 2px 5px rgba(0,0,0,0.3);
-  transform:translateY(-6px); /* nhích lên đồng bộ với chữ "Auto Check"
-    (.tkb-autocheck-run-zone cũng -6px) để 2 phần ngang hàng nhau */
+  transform:translateY(-4px); /* đồng bộ -4px với chữ "Auto Check" bên cạnh
+    (.tkb-autocheck-run-zone cũng -4px) để 2 phần ngang hàng nhau */
 }
 .tkb-autocheck-gear-zone:hover{
-  transform:translateY(-6px) rotate(25deg); /* giữ nguyên -6px khi hover,
+  transform:translateY(-4px) rotate(25deg); /* giữ nguyên -4px khi hover,
     chỉ cộng thêm xoay, không được để mất offset rồi tụt xuống lại */
   box-shadow:0 3px 7px rgba(0,0,0,0.35);
 }
@@ -4676,6 +4679,13 @@ body.light-mode .excel-table td.row-index{
   position:sticky;
   top:0;
   z-index:2;
+}
+/* Ô bảng trắng khi đang ở chế độ "chỉ xem" 1 bản học cụ đã lưu (xem
+   tkbViewSavedSnapshot()) — không cho gõ, nền hơi xám để phân biệt trực
+   quan với lúc đang soạn dở bình thường. */
+.tkb-cell-viewonly{
+  background:#f3f3f3 !important;
+  cursor:not-allowed;
 }
 .tkb-material-block{
   border:2px solid #d0d0d0;
@@ -16481,6 +16491,39 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
       console.warn('⚠️ Firebase lỗi:', e.message);
       window._firebaseDB = null;
     }
+
+    // ---- Tách nhánh dữ liệu: bản CỤC BỘ (test) vs bản GITHUB PAGES (thật) ----
+    // Cùng 1 file HTML này khi mở bằng cách click đúp (file://...) hoặc tải
+    // về mở lại trên máy, so với khi mở qua link GitHub Pages (https://...
+    // github.io/...), trước đây đều đọc/ghi chung đúng 1 nhánh 'shared/...'
+    // trên Firebase -> thao tác ở bản cục bộ (đang test) lập tức đồng bộ
+    // ngược lên bản GitHub Pages (đang chạy thật) và ngược lại, dù người
+    // dùng không hề muốn vậy khi đang thử nghiệm.
+    // -> Giải pháp: tự nhận diện môi trường đang chạy qua location.protocol/
+    //    location.hostname, rồi dùng 1 TIỀN TỐ NHÁNH khác nhau cho mỗi môi
+    //    trường, vẫn trên CÙNG 1 Firebase project/database (không cần tạo
+    //    project mới, không cần đổi firebaseConfig):
+    //      - Mở file cục bộ (file://, hoặc localhost/127.0.0.1 khi test
+    //        bằng local server)              -> nhánh 'local_dev/...'
+    //      - Mở qua GitHub Pages (bất kỳ domain *.github.io nào)
+    //                                          -> nhánh 'shared/...' (giữ
+    //         nguyên như cũ, để không ảnh hưởng dữ liệu thật đang có sẵn)
+    //      - Mở qua domain khác (ví dụ sau này host ở nơi khác)
+    //                                          -> nhánh riêng theo hostname,
+    //         phòng trường hợp có thêm môi trường thứ 3 sau này.
+    // Toàn bộ code phía dưới dùng biến FB_ROOT này thay vì gõ cứng 'shared'
+    // để đọc/ghi Firebase, nên chỉ cần sửa đúng 1 chỗ này.
+    window.FB_ROOT = (function () {
+      const isLocalFile = location.protocol === 'file:';
+      const isLocalhost = /^(localhost|127\.0\.0\.1|0\.0\.0\.0)$/.test(location.hostname);
+      const isGithubPages = /\.github\.io$/.test(location.hostname);
+      if (isLocalFile || isLocalhost) return 'local_dev';
+      if (isGithubPages) return 'shared';
+      // Domain lạ khác (không phải file cục bộ, không phải GitHub Pages)
+      // -> tự đặt nhánh riêng theo hostname, tránh vô tình đụng vào 'shared'
+      return 'host_' + location.hostname.replace(/[.\$#\[\]/]/g, '_');
+    })();
+    console.log('📁 Firebase root nhánh dữ liệu đang dùng:', window.FB_ROOT, '| môi trường:', location.protocol + '//' + location.hostname);
   </script>
 </head>
 <body id="body">
@@ -21353,7 +21396,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
 
     // Ghi Excel lên Firebase
     function fbSaveExcel() {
-      fbWrite('shared/excelData', excelData);
+      fbWrite(`${FB_ROOT}/excelData`, excelData);
     }
 
     // --- MỚI: ghi 1 ô riêng lẻ (giảm ghi đè) ---
@@ -21361,7 +21404,10 @@ let notesData = safeJSONParse('ao_notes_v1', {
       if (!_db) return;
       try {
         const payload = excelData[cellKey] || { raw: '', value: '' };
-        _db.ref(`shared/excelData/${cellKey}`).set(payload);
+        // Đánh dấu "vừa tự ghi" trong 1.5s tới — xem giải thích chi tiết ở
+        // listener _db.ref(`${FB_ROOT}/excelData`).on('value', ...) bên dưới.
+        window._excelSelfWriteUntil = Date.now() + 1500;
+        _db.ref(`${FB_ROOT}/excelData/${cellKey}`).set(payload);
       } catch (e) {
         console.warn('FB cell write lỗi:', e);
       }
@@ -21374,7 +21420,8 @@ let notesData = safeJSONParse('ao_notes_v1', {
       clearTimeout(fbSaveTimer);
       fbSaveTimer = setTimeout(() => {
         try {
-          _db.ref('shared/excelData').set(excelData);
+          window._excelSelfWriteUntil = Date.now() + 1500;
+          _db.ref(`${FB_ROOT}/excelData`).set(excelData);
         } catch (e) {
           console.warn('FB full write lỗi:', e);
         }
@@ -21391,7 +21438,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
       if (!_db) return;
       try {
         const data = rows !== undefined ? rows : vatLoad();
-        _db.ref('shared/vatRows').set(data);
+        _db.ref(`${FB_ROOT}/vatRows`).set(data);
       } catch(e) { console.warn('FB VAT write lỗi:', e); }
     }
 
@@ -21400,7 +21447,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
       if (!_db) return;
       try {
         const data = invs !== undefined ? invs : vatLoadInvoices();
-        _db.ref('shared/vatInvoices').set(data);
+        _db.ref(`${FB_ROOT}/vatInvoices`).set(data);
       } catch(e) { console.warn('FB VAT invoices write lỗi:', e); }
     }
 
@@ -21435,7 +21482,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
       if (!_db) { console.warn('Firebase không khả dụng'); return; }
       setTimeout(() => {
         // Sync Excel
-        _db.ref('shared/excelData').on('value', snap => {
+        _db.ref(`${FB_ROOT}/excelData`).on('value', snap => {
           const data = snap.val();
           // Nếu null (DB trống) -> chuyển về {}
           const newData = data === null ? {} : data;
@@ -21444,7 +21491,29 @@ let notesData = safeJSONParse('ao_notes_v1', {
           // echo dữ liệu KHÔNG RỖNG -> đây là dữ liệu cũ trễ về, bỏ qua và
           // ghi rỗng đè lại thay vì chấp nhận nó.
           if (tkbClearGuardActive('excelData') && Object.keys(newData).length > 0) {
-            try { _db.ref('shared/excelData').set(excelData); } catch (e) {}
+            try { _db.ref(`${FB_ROOT}/excelData`).set(excelData); } catch (e) {}
+            return;
+          }
+
+          // ---- Chống lag khi gõ: bỏ qua ECHO CỦA CHÍNH MÌNH ----
+          // Mỗi khi bảng có 5000 ô (100 dòng x 50 cột), renderExcelSheet()
+          // build lại + ghi đè innerHTML TOÀN BỘ bảng — cực nặng. Trước đây
+          // mỗi lần gõ 1 ký tự: updateCell() -> fbUpdateCell() ghi 1 ô lên
+          // Firebase -> Firebase NGAY LẬP TỨC echo lại thay đổi đó về đúng
+          // listener này (kể cả cho chính client vừa ghi) -> so sánh
+          // JSON.stringify() trên object 5000 ô (tốn CPU) -> hầu như luôn
+          // "khác nhau" do độ trễ round-trip -> gọi renderExcelSheet() ->
+          // dựng lại + thay innerHTML cho cả 5000 ô contenteditable NGAY
+          // TRONG LÚC người dùng đang gõ dở -> mất focus, giật lag theo
+          // từng phím gõ. Đây là nguyên nhân chính gây cảm giác lag.
+          // -> Khi vừa tự ghi (trong vòng 1.5s) và dữ liệu KHÔNG RỖNG (tức
+          //    không phải do "Xoá hết" của người khác), coi đây là echo
+          //    của chính mình: chỉ cập nhật biến excelData trong RAM (để
+          //    không mất đồng bộ nếu có ai khác cũng vừa sửa xen vào) chứ
+          //    KHÔNG render lại DOM — giữ nguyên focus, con trỏ đang gõ.
+          if (window._excelSelfWriteUntil && Date.now() < window._excelSelfWriteUntil && Object.keys(newData).length > 0) {
+            excelData = newData;
+            localStorage.setItem('ao_excel_v1', JSON.stringify(excelData));
             return;
           }
 
@@ -21458,12 +21527,20 @@ let notesData = safeJSONParse('ao_notes_v1', {
         });
 
         // Sync TKB — tick "cần học cụ"
-        _db.ref('shared/tkbFlags').on('value', snap => {
+        _db.ref(`${FB_ROOT}/tkbFlags`).on('value', snap => {
           const data = snap.val();
           const newFlags = data === null ? {} : data;
 
           if (tkbClearGuardActive('tkbFlags') && Object.keys(newFlags).length > 0) {
-            try { _db.ref('shared/tkbFlags').set(tkbMaterialFlags); } catch (e) {}
+            try { _db.ref(`${FB_ROOT}/tkbFlags`).set(tkbMaterialFlags); } catch (e) {}
+            return;
+          }
+
+          // Bỏ qua echo của chính mình — xem giải thích đầy đủ ở listener
+          // excelData phía trên (window._excelSelfWriteUntil).
+          if (window._tkbFlagsSelfWriteUntil && Date.now() < window._tkbFlagsSelfWriteUntil && Object.keys(newFlags).length > 0) {
+            tkbMaterialFlags = newFlags;
+            localStorage.setItem('ao_tkb_flags_v1', JSON.stringify(tkbMaterialFlags));
             return;
           }
 
@@ -21475,12 +21552,20 @@ let notesData = safeJSONParse('ao_notes_v1', {
         });
 
         // Sync TKB — ảnh học cụ đã dán
-        _db.ref('shared/tkbMaterials').on('value', snap => {
+        _db.ref(`${FB_ROOT}/tkbMaterials`).on('value', snap => {
           const data = snap.val();
           const newMaterials = data === null ? {} : data;
 
           if (tkbClearGuardActive('tkbMaterials') && Object.keys(newMaterials).length > 0) {
-            try { _db.ref('shared/tkbMaterials').set(tkbMaterialsData); } catch (e) {}
+            try { _db.ref(`${FB_ROOT}/tkbMaterials`).set(tkbMaterialsData); } catch (e) {}
+            return;
+          }
+
+          // Bỏ qua echo của chính mình — xem giải thích ở listener excelData
+          // phía trên (window._excelSelfWriteUntil).
+          if (window._tkbMaterialsSelfWriteUntil && Date.now() < window._tkbMaterialsSelfWriteUntil && Object.keys(newMaterials).length > 0) {
+            tkbMaterialsData = newMaterials;
+            localStorage.setItem('ao_tkb_materials_v1', JSON.stringify(tkbMaterialsData));
             return;
           }
 
@@ -21496,7 +21581,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
 
         // Sync VAT rows
         let _vatSyncingFromFB = false;
-        _db.ref('shared/vatRows').on('value', snap => {
+        _db.ref(`${FB_ROOT}/vatRows`).on('value', snap => {
           const data = snap.val();
           if (data === null) return;
           const newRows = Array.isArray(data) ? data : [];
@@ -21513,7 +21598,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
 
         // Sync VAT invoices (hóa đơn đã xuất)
         let _vatInvSyncingFromFB = false;
-        _db.ref('shared/vatInvoices').on('value', snap => {
+        _db.ref(`${FB_ROOT}/vatInvoices`).on('value', snap => {
           const data = snap.val();
           if (data === null) return;
           const newInvs = Array.isArray(data) ? data : [];
@@ -22869,7 +22954,11 @@ function tkbSaveFlags() {
   // áp dụng tương tự cho danh sách dòng đang tick 🧩.
   if (typeof _tkbViewingSavedId !== 'undefined' && _tkbViewingSavedId) return;
   localStorage.setItem('ao_tkb_flags_v1', JSON.stringify(tkbMaterialFlags));
-  fbWrite('shared/tkbFlags', tkbMaterialFlags);
+  // Đánh dấu "vừa tự ghi" — tránh vòng lặp echo Firebase render lại toàn
+  // bảng 5000 ô ngay sau khi chính mình vừa tick 1 checkbox. Xem giải
+  // thích đầy đủ ở window._excelSelfWriteUntil / fbUpdateCell().
+  window._tkbFlagsSelfWriteUntil = Date.now() + 1500;
+  fbWrite(`${FB_ROOT}/tkbFlags`, tkbMaterialFlags);
 }
 
 function tkbSaveMaterialsDebounced(delay = 500) {
@@ -22880,7 +22969,11 @@ function tkbSaveMaterialsDebounced(delay = 500) {
   localStorage.setItem('ao_tkb_materials_v1', JSON.stringify(tkbMaterialsData));
   clearTimeout(window._tkbMatTimer);
   window._tkbMatTimer = setTimeout(() => {
-    fbWrite('shared/tkbMaterials', tkbMaterialsData);
+    // Đánh dấu "vừa tự ghi" — tránh echo Firebase gọi lại
+    // tkbSyncMaterialsPanel() không cần thiết ngay sau khi chính mình vừa
+    // dán/xoá ảnh. Xem giải thích ở window._excelSelfWriteUntil.
+    window._tkbMaterialsSelfWriteUntil = Date.now() + 1500;
+    fbWrite(`${FB_ROOT}/tkbMaterials`, tkbMaterialsData);
   }, delay);
 }
 
@@ -22914,7 +23007,7 @@ let tkbAutoCheckPrefixes = safeJSONParse('ao_tkb_autocheck_prefixes_v1', []);
 
 function tkbSaveAutoCheckPrefixes() {
   localStorage.setItem('ao_tkb_autocheck_prefixes_v1', JSON.stringify(tkbAutoCheckPrefixes));
-  fbWrite('shared/tkbAutoCheckPrefixes', tkbAutoCheckPrefixes);
+  fbWrite(`${FB_ROOT}/tkbAutoCheckPrefixes`, tkbAutoCheckPrefixes);
 }
 
 // Kiểm tra tên lớp (cột A) có phải lớp "trợ giảng" (TA - teaching
@@ -23969,7 +24062,7 @@ function tkbClearAllMaterials() {
     // Firebase ngay khi xoá giúp loại bỏ khoảng hở đó.
     clearTimeout(window._tkbMatTimer);
     if (typeof _db !== 'undefined' && _db) {
-      try { _db.ref('shared/tkbMaterials').set(tkbMaterialsData); }
+      try { _db.ref(`${FB_ROOT}/tkbMaterials`).set(tkbMaterialsData); }
       catch (e) { console.warn('FB tkbMaterials write lỗi:', e); }
     }
     tkbSaveFlags();
@@ -24021,7 +24114,18 @@ function tkbSaveMaterialsSnapshot() {
     name: finalName,
     savedAt: Date.now(),
     materialsData: JSON.parse(JSON.stringify(tkbMaterialsData)),
-    materialFlags: JSON.parse(JSON.stringify(tkbMaterialFlags))
+    materialFlags: JSON.parse(JSON.stringify(tkbMaterialFlags)),
+    // QUAN TRỌNG: trước đây snapshot KHÔNG lưu excelData (nội dung bảng
+    // trắng bên trái — tên lớp, thứ, các ô A/B/C/D...), chỉ lưu ảnh học cụ
+    // + danh sách dòng đang tick. Khi xem lại 1 bản lưu cũ, khung "Học cụ
+    // cần soạn" hiện đúng (vì có snapshot riêng), nhưng bảng trắng bên
+    // trái vẫn hiển thị excelData HIỆN TẠI — nếu sau đó người dùng đã xoá/
+    // sửa/nhập nội dung khác vào bảng, xem lại bản lưu cũ sẽ thấy đúng vị
+    // trí dòng được tick 🧩 nhưng nội dung ô (lớp, thứ...) trống trơn, vì
+    // đó là dữ liệu của bảng BÂY GIỜ chứ không phải lúc lưu.
+    // -> Lưu kèm 1 bản chụp excelData tại đúng thời điểm bấm "Lưu học cụ",
+    //    để xem lại bản lưu này thì bảng trắng cũng hiện đúng y hệt lúc đó.
+    excelData: JSON.parse(JSON.stringify(excelData))
   };
   list.unshift(snapshot);
   tkbSetSavedMaterialsList(list);
@@ -24167,12 +24271,23 @@ function tkbViewSavedSnapshot(id) {
   if (!_tkbViewingSavedId) {
     _tkbDraftBackup = {
       materialsData: JSON.parse(JSON.stringify(tkbMaterialsData)),
-      materialFlags: JSON.parse(JSON.stringify(tkbMaterialFlags))
+      materialFlags: JSON.parse(JSON.stringify(tkbMaterialFlags)),
+      // Cất luôn bảng trắng (excelData) hiện tại trước khi ghi đè tạm bằng
+      // bản đã lưu — xem giải thích đầy đủ trong tkbSaveMaterialsSnapshot().
+      excelData: JSON.parse(JSON.stringify(excelData))
     };
   }
 
   tkbMaterialsData = JSON.parse(JSON.stringify(snap.materialsData || {}));
   tkbMaterialFlags = JSON.parse(JSON.stringify(snap.materialFlags || {}));
+  // Bản lưu cũ (từ trước khi có field này) có thể chưa có excelData -> nếu
+  // vậy, GIỮ NGUYÊN bảng trắng hiện tại luôn (coi như trước đây), thay vì
+  // xoá trắng nó — tránh phá dữ liệu người dùng đang có chỉ vì xem 1 bản
+  // lưu cũ không có snapshot bảng.
+  const hasExcelSnapshot = snap.excelData && typeof snap.excelData === 'object' && Object.keys(snap.excelData).length > 0;
+  if (hasExcelSnapshot) {
+    excelData = JSON.parse(JSON.stringify(snap.excelData));
+  }
   _tkbViewingSavedId = id;
 
   // Đồng bộ checkbox 🧩 trên bảng trái theo đúng flags của bản lưu
@@ -24180,6 +24295,10 @@ function tkbViewSavedSnapshot(id) {
     const row = cb.getAttribute('data-row') || cb.dataset.row;
     cb.checked = !!tkbMaterialFlags[row];
   });
+
+  // Vẽ lại toàn bộ bảng trắng để hiện đúng nội dung (lớp, thứ...) tại thời
+  // điểm bản lưu này được lưu, không phải nội dung hiện tại.
+  if (hasExcelSnapshot && typeof renderExcelSheet === 'function') renderExcelSheet();
 
   tkbSyncMaterialsPanel();
 
@@ -24211,9 +24330,16 @@ function tkbViewSavedSnapshot(id) {
 // Quay lại đúng bản đang soạn dở trước khi bấm xem học cụ đã lưu
 function tkbRestoreCurrentDraft() {
   if (!_tkbViewingSavedId) return; // không đang xem bản lưu nào thì thôi
+  let restoredExcel = false;
   if (_tkbDraftBackup) {
     tkbMaterialsData = JSON.parse(JSON.stringify(_tkbDraftBackup.materialsData || {}));
     tkbMaterialFlags = JSON.parse(JSON.stringify(_tkbDraftBackup.materialFlags || {}));
+    // Khôi phục lại đúng bảng trắng (excelData) của bản đang soạn dở, đã
+    // bị ghi đè tạm lúc bấm xem bản lưu ở tkbViewSavedSnapshot().
+    if (_tkbDraftBackup.excelData) {
+      excelData = JSON.parse(JSON.stringify(_tkbDraftBackup.excelData));
+      restoredExcel = true;
+    }
   }
   _tkbViewingSavedId = null;
   _tkbDraftBackup = null;
@@ -24222,6 +24348,8 @@ function tkbRestoreCurrentDraft() {
     const row = cb.getAttribute('data-row') || cb.dataset.row;
     cb.checked = !!tkbMaterialFlags[row];
   });
+
+  if (restoredExcel && typeof renderExcelSheet === 'function') renderExcelSheet();
 
   tkbSyncMaterialsPanel();
 
@@ -24425,11 +24553,15 @@ let excelRows = 100; // 👉 số hàng
         const key = `${col}${row}`;
         // Truyền NGUYÊN object vào formatCellDisplay để giữ url
         const value = excelData[key] || '';
+        // Đang xem 1 bản lưu cũ (chỉ xem) -> khoá không cho gõ trực tiếp
+        // trên ô, để tránh hiểu nhầm là đang sửa được (xem giải thích đầy
+        // đủ ở updateCell()). Bấm "↩️ Quay lại" để sửa lại bình thường.
+        const isViewOnly = typeof _tkbViewingSavedId !== 'undefined' && _tkbViewingSavedId;
 
         html += `
  <td 
-  contenteditable="true"
-  class="cell"
+  contenteditable="${isViewOnly ? 'false' : 'true'}"
+  class="cell${isViewOnly ? ' tkb-cell-viewonly' : ''}"
   data-cell="${key}"
   oninput="updateCell(this)"
   onfocus="tkbCellFocusSaveState(this)"
@@ -24463,6 +24595,17 @@ function tkbCellFocusSaveState(cell) {
 }
 
 function updateCell(cell) {
+  // QUAN TRỌNG: đang XEM 1 bản học cụ đã lưu (_tkbViewingSavedId khác null)
+  // thì bảng trắng đang hiển thị KHÔNG PHẢI bản đang soạn dở thật — nó là
+  // bản chụp excelData tại thời điểm lưu (xem tkbViewSavedSnapshot()). Nếu
+  // cho phép gõ/sửa ngay lúc này, thay đổi sẽ bị ghi đè nhầm lên cả
+  // localStorage lẫn Firebase của BẢN ĐANG SOẠN DỞ THẬT (đang cất tạm ở
+  // _tkbDraftBackup) — không đúng ý người dùng khi họ chỉ đang "xem lại".
+  // -> Chặn sửa hẳn trong lúc này; nếu muốn sửa, phải bấm "Quay lại" trước.
+  if (typeof _tkbViewingSavedId !== 'undefined' && _tkbViewingSavedId) {
+    showToast && showToast('Đang chỉ xem bản lưu cũ — bấm "↩️ Quay lại" trước khi sửa nha', 'info');
+    return;
+  }
 
   const key = cell.dataset.cell;
   const text = cell.innerText.trim();
@@ -24528,7 +24671,7 @@ function updateCell(cell) {
       clearTimeout(fbSaveTimer);
       if (typeof tkbArmClearGuard === 'function') { tkbArmClearGuard('excelData'); tkbArmClearGuard('tkbFlags'); }
       if (typeof _db !== 'undefined' && _db) {
-        try { _db.ref('shared/excelData').set(excelData); }
+        try { _db.ref(`${FB_ROOT}/excelData`).set(excelData); }
         catch (e) { console.warn('FB full write lỗi:', e); }
       }
 

@@ -21078,7 +21078,7 @@ let notesData = safeJSONParse('ao_notes_v1', {
     // listener nhận được dữ liệu KHÔNG RỖNG trong đúng khoảng đó, nó hiểu đó
     // là echo của dữ liệu cũ, bỏ qua và ghi rỗng đè lại lên Firebase lần nữa
     // thay vì chấp nhận.
-    window._tkbClearGuard = { excelData: 0, tkbFlags: 0, tkbMaterials: 0 };
+    window._tkbClearGuard = { excelData: 0, tkbFlags: 0, tkbMaterials: 0, tkbSavedList: 0 };
     function tkbArmClearGuard(key, ms = 4000) {
       window._tkbClearGuard[key] = Date.now() + ms;
     }
@@ -21182,6 +21182,29 @@ let notesData = safeJSONParse('ao_notes_v1', {
             tkbMaterialsData = newMaterials;
             localStorage.setItem('ao_tkb_materials_v1', JSON.stringify(tkbMaterialsData));
             if (typeof tkbSyncMaterialsPanel === 'function') tkbSyncMaterialsPanel();
+          }
+        });
+
+        // Sync TKB — danh sách "Học cụ đã lưu" (các bản snapshot đặt tên)
+        _db.ref(`${FB_ROOT}/tkbSavedList`).on('value', snap => {
+          const data = snap.val();
+          const newList = data === null ? [] : (Array.isArray(data) ? data : Object.values(data));
+
+          if (tkbClearGuardActive('tkbSavedList') && newList.length > 0) {
+            try { _db.ref(`${FB_ROOT}/tkbSavedList`).set(window._tkbSavedListLocal || []); } catch (e) {}
+            return;
+          }
+
+          if (window._tkbSavedListSelfWriteUntil && Date.now() < window._tkbSavedListSelfWriteUntil && newList.length > 0) {
+            window._tkbSavedListLocal = newList;
+            localStorage.setItem(TKB_SAVED_MATERIALS_KEY, JSON.stringify(newList));
+            return;
+          }
+
+          if (JSON.stringify(newList) !== JSON.stringify(window._tkbSavedListLocal || [])) {
+            window._tkbSavedListLocal = newList;
+            localStorage.setItem(TKB_SAVED_MATERIALS_KEY, JSON.stringify(newList));
+            if (typeof tkbRenderSavedDropdownMenu === 'function') tkbRenderSavedDropdownMenu();
           }
         });
 
@@ -23687,10 +23710,23 @@ let _tkbDraftBackup = null; // { materialsData, materialFlags } của bản đan
 let _tkbViewingSavedId = null; // id bản lưu đang xem, null = đang ở bản soạn dở bình thường
 
 function tkbGetSavedMaterialsList() {
+  // Ưu tiên bản cache đã nhận từ Firebase (mọi thiết bị/tài khoản đều
+  // thấy chung 1 kho); nếu Firebase chưa kịp trả dữ liệu lần đầu (mới
+  // load trang) thì tạm dùng localStorage làm fallback để không bị trắng.
+  if (window._tkbSavedListLocal !== undefined && window._tkbSavedListLocal !== null) {
+    return window._tkbSavedListLocal;
+  }
   return safeJSONParse(TKB_SAVED_MATERIALS_KEY, []);
 }
 function tkbSetSavedMaterialsList(list) {
+  window._tkbSavedListLocal = list;
   localStorage.setItem(TKB_SAVED_MATERIALS_KEY, JSON.stringify(list));
+  if (window._firebaseDB) {
+    try {
+      window._tkbSavedListSelfWriteUntil = Date.now() + 1500;
+      window._firebaseDB.ref(`${window.FB_ROOT}/tkbSavedList`).set(list);
+    } catch (e) { console.warn('FB tkbSavedList write lỗi:', e); }
+  }
 }
 
 // Lưu snapshot học cụ hiện tại (ảnh + ghi chú + các dòng đang tick) thành 1 bản có tên

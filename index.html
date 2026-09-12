@@ -3923,10 +3923,26 @@ body.light-mode .excel-table td.tkb-frozen-row{
   overflow:auto;
   border-radius:var(--global-radius);
   border:4px solid #000 !important;
-  position:relative; /* anchor cho 2 thanh kéo freeze (absolute) */
+  /* position:sticky vẫn là containing block hợp lệ cho các con
+     position:absolute bên trong (2 thanh kéo freeze .tkb-freeze-handle-*)
+     y hệt như position:relative trước đây — sticky chỉ "dính" theo trục
+     dọc khi cuộn trang, không đổi hành vi containing-block. */
+  position:sticky;
+  top: calc(var(--banner-h-cur, var(--banner-h)) + 60px);
   z-index:2; /* cao hơn .tkb-corner-clear-btn (z-index:1) để khung "che"
                 đúng 1/3 dưới của nút Xoá hết đè lên viền, thay vì nút che
                 khung */
+  /* Giới hạn chiều cao bằng đúng khung "Học cụ cần soạn" bên phải
+     (.tkb-materials-panel có max-height: 82vh) — nếu không có dòng này,
+     bảng TKB (có thể lên tới hàng trăm dòng) sẽ cao tự nhiên theo đúng
+     số dòng thực tế, khiến khung bên trái dài hơn hẳn khung bên phải mà
+     KHÔNG bao giờ kích hoạt được overflow:auto ở trên (vì chẳng có gì bị
+     "tràn" ra ngoài một chiều cao cố định cả — thanh cuộn dọc trình
+     duyệt hiện ra do bảng quá dài, chứ .excel-table-wrap không tự cuộn
+     được bên trong chính nó). Đặt max-height bằng đúng panel bên phải để
+     2 khung cao bằng nhau và mỗi khung tự cuộn riêng trong phạm vi của
+     nó, giống hệt cơ chế .tkb-materials-panel đã dùng. */
+  max-height: 82vh;
 }
 
 /* Track thanh cuộn của bảng TKB phải màu TRẮNG ĐẶC (không dùng nền trong
@@ -5559,6 +5575,17 @@ p {
  .excel-container {
   width: 100%;
   overflow-x: auto; /* 🔥 tạo scroll ngang */
+  overflow-y: hidden; /* Chỉ khai overflow-x khiến trình duyệt tự suy ra
+    overflow-y: auto ngầm (CSS spec: không cho phép 1 trục non-visible đi
+    kèm trục kia visible — trình duyệt tự "sửa" visible thành auto), sinh
+    ra 1 thanh cuộn dọc THỪA của riêng .excel-container, nằm kẹp giữa nội
+    dung bảng và thanh cuộn dọc THẬT của khung cha #excelTableWrap (khung
+    đó mới là nơi cần cuộn dọc — xem thêm max-height ở .excel-table-wrap).
+    Dùng overflow-y: hidden (thay vì visible, vốn bị trình duyệt tự đổi
+    lại thành auto) để chặn hẳn khả năng cuộn dọc ở đây mà không tạo
+    thanh cuộn — nội dung bảng không có gì tràn dọc ra khỏi khung này
+    (freeze handle nằm NGOÀI .excel-container nên không bị ảnh hưởng),
+    nên hidden ở đây an toàn, không cắt mất phần tử nào. */
   border: 1px solid #ccc;
 }
 
@@ -22820,6 +22847,17 @@ function tkbSyncMaterialsPanel() {
   const listEl = document.getElementById('tkbMaterialsList');
   if (!listEl) return;
 
+  // Lưu lại vị trí cuộn TRƯỚC khi thay innerHTML — thay nội dung DOM luôn
+  // khiến trình duyệt reset cả cuộn dọc (panel) lẫn cuộn ngang (hàng các
+  // khung "Thứ") về 0. Đây chính là nguyên nhân sau mỗi lần dán ảnh
+  // (paste ảnh -> tkbAddMaterialImage -> gọi lại hàm này để vẽ thêm ảnh
+  // mới) toàn bộ khung "Học cụ cần soạn" bị giật về góc trái-trên, dù ảnh
+  // vẫn dán đúng chỗ, buộc người dùng phải cuộn lại từ đầu để xem kết quả.
+  const _tkbPanelEl = document.getElementById('tkbMaterialsPanel');
+  const _tkbPanelScrollTop = _tkbPanelEl ? _tkbPanelEl.scrollTop : 0;
+  const _tkbDayColsEl = listEl.querySelector('.tkb-day-columns');
+  const _tkbDayColsScrollLeft = _tkbDayColsEl ? _tkbDayColsEl.scrollLeft : 0;
+
   if (!rows.length) {
     listEl.innerHTML = '<div class="tkb-materials-empty">Tick cột 🧩 ở bảng bên trái cho lớp cần soạn học cụ,<br>rồi bấm "Tổng hợp học cụ" để tạo khung dán ảnh ở đây.</div>';
     return;
@@ -22921,6 +22959,13 @@ function tkbSyncMaterialsPanel() {
   html += '</div>'; // end tkb-day-columns
 
   listEl.innerHTML = html;
+  // Khôi phục lại đúng vị trí cuộn đã lưu ở trên — chạy sau khi DOM mới
+  // đã gắn vào trang (innerHTML gán xong là các phần tử .tkb-day-columns
+  // mới đã tồn tại), để scrollTop/scrollLeft có chỗ hợp lệ để set vào chứ
+  // không phải set vào phần tử cũ đã bị thay thế.
+  if (_tkbPanelEl) _tkbPanelEl.scrollTop = _tkbPanelScrollTop;
+  const _tkbNewDayColsEl = listEl.querySelector('.tkb-day-columns');
+  if (_tkbNewDayColsEl) _tkbNewDayColsEl.scrollLeft = _tkbDayColsScrollLeft;
   // Panel render lại -> phần tử cũ trong DOM mất. Nếu đang mở note của 1 lớp
   // nào đó, mở lại đúng khối đó (cùng rowKey) trong DOM mới thay vì đóng
   // hẳn, để không làm mất trạng thái "đang mở" mà người dùng chưa chủ động

@@ -176,7 +176,6 @@
 /* ── Containers / panels ── */
 .settings-unified-card,
 .card,
-.chill-panel,
 .kanban-col,
 .kanban-card,
 .kanban-search,
@@ -494,13 +493,13 @@
     body.light-mode .shortcut-item {
       background: rgba(255,255,255,0.55) !important;
       border-color: #000 !important;
-      backdrop-filter: blur(14px) saturate(1.1) !important;
+      backdrop-filter: blur(10px) saturate(1.1) !important;
     }
     body.light-mode .card,
     body.light-mode .shortcut-card {
       background: rgba(255,255,255,0.55) !important;
       border-color: #000 !important;
-      backdrop-filter: blur(14px) saturate(1.1) !important;
+      backdrop-filter: blur(10px) saturate(1.1) !important;
     }
     body.light-mode .card:hover,
     body.light-mode .shortcut-card:hover {
@@ -603,7 +602,6 @@
 
     /* MUSIC / CHILL */
     body.light-mode .music-player,
-    body.light-mode .chill-card,
     body.light-mode .ytlike-card,
     body.light-mode .ytlike-player,
     body.light-mode .ytlike-queue-item,
@@ -701,44 +699,6 @@
        LIGHT MODE — FULL PAGE GLASS OVERRIDES (all pages)
        ======================================================== */
 
-    /* ── CHILL ZONE ── */
-    body.light-mode .chill-panel {
-      background: rgba(255,255,255,0.55) !important;
-      border-color: #000 !important;
-      backdrop-filter: blur(20px) !important;
-    }
-    body.light-mode .chill-sound-card {
-      background: rgba(255,255,255,0.50) !important;
-      border-color: rgba(0,0,0,0.10) !important;
-    }
-    body.light-mode .chill-sound-card.playing {
-      background: rgba(167,139,250,0.12) !important;
-    }
-    body.light-mode .chill-mood-btn {
-      background: rgba(255,255,255,0.50) !important;
-      border-color: rgba(0,0,0,0.10) !important;
-      color: #1e293b !important;
-    }
-    body.light-mode .chill-mood-btn.active {
-      background: rgba(167,139,250,0.20) !important;
-      border-color: #a78bfa !important;
-      color: #1e293b !important;
-    }
-    body.light-mode .chill-sound-name { color: #1e293b !important; }
-    body.light-mode .chill-pomo-track { stroke: rgba(0,0,0,0.12) !important; }
-    body.light-mode .chill-pomo-time { color: #1e293b !important; }
-    body.light-mode .chill-pomo-label { color: rgba(15,23,42,0.60) !important; }
-    body.light-mode .chill-pomo-btn {
-      background: rgba(255,255,255,0.55) !important;
-      border-color: rgba(0,0,0,0.12) !important;
-      color: #1e293b !important;
-    }
-    body.light-mode .chill-pomo-btn.primary {
-      background: rgba(167,139,250,0.20) !important;
-      border-color: #a78bfa !important;
-    }
-    body.light-mode .chill-master-label { color: #1e293b !important; }
-
     /* ── CHAT PAGE ── */
     /* ── CHAT PAGE — đổi màu khung shell theo theme, giữ tab vô hiệu hóa ── */
     body.light-mode .chat-shell,
@@ -746,7 +706,7 @@
     body.light-mode .chat-online-panel-wrap,
     body.light-mode .chat-profile-wrap {
       background: rgba(255,255,255,0.45) !important;
-      backdrop-filter: blur(16px) !important;
+      backdrop-filter: blur(12px) !important;
     }
     body.light-mode .chat-left-panel {
       background: rgba(255,255,255,0.30) !important;
@@ -792,15 +752,15 @@
     body.light-mode .chat-settings-section { border-color: rgba(0,0,0,0.08) !important; }
     /* tab active giữ nguyên màu accent gốc — không override */
     body.light-mode .chat-sub-nav-toolbar {
-      backdrop-filter: blur(14px) !important;
+      backdrop-filter: blur(10px) !important;
     }
 
     /* ── MUSIC / MIU DỊT (YouTube-like) ── */
     body.light-mode .ytlike-shell {
       background: rgba(255,255,255,0.60) !important;
       border-color: rgba(0,0,0,0.10) !important;
-      backdrop-filter: blur(20px) saturate(1.2) !important;
-      -webkit-backdrop-filter: blur(20px) saturate(1.2) !important;
+      backdrop-filter: blur(14px) saturate(1.2) !important;
+      -webkit-backdrop-filter: blur(14px) saturate(1.2) !important;
     }
     body.light-mode .ytlike-player-box {
       background: rgba(0,0,0,0.08) !important;
@@ -833,24 +793,13 @@
        These force dark-glass on elements that may have transparent or 
        hard-coded dark backgrounds that don't visually read as dark in dark mode */
 
-    /* Chill Zone dark */
-    body:not(.light-mode) .chill-panel {
-      background: rgba(10,5,25,0.60) !important;
-      border-color: #000 !important;
-      backdrop-filter: blur(20px) !important;
-    }
-    body:not(.light-mode) .chill-sound-card {
-      background: rgba(255,255,255,0.04) !important;
-      border-color: rgba(255,255,255,0.08) !important;
-    }
-
     /* Chat dark — không override background khung, giữ trong suốt như gốc */
 
     /* Kanban dark — nền tối rõ glassmorphism */
     body:not(.light-mode) .kanban-col {
       background: rgba(0,0,0,0.38) !important;
       border-color: #000 !important;
-      backdrop-filter: blur(14px) !important;
+      backdrop-filter: blur(10px) !important;
     }
     body:not(.light-mode) .kanban-card {
       background: rgba(0,0,0,0.30) !important;
@@ -977,7 +926,7 @@
   max-height: calc(100vh - 88px); /* tổng = top(78) + bottom(10) */
   width: var(--sidebar-collapsed-width);
   background: rgba(0, 0, 0, 0.38);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
   border: var(--sidebar-border-width, 4px) solid #000000;
   border-radius: var(--global-radius);
   z-index: 2000;
@@ -1185,7 +1134,7 @@
   border-radius: 50%;
   background: rgba(255,255,255,0.08);
   border: 1.5px solid rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   color: var(--text-main);
   display: flex;
   align-items: center;
@@ -1217,7 +1166,7 @@
   background: var(--card-bg);
   border: 3px solid #000;
   border-radius: var(--global-radius);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   overflow: hidden;
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--accent) 25%, transparent),
@@ -1790,8 +1739,8 @@ body.has-custom-bg::after {
 
     .nav-item.active {
       background: rgba(255, 255, 255, 0.12);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
       color: #fff;
       font-weight: bold;
       border: 1.5px solid var(--accent);
@@ -2224,7 +2173,7 @@ body.has-custom-bg::after {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   position: relative;
   width: 100%;
   aspect-ratio: 1;
@@ -2550,7 +2499,7 @@ body.has-custom-bg::after {
 
     /* Khi banner-enter: tất cả content bên dưới header trượt từ dưới lên
        Dùng :not(.header-group) để bỏ qua banner — áp dụng cho mọi div content */
-    .banner-enter > *:not([class*="header-group"]):not([class*="page-title"]):not(.chill-page-title):not(.pt-clothesline-rope):not(.pt-clothesline-area):not(.calendar-box):not(.page-toolbar-shell) {
+    .banner-enter > *:not([class*="header-group"]):not([class*="page-title"]):not(.pt-clothesline-rope):not(.pt-clothesline-area):not(.calendar-box):not(.page-toolbar-shell) {
       animation: contentRiseIn 0.48s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
       animation-delay: 0.09s;
     }
@@ -2559,7 +2508,7 @@ body.has-custom-bg::after {
 
     @keyframes modalOverlayIn {
       from { opacity: 0; backdrop-filter: blur(0px); -webkit-backdrop-filter: blur(0px); }
-      to   { opacity: 1; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+      to   { opacity: 1; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
     }
     @keyframes modalBoxIn {
       from { opacity: 0; transform: translateY(24px) scale(0.94); }
@@ -2631,8 +2580,7 @@ body.has-custom-bg::after {
        CSS animate toàn bộ header-group cùng 1 lúc (bao gồm ::before background bar).
     ===================================================================== */
     .banner-enter .header-group,
-    .banner-enter [class*="page-title"],
-    .banner-enter .chill-page-title {
+    .banner-enter [class*="page-title"] {
       animation: barDropIn 0.68s cubic-bezier(0.0, 0.0, 0.2, 1) both !important;
       overflow: visible !important;
     }
@@ -2647,8 +2595,6 @@ body.has-custom-bg::after {
     body.chat-active .container { display: none; }
     /* Ẩn container khi đang ở trang Tịn Ít */
     body.tinit-active .container { display: none; }
-    /* Ẩn container khi đang ở trang Chill Zone */
-    body.chill-active .container { display: none; }
     /* Ẩn container khi đang ở trang Kanban */
     body.kanban-active .container { display: none; }
     /* FIX: thiếu rule ẩn .container khi ở trang Notes → .container (padding 62px+260px)
@@ -2776,7 +2722,7 @@ body.has-custom-bg::after {
       position: fixed;
       inset: 0;
       background: rgba(0,0,0,0.75);
-      backdrop-filter: blur(10px);
+      backdrop-filter: blur(8px);
       display: none;
       align-items: center;
       justify-content: center;
@@ -3036,8 +2982,8 @@ body.has-custom-bg::after {
   padding: 18px;
   width: 100%;
   box-shadow: 0 4px 24px rgba(0,0,0,0.18);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 body.light-mode .calendar-inner-wrap {
   background: rgba(255,255,255,0.92);
@@ -3071,8 +3017,8 @@ body.light-mode .calendar-inner-wrap {
     0 14px 0 rgba(0,0,0,0.10),
     0 22px 34px rgba(0,0,0,0.32),
     0 8px 16px rgba(0,0,0,0.22);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   /* FIX: width cụ thể theo nội dung thực tế (đo bằng JS), fallback 820px. */
   width: min(var(--toolbar-natural-w, 820px), 100%);
   max-width: 100%;
@@ -3148,8 +3094,8 @@ body.light-mode .calendar-inner-wrap {
     0 14px 0 rgba(0,0,0,0.10),
     0 22px 34px rgba(0,0,0,0.32),
     0 8px 16px rgba(0,0,0,0.22);
-  backdrop-filter: blur(16px) saturate(140%);
-  -webkit-backdrop-filter: blur(16px) saturate(140%);
+  backdrop-filter: blur(12px) saturate(140%);
+  -webkit-backdrop-filter: blur(12px) saturate(140%);
   /* FIX: width cụ thể theo nội dung thực tế của từng trang (đo bằng JS,
      lưu vào --toolbar-natural-w), fallback 820px nếu JS chưa kịp đo (VD
      Music vốn ~820px). Không dùng fit-content vì đó là 1 KEYWORD, trình
@@ -3967,7 +3913,7 @@ body.light-mode .excel-table td.tkb-frozen-row{
   border:4px solid var(--accent) !important;
   border-radius:var(--global-radius);
   padding:18px;
-  backdrop-filter:blur(14px);
+  backdrop-filter:blur(10px);
   overflow:hidden;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.04), 0 0 0 1px rgba(0,0,0,0.18);
 }
@@ -7002,8 +6948,8 @@ body.light-mode .vat-table thead th {
       right: 22px;
       width: 290px;
       background: linear-gradient(160deg, rgba(20,10,45,0.97), rgba(13,5,32,0.98));
-      backdrop-filter: blur(28px);
-      -webkit-backdrop-filter: blur(28px);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255,255,255,0.12);
       border-radius: var(--global-radius);
       z-index: 3000;
@@ -8029,9 +7975,9 @@ body.sidebar-bottom .sidebar::before {
   border-radius: var(--global-radius);
   border: var(--sidebar-border-width, 4px) solid #000000;
   background: rgba(8, 4, 20, 0.82);
-  backdrop-filter: blur(28px) saturate(1.4);
-  -webkit-backdrop-filter: blur(28px) saturate(1.4);
-  /* FIX BLUR BLEED: clip-path ngăn backdrop-filter blur(28px) "rò" ra ngoài sidebar frame.
+  backdrop-filter: blur(16px) saturate(1.4);
+  -webkit-backdrop-filter: blur(16px) saturate(1.4);
+  /* FIX BLUR BLEED: clip-path ngăn backdrop-filter blur(16px) "rò" ra ngoài sidebar frame.
      Khi nav-scroll-inner có margin-top:-60px tràn ra ngoài, blur radius 28px của ::before
      sample/spill sang vùng đó → tạo lớp mờ bên ngoài khung ở đầu trái sidebar.
      clip-path: inset(0 round ...) giới hạn paint của ::before đúng trong sidebar frame. */
@@ -8549,7 +8495,7 @@ body.sidebar-bottom .nav-item[data-page="settings"] {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: var(--global-radius);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
   width: min(92vw, 700px);
   max-height: 85vh;
   overflow: hidden;
@@ -8947,7 +8893,7 @@ body.sidebar-bottom .nav-content {
 .sidebar-preview-box {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
-  border-radius: var(--global-radius); backdrop-filter: blur(16px);
+  border-radius: var(--global-radius); backdrop-filter: blur(12px);
   width: min(94vw, 720px); max-height: 88vh;
   overflow: hidden; display: flex; flex-direction: column;
   box-shadow: 0 24px 60px rgba(0,0,0,0.5), var(--shadow-accent);
@@ -9370,8 +9316,8 @@ body.sidebar-bottom .sidebar.expanded .nav-item {
   background: rgba(8,4,20,0.82);
   border: 3px solid #000;
   border-radius: var(--global-radius);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 8px 40px #000000, 0 0 0 1px rgba(255,255,255,0.05) inset;
   overflow: hidden;
   min-height: 380px;
@@ -9397,8 +9343,8 @@ body.sidebar-bottom .sidebar.expanded .nav-item {
   background: rgba(8,4,20,0.82);
   border: 3px solid #000;
   border-radius: var(--global-radius);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   box-shadow: 0 8px 40px #000000, 0 0 0 1px rgba(255,255,255,0.05) inset;
   overflow: hidden;
   height: 72vh;
@@ -12298,7 +12244,7 @@ body.banner-scrolled .chat-page-title h1 {
   padding: 10px;
   width: 300px;
   display: none; z-index: 200;
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px rgba(0,0,0,0.5);
 }
 .chat-emoji-picker.open { display: block; animation: msgPop 0.18s both; }
@@ -12395,7 +12341,7 @@ body.banner-scrolled .chat-page-title h1 {
   display: none;
   flex-direction: column;
   box-shadow: 0 12px 48px rgba(0,0,0,0.6);
-  backdrop-filter: blur(20px);
+  backdrop-filter: blur(14px);
   z-index: 9999;
   max-height: 440px;
   animation: msgPop 0.2s both;
@@ -12783,7 +12729,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   border: 1.5px dashed rgba(139,92,246,0.35);
   border-radius: var(--global-radius); color: #c4b5fd;
   font-size: 0.8rem; font-weight: 600;
-  cursor: pointer; transition: all 0.15s;
+  cursor: pointer; transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s, color 0.15s;
   flex-shrink: 0;
 }
 .kanban-tpl-new-btn:hover { background: rgba(139,92,246,0.22); border-color: rgba(139,92,246,0.6); }
@@ -12818,7 +12764,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   border: 2px solid rgba(139,92,246,0.5);
   background: rgba(255,255,255,0.04);
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.18s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
   flex-shrink: 0;
   position: relative;
 }
@@ -12827,7 +12773,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   width: 0; height: 0;
   border-radius: 50%;
   background: #a78bfa;
-  transition: all 0.18s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
 }
 .kanban-tpl-round-check.checked {
   border-color: #a78bfa;
@@ -12868,7 +12814,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   background: rgba(255,255,255,0.04);
   flex-shrink: 0;
   display: flex; align-items: center; justify-content: center;
-  transition: all 0.18s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
   margin-right: 2px;
   position: relative;
   cursor: pointer;
@@ -12878,7 +12824,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   width: 0; height: 0;
   border-radius: 50%;
   background: #a78bfa;
-  transition: all 0.15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease, color 0.15s ease;
 }
 .kanban-tpl-item.multi-checked .kanban-tpl-item-check {
   border-color: #a78bfa;
@@ -12916,7 +12862,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   align-items: center;
   justify-content: center;
   gap: 6px;
-  transition: all 0.18s ease;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease, color 0.18s ease;
   box-shadow: 0 4px 14px rgba(124,58,237,0.35);
 }
 .kanban-tpl-multi-use-btn:hover {
@@ -12967,7 +12913,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
 .kanban-tpl-icon-pick {
   font-size: 1.3rem; cursor: pointer; padding: 4px 6px;
   border-radius: var(--global-radius); border: 1.5px solid transparent;
-  transition: all 0.12s; line-height: 1;
+  transition: background 0.12s, border-color 0.12s, transform 0.12s, box-shadow 0.12s, color 0.12s; line-height: 1;
 }
 .kanban-tpl-icon-pick:hover { background: rgba(255,255,255,0.1); }
 .kanban-tpl-icon-pick.selected {
@@ -13000,7 +12946,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   border: 1.5px solid rgba(255,255,255,0.1);
   border-radius: var(--global-radius); color: rgba(255,255,255,0.6);
   font-size: 0.82rem; font-weight: 600; cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s, color 0.15s;
 }
 .kanban-tpl-btn-cancel:hover { background: rgba(255,255,255,0.1); color: #fff; }
 .kanban-tpl-placeholder {
@@ -13025,7 +12971,7 @@ body.light-mode .kanban-template-btn { color: #fff; }
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s, color 0.15s;
   letter-spacing: 0.02em;
 }
 .kanban-filter-chip:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); border-color: #000000; }
@@ -13197,7 +13143,7 @@ body.light-mode input.kanban-search:not([type="checkbox"]):not([type="radio"]):n
   border: 1.5px solid rgba(255,255,255,0.12);
   border-radius: var(--global-radius); padding: 6px 0; z-index: 999999;
   min-width: 160px; box-shadow: 0 8px 32px rgba(0,0,0,0.55);
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
   animation: kanbanCtxIn 0.12s ease;
 }
 @keyframes kanbanCtxIn { from { opacity:0; transform: scale(0.94) translateY(-4px); } to { opacity:1; transform: scale(1) translateY(0); } }
@@ -13631,8 +13577,8 @@ body.banner-scrolled .tinit-page-title h1 {
 .chodne-sidebar {
   width: 192px; min-width: 192px;
   background: color-mix(in srgb, var(--accent) 12%, rgba(10,10,30,0.55));
-  backdrop-filter: blur(18px) saturate(1.4);
-  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
   border-right: 1px solid color-mix(in srgb, var(--accent) 30%, rgba(255,255,255,0.08));
   display: flex; flex-direction: column;
   transition: width 0.3s cubic-bezier(0.34,1.3,0.64,1), min-width 0.3s cubic-bezier(0.34,1.3,0.64,1);
@@ -13764,8 +13710,8 @@ body.banner-scrolled .tinit-page-title h1 {
 
 .chodne-table th {
   background: color-mix(in srgb, var(--accent) 18%, rgba(10,10,30,0.65));
-  backdrop-filter: blur(14px) saturate(1.3);
-  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  backdrop-filter: blur(10px) saturate(1.3);
+  -webkit-backdrop-filter: blur(10px) saturate(1.3);
   border: 1px solid color-mix(in srgb, var(--accent) 28%, rgba(255,255,255,0.08));
   border-bottom: 1.5px solid color-mix(in srgb, var(--accent) 45%, transparent);
   padding: 9px 11px; text-align: left;
@@ -13878,7 +13824,7 @@ body.banner-scrolled .tinit-page-title h1 {
   border: 2px solid rgba(255,255,255,0.2);
   background: transparent; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
-  font-size: 0; transition: all 0.2s; margin: 0 auto;
+  font-size: 0; transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s; margin: 0 auto;
   position: relative;
 }
 .chodne-check-btn::after {
@@ -14158,7 +14104,7 @@ input.cr-input { height: 100%; }
   color: #fff;
   background: rgba(20,20,30,0.92);
   border: 1px solid rgba(255,255,255,0.12);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(12px);
   box-shadow: 0 8px 32px #000000;
   pointer-events: auto;
   max-width: 320px;
@@ -14186,7 +14132,7 @@ input.cr-input { height: 100%; }
 /* --- 2. KEYBOARD SHORTCUT OVERLAY --- */
 #shortcuts-overlay {
   position: fixed; inset: 0; z-index: 19999;
-  background: rgba(0,0,0,0.72); backdrop-filter: blur(10px);
+  background: rgba(0,0,0,0.72); backdrop-filter: blur(8px);
   display: none; align-items: center; justify-content: center;
 }
 #shortcuts-overlay.active { display: flex; }
@@ -14426,7 +14372,7 @@ body.focus-mode .card {
   border-radius: 50%;
   background: rgba(255,255,255,0.08);
   border: 1.5px solid rgba(255,255,255,0.15);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(8px);
   color: var(--text-main);
   font-size: 1.1rem;
   display: flex; align-items: center; justify-content: center;
@@ -14652,7 +14598,7 @@ button:focus-visible, [tabindex]:focus-visible, input:focus-visible, select:focu
 .modal-box {
   background: linear-gradient(145deg, rgba(25,15,55,0.97), rgba(15,8,35,0.97)) !important;
   border: 1px solid rgba(255,255,255,0.1) !important;
-  backdrop-filter: blur(28px) saturate(1.4) !important;
+  backdrop-filter: blur(16px) saturate(1.4) !important;
 }
 
 /* --- RACING GAME --- */
@@ -15451,271 +15397,6 @@ body.sidebar-bottom.banner-scrolled .header-group .home-clock {
   .pdf-tool-btn span { font-size: 0.68rem !important; }
 }
 
-/* ═══════════════════════════════════════════════════
-   CHILL ZONE PAGE
-═══════════════════════════════════════════════════ */
-#page-chill { display: none; }
-#page-chill.active-page {
-  display: block;
-  padding: 62px 20px 60px;
-  min-height: 100vh;
-  animation: pageFadeIn 0.38s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
-}
-/* ⚑ chill-page-title — đồng bộ pattern sticky với chat/tinit/pdf/music outer-page titles */
-.chill-page-title {
-  text-align: center;
-  margin-bottom: 24px;
-  margin-top: 0;
-  margin-left: -120px;
-  margin-right: 0;
-  padding-right: 20px;
-  background: transparent;
-  z-index: 200;
-  display: flex;
-  justify-content: flex-start;
-  position: sticky !important;
-  top: 0;
-  pointer-events: none;
-}
-.chill-page-title h1 { pointer-events: auto; }
-body.banner-scrolled .chill-page-title { margin-bottom: 4px !important; }
-body.banner-scrolled .chill-page-title h1 {
-  transform: scaleX(0.27) scaleY(0.28) translateY(-5px) !important;
-  opacity: 0.92 !important;
-}
-.chill-canvas {
-  position: fixed;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
-  z-index: -1;
-  pointer-events: none;
-}
-.chill-content {
-  position: relative;
-  z-index: 1;
-  padding: 0 0 80px 0;
-  min-height: 100vh;
-}
-body.sidebar-right .chill-content { padding-left: 0; padding-right: 0; }
-body.sidebar-bottom .chill-content { padding-left: 0; padding-right: 0; padding-bottom: 120px; }
-.chill-header h1 {
-  font-size: 2.2rem;
-  font-weight: 900;
-  color: #fff;
-  text-shadow: 0 0 40px rgba(167,139,250,0.6);
-  margin-bottom: 4px;
-}
-.chill-header p { font-size: 0.9rem; opacity: 0.5; margin-bottom: 32px; }
-.chill-grid {
-  display: grid;
-  grid-template-columns: 1fr 320px;
-  gap: 20px;
-  align-items: start;
-}
-@media(max-width:900px){ .chill-grid { grid-template-columns: 1fr; } }
-.chill-panel {
-  background: rgba(10,5,25,0.6);
-  border: 3px solid #000;
-  border-radius: var(--global-radius);
-  padding: 22px;
-  backdrop-filter: blur(20px);
-  transition: background 0.3s ease, border-color 0.3s ease;
-}
-.chill-panel-title {
-  font-size: 0.72rem;
-  font-weight: 800;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  color: #a78bfa;
-  opacity: 0.85;
-  margin-bottom: 18px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.chill-mood-row {
-  display: flex;
-  flex-wrap: nowrap;
-  gap: 10px;
-  margin-bottom: 24px;
-}
-.chill-mood-btn {
-  padding: 8px 18px;
-  border-radius: var(--global-radius);
-  border: 1.5px solid rgba(255,255,255,0.12);
-  background: rgba(255,255,255,0.05);
-  color: rgba(255,255,255,0.8);
-  font-size: 0.83rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.22s;
-  position: relative;
-  z-index: 1;
-  flex-shrink: 1;
-  white-space: nowrap;
-}
-.chill-mood-btn * { pointer-events: none; }
-.chill-mood-btn:hover { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.1); }
-.chill-mood-btn.active {
-  background: rgba(167,139,250,0.25);
-  border-color: #a78bfa;
-  color: #fff;
-  box-shadow: 0 0 16px rgba(167,139,250,0.3);
-}
-.chill-sound-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  margin-bottom: 8px;
-}
-@media(max-width:600px){ .chill-sound-row { grid-template-columns: 1fr; } }
-.chill-sound-card {
-  background: rgba(255,255,255,0.04);
-  border: 1.5px solid rgba(255,255,255,0.08);
-  border-radius: var(--global-radius);
-  padding: 14px 16px;
-  transition: border-color 0.22s, background 0.3s ease;
-}
-.chill-sound-card.playing { border-color: rgba(167,139,250,0.5); background: rgba(167,139,250,0.08); }
-.chill-sound-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 10px;
-}
-.chill-sound-name {
-  font-size: 0.86rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-.chill-sound-icon { font-size: 1.2rem; }
-.chill-toggle {
-  width: 36px; height: 20px;
-  border-radius: var(--global-radius);
-  background: rgba(255,255,255,0.15);
-  border: none;
-  cursor: pointer;
-  position: relative;
-  transition: background 0.22s;
-  flex-shrink: 0;
-}
-.chill-toggle.on { background: #a78bfa; }
-.chill-toggle::after {
-  content: '';
-  position: absolute;
-  top: 3px; left: 3px;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: #fff;
-  transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1);
-}
-.chill-toggle.on::after { transform: translateX(16px); }
-.chill-volume-slider {
-  width: 100%;
-  -webkit-appearance: none;
-  height: 4px;
-  border-radius: var(--global-radius);
-  background: rgba(255,255,255,0.15);
-  outline: none;
-  cursor: pointer;
-}
-.chill-volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px; height: 14px;
-  border-radius: 50%;
-  background: #a78bfa;
-  border: 2px solid #fff;
-  cursor: pointer;
-}
-/* Pomodoro */
-.chill-pomo-display {
-  text-align: center;
-  padding: 20px 0 14px;
-}
-.chill-pomo-ring {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  margin: 0 auto 16px;
-}
-.chill-pomo-svg { width: 140px; height: 140px; transform: rotate(-90deg); }
-.chill-pomo-track { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 8; }
-.chill-pomo-progress { fill: none; stroke: #a78bfa; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
-.chill-pomo-time {
-  position: absolute; top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  font-size: 1.9rem; font-weight: 900; color: #fff;
-  letter-spacing: -0.02em;
-}
-.chill-pomo-label { font-size: 0.75rem; opacity: 0.5; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.08em; }
-.chill-pomo-controls { display: flex; gap: 10px; justify-content: center; }
-.chill-pomo-btn {
-  padding: 8px 18px;
-  border-radius: var(--global-radius);
-  border: 1.5px solid rgba(255,255,255,0.15);
-  background: rgba(255,255,255,0.07);
-  color: #fff;
-  font-size: 0.82rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.18s;
-}
-.chill-pomo-btn:hover { background: rgba(167,139,250,0.2); border-color: #a78bfa; }
-.chill-pomo-btn.primary { background: rgba(167,139,250,0.25); border-color: #a78bfa; }
-/* Quote - removed */
-/* Visualizer bars */
-.chill-visualizer {
-  display: flex;
-  align-items: flex-end;
-  gap: 3px;
-  height: 40px;
-  margin-top: 14px;
-  padding: 0 4px;
-}
-.chill-vis-bar {
-  flex: 1;
-  background: linear-gradient(to top, #a78bfa, #60a5fa);
-  border-radius: var(--global-radius) var(--global-radius) 0 0;
-  min-height: 3px;
-  transition: height 0.12s ease;
-  opacity: 0.6;
-}
-/* Master volume */
-.chill-master-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-top: 16px;
-  padding-top: 16px;
-  border-top: 1px solid rgba(255,255,255,0.07);
-}
-.chill-master-label { font-size: 0.8rem; font-weight: 700; opacity: 0.7; white-space: nowrap; }
-.chill-master-slider {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 5px;
-  border-radius: var(--global-radius);
-  background: rgba(255,255,255,0.15);
-  outline: none;
-  cursor: pointer;
-}
-.chill-master-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: #a78bfa;
-  border: 2.5px solid #fff;
-  cursor: pointer;
-}
-/* Particle canvas color modes */
-.chill-canvas[data-mood="focus"] { filter: hue-rotate(180deg) brightness(0.9); }
-.chill-canvas[data-mood="sleep"] { filter: hue-rotate(220deg) brightness(0.6); }
-.chill-canvas[data-mood="creative"] { filter: hue-rotate(30deg) brightness(1.1); }
-.chill-canvas[data-mood="relax"] { filter: none; }
-
-  
 /* ===== KANBAN DELETE CONFIRM MODAL ===== */
 #kanbanDeleteConfirm {
   position: fixed;
@@ -15803,7 +15484,7 @@ body.sidebar-bottom .chill-content { padding-left: 0; padding-right: 0; padding-
   font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s, color 0.15s;
 }
 .kdc-btn-cancel:hover {
   background: rgba(255,255,255,0.1);
@@ -15819,7 +15500,7 @@ body.sidebar-bottom .chill-content { padding-left: 0; padding-right: 0; padding-
   font-size: 0.85rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s, transform 0.15s, box-shadow 0.15s, color 0.15s;
   box-shadow: 0 4px 14px rgba(220,38,38,0.4);
   display: flex;
   align-items: center;
@@ -15871,8 +15552,8 @@ body.light-mode.sidebar-bottom .sidebar {
 body.light-mode.sidebar-bottom .sidebar::before {
   background: rgba(255, 255, 255, 0.92) !important;
   border-color: #000000 !important;
-  backdrop-filter: blur(28px) saturate(1.2) !important;
-  -webkit-backdrop-filter: blur(28px) saturate(1.2) !important;
+  backdrop-filter: blur(16px) saturate(1.2) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(1.2) !important;
 }
 body.light-mode.sidebar-bottom .sidebar:hover::before {
   background: rgba(255, 255, 255, 0.98) !important;
@@ -16240,7 +15921,7 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
   border: 1px solid var(--card-border);
   border-radius: var(--global-radius);
   padding: 20px 22px 22px;
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(10px);
   animation: baobaiCardIn 0.38s var(--ease-spring-soft);
 }
 @keyframes baobaiCardIn {
@@ -16638,7 +16319,6 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
 <div class="nav-item" draggable="true" data-page="pdf" onclick="switchPage('pdf')"><span class="nav-icon">🛠️</span><span class="nav-text">PDF hư hỏng</span></div>
 <div class="nav-item" draggable="true" data-page="chat" onclick="switchPage('chat')"><span class="nav-icon">💬</span><span class="nav-text">Chát Chít</span></div>
 <div class="nav-item" draggable="true" data-page="tinit" onclick="switchPage('tinit')"><span class="nav-icon" id="tiniNavIcon">📱</span><span class="nav-text">Tịn Ít</span></div>
-<div class="nav-item" draggable="true" data-page="chill" onclick="switchPage('chill')"><span class="nav-icon">🌌</span><span class="nav-text">Chill Zone</span></div>
 <div class="nav-item" draggable="true" data-page="kanban" onclick="switchPage('kanban')"><span class="nav-icon">📋</span><span class="nav-text">Kanban</span></div>
 <div class="nav-item" draggable="true" data-page="notes" onclick="switchPage('notes')"><span class="nav-icon">📌</span><span class="nav-text">Notes</span></div>
 <div class="nav-item" draggable="true" data-page="picstools" onclick="switchPage('picstools')"><span class="nav-icon">🧺</span><span class="nav-text">Pics Tools</span></div>
@@ -17268,27 +16948,27 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
             <div style="display:flex; gap:8px; flex-wrap:nowrap; align-items:center;">
               <button class="loading-style-btn active" data-style="0"
                 onclick="setLoadingStyle('0')"
-                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition:all 0.18s; white-space:nowrap; flex:1;">
+                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; white-space:nowrap; flex:1;">
                 🚫 Tắt
               </button>
               <button class="loading-style-btn" data-style="1"
                 onclick="setLoadingStyle('1')"
-                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition:all 0.18s; white-space:nowrap; flex:1;">
+                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; white-space:nowrap; flex:1;">
                 🎬 Video 1
               </button>
               <button class="loading-style-btn" data-style="2"
                 onclick="setLoadingStyle('2')"
-                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition:all 0.18s; white-space:nowrap; flex:1;">
+                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; white-space:nowrap; flex:1;">
                 🎬 Video 2
               </button>
               <button class="loading-style-btn" data-style="3"
                 onclick="setLoadingStyle('3')"
-                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition:all 0.18s; white-space:nowrap; flex:1;">
+                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; white-space:nowrap; flex:1;">
                 🎬 Video 3
               </button>
               <button class="loading-style-btn" data-style="4"
                 onclick="setLoadingStyle('4')"
-                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition:all 0.18s; white-space:nowrap; flex:1;">
+                style="padding:8px 10px; border-radius:var(--global-radius); border:1.5px solid rgba(255,255,255,0.15); background:rgba(255,255,255,0.06); cursor:pointer; font-size:0.75rem; color:inherit; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; white-space:nowrap; flex:1;">
                 🎬 Video 4
               </button>
             </div>
@@ -19080,77 +18760,6 @@ body.sidebar-bottom .sidebar-pinned-bottom .logout-btn {
     </div>
     </div><!-- end page-tinit -->
 
-
-  <!-- ===== CHILL ZONE PAGE ===== -->
-  <div id="page-chill" class="page-content outer-page">
-    <canvas class="chill-canvas" id="chillCanvas"></canvas>
-
-    <!-- Header nằm ngoài chill-content để ::before banner bar lên đúng top -->
-    <div class="header-group chill-page-title">
-      <h1>🌌 Chill Zone</h1>
-    </div>
-
-    <div class="chill-content">
-      <div class="chill-grid">
-        <!-- Left: Sound mixer -->
-        <div>
-          <div class="chill-panel" style="margin-bottom:16px;">
-            <div class="chill-panel-title">🎨 Tâm trạng</div>
-            <div class="chill-mood-row">
-              <button class="chill-mood-btn active" data-mood="relax" onclick="chillSetMood('relax',this)">😌 Thư giãn</button>
-              <button class="chill-mood-btn" data-mood="focus" onclick="chillSetMood('focus',this)">🎯 Tập trung</button>
-              <button class="chill-mood-btn" data-mood="creative" onclick="chillSetMood('creative',this)">🎨 Sáng tạo</button>
-              <button class="chill-mood-btn" data-mood="sleep" onclick="chillSetMood('sleep',this)">🌙 Ngủ nghê</button>
-            </div>
-
-            <div class="chill-panel-title" style="margin-top:4px;">🔊 Bộ Pha Âm Thanh</div>
-            <div class="chill-sound-row" id="chillSoundRow"></div>
-
-            <!-- Master volume -->
-            <div class="chill-master-row">
-              <span class="chill-master-label">🔈 Tổng</span>
-              <input type="range" class="chill-master-slider" id="chillMasterVol" min="0" max="100" value="70" oninput="chillSetMaster(this.value)">
-              <span id="chillMasterVal" style="font-size:0.8rem;opacity:0.6;min-width:32px;text-align:right;">70%</span>
-            </div>
-
-            <!-- Visualizer -->
-            <div class="chill-visualizer" id="chillVisualizer"></div>
-          </div>
-        </div>
-
-        <!-- Right: Pomodoro + Quote -->
-        <div>
-          <div class="chill-panel" style="margin-bottom:16px;">
-            <div class="chill-panel-title">🍅 Pomodoro</div>
-            <div class="chill-pomo-display">
-              <div class="chill-pomo-ring">
-                <svg class="chill-pomo-svg" viewBox="0 0 140 140">
-                  <circle class="chill-pomo-track" cx="70" cy="70" r="60"/>
-                  <circle class="chill-pomo-progress" id="chillPomoProgress" cx="70" cy="70" r="60"
-                    stroke-dasharray="376.99"
-                    stroke-dashoffset="0"/>
-                </svg>
-                <div class="chill-pomo-time" id="chillPomoTime">25:00</div>
-              </div>
-              <div class="chill-pomo-label" id="chillPomoLabel">🎯 Tập trung</div>
-              <div class="chill-pomo-controls">
-                <button class="chill-pomo-btn primary" id="chillPomoPlayBtn" onclick="chillPomoToggle()">▶ Bắt đầu</button>
-                <button class="chill-pomo-btn" onclick="chillPomoReset()">↺ Reset</button>
-              </div>
-            </div>
-
-            <!-- Mode selector -->
-            <div style="display:flex;gap:8px;margin-top:14px;justify-content:center;flex-wrap:wrap;">
-              <button class="chill-pomo-btn primary" onclick="chillPomoSetMode(25,'🎯 Tập trung',this)">25 phút</button>
-              <button class="chill-pomo-btn" onclick="chillPomoSetMode(5,'☕ Nghỉ ngắn',this)">5 phút</button>
-              <button class="chill-pomo-btn" onclick="chillPomoSetMode(15,'🛋️ Nghỉ dài',this)">15 phút</button>
-            </div>
-          </div>
-
-        </div>
-      </div>
-    </div>
-  </div><!-- end page-chill -->
 
   <!-- ===== KANBAN PAGE ===== -->
   <div id="page-kanban" class="page-content outer-page">
@@ -21644,7 +21253,7 @@ function saveDataDebounced() {
       // Body class cho các outer-page: REMOVE trì hoãn theo page-leaving (220ms)
       // để tránh container flash trong khi trang cũ đang fade out
       const _leavingOuterClasses = [];
-      ['music','pdf','chat','tinit','chill','kanban','picstools','notes','baobai'].forEach(id => {
+      ['music','pdf','chat','tinit','kanban','picstools','notes','baobai'].forEach(id => {
         if (document.body.classList.contains(id + '-active') && pageId !== id) {
           _leavingOuterClasses.push(id + '-active');
         }
@@ -21661,10 +21270,6 @@ function saveDataDebounced() {
         if (pageId === 'pdf')   document.body.classList.add('pdf-active');
         if (pageId === 'chat')  document.body.classList.add('chat-active');
         if (pageId === 'tinit') document.body.classList.add('tinit-active');
-        if (pageId === 'chill') {
-          document.body.classList.add('chill-active');
-          setTimeout(() => { if (window.chillInitCanvas) window.chillInitCanvas(); }, 100);
-        }
         if (pageId === 'kanban') document.body.classList.add('kanban-active');
         if (pageId === 'picstools') document.body.classList.add('picstools-active');
         if (pageId === 'notes') document.body.classList.add('notes-active');
@@ -21685,7 +21290,7 @@ function saveDataDebounced() {
         document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active-page','page-leaving'));
 
         const hg = targetPage.querySelector('.header-group');
-        const isOuterPage = ['music','pdf','chat','tinit','chill','kanban'].includes(pageId);
+        const isOuterPage = ['music','pdf','chat','tinit','kanban'].includes(pageId);
 
         // header-group gốc đã display:none, không cần ẩn thêm
 
@@ -21694,10 +21299,6 @@ function saveDataDebounced() {
         if (pageId === 'pdf')   document.body.classList.add('pdf-active');
         if (pageId === 'chat')  document.body.classList.add('chat-active');
         if (pageId === 'tinit') document.body.classList.add('tinit-active');
-        if (pageId === 'chill') {
-          document.body.classList.add('chill-active');
-          setTimeout(() => { if (window.chillInitCanvas) window.chillInitCanvas(); }, 100);
-        }
         if (pageId === 'kanban') document.body.classList.add('kanban-active');
         if (pageId === 'picstools') document.body.classList.add('picstools-active');
         if (pageId === 'notes') document.body.classList.add('notes-active');
@@ -21719,7 +21320,6 @@ function saveDataDebounced() {
                 Array.from(targetPage.children).forEach(child => {
                   if (!child.classList.contains('header-group') &&
                       !child.className.includes('page-title') &&
-                      !child.classList.contains('chill-page-title') &&
                       !child.classList.contains('page-toolbar-shell')) {
                     child.animate([
                       { opacity: 0, transform: 'translateY(40px)' },
@@ -36791,437 +36391,6 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 
-<!-- ===== CHILL ZONE SCRIPT ===== -->
-<script>
-(function(){
-  /* ─── SOUND DEFINITIONS ─── */
-  const SOUNDS = [
-    { id:'rain',    icon:'🌧️', label:'Mưa rơi',    type:'rain' },
-    { id:'cafe',    icon:'☕',  label:'Quán cà phê', type:'cafe' },
-    { id:'forest',  icon:'🌿',  label:'Rừng cây',    type:'forest' },
-    { id:'fire',    icon:'🔥',  label:'Lò sưởi',     type:'fire' },
-    { id:'waves',   icon:'🌊',  label:'Sóng biển',   type:'waves' },
-    { id:'kbd',     icon:'⌨️',  label:'Bàn phím',    type:'kbd' },
-  ];
-
-
-  let audioCtx = null;
-  let masterGain = null;
-  let soundNodes = {};
-  let isPlaying = {};
-  let soundVolumes = {};
-  let chillMood = 'relax';
-
-  // Canvas particles
-  let particles = [];
-  let canvasAnim = null;
-
-  function getAudioCtx() {
-    if (!audioCtx) {
-      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      masterGain = audioCtx.createGain();
-      masterGain.gain.value = 0.7;
-      masterGain.connect(audioCtx.destination);
-    }
-    return audioCtx;
-  }
-
-  function createWhiteNoise(ctx) {
-    const bufLen = ctx.sampleRate * 2;
-    const buf = ctx.createBuffer(1, bufLen, ctx.sampleRate);
-    const data = buf.getChannelData(0);
-    for (let i = 0; i < bufLen; i++) data[i] = Math.random() * 2 - 1;
-    const src = ctx.createBufferSource();
-    src.buffer = buf;
-    src.loop = true;
-    return src;
-  }
-
-  function makeRain(ctx) {
-    const noise = createWhiteNoise(ctx);
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 1200;
-    filter.Q.value = 0.5;
-    const filter2 = ctx.createBiquadFilter();
-    filter2.type = 'highpass';
-    filter2.frequency.value = 800;
-    noise.connect(filter);
-    filter.connect(filter2);
-    noise.start();
-    return { source: noise, output: filter2 };
-  }
-
-  function makeCafe(ctx) {
-    const noise = createWhiteNoise(ctx);
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 400;
-    filter.Q.value = 0.3;
-    // Low rumble
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.value = 60;
-    const oscGain = ctx.createGain();
-    oscGain.gain.value = 0.05;
-    osc.connect(oscGain);
-    const merger = ctx.createGain();
-    noise.connect(filter);
-    filter.connect(merger);
-    oscGain.connect(merger);
-    noise.start();
-    osc.start();
-    return { source: noise, osc, output: merger };
-  }
-
-  function makeForest(ctx) {
-    const noise = createWhiteNoise(ctx);
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 600;
-    filter.Q.value = 1.5;
-    // Bird-like oscillator
-    const osc = ctx.createOscillator();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(800, ctx.currentTime);
-    const oscGain = ctx.createGain();
-    oscGain.gain.value = 0;
-    // Chirp pattern
-    function chirp() {
-      const t = ctx.currentTime;
-      oscGain.gain.setValueAtTime(0, t);
-      oscGain.gain.linearRampToValueAtTime(0.04, t+0.05);
-      osc.frequency.setValueAtTime(900+Math.random()*200, t);
-      osc.frequency.linearRampToValueAtTime(1200+Math.random()*300, t+0.15);
-      oscGain.gain.linearRampToValueAtTime(0, t+0.2);
-      setTimeout(chirp, 2000 + Math.random()*4000);
-    }
-    osc.start(); chirp();
-    osc.connect(oscGain);
-    noise.connect(filter);
-    const out = ctx.createGain();
-    filter.connect(out); oscGain.connect(out);
-    noise.start();
-    return { source: noise, osc, output: out };
-  }
-
-  function makeFire(ctx) {
-    const noise = createWhiteNoise(ctx);
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'lowpass';
-    filter.frequency.value = 400;
-    const filter2 = ctx.createBiquadFilter();
-    filter2.type = 'peaking';
-    filter2.frequency.value = 200;
-    filter2.gain.value = 8;
-    noise.connect(filter);
-    filter.connect(filter2);
-    noise.start();
-    return { source: noise, output: filter2 };
-  }
-
-  function makeWaves(ctx) {
-    const noise = createWhiteNoise(ctx);
-    const filter = ctx.createBiquadFilter();
-    filter.type = 'bandpass';
-    filter.frequency.value = 300;
-    filter.Q.value = 0.4;
-    // LFO for wave rhythm
-    const lfo = ctx.createOscillator();
-    lfo.frequency.value = 0.15;
-    const lfoGain = ctx.createGain();
-    lfoGain.gain.value = 0.3;
-    lfo.connect(lfoGain);
-    const amp = ctx.createGain();
-    amp.gain.value = 0.5;
-    lfoGain.connect(amp.gain);
-    noise.connect(filter);
-    filter.connect(amp);
-    noise.start(); lfo.start();
-    return { source: noise, lfo, output: amp };
-  }
-
-  function makeKbd(ctx) {
-    const out = ctx.createGain();
-    out.gain.value = 0.3;
-    function click() {
-      const buf = ctx.createBuffer(1, ctx.sampleRate * 0.05, ctx.sampleRate);
-      const data = buf.getChannelData(0);
-      for (let i = 0; i < data.length; i++) data[i] = (Math.random()*2-1) * Math.exp(-i/200);
-      const src = ctx.createBufferSource();
-      src.buffer = buf;
-      const g = ctx.createGain(); g.gain.value = 0.4 + Math.random()*0.3;
-      src.connect(g); g.connect(out);
-      src.start();
-      setTimeout(click, 120 + Math.random()*350);
-    }
-    click();
-    return { source: null, output: out };
-  }
-
-  const SOUND_MAKERS = { rain:makeRain, cafe:makeCafe, forest:makeForest, fire:makeFire, waves:makeWaves, kbd:makeKbd };
-
-  function chillToggleSound(id) {
-    getAudioCtx();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-
-    const card = document.querySelector(`.chill-sound-card[data-id="${id}"]`);
-    const toggle = document.querySelector(`.chill-toggle[data-id="${id}"]`);
-
-    if (isPlaying[id]) {
-      // Stop
-      const node = soundNodes[id];
-      if (node) {
-        const g = node.gainNode;
-        if (g) {
-          g.gain.setTargetAtTime(0, audioCtx.currentTime, 0.3);
-          setTimeout(() => {
-            try { node.source?.stop(); node.osc?.stop(); node.lfo?.stop(); } catch(e){}
-          }, 500);
-        }
-        delete soundNodes[id];
-      }
-      isPlaying[id] = false;
-      card?.classList.remove('playing');
-      toggle?.classList.remove('on');
-    } else {
-      // Start
-      const maker = SOUND_MAKERS[id];
-      if (!maker) return;
-      const node = maker(audioCtx);
-      const gainNode = audioCtx.createGain();
-      gainNode.gain.setValueAtTime(0, audioCtx.currentTime);
-      gainNode.gain.setTargetAtTime(soundVolumes[id] || 0.5, audioCtx.currentTime, 0.5);
-      node.output.connect(gainNode);
-      gainNode.connect(masterGain);
-      node.gainNode = gainNode;
-      soundNodes[id] = node;
-      isPlaying[id] = true;
-      card?.classList.add('playing');
-      toggle?.classList.add('on');
-    }
-    updateVisualizer();
-  }
-
-  function chillSetVolume(id, val) {
-    soundVolumes[id] = val / 100;
-    if (isPlaying[id] && soundNodes[id]?.gainNode) {
-      soundNodes[id].gainNode.gain.setTargetAtTime(val/100, audioCtx.currentTime, 0.1);
-    }
-  }
-
-  window.chillSetMaster = function(val) {
-    document.getElementById('chillMasterVal').textContent = val + '%';
-    if (masterGain) masterGain.gain.setTargetAtTime(val/100, audioCtx?.currentTime || 0, 0.1);
-  };
-
-  window.chillSetMood = function(mood, btn) {
-    // Toggle off nếu click lại mood đang active
-    if (chillMood === mood && btn?.classList.contains('active')) {
-      chillMood = null;
-      document.querySelectorAll('.chill-mood-btn').forEach(b => b.classList.remove('active'));
-      const canvas = document.getElementById('chillCanvas');
-      if (canvas) canvas.dataset.mood = 'relax';
-      // Tắt tất cả âm thanh đang phát
-      Object.keys(isPlaying).forEach(id => {
-        if (isPlaying[id]) chillToggleSound(id);
-      });
-      return;
-    }
-    chillMood = mood;
-    document.querySelectorAll('.chill-mood-btn').forEach(b => b.classList.remove('active'));
-    btn?.classList.add('active');
-    const canvas = document.getElementById('chillCanvas');
-    if (canvas) canvas.dataset.mood = mood;
-    // Preset sounds
-    const presets = {
-      relax:  {rain:60, cafe:0, forest:50, fire:40, waves:30, kbd:0},
-      focus:  {rain:0, cafe:40, forest:0, fire:0, waves:20, kbd:60},
-      creative:{rain:30, cafe:50, forest:30, fire:0, waves:0, kbd:20},
-      sleep:  {rain:70, cafe:0, forest:40, fire:50, waves:20, kbd:0},
-    };
-    const preset = presets[mood] || {};
-    Object.keys(preset).forEach(id => {
-      const vol = preset[id];
-      const slider = document.querySelector(`.chill-volume-slider[data-id="${id}"]`);
-      if (slider) slider.value = vol;
-      chillSetVolume(id, vol);
-      if (vol > 0 && !isPlaying[id]) chillToggleSound(id);
-      else if (vol === 0 && isPlaying[id]) chillToggleSound(id);
-    });
-  };
-
-  /* Pomodoro */
-  let pomoTotal = 25 * 60;
-  let pomoLeft = 25 * 60;
-  let pomoRunning = false;
-  let pomoInterval = null;
-  const POMO_CIRCUMFERENCE = 2 * Math.PI * 60; // r=60
-
-  function updatePomoDisplay() {
-    const m = Math.floor(pomoLeft / 60).toString().padStart(2,'0');
-    const s = (pomoLeft % 60).toString().padStart(2,'0');
-    const el = document.getElementById('chillPomoTime');
-    if (el) el.textContent = `${m}:${s}`;
-    const progress = document.getElementById('chillPomoProgress');
-    if (progress) {
-      const offset = POMO_CIRCUMFERENCE * (1 - pomoLeft/pomoTotal);
-      progress.style.strokeDashoffset = offset;
-    }
-    // Color the ring based on remaining time
-    const pct = pomoLeft / pomoTotal;
-    const progress2 = document.getElementById('chillPomoProgress');
-    if (progress2) {
-      if (pct > 0.5) progress2.style.stroke = '#a78bfa';
-      else if (pct > 0.2) progress2.style.stroke = '#60a5fa';
-      else progress2.style.stroke = '#f87171';
-    }
-  }
-
-  window.chillPomoToggle = function() {
-    pomoRunning = !pomoRunning;
-    const btn = document.getElementById('chillPomoPlayBtn');
-    if (pomoRunning) {
-      if (btn) btn.textContent = '⏸ Dừng';
-      pomoInterval = setInterval(() => {
-        if (pomoLeft > 0) {
-          pomoLeft--;
-          updatePomoDisplay();
-        } else {
-          clearInterval(pomoInterval);
-          pomoRunning = false;
-          if (btn) btn.textContent = '▶ Bắt đầu';
-          if (window.showToast) window.showToast('🍅 Pomodoro xong! Nghỉ 5 phút nào!', 'success', 4000);
-        }
-      }, 1000);
-    } else {
-      clearInterval(pomoInterval);
-      if (btn) btn.textContent = '▶ Tiếp tục';
-    }
-  };
-
-  window.chillPomoReset = function() {
-    clearInterval(pomoInterval);
-    pomoRunning = false;
-    pomoLeft = pomoTotal;
-    updatePomoDisplay();
-    const btn = document.getElementById('chillPomoPlayBtn');
-    if (btn) btn.textContent = '▶ Bắt đầu';
-  };
-
-  window.chillPomoSetMode = function(mins, label, btn) {
-    clearInterval(pomoInterval);
-    pomoRunning = false;
-    pomoTotal = mins * 60;
-    pomoLeft = pomoTotal;
-    updatePomoDisplay();
-    const playBtn = document.getElementById('chillPomoPlayBtn');
-    if (playBtn) playBtn.textContent = '▶ Bắt đầu';
-    const labelEl = document.getElementById('chillPomoLabel');
-    if (labelEl) labelEl.textContent = label;
-    document.querySelectorAll('.chill-pomo-controls ~ div .chill-pomo-btn').forEach(b => b.classList.remove('primary'));
-    btn?.classList.add('primary');
-  };
-
-  /* Visualizer bars */
-  function updateVisualizer() {
-    const viz = document.getElementById('chillVisualizer');
-    if (!viz) return;
-    const playing = Object.keys(isPlaying).filter(k => isPlaying[k]);
-    const bars = viz.querySelectorAll('.chill-vis-bar');
-    bars.forEach((bar, i) => {
-      const h = playing.length > 0 ? (8 + Math.random() * 28) : 3;
-      bar.style.height = h + 'px';
-    });
-  }
-
-  /* Canvas particles */
-  window.chillInitCanvas = function() {
-    const canvas = document.getElementById('chillCanvas');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-
-    if (particles.length === 0) {
-      for (let i = 0; i < 120; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          r: Math.random() * 2.5 + 0.5,
-          dx: (Math.random() - 0.5) * 0.3,
-          dy: -Math.random() * 0.4 - 0.1,
-          opacity: Math.random() * 0.6 + 0.2,
-          pulse: Math.random() * Math.PI * 2,
-        });
-      }
-    }
-
-    if (canvasAnim) cancelAnimationFrame(canvasAnim);
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      particles.forEach(p => {
-        p.pulse += 0.02;
-        p.opacity = 0.2 + Math.abs(Math.sin(p.pulse)) * 0.5;
-        p.x += p.dx;
-        p.y += p.dy;
-        if (p.y < -5) p.y = canvas.height + 5;
-        if (p.x < -5) p.x = canvas.width + 5;
-        if (p.x > canvas.width + 5) p.x = -5;
-
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(167,139,250,${p.opacity})`;
-        ctx.fill();
-      });
-      canvasAnim = requestAnimationFrame(draw);
-    }
-    draw();
-  };
-
-  function chillRenderSounds() {
-    const row = document.getElementById('chillSoundRow');
-    const viz = document.getElementById('chillVisualizer');
-    if (!row) return;
-    row.innerHTML = SOUNDS.map(s => `
-      <div class="chill-sound-card" data-id="${s.id}">
-        <div class="chill-sound-top">
-          <span class="chill-sound-name">
-            <span class="chill-sound-icon">${s.icon}</span>
-            ${s.label}
-          </span>
-          <button class="chill-toggle" data-id="${s.id}" onclick="chillToggle('${s.id}')"></button>
-        </div>
-        <input type="range" class="chill-volume-slider" data-id="${s.id}" min="0" max="100" value="50"
-          oninput="chillSetVol('${s.id}',this.value)">
-      </div>`).join('');
-
-    if (viz) {
-      viz.innerHTML = Array(18).fill(0).map(() => `<div class="chill-vis-bar" style="height:3px"></div>`).join('');
-      setInterval(updateVisualizer, 150);
-    }
-  }
-
-  window.chillToggle = function(id) { chillToggleSound(id); };
-  window.chillSetVol = function(id, val) { chillSetVolume(id, val); };
-
-  function chillInit() {
-    chillRenderSounds();
-    updatePomoDisplay();
-    // Start canvas if page is visible
-    if (document.getElementById('page-chill')?.classList.contains('active-page')) {
-      window.chillInitCanvas();
-    }
-  }
-
-  document.addEventListener('DOMContentLoaded', chillInit);
-  window.addEventListener('resize', () => {
-    const canvas = document.getElementById('chillCanvas');
-    if (canvas) { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
-  });
-})();
-</script>
 
 <!-- ===== DROPDOWN NHÓM PDF — 3 nhóm, fixed position ===== -->
 <div id="pdfGroupPanel1" class="pdf-group-panel" style="display:none;">
@@ -39435,7 +38604,7 @@ document.addEventListener('DOMContentLoaded', function() {
   display:flex; align-items:center; gap:10px; flex-wrap:nowrap !important; /* FIX: đồng bộ 1 hàng ngang giống Music/Excel/VAT/Webmark */
   margin-bottom:16px; padding:12px 18px;
   background:var(--card-bg); border:5px solid #000;
-  border-radius:var(--global-radius); backdrop-filter:blur(14px);
+  border-radius:var(--global-radius); backdrop-filter:blur(10px);
   box-shadow: 0 0 18px color-mix(in srgb,var(--accent) 12%,transparent);
 }
 .notes-add-btn, .notes-clear-btn {
@@ -39556,12 +38725,12 @@ document.addEventListener('DOMContentLoaded', function() {
   display:flex; gap:6px; flex-wrap:wrap; margin-bottom:22px;
   padding:6px; background:var(--card-bg);
   border:3px solid #000; border-radius:calc(var(--global-radius) + 4px);
-  box-shadow:3px 4px 0 #000; backdrop-filter:blur(12px);
+  box-shadow:3px 4px 0 #000; backdrop-filter:blur(10px);
 }
 .picstools-tab {
   padding:8px 16px; border-radius:calc(var(--global-radius) - 4px); border:2px solid transparent;
   background:transparent; color:var(--text-sub); font-weight:700; font-size:0.82rem;
-  cursor:pointer; transition:all 0.2s var(--ease-ios); white-space:nowrap;
+  cursor:pointer; transition: background 0.2s var(--ease-ios), border-color 0.2s var(--ease-ios), transform 0.2s var(--ease-ios), box-shadow 0.2s var(--ease-ios), color 0.2s var(--ease-ios); white-space:nowrap;
 }
 .picstools-tab:hover {
   background:var(--input-bg); color:var(--text-main);
@@ -39582,7 +38751,7 @@ document.addEventListener('DOMContentLoaded', function() {
   background:var(--card-bg); border:3px solid #000;
   border-radius:var(--global-radius); box-shadow:4px 5px 0 #000;
   padding:20px; margin-bottom:16px;
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(10px);
 }
 body.light-mode .pt-panel-card { background:rgba(255,255,255,0.7); }
 
@@ -39616,7 +38785,7 @@ body.light-mode .pt-panel-card { background:rgba(255,255,255,0.7); }
   cursor: pointer; white-space: nowrap;
   box-shadow: 3px 4px 0 #000;
   transition: transform 0.18s var(--ease-spring), box-shadow 0.18s;
-  backdrop-filter: blur(12px);
+  backdrop-filter: blur(10px);
   min-width: 180px; justify-content: space-between;
 }
 .pt-pod-trigger:hover {
@@ -39638,7 +38807,7 @@ body.light-mode .pt-panel-card { background:rgba(255,255,255,0.7); }
   background: var(--card-bg);
   border: 2.5px solid #000; border-radius: 16px;
   box-shadow: 4px 5px 0 #000;
-  backdrop-filter: blur(18px);
+  backdrop-filter: blur(12px);
   overflow: hidden; min-width: 200px;
   transition: transform 0.25s var(--ease-spring), opacity 0.2s;
   opacity: 0; pointer-events: none;
@@ -39741,7 +38910,7 @@ body.light-mode .pt-panel-card { background:rgba(255,255,255,0.7); }
   border: 3px solid rgba(0,0,0,0.75);
   display: flex; align-items: center; justify-content: center;
   position: relative; overflow: hidden; cursor: pointer;
-  transition: all 0.3s;
+  transition: background 0.3s, border-color 0.3s, transform 0.3s, box-shadow 0.3s, color 0.3s;
 }
 @keyframes drumSpin { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
 @keyframes drumWash {
@@ -39816,7 +38985,7 @@ body.light-mode .pt-panel-card { background:rgba(255,255,255,0.7); }
 .pt-upload-btn {
   padding: 7px 13px; border-radius: var(--global-radius); border: 2.5px solid #444;
   background: rgba(0,0,0,0.12); color: #222; font-size: 0.73rem; font-weight: 800;
-  cursor: pointer; transition: all 0.18s; white-space: nowrap;
+  cursor: pointer; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; white-space: nowrap;
   box-shadow: 2px 2.5px 0 #000;
 }
 .pt-upload-btn:hover { background: var(--accent); color: #000; border-color: #000; transform: translateY(-1px); }
@@ -40175,13 +39344,13 @@ body.sidebar-left .pt-clothesline-items {
 .pt-mask-options {
   margin-top:0; padding:18px 20px;
   background:var(--card-bg); border:3px solid #000; border-radius:var(--global-radius);
-  backdrop-filter:blur(12px); box-shadow:4px 5px 0 #000;
+  backdrop-filter:blur(10px); box-shadow:4px 5px 0 #000;
 }
 body.light-mode .pt-mask-options { background:rgba(255,255,255,0.7) !important; }
 .pt-mask-btn {
   padding:7px 15px; border-radius:var(--global-radius); border:2.5px solid #000;
   background:rgba(255,255,255,0.07); color:var(--text-sub); font-size:0.8rem; font-weight:800;
-  cursor:pointer; transition:all 0.18s; box-shadow:2px 2.5px 0 #000;
+  cursor:pointer; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; box-shadow:2px 2.5px 0 #000;
 }
 .pt-mask-btn:hover { background:rgba(255,255,255,0.16); color:var(--text-main); transform:translateY(-1px); box-shadow:2px 3.5px 0 #000; }
 .pt-mask-btn.active { background:color-mix(in srgb,var(--accent) 18%,transparent); border-color:var(--accent); color:var(--accent); box-shadow:2px 2.5px 0 color-mix(in srgb,var(--accent) 60%,#000); }
@@ -40200,7 +39369,7 @@ body.light-mode .pt-mask-options { background:rgba(255,255,255,0.7) !important; 
   padding:36px 24px; border:3px dashed #000;
   border-radius:var(--global-radius); background:var(--input-bg);
   color:var(--text-sub); font-size:0.88rem; font-weight:600;
-  transition:all 0.2s; cursor:default; box-shadow:3px 4px 0 rgba(0,0,0,0.35);
+  transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s, color 0.2s; cursor:default; box-shadow:3px 4px 0 rgba(0,0,0,0.35);
 }
 body.light-mode .pt-drop-zone { background:rgba(255,255,255,0.5) !important; }
 .pt-drop-zone.drag-over { border-color:var(--accent); background:color-mix(in srgb,var(--accent) 10%,transparent); color:var(--accent); box-shadow:3px 4px 0 color-mix(in srgb,var(--accent) 70%,#000); }
@@ -40211,7 +39380,7 @@ body.light-mode .pt-drop-zone { background:rgba(255,255,255,0.5) !important; }
 .pt-ctrl-btn {
   padding:8px 17px; border-radius:var(--global-radius); border:2.5px solid #000;
   background:rgba(255,255,255,0.07); color:var(--text-sub); font-size:0.8rem; font-weight:800;
-  cursor:pointer; transition:all 0.18s; box-shadow:2px 2.5px 0 #000;
+  cursor:pointer; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; box-shadow:2px 2.5px 0 #000;
 }
 .pt-ctrl-btn:hover { background:rgba(255,255,255,0.16); color:var(--text-main); transform:translateY(-1px); box-shadow:2px 3.5px 0 #000; }
 .pt-ctrl-btn.accent { background:color-mix(in srgb,var(--accent) 20%,transparent); border-color:var(--accent); color:var(--accent); box-shadow:2px 2.5px 0 color-mix(in srgb,var(--accent) 60%,#000); }
@@ -40222,13 +39391,13 @@ body.light-mode .pt-drop-zone { background:rgba(255,255,255,0.5) !important; }
   display:flex; gap:8px; flex-wrap:wrap;
   padding:14px 16px; background:var(--card-bg); border:3px solid #000;
   border-radius:var(--global-radius); box-shadow:4px 5px 0 #000;
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(10px);
 }
 body.light-mode .pt-filter-row { background:rgba(255,255,255,0.7) !important; }
 .pt-filter-chip {
   padding:6px 13px; border-radius:var(--global-radius); border:2.5px solid #000;
   background:rgba(255,255,255,0.07); color:var(--text-sub); font-size:0.75rem; font-weight:800;
-  cursor:pointer; transition:all 0.18s; box-shadow:2px 2px 0 #000;
+  cursor:pointer; transition: background 0.18s, border-color 0.18s, transform 0.18s, box-shadow 0.18s, color 0.18s; box-shadow:2px 2px 0 #000;
 }
 .pt-filter-chip:hover { background:rgba(255,255,255,0.15); color:var(--text-main); transform:translateY(-1px); }
 .pt-filter-chip.active { background:color-mix(in srgb,var(--accent) 18%,transparent); border-color:var(--accent); color:var(--accent); box-shadow:2px 2px 0 color-mix(in srgb,var(--accent) 60%,#000); }
@@ -40238,7 +39407,7 @@ body.light-mode .pt-filter-row { background:rgba(255,255,255,0.7) !important; }
   display:flex; flex-direction:column; gap:12px;
   padding:18px 20px; background:var(--card-bg); border:3px solid #000;
   border-radius:var(--global-radius); box-shadow:4px 5px 0 #000;
-  backdrop-filter:blur(12px);
+  backdrop-filter:blur(10px);
 }
 body.light-mode .pt-resize-controls,
 body.light-mode .pt-adjust-controls { background:rgba(255,255,255,0.7) !important; }
@@ -40253,7 +39422,7 @@ body.light-mode .pt-adjust-controls { background:rgba(255,255,255,0.7) !importan
 .pt-adj-row span:first-child { width:120px; flex-shrink:0; }
 .pt-adj-row input[type="range"] { flex:1; accent-color:var(--accent); }
 .pt-adj-row span:last-child { width:32px; font-size:0.78rem; opacity:0.6; text-align:right; font-weight:700; }
-.pt-text-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:16px 20px; background:var(--card-bg); border:3px solid #000; border-radius:var(--global-radius); box-shadow:4px 5px 0 #000; backdrop-filter:blur(12px); }
+.pt-text-controls { display:flex; gap:8px; flex-wrap:wrap; align-items:center; padding:16px 20px; background:var(--card-bg); border:3px solid #000; border-radius:var(--global-radius); box-shadow:4px 5px 0 #000; backdrop-filter:blur(10px); }
 body.light-mode .pt-text-controls { background:rgba(255,255,255,0.7) !important; }
 .pt-text-controls input[type="text"], .pt-text-controls input[type="number"], .pt-text-controls select {
   padding:7px 10px; border-radius:var(--global-radius); border:2.5px solid #000;

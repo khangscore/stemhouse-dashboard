@@ -22559,6 +22559,24 @@ document.addEventListener('click', function(e) {
       renderExcelSheet();
     }
   }, 0);
+
+  // Khung "Học cụ cần soạn" chỉ được vẽ (tkbSyncMaterialsPanel) mỗi khi
+  // có 1 hành động cụ thể xảy ra (tick checkbox 🧩, dán ảnh, bấm nút
+  // "Tổng hợp học cụ", nhận cập nhật Firebase từ máy khác...) — KHÔNG có
+  // lệnh nào tự chạy 1 lần lúc mới load trang. Trong khi đó dữ liệu
+  // (tkbMaterialFlags, tkbMaterialsData) đã được đọc xong từ localStorage
+  // ngay từ đầu script (an toàn, không phụ thuộc DOM). Hậu quả: sau khi
+  // F5 lại trang, dữ liệu vẫn còn nguyên trong bộ nhớ nhưng khung bên
+  // phải vẫn hiện "Chưa có học cụ..." cho tới khi người dùng tự bấm lại
+  // nút "Tổng hợp học cụ" để ép vẽ lại. Gọi thêm 1 lần ở đây (cùng
+  // setTimeout 0 như renderExcelSheet ở trên, đảm bảo #tkbMaterialsList
+  // và các hàm helper như tkbGetWeekdayLabel đã sẵn sàng) để khung tự
+  // hiện lại đúng ngay khi trang vừa tải xong, không cần bấm lại nút.
+  setTimeout(() => {
+    if (typeof tkbSyncMaterialsPanel === "function") {
+      tkbSyncMaterialsPanel();
+    }
+  }, 0);
 };
   // ===== EXCEL CORE STATE =====
 

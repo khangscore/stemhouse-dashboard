@@ -27432,9 +27432,14 @@ window.addEventListener('load', () => {
       refreshCursor(state);
     }
 
-    function refreshCursor(state) {
+    let __cursorKeyLast = '', __cursorCache = Object.create(null);
+      function refreshCursor(state) {
       state = state || currentState;
       const accent = getAccent();
+      const __ck = state + '|' + cursorStyleKey + '|' + accent + '|' + cursorSizeScale;
+      if (__ck === __cursorKeyLast) return;
+      __cursorKeyLast = __ck;
+      if (__cursorCache[__ck]) { injectCursorStyle(__cursorCache[__ck]); return; }
       const isPointer = state === 'pointer';
       const isClick   = state === 'click';
       const funnyStyles = ['hand','sword','handclick','clickarrow','loading','send','banana2','racecar','rooster','baby','burger','capoeira','cupid2','heartarrow','bottle','gun','hotdog','person','sausage','shooting','watergun','football','startup','pencil','sword2','cola','tomatosauce'];
@@ -27446,6 +27451,7 @@ window.addEventListener('load', () => {
       } else {
         uri = svgToDataURI(makeCursorAlt(cursorStyleKey, accent, isPointer, isClick, cursorSizeScale));
       }
+      __cursorCache[__ck] = uri;
       injectCursorStyle(uri);
     }
 
@@ -28060,7 +28066,8 @@ window.addEventListener('load', () => {
         el.id = '__cursor_style__';
         document.head.appendChild(el);
       }
-      el.textContent = '*, *::before, *::after { cursor: ' + uri + ' !important; }';
+      const __t = '*, *::before, *::after { cursor: ' + uri + ' !important; }';
+      if (el.textContent !== __t) el.textContent = __t;
     }
 
     // Khởi tạo
@@ -28121,28 +28128,17 @@ window.addEventListener('load', () => {
     };
 
     // Hover pointer
-    document.addEventListener('mouseover', function(e) {
+    document.addEventListener('mouseover', function() {
       if (currentState === 'click') return;
-      const style = window.getComputedStyle(e.target).cursor;
-      if (style === 'pointer') {
-        applyCursor('pointer');
-      } else {
-        applyCursor('default');
-      }
+      applyCursor('default');
     });
 
     // Giữ cursor khi rê vào vùng trống (body/html không có element)
-    document.documentElement.addEventListener('mousemove', function() {
-      if (currentState === 'click') return;
-      refreshCursor(currentState || 'default');
-    });
+    /* perf: mousemove handler removed (was rewriting global cursor CSS on every mouse move) */
 
     // Click
     document.addEventListener('mousedown', function() { applyCursor('click'); });
-    document.addEventListener('mouseup', function(e) {
-      const style = window.getComputedStyle(e.target).cursor;
-      applyCursor(style === 'pointer' ? 'pointer' : 'default');
-    });
+    document.addEventListener('mouseup', function() { applyCursor('default'); });
   })();
   </script>
 
@@ -41927,4 +41923,37 @@ Yêu cầu định dạng đầu ra:
     })();
 </script>
 
+
+<style id="__perf_boost__">
+/* ===== PERF BOOST — giảm tải GPU/CPU, giữ nguyên bố cục ===== */
+/* 1) backdrop-filter là thủ phạm lag số 1: ~150 chỗ làm mờ nền theo thời gian thực */
+*,*::before,*::after{-webkit-backdrop-filter:none!important;backdrop-filter:none!important}
+/* 2) Orb nền không còn chuyển động liên tục (trước đây buộc mọi lớp kính phải vẽ lại mỗi frame) */
+#bg-orb-1,#bg-orb-2{animation:none!important;will-change:auto!important}
+/* 3) will-change/backface-visibility trên ~500 nút/thẻ = ~500 lớp GPU riêng */
+.card,.btn,.btn-save-fixed,.nav-item,.sidebar-username,.nav-text{will-change:auto!important;backface-visibility:visible!important;-webkit-backface-visibility:visible!important}
+/* 4) filter nặng */
+.sidebar-username,.nav-text,.ytlike-shell{filter:none!important}
+body.window-blurred .container>*:not(.active-page){filter:none!important}
+/* 5) hiệu ứng trang trí lặp vô hạn (animate box-shadow = vẽ lại mỗi frame) */
+.tkb-note-toggle,.chat-bubble-inner,.btn-pulse,#musicBubbleBtn:not(.playing),
+.pdf-tool-btn.mix-gold-btn,.pdf-tool-btn.mix-gold-btn::after,
+.ilove-tool-card[data-tool="mix"]::after,#mix-drop-zone.pdf-mix-dropzone::after{animation:none!important}
+</style>
+<script id="__perf_boost_js__">
+/* Dừng video nền đăng nhập khi màn hình login đã ẩn (đỡ giải mã video vô ích) */
+(function(){
+  try{
+    var v=document.querySelector('#login-screen .login-bg video');
+    if(v && 'IntersectionObserver' in window){
+      new IntersectionObserver(function(es){
+        es.forEach(function(e){
+          if(e.isIntersecting){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); }
+          else { v.pause(); }
+        });
+      }).observe(v);
+    }
+  }catch(_){}
+})();
+</script>
 </body>
